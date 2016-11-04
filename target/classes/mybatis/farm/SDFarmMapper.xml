@@ -1,0 +1,509 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SDFarmMapper">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+	
+	<!-- 查询全部 -->
+	<select id="selectAll" resultType="pd" useCache="false">
+		select  
+		id,
+		farm_code,
+		farm_name_chs,
+		farm_name_en,
+		feed_method,
+		layers,
+		rows,
+		feed_density,
+		h_length,
+		h_width,
+		h_height,
+		feed_purpose,
+		corporation,
+		farm_add1,
+		farm_add2,
+		farm_add3,
+		farm_add4,
+		farm_add5,
+		memo_1,
+		memo_2,
+		freeze_status,
+		create_person,
+		create_date,
+		create_time,
+		modify_person,
+		modify_date,
+		modify_time
+		from s_d_farm
+		where s_d_farm.freeze_status='0'
+	</select>
+	<!-- 根据条件查询 -->
+	<select id="selectByCondition" parameterType="pd" resultType="pd" useCache="false">
+		select  
+		id,
+		farm_code,
+		farm_name_chs,
+		farm_name_en,
+		feed_method,
+		layers,
+		rows,
+		feed_density,
+		h_length,
+		h_width,
+		h_height,
+		feed_purpose,
+		corporation,
+		farm_add1,
+		farm_add2,
+		farm_add3,
+		farm_add4,
+		farm_add5,
+		memo_1,
+		memo_2,
+		freeze_status,
+		create_person,
+		create_date,
+		create_time,
+		modify_person,
+		modify_date,
+		modify_time
+		from s_d_farm
+		where freeze_status=0
+		<if test="farmCode != null"> 
+		and farm_code = #{farmCode}
+		</if>
+		<if test="farmNameChs != null "> 
+		and farm_name_chs = #{farmNameChs}
+		</if>
+		<if test="farmId != null and farmId != 0">
+		and id = #{farmId}
+		</if>
+	</select>
+	<!-- 查询栋舍全部 -->
+	<select id="selectHouseByCondition" resultType="pd" useCache="false">
+		select  
+		 id ,
+		 house_code ,
+		 house_name ,
+		 house_type ,
+		 farm_id ,
+		 feed_density ,
+		 house_length ,
+		 house_width ,
+		 house_height ,
+		 memo_1 ,
+		 memo_2 ,
+		 freeze_status ,
+		 create_person ,
+		 create_date ,
+		 create_time ,
+		 modify_person ,
+		 modify_date ,
+		 modify_time 
+		from s_d_house 
+		where freeze_status="0"
+ 		<if test="farmId != null and farmId !='' "> 
+         and farm_id = #{farmId} 
+        </if> 
+        order by farm_id,house_code
+	</select>
+	
+	<select id="selectHouseById" resultType="pd" useCache="false">
+		select  
+		 id ,
+		 house_code ,
+		 house_name ,
+		 house_type ,
+		 farm_id ,
+		 feed_density ,
+		 house_length ,
+		 house_width ,
+		 house_height ,
+		 memo_1 ,
+		 memo_2 ,
+		 freeze_status ,
+		 create_person ,
+		 create_date ,
+		 create_time ,
+		 modify_person ,
+		 modify_date ,
+		 modify_time 
+		from s_d_house 
+		where 1=1
+        <if test="houseId != null and houseId != 0">
+			and id = #{houseId}
+		</if>
+		<if test="house_name != null and house_name != ''">
+			and house_name = #{house_name}
+		</if>
+		<if test="farmId != null and farmId != ''">
+			and farm_id = #{farmId}
+		</if>
+		
+	</select>
+	
+	<!-- 查询农场栋舍批次 -->
+	<select id="selectBatchByCondition" parameterType="pd" resultType="pd" useCache="false">
+		SELECT distinct batch_no
+		FROM   s_d_batch
+	    where 1=1
+ 		<if test="farmId != null and farmId !='' "> 
+         and farm_id = #{farmId} 
+        </if> 
+        <if test="houseId != null and houseId !=''"> 
+         and house_code = #{houseId} 
+        </if> 
+         <if test="batch_no != null and batch_no !=''"> 
+         and batch_no = #{batch_no} 
+        </if> 
+         <if test="operation_type != null and operation_type !=''"> 
+         and operation_type = #{operation_type} 
+        </if>
+        order by id desc
+	</select>
+	
+	
+	<!-- 查询农场信息 -->
+	<select id="findFarm" parameterType="pd" resultType="pd" useCache="false">
+		SELECT s_d_farm.*, 
+		       a1.name as province,
+		       a2.name as city,
+		       a3.name as area,
+		       c1.code_name,
+		       c2.code_name as code_name1
+		FROM s_d_farm
+		left join s_d_area_china a1 on a1.id=s_d_farm.farm_add1
+		left join s_d_area_china a2 on a2.id=s_d_farm.farm_add2
+		left join s_d_area_china a3 on a3.id=s_d_farm.farm_add3
+		left join s_d_code as c1 on c1.biz_code=s_d_farm.feed_method and c1.code_type='FEED_METHOD' 
+		left join s_d_code as c2 on c2.biz_code=s_d_farm.feed_type and c2.code_type='FEED_TYPE' 
+		where s_d_farm.freeze_status='0'
+		<if test="id != null and id != ''">
+			and s_d_farm.id = #{id}
+		</if>
+	</select>
+	
+	<!-- 查询栋舍信息 -->
+	<select id="findHouse" parameterType="pd" resultType="pd" useCache="false">
+		SELECT s_d_house.* ,
+			   c1.code_name,
+		       s_d_farm.farm_name_chs
+		FROM   s_d_house
+		left join s_d_farm on s_d_farm.id=s_d_house.farm_id
+		left join s_d_code as c1 on c1.biz_code=s_d_house.house_type and c1.code_type='HOUSE_TYPE'
+		where s_d_house.freeze_status='0'
+		<if test="id != null and id !='' "> 
+         and s_d_house.id = #{id} 
+        </if>
+	</select>
+	
+	<!-- 查询批次信息 -->
+	<select id="findBatchlistPage" parameterType="page" resultType="pd" useCache="false">
+		SELECT s_d_batch.*,
+		       s_d_farm.farm_name_chs,
+		       s_d_code.code_name
+		FROM   s_d_batch
+		left join s_d_farm on s_d_farm.id=s_d_batch.farm_id
+		left join s_d_code on s_d_code.biz_code=s_d_batch.operation_type and s_d_code.code_type='OPERATION_TYPE'
+		where 1=1
+		<if test="pd.id != null and pd.id !='' "> 
+         and s_d_batch.id = #{pd.id} 
+        </if>
+        order by s_d_batch.id desc
+	</select>
+	
+	<!-- 查询代码表 -->
+	<select id="findCode" parameterType="pd" resultType="pd" useCache="false">
+		SELECT *
+		FROM   s_d_code
+		where 1=1
+ 		<if test="code_type != null and code_type !='' "> 
+         and code_type = #{code_type} 
+        </if> 
+	</select>
+	<!-- 查询地区表 -->
+	<select id="findAreaChina" parameterType="pd" resultType="pd" useCache="false">
+		SELECT * FROM s_d_area_china
+		where status=1
+ 		<if test="parent_id != null and parent_id !='' "> 
+         	and parent_id = #{parent_id} 
+        </if> 
+        <if test="level != null and level !='' "> 
+         	and level = #{level} 
+        </if> 
+        order by sort 
+	</select>
+	<!-- 新增农场 -->
+	<insert id="saveFarm" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_d_farm (
+			farm_name_chs,
+			farm_name_en,
+			feed_method,
+			feed_type,
+			farm_add1,
+			farm_add2,
+			farm_add3,
+			freeze_status,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (
+			#{farm_name_chs},
+			#{farm_name_en},
+			#{feed_method},
+			#{feed_type},
+			#{farm_add1},
+			#{farm_add2},
+			#{farm_add3},
+			#{freeze_status},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	<!-- 修改农场信息 -->
+	<update id="editFarm" parameterType="pd" flushCache="false">
+		update  s_d_farm
+			set modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			<if test="farm_code != null and farm_code != ''">
+				,farm_code				= #{farm_code}
+			</if>
+			<if test="farm_name_chs != null and farm_name_chs != ''">
+				,farm_name_chs				= #{farm_name_chs}
+			</if>
+			<if test="farm_name_en != null and farm_name_en != ''">
+				,farm_name_en			 = #{farm_name_en}
+			</if>
+			<if test="feed_method != null and feed_method != ''">
+				,feed_method			 = #{feed_method}
+			</if>
+			<if test="feed_type != null and feed_type != ''">
+				,feed_type			 = #{feed_type}
+			</if>
+			<if test="freeze_status != null and freeze_status != ''">
+				,freeze_status			 = #{freeze_status}
+			</if>
+			<if test="farm_add1 != null and farm_add1 != ''">
+				,farm_add1			 = #{farm_add1}
+			</if>
+			<if test="farm_add2 != null and farm_add2 != ''">
+				,farm_add2			 = #{farm_add2}
+			</if>
+			<if test="farm_add3 != null and farm_add3 != ''">
+				,farm_add3			 = #{farm_add3}
+			</if>
+			where 
+				id = #{id}
+	</update>
+	
+	
+	
+	
+	<!-- 新增批次 -->
+	<insert id="saveBatch" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_d_batch (
+			house_code,
+			house_name,
+			farm_id,
+			batch_no,
+			batch_date,
+			day_age_curr,
+			count,
+			operation_type,
+			create_person,
+			create_date,
+			create_time
+		) values (
+			#{house_code},
+			#{house_name},
+			#{farm_id},
+			#{batch_no},
+			#{batch_date},
+			#{day_age_curr},
+			#{count},
+			#{operation_type},
+			#{create_person},
+			#{create_date},
+			#{create_time}
+		)
+	</insert>
+	
+	<!-- 修改批次信息 -->
+	<update id="editBatch" parameterType="pd" flushCache="false">
+		update  s_d_batch
+			set 
+			day_age_curr = #{day_age_curr}
+			<if test="count != null and count !='' "> 
+			,count	= #{count}
+			</if>
+			<if test="count == null or count =='' "> 
+			,count	= null
+			</if>
+			where id = #{id}
+	</update>
+	
+	<!-- 查询设备表 -->
+	<select id="findDevice" parameterType="pd" resultType="pd" useCache="false">
+		select * from s_d_device t
+		where not exists (
+		   select 1 from (select main_id from s_b_devi_house a 
+		   INNER JOIN s_d_house b on a.house_id = b.house_code and b.freeze_status = '0'
+		   <if test="house_id != null and house_id !='' "> 
+         		and a.house_id != #{house_id} 
+           </if> 
+		   ) t1
+		where t.main_id = t1.main_id)
+		<if test="main_id != null and main_id !='' "> 
+         	and t.main_id = #{main_id} 
+        </if> 
+	</select>
+	
+	<!-- 新增栋舍 Varro -->
+	<insert id="saveHouse" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_d_house (
+			house_code,
+			house_name,
+			house_type,
+			farm_id,
+			freeze_status,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (
+			#{house_code},
+			#{house_name},
+			#{house_type},
+			#{farm_id},
+			#{freeze_status},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	<!-- 修改栋舍 Varro -->
+	<update id="editHouse" parameterType="pd" flushCache="false">
+		update  s_d_house
+			set modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			<if test="house_code != null and house_code != ''">
+				,house_code				= #{house_code}
+			</if>
+			<if test="house_name != null and house_name != ''">
+				,house_name				= #{house_name}
+			</if>
+			<if test="house_type != null and house_type != ''">
+				,house_type			 = #{house_type}
+			</if>
+			<if test="farm_id != null and farm_id != ''">
+				,farm_id			 = #{farm_id}
+			</if>
+			<if test="freeze_status != null and freeze_status != ''">
+				,freeze_status			 = #{freeze_status}
+			</if>
+			where 
+				id = #{id}
+	</update>
+	
+	<!-- 新增栋舍警报 Varro -->
+	<insert id="saveHouseAlarm" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_b_house_alarm (
+			farm_id,
+			house_id,
+			alarm_type,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (
+			#{farm_id},
+			#{house_id},
+			#{alarm_type},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	
+	<!-- 新增栋舍和设备关系 Varro -->
+	<insert id="saveDeviHouse" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_b_devi_house (
+			main_id,
+			device_code,
+			device_type,
+			port_id,
+			farm_id,
+			house_id,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (
+			#{main_id},
+			#{device_code},
+			#{device_type},
+			#{port_id},
+			#{farm_id},
+			#{house_id},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	
+	<!-- 删除栋舍和设备关系 Varro -->
+	<delete id="delDeviHouse" parameterType="pd" flushCache="false">
+		delete from s_b_devi_house
+		where 1=1
+ 		<if test="house_id != null and house_id !='' "> 
+         	and house_id = #{house_id} 
+        </if> 
+        <if test="farm_id != null and farm_id !='' "> 
+         	and farm_id = #{farm_id} 
+        </if> 
+	</delete>
+	
+	<!-- 查询栋舍设备关联表 -->
+	<select id="findHouseDevice" parameterType="pd" resultType="pd" useCache="false">
+		SELECT s_d_device.* ,
+		 s_b_devi_house.house_id
+		FROM s_d_device
+		left join s_b_devi_house on s_b_devi_house.main_id=s_d_device.main_id
+		where 1=1
+		<if test="house_id != null and house_id !='' "> 
+         	and s_b_devi_house.house_id = #{house_id} 
+        </if> 
+	</select>
+	
+	
+	<!-- 判断同一栋舍下如果有未出栏的的批次，不能做入栏操作 -->
+	<select id="isBatchHouseNull" parameterType="pd" resultType="pd" useCache="false">
+		SELECT * from s_d_batch t
+		where   id = (SELECT MAX(id) from s_d_batch where house_code = #{house_code}  )
+	</select>
+	
+</mapper>

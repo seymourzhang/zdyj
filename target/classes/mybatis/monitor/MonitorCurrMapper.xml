@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="MonitorCurrMapper" >
+  <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+
+    <select id="selectAll" resultType="pd" useCache="false">
+        SELECT mc.id
+                , mc.farm_id
+                , mc.house_id
+                , DATE_FORMAT(mc.collect_datetime,'%H:%i:%s') collect_datetime
+                , mc.deal_status
+                , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarm_code
+                , mc.date_age
+                , mc.week_age
+                , format(mc.inside_temp1,1) inside_temp1
+                , format(mc.inside_temp2,1) inside_temp2
+                , format(mc.inside_temp3,1) inside_temp3
+                , format(mc.inside_temp4,1) inside_temp4
+                , mc.inside_temp5
+                , mc.inside_temp6
+                , mc.inside_temp7
+                , mc.inside_temp8
+                , mc.inside_temp9
+                , format(mc.inside_avg_temp,1) inside_avg_temp
+                , format(mc.inside_set_temp,1) inside_set_temp
+                , mc.high_alarm_temp
+                , mc.low_alarm_temp
+                , format(mc.outside_temp,1) outside_temp
+                , format(mc.inside_humidity,0) inside_humidity
+                , format((mc.inside_avg_temp-mc.inside_set_temp),1) point_temp_diff
+                , format(mc.target_humidity,0) target_humidity
+                , format(mc.co2,1) co2
+                , mc.power_status
+                , mc.update_datetime
+                , mc.small_fan
+                , mc.larger_fan
+                , mc.refrigeration
+                , mc.heating
+                , mc.fenestella
+                , mc.Tunnel
+                , mc.water_consumption
+                , format(mc.negative_pressure,1) negative_pressure
+                , mc.larger_fan
+                , mc.small_fan
+                , c.code_name refrigeration_name
+                , d.code_name heating_name
+                , e.code_name fenestella_name
+                , f.farm_name_chs farm_name
+                , h.house_name house_name
+        FROM s_b_monitor_curr mc
+        LEFT JOIN s_d_code c
+        ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'
+        LEFT JOIN s_d_code d
+        ON mc.heating= d.biz_code and d.code_type = 'KGZT'
+        LEFT JOIN s_d_code e
+        ON mc.fenestella= e.biz_code and e.code_type = 'KGZT'
+        LEFT JOIN s_d_farm f
+        ON mc.farm_id= f.id
+        LEFT JOIN s_d_house h
+        ON mc.house_id= h.id
+        WHERE mc.show_flag=1
+        ORDER BY mc.collect_datetime DESC
+    </select>
+
+    <select id="selectAllForMobile" resultType="pd" useCache="false">
+        SELECT f.farm_name_chs FarmName
+        	    , f.id FarmId
+                , h.house_name houseName
+                , h.id HouseId
+                , mc.date_age dayAge
+                , (case when mc.alarm_code=9 then 1 else 0 end) isAlarm
+                , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarmName
+                , concat('{"tar_temp":"',format(ifnull(mc.inside_set_temp,0),1),'",'
+                            ,'"out_temp":"',format(ifnull(mc.outside_temp,0),1),'",'
+                            ,'"avg_temp":"',format(ifnull(mc.inside_avg_temp,0),1),'",'
+                            ,'"temp_diff":"',format(ifnull(mc.inside_avg_temp,0)-ifnull(mc.inside_set_temp,0),1),'",'
+                            ,'"in_temp1":"',format(ifnull(mc.inside_temp1,0),1),'",'
+                            ,'"in_temp2":"',format(ifnull(mc.inside_temp2,0),1),'",'
+                            ,'"in_temp3":"',format(ifnull(mc.inside_temp3,0),1),'",'
+                            ,'"in_temp4":"',format(ifnull(mc.inside_temp4,0),1),'"}'
+                            ) tempInfo
+                , format(mc.inside_humidity,0) inside_humidity
+                , mc.water_consumption
+                , format(mc.co2,1) co2
+                , format(mc.negative_pressure,1) negative_pressure
+                , mc.small_fan
+                , mc.larger_fan
+                , e.code_name fenestella_name
+                , d.code_name heating_name
+                , c.code_name refrigeration_name
+                , DATE_FORMAT(mc.collect_datetime,'%H:%i:%s') collect_datetime
+        FROM s_b_monitor_curr mc
+        LEFT JOIN s_d_code c
+        ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'
+        LEFT JOIN s_d_code d
+        ON mc.heating= d.biz_code and d.code_type = 'KGZT'
+        LEFT JOIN s_d_code e
+        ON mc.fenestella= e.biz_code and e.code_type = 'KGZT'
+        LEFT JOIN s_d_farm f
+        ON mc.farm_id= f.id
+        LEFT JOIN s_d_house h
+        ON mc.house_id= h.id
+        WHERE mc.show_flag=1
+        ORDER BY mc.collect_datetime DESC
+    </select>
+
+    <select id="selectByCondition" resultType="pd" useCache="false">
+        SELECT mc.id
+                , mc.farm_id
+                , mc.house_id
+                , DATE_FORMAT(mc.collect_datetime,'%H:%i:%s') collect_datetime
+                , mc.deal_status
+                , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarm_code
+                , mc.date_age
+                , mc.week_age
+                , format(mc.inside_temp1,1) inside_temp1
+                , format(mc.inside_temp2,1) inside_temp2
+                , format(mc.inside_temp3,1) inside_temp3
+                , format(mc.inside_temp4,1) inside_temp4
+                , mc.inside_temp5
+                , mc.inside_temp6
+                , mc.inside_temp7
+                , mc.inside_temp8
+                , mc.inside_temp9
+                , format(mc.inside_avg_temp,1) inside_avg_temp
+                , format(mc.inside_set_temp,1) inside_set_temp
+                , mc.high_alarm_temp
+                , mc.low_alarm_temp
+                , format(mc.outside_temp,1) outside_temp
+                , format(mc.inside_humidity,0) inside_humidity
+                , format((mc.inside_avg_temp-mc.inside_set_temp),1) point_temp_diff
+                , format(mc.target_humidity,0) target_humidity
+                , format(mc.co2,1) co2
+                , mc.power_status
+                , mc.update_datetime
+                , mc.small_fan
+                , mc.larger_fan
+                , mc.refrigeration
+                , mc.heating
+                , mc.fenestella
+                , mc.Tunnel
+                , mc.water_consumption
+                , format(mc.negative_pressure,1) negative_pressure
+                , mc.larger_fan
+                , mc.small_fan
+                , c.code_name refrigeration_name
+                , d.code_name heating_name
+                , e.code_name fenestella_name
+                , f.farm_name_chs farm_name
+                , h.house_name house_name
+        FROM s_b_monitor_curr mc
+        LEFT JOIN s_d_code c
+        ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'
+        LEFT JOIN s_d_code d
+        ON mc.heating= d.biz_code and d.code_type = 'KGZT'
+        LEFT JOIN s_d_code e
+        ON mc.fenestella= e.biz_code and e.code_type = 'KGZT'
+        LEFT JOIN s_d_farm f
+        ON mc.farm_id= f.id
+        LEFT JOIN s_d_house h
+        ON mc.house_id= h.id
+        WHERE mc.show_flag=1
+        <if test="farmId != null">
+        AND mc.farm_id IN (
+        <foreach collection="farmId" item="item" index="index" separator=",">
+            #{item}
+        </foreach>
+        )
+       </if>
+        <if test="houseId != null">
+            AND mc.house_id in (
+            <foreach collection="houseId" item="item" index="index" separator=",">
+                #{item}
+            </foreach>
+            )
+        </if>
+        ORDER BY mc.collect_datetime DESC
+    </select>
+
+    <select id="SP_MONITOR" useCache="false">
+        CALL SP_MONITOR()
+    </select>
+
+</mapper>

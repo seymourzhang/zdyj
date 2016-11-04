@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SDUserMapper">
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+	
+	<!-- 判断用户名和密码 -->
+	<select id="getUserInfo" parameterType="pd" resultType="pd" useCache="false">
+		select * from s_d_user 
+		where 1=1
+		<if test="user_code != null and user_password != null">
+	  	and	(user_code = #{user_code} and user_password = #{user_password})
+		</if>
+		<if test="id != null and id != ''">
+		and id = #{id}
+		</if>
+	</select>
+	
+	
+	<!-- 根据查询条件查询用户信息 -->
+	<select id="findUserInfo" parameterType="pd" resultType="pd" useCache="false">
+		select * from s_d_user 
+		where 1=1
+		<if test="user_code != null and user_code != ''">
+			and user_code=#{user_code}
+		</if>
+		<if test="id != null and id != ''">
+			and id=#{id}
+		</if>
+	</select>
+	
+	
+	<!-- 分页查询用户信息 -->
+	<select id="userlistPage" parameterType="page" resultType="pd" useCache="false">
+		select s_d_user.*,
+		s_d_farm.id as farm_id, 
+		s_d_farm.farm_name_chs
+		from s_d_user 
+		left join s_b_user_farm on s_d_user.id=s_b_user_farm.user_id 
+		left join s_d_farm on s_b_user_farm.farm_id=s_d_farm.id 
+		where s_d_user.user_status='1'
+		<if test="pd.farm_id != null and pd.farm_id != ''">
+			and s_d_farm.id=#{pd.farm_id}
+		</if>
+		<if test="pd.user_real_name != null and pd.user_real_name != ''">
+			and s_d_user.user_real_name LIKE CONCAT(CONCAT('%', #{pd.user_real_name}),'%')
+		</if>
+		<if test="pd.user_mobile_1 != null and pd.user_mobile_1 != ''">
+			and s_d_user.user_mobile_1 LIKE CONCAT(CONCAT('%', #{pd.user_mobile_1}),'%')
+		</if>
+		
+		order by s_d_user.create_date desc
+	</select>
+	
+	<!-- 根据用户id查询用户栋舍 -->
+	<select id="findUserHouseCode" parameterType="pd" resultType="pd" useCache="false">
+		SELECT  s_d_house.id, 
+		        s_d_house.house_code, 
+		        s_d_house.house_name,
+		        s_b_user_house.user_id,
+		        s_b_user_house.user_code,
+		        s_b_user_house.farm_id
+		 FROM   s_d_house  
+		 left join s_b_user_house on s_b_user_house.house_id=s_d_house.id
+		 where 1=1
+		<if test="farm_id != null and farm_id != ''">
+			and s_b_user_house.farm_id=#{farm_id}
+		</if>
+		<if test="user_id != null and user_id != ''">
+			and s_b_user_house.user_id=#{user_id}
+		</if>
+	</select>
+	
+
+	
+	
+	<!-- 新增用户 -->
+	<insert id="saveUser" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_d_user (
+			user_code,
+			user_real_name,
+			user_real_name_en,
+			user_password,
+			user_mobile_1,
+			user_status,
+			freeze_status,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (
+			#{user_code},
+			#{user_real_name},
+			#{user_real_name_en},
+			#{user_password},
+			#{user_mobile_1},
+			#{user_status},
+			#{freeze_status},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	
+	<!-- 新增用户所属农场 -->
+	<insert id="saveUserFarm" parameterType="pd" flushCache="false">
+		insert into s_b_user_farm (
+			user_id,
+			user_code,
+			farm_id,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (
+			#{user_id},
+			#{user_code},
+			#{farm_id},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	<!-- 删除用户所属农场 -->
+	<delete id="delUserFarm" parameterType="pd" flushCache="false">
+		delete from s_b_user_farm
+		where  user_id =#{user_id}
+	</delete>
+	<!-- 新增用户所属栋舍 -->
+	<insert id="saveUserHouse" parameterType="pd" flushCache="false">
+		insert into s_b_user_house (
+			user_id,
+			user_code,
+			farm_id,
+			house_id,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (
+			#{user_id},
+			#{user_code},
+			#{farm_id},
+			#{house_id},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	<!-- 删除用户所属栋舍 -->
+	<delete id="delUserHouse" parameterType="pd" flushCache="false">
+		delete from s_b_user_house
+		where  user_id =#{user_id} and farm_id=#{farm_id}
+	</delete>
+	
+	<!-- 修改用户信息 -->
+	<update id="editUser" parameterType="pd" flushCache="false">
+		update  s_d_user
+			set modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			<if test="user_real_name != null and user_real_name != ''">
+				,user_real_name				= #{user_real_name}
+			</if>
+			<if test="user_real_name_en != null and user_real_name_en != ''">
+				,user_real_name_en			 = #{user_real_name_en}
+			</if>
+			<if test="user_password != null and user_password != ''">
+				,user_password			 = #{user_password}
+			</if>
+			<if test="user_mobile_1 != null and user_mobile_1 != ''">
+				,user_mobile_1			 = #{user_mobile_1}
+			</if>
+			<if test="user_status != null and user_status != ''">
+				,user_status			 = #{user_status}
+			</if>
+			where 
+				id = #{id}
+	</update>
+	
+</mapper>

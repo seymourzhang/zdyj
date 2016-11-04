@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="zdyj:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="zdyj-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="zdyj:war exploded" />
+    </root>
+  </artifact>
+</component>

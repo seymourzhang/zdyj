@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="MySQL - zdyj_dev@121.196.237.126" uuid="70fd8af8-1515-4e40-87f7-a75d186d33ad">
+      <secret-storage>master_key</secret-storage>
+      <user-name>zdyj_dev</user-name>
+      <resolve-scope>zljk:|zdyj_dev:*</resolve-scope>
+    </data-source>
+  </component>
+</project>

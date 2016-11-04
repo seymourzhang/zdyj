@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="AlarmHistMapper" >
+  <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+
+    <select id="alarmHistDaily" resultType="pd" useCache="false">
+       SELECT  farm_id, 
+		       house_id, 
+		       date, 
+		       
+		       alarm_code,
+		       alarm_name,
+		       alarm_num
+	    FROM   rpt_alarm_daily
+	   where 1=1
+ 		<if test="farmId != null and farmId !=''"> 
+         and farm_id = #{farmId} 
+        </if> 
+        <if test="houseId != null and houseId !=''"> 
+         and house_id = #{houseId} 
+        </if> 
+         <if test="alarmName != null and alarmName !=''"> 
+         and alarm_code = #{alarmName}
+        </if>
+        <if test="beginTime != null and endTime != null">
+			AND (`date` BETWEEN #{beginTime} AND #{endTime} )
+		</if>
+    </select>
+     <select id="alarmHistMonth" resultType="pd" useCache="false">
+       SELECT farm_id, 
+		      house_id, 
+		      year,
+		      month,
+		      date, 
+		      alarm_code,
+		      alarm_name,
+		      alarm_num
+	    FROM  rpt_alarm_month
+	    WHERE 1=1
+ 		<if test="farmId != null and farmId !=''"> 
+         and farm_id = #{farmId} 
+        </if> 
+        <if test="houseId != null and houseId !=''"> 
+         and house_id = #{houseId} 
+        </if> 
+         <if test="alarmName != null and alarmName !=''"> 
+         and alarm_code = #{alarmName}
+        </if>
+        <if test="beginTime != null and endTime != null">
+			AND (`date` BETWEEN #{beginTime} AND #{endTime} )
+		</if>
+		ORDER BY DATE 
+    </select> 
+    
+    <select id="selectNameByCondition" parameterType="pd" resultType="pd" useCache="false">
+       SELECT DISTINCT alarm_name FROM rpt_alarm_daily
+       where 1=1
+       <if test="farmId != null and farmId !='' "> 
+         and farm_id = #{farmId} 
+       </if> 
+       <if test="houseId != null and houseId !=''"> 
+        and house_id = #{houseId} 
+       </if>
+       <if test="alarmName != null and alarmName !=''"> 
+        and alarm_name = #{alarmName} 
+       </if>
+       order by alarm_code
+    </select>
+    <select id="selectSBCode" resultType="pd" useCache="false">
+    SELECT code_type,
+			biz_code,
+			code_name,
+			bak1,
+			bak2,
+			code_desc
+    FROM s_d_code WHERE code_type = 'ALARM_CODE' 
+    AND biz_code not in(0,9)
+    ORDER BY biz_code
+    </select>
+    <select id="alarmHist" resultType="pd" useCache="false">
+                    SELECT  (select s.farm_name_chs from s_d_farm s where s.id = A.farm_id) as farm_name, 
+                           (select d.house_name from s_d_house d where d.id = A.house_id) as house_name,
+                           A.farm_id,
+             		       A.house_id, 
+             		       A.date,
+             		       A.date_age, 
+             		       A.batch_no,
+                        IFNULL(A1.alarm_code,'-') as high_temp_code,
+             		       IFNULL(A1.alarm_name,'-') as high_temp,
+                        IFNULL(A1.alarm_num ,'-') as high_temp_num,
+                        IFNULL(A2.alarm_code,'-') as low_temp_code,
+             		       IFNULL(A2.alarm_name,'-') as low_temp,
+                        IFNULL(A2.alarm_num ,'-') as low_temp_num,
+                        IFNULL(A3.alarm_code,'-') as high_co2_code,
+             		       IFNULL(A3.alarm_name,'-') as high_co2,
+                        IFNULL(A3.alarm_num ,'-') as high_co2_num,
+                        IFNULL(A5.alarm_code,'-') as high_negative_pressure_code,
+             		       IFNULL(A5.alarm_name,'-') as high_negative_pressure,
+                        IFNULL(A5.alarm_num ,'-') as high_negative_pressure_num,
+                        IFNULL(A6.alarm_code,'-') as low_negative_pressure_code,
+             		       IFNULL(A6.alarm_name,'-') as low_negative_pressure,
+                        IFNULL(A6.alarm_num ,'-') as low_negative_pressure_num,
+                        IFNULL(A7.alarm_code,'-') as high_water_code,
+             		       IFNULL(A7.alarm_name,'-') as high_water,
+                        IFNULL(A7.alarm_num ,'-') as high_water_num,
+                        IFNULL(A8.alarm_code,'-') as low_water_code,
+             		       IFNULL(A8.alarm_name,'-') as low_water,
+                        IFNULL(A8.alarm_num ,'-') as low_water_num
+             FROM (SELECT  distinct farm_id, 
+             		       house_id, 
+             		       date,
+             		       date_age,
+             		       batch_no 
+             	    FROM   rpt_alarm_daily
+             	   where 1=1
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             ) A 
+             LEFT JOIN (SELECT  farm_id, 
+             		       house_id, 
+             		       date_age,
+             		       batch_no,
+                        alarm_code,
+             		       alarm_name,
+                        alarm_num
+             	    FROM   rpt_alarm_daily
+             	   where alarm_code = 1
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             
+             		) A1
+             ON  A.farm_id  = A1.farm_id
+             AND A.house_id = A1.house_id
+             AND A.date_age = A1.date_age
+             AND A.batch_no = A1.batch_no
+             LEFT JOIN
+             (SELECT  farm_id, 
+             		       house_id, 
+             		       date_age, 
+             		       batch_no,
+                        alarm_code,
+             		       alarm_name,
+                        alarm_num
+             	    FROM   rpt_alarm_daily
+             	   where alarm_code = 2
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             
+             		) A2
+             ON  A.farm_id  = A2.farm_id
+             AND A.house_id = A2.house_id
+             AND A.date_age = A2.date_age
+             AND A.batch_no = A2.batch_no
+             LEFT JOIN
+             (SELECT  farm_id, 
+             		       house_id, 
+             		       date_age, 
+             		       batch_no,
+                        alarm_code,
+             		       alarm_name,
+                        alarm_num
+             	    FROM   rpt_alarm_daily
+             	   where alarm_code = 3
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             
+             		) A3
+             ON  A.farm_id  = A3.farm_id
+             AND A.house_id = A3.house_id
+             AND A.date_age = A3.date_age
+             AND A.batch_no = A3.batch_no
+             		LEFT JOIN
+             (SELECT  farm_id, 
+             		       house_id, 
+             		       date_age, 
+             		       batch_no,
+                        alarm_code,
+             		       alarm_name,
+                        alarm_num
+             	    FROM   rpt_alarm_daily
+             	   where alarm_code = 5
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             
+             		) A5
+             ON  A.farm_id  = A5.farm_id
+             AND A.house_id = A5.house_id
+             AND A.date_age = A5.date_age
+             AND A.batch_no = A5.batch_no
+             		LEFT JOIN
+             (SELECT  farm_id, 
+             		       house_id, 
+             		       date_age, 
+             		       batch_no,
+                        alarm_code,
+             		       alarm_name,
+                        alarm_num
+             	    FROM   rpt_alarm_daily
+             	   where alarm_code = 6
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             
+             		) A6
+             ON  A.farm_id  = A6.farm_id
+             AND A.house_id = A6.house_id
+             AND A.date_age = A6.date_age
+             AND A.batch_no = A6.batch_no
+             		LEFT JOIN
+             (SELECT  farm_id, 
+             		       house_id, 
+             		       date_age, 
+             		       batch_no,
+                        alarm_code,
+             		       alarm_name,
+                        alarm_num
+             	    FROM   rpt_alarm_daily
+             	   where alarm_code = 7
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             
+             		) A7
+             ON  A.farm_id  = A7.farm_id
+             AND A.house_id = A7.house_id
+             AND A.date_age = A7.date_age
+             AND A.batch_no = A7.batch_no
+             		LEFT JOIN
+             (SELECT  farm_id, 
+             		       house_id, 
+             		       date_age, 
+             		       batch_no,
+                        alarm_code,
+             		       alarm_name,
+                        alarm_num
+             	    FROM   rpt_alarm_daily
+             	   where alarm_code = 8
+              		 		<if test="farmId != null and farmId !=''"> 
+                      and farm_id = #{farmId} 
+                     </if> 
+                     <if test="houseId != null and houseId !=''"> 
+                      and house_id = #{houseId} 
+                     </if> 
+                      <if test="batchNo != null and batchNo !=''"> 
+                      and batch_no = #{batchNo}
+                     </if>
+             
+             		) A8
+             ON  A.farm_id  = A8.farm_id
+             AND A.house_id = A8.house_id
+             AND A.date_age = A8.date_age
+             AND A.batch_no = A8.batch_no
+             where A.farm_id is not null
+             AND A.house_id is not null
+             AND A.date_age is not null
+             AND A.batch_no is not null
+    </select>
+   <select id="alarmHistDetail" resultType="pd" useCache="false">
+   select a.farm_id,
+             a.house_id,
+             DATE_FORMAT(a.alarm_time,'%Y-%m-%d %H:%i:%s') as alarm_time,
+             DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr as date_age,
+            a.alarm_code,
+            a.alarm_Name,
+            IFNULL(CONCAT(round(a.set_value,0),a.value_unit),'-') as set_value,
+            IFNULL(CONCAT(round(a.actual_value,0),a.value_unit),'-') as actual_value,
+            a.remove_time,
+            round((unix_timestamp(a.remove_time)-unix_timestamp(a.alarm_time))/60,2) as continue_time,
+            IFNULL((select u.id from s_d_user u where u.id=a.response_person),'-') as response_person,
+            a.is_remove 
+            from s_b_alarm_done a
+            left JOIN (select e.farm_id,
+                                         e.house_code,
+                                         e.batch_no,
+                                         e.day_age_curr,
+                                         e.batch_date as BEGIN_date,
+                                         ifnull(b.batch_date,sysdate()) as end_date 
+                                  from s_d_batch e
+                                  left join s_d_batch b
+                                  on e.house_code = b.house_code
+                                  and e.farm_id = b.farm_id 
+                                  and e.batch_no = b.batch_no
+                                  and b.operation_type = 1
+                                  where e.operation_type = 2) c
+            on a.farm_id = c.farm_id
+                       and a.house_id = c.house_code
+                       and DATE_FORMAT(a.alarm_time,'%Y-%m-%d') between BEGIN_date and end_date
+            where 1 = 1
+              		 <if test="farmId2 != null and farmId2 !=''"> 
+                      and a.farm_id = #{farmId2} 
+                     </if> 
+                     <if test="houseId2 != null and houseId2 !=''"> 
+                      and a.house_id = #{houseId2} 
+                     </if> 
+                      <if test="batchNo2 != null and batchNo2 !=''"> 
+                      and c.batch_no = #{batchNo2}
+                     </if>
+                     <if test="dateage != null and dateage !=''"> 
+                      and DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr = #{dateage}
+                     </if>
+                     <if test="beginTime != null and beginTime !=''"> 
+                      and DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),str_to_date(#{beginTime},'%Y-%m-%d'))>=0
+                     </if>
+                     <if test="endTime != null and endTime !=''"> 
+                      and DATEDIFF(str_to_date(#{endTime},'%Y-%m-%d'),DATE_FORMAT(a.alarm_time,'%Y-%m-%d'))>=0
+                     </if>
+                     <if test="bizCode != null and bizCode !=''"> 
+                      and a.alarm_code = #{bizCode}
+                     </if>
+    </select>
+</mapper>
