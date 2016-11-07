@@ -10,10 +10,11 @@ import com.mtc.zljk.util.common.PageData;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.MultipartRequest;
@@ -40,6 +41,7 @@ public class breedValueBook extends BaseAction {
     private SDFileService sdFileService;
 
     private int uploadFileMaxSize = 10 * 1024 * 1024; //10M
+
     private String filePath = "/modules/file/upload/";
 
     @RequestMapping("/companyFileView")
@@ -67,8 +69,8 @@ public class breedValueBook extends BaseAction {
         return mav;
     }
 
-    @RequestMapping("/saveAttach")
-    public void saveAttach(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+    /*@RequestMapping("/saveAttach")
+    public String saveAttach(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
         Json j = new Json();
         PageData pd = this.getPageData();
         pd.put("ISENABLED", "1");
@@ -97,7 +99,7 @@ public class breedValueBook extends BaseAction {
                 int ichoose = typechoose.length;
                 String type = ichoose > 1 ? typechoose[ichoose - 1] : "";
                 Date date = new Date();
-                if ((type.toLowerCase().equals("doc")
+                if ((type.toLowerCase().equals("docx")
                         || type.toLowerCase().equals("pdf")
                         || type.toLowerCase().equals("xlsx")) && fi.getSize() <= uploadFileMaxSize) {
                     SimpleDateFormat smat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -108,18 +110,63 @@ public class breedValueBook extends BaseAction {
                     pd.put("file_name", fileName);
                     pd.put("ISENABLED", "1");
                     pd.put("file_path", realpath);
-                    pd.put("create_person", user);
-                    pd.put("modify_person", user);
+                    pd.put("create_person", user.getId());
+                    pd.put("modify_person", user.getId());
                     sdFileService.insert(pd);
                 } else if(!(type.toLowerCase().equals("doc") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))){
                     Msg = "当前上传只支持doc、pdf、xlsx文件类型！";
                 } else if(fi.getSize() > uploadFileMaxSize){
-                    Msg = "您上传文件大于 "  + uploadFileMaxSize / 1024 / 1024 + "M ！";
+                    Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "M ！";
                 }
             }
         }
         j.setObj(items);
         j.setMsg(Msg);
+        super.writeJson(j, response);
+        return "fileuploaddone";
+    }*/
+
+    @RequestMapping("/newUpload")
+    public @ResponseBody String upload(HttpServletRequest request,@RequestParam(value = "eFiles", required = false) MultipartFile file) {
+        String realpath = request.getSession().getServletContext().getRealPath(filePath);
+        File f=new File(realpath+"/"+file.getOriginalFilename());
+        try {
+            FileUtils.copyInputStreamToFile(file.getInputStream(),f );
+        } catch (IOException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+        return "fileuploaddone";
+    }
+
+    @RequestMapping("/saveTips")
+    public void saveTips(HttpServletRequest request, HttpSession session, HttpServletResponse response) throws Exception{
+        Json j = new Json();
+        PageData pd = this.getPageData();
+        SDUser user  = (SDUser)session.getAttribute(Const.SESSION_USER);
+        String realpath = request.getSession().getServletContext().getRealPath(filePath);
+        pd.put("file_path", realpath);
+        pd.put("create_person", user.getId());
+        pd.put("modify_person", user.getId());
+        int i = sdFileService.insert(pd);
+        List<PageData> lcd = sdFileService.selectByStatus(pd);
+        j.setObj(lcd);
+        j.setMsg("1");
+        super.writeJson(j, response);
+    }
+
+    @RequestMapping("/deleteRecord")
+    public void deleteRecord(HttpServletResponse response, HttpSession session) throws Exception{
+        Json j = new Json();
+        PageData pd = this.getPageData();
+        SDUser user  = (SDUser)session.getAttribute(Const.SESSION_USER);
+        pd.put("user_id", user.getId());
+        int i = sdFileService.updateStatus(pd);
+        PageData pageData = new PageData();
+        pageData.put("ISENABLED", "1");
+        List<PageData> lcd = sdFileService.selectByStatus(pageData);
+        j.setObj(lcd);
+        j.setMsg("1");
         super.writeJson(j, response);
     }
 }

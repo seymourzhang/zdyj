@@ -37,7 +37,7 @@
         var dataColumns = [{
             radio: true,
             title: "选择",
-            width: '5%'
+            width: '5%',
         }, {
             field: "file_name",
             title: "文件名"
@@ -61,12 +61,36 @@
             content: '<%=path%>/breed/editFileUrl'
         });
     }
+    function deleteRecord() {
+        var temps = $("#stockTable").bootstrapTable("getSelections");
+        $.ajax({
+            url: path + "/breed/deleteRecord",
+            data:{"id":temps[0]["id"]},
+            type : "POST",
+            dataType: "json",
+            success:function (result) {
+                var list = result.obj;
+                if (result.msg == "1") {
+                    layer.msg('删除成功！', {
+                        skin: 'layui-layer-lan'
+                        , closeBtn: 0
+                        , shift: 4 //动画类型
+                    },function () {
+                        location.reload();
+                    });
+                }
+            },
+            error:function (result) {
+                console.info("delete failed!");
+            }
+        });
+    }
 </script>
 <body>
 
     <button type="button" onclick="uploadConfirm();"><p>上传</p></button>
 
-    <button type="button" onclick=""><p>删除</p></button>
+    <button type="button" onclick="deleteRecord();"><p>删除</p></button>
 
     <div style="position: relative;top: 50px;overflow-x: auto; overflow-y: auto; height: 76%; width:99%;">
         <table id="stockTable"></table>

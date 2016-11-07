@@ -8,7 +8,7 @@
         </select>
 
         <update id="updateStatus" parameterType="pd">
-            UPDATE s_d_file set ISENABLED = 2 where id = #{id}
+            UPDATE s_d_file set ISENABLED = 2, modify_date = curdate(), modify_time = curdate(), modify_person = #{user_id} where id = #{id}
         </update>
 
         <insert id="insert" parameterType="pd" flushCache="false">
@@ -23,6 +23,6 @@
                       curdate(),
                       #{modify_person},
                       curdate(),
-                      curdate()
+                      curdate())
         </insert>
 </mapper>

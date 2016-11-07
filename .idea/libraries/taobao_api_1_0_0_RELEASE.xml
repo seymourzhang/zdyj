@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="taobao-api-1.0.0.RELEASE">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/taobao-api-1.0.0.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/src/main/webapp/WEB-INF/lib/taobao-source-1.0.0.RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
