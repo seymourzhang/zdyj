@@ -52,28 +52,29 @@
             url: url,
             autoUpload: true,
             done: function (e, data) {
-                $.each(data.files, function (index, file) {
-                    $('<p/>').text(file.name).appendTo('#files');
-                });
-                if(data.result == "fileuploaddone") {
-                }else{
-                    layer.alert(data.result, {
+                var json = eval('(' + data.result + ')');
+                if (json.msg == "1") {
+                    $.each(data.files, function (index, file) {
+                        $("#files > p").remove();
+                        $('<p/>').text(file.name).appendTo('#files');
+                    });
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress .progress-bar').css(
+                            'width',
+                            progress + '%'
+                    );
+                } else {
+                    $("#files > p").remove();
+                    layer.alert(json.msg, {
                         skin: 'layui-layer-lan'
-                        ,closeBtn: 0
-                        ,shift: 4 //动画类型
+                        , closeBtn: 0
+                        , shift: 4 //动画类型
                     });
                     return;
                 }
             },
             fail:function (e, data) {
                 console.log(data);
-            },
-            progressall: function (e, data) {
-                var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#progress .progress-bar').css(
-                        'width',
-                        progress + '%'
-                );
             }
         });
     });

@@ -23,7 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -132,17 +134,37 @@ public class BreedValueBook extends BaseAction {
     @RequestMapping("/newUpload")
     public
     @ResponseBody
-    String upload(HttpServletRequest request, @RequestParam(value = "eFiles", required = false) MultipartFile file) {
+    void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "eFiles", required = false) MultipartFile file) {
+        Json j = new Json();
         String realpath = request.getSession().getServletContext().getRealPath(filePath);
         String fileName = file.getOriginalFilename();
         File f = new File(realpath + "/" + fileName);
+        String Msg = "";
         try {
-            FileUtils.copyInputStreamToFile(file.getInputStream(), f);
+            String[] typechoose = fileName.split("\\.");
+            int ichoose = typechoose.length;
+            String type = ichoose > 1 ? typechoose[ichoose - 1] : "";
+            if ((type.toLowerCase().equals("docx")
+                    || type.toLowerCase().equals("pdf")
+                    || type.toLowerCase().equals("xlsx")) && f.length() <= uploadFileMaxSize) {
+                SimpleDateFormat smat = new SimpleDateFormat("yyyyMMddHHmmss");
+                FileUtils.copyInputStreamToFile(file.getInputStream(), f);
+                Msg = "1";
+                j.setSuccess(true);
+            } else if(!(type.toLowerCase().equals("doc") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))){
+                Msg = "当前上传只支持doc、pdf、xlsx文件类型！";
+                j.setSuccess(false);
+            } else if(f.length() > uploadFileMaxSize){
+                Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "M ！";
+                j.setSuccess(false);
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            return e.getMessage();
+            j.setMsg(e.getMessage());
+            j.setSuccess(false);
         }
-        return "fileuploaddone";
+        j.setMsg(Msg);
+        super.writeJson(j, response);
     }
 
     @RequestMapping("/saveTips")
