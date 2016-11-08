@@ -93,33 +93,41 @@
 
     }
     function reflush(list) {
-//        console.info("1111111111111" + list);
         $("#stockTable").bootstrapTable("load", list);
+    }
+    function changeColor() {
+
     }
 </script>
 <body>
 
-    <button type="button" style="top: 20px;
-                                left: 700px;
+    <button type="button" style="top: 45px;
+                                left: 70%;
                                 position: absolute;
                                 width: 108px;
-                                height: 25px;
+                                height: 35px;
                                 background: inherit;
                                 background-color: rgba(112, 172, 45, 1);
-                                border: none;
-                                border-radius: 0px;
-                                -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.349019607843137) inset;
-                                -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.349019607843137) inset;
-                                box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.349019607843137) inset;
-                                font-family: 'PingFangSC-Regular', 'PingFang SC';
                                 font-weight: 400;
                                 font-style: normal;
                                 color: #FFFFFF;
-                                line-height: 10px;" onclick="uploadConfirm();"><p>上传</p></button>
+                                line-height: 10px;
+                                margin: 0 0 0px;" onclick="uploadConfirm();" ><p>上传</p></button>
 
-    <button type="button" onclick="deleteRecord();"><p>删除</p></button>
+    <button type="button" style="top: 45px;
+                                left: 85%;
+                                position: absolute;
+                                width: 108px;
+                                height: 35px;
+                                background: inherit;
+                                background-color: rgba(112, 172, 45, 1);
+                                font-weight: 400;
+                                font-style: normal;
+                                color: #FFFFFF;
+                                line-height: 10px;
+                                margin: 0 0 0px;" onclick="deleteRecord();"><p>删除</p></button>
 
-    <div style="position: relative;top: 50px;overflow-x: auto; overflow-y: auto; height: 76%; width:99%;">
+    <div style="position: relative;top: 150px;overflow-x: auto; overflow-y: auto; height: 76%; width:99%;">
         <table id="stockTable"></table>
     </div>
 </body>
