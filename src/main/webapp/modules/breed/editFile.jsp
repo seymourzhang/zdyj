@@ -34,6 +34,15 @@
     <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
     <script src="<%=path%>/framework/js/bootstrap.min.js"></script>
 
+    <script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
+    <link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
+    <script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>
+
+    <link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">
+    <script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
+    <script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
+    <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
+
 </head>
 <script>
     $(function () {
@@ -74,17 +83,26 @@
         $.ajax({
             url:path + "/breed/saveTips",
             data:{"bak":tips,"file_name":fileName, "ISENABLED":"1"},
+            dataType:"json",
             success:function (result) {
                 var list = result.obj;
-//                parent.$("#stockTable").bootstrapTable("load", list);
+                for (var i=0; i<list.length; ++i){
+                    var fileName = list[i]["file_name"];
+                    fileName = fileName.replace(/\\/g, "");
+                    list[i]["file_name"] = fileName;
+                }
                 layer.alert('上传成功', {
                     skin: 'layui-layer-lan'
                     , closeBtn: 0
                     , shift: 4 //动画类型
                 },function () {
+//                    parent.parent.document.getElementById("stockTable").bootstrapTable("load", list);
+                    parent.reflush(list);
                     parent.layer.closeAll();
-                    parent.location.reload();
                 });
+            },
+            error:function (result) {
+                console.info("保存失败！");
             }
         })
     }

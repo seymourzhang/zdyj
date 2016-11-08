@@ -19,7 +19,7 @@
 </head>
 <body  id="wodder">
 <div style="background-color: #fff;" id="wodder2">
- 欢迎访问中粮猪场监控系统
+ 欢迎访问正大鸡场管理系统
 </div>
 <!-- END CONTAINER -->
 	<script>

@@ -5,7 +5,7 @@
 	<div class="navbar-inner" style="height: 61px;z-index: 3;">
 		<div class="container-fluid">
 			<a class="brand" href="#" style="width: 400px;"> <img src="<%=path%>/framework/image/logo.png" alt="logo" style="padding-left: 13px;float: left;height: 50px;width: 50px;margin-top: -5px;" />
-			<div style="font-size: 24px;color: #FFFFFF;padding-left: 8px;padding-top: 10px;float: left;font-weight:bold;">农汇猪场物联网</div>
+			<div style="font-size: 24px;color: #FFFFFF;padding-left: 8px;padding-top: 10px;float: left;font-weight:bold;">正大鸡场管理系统</div>
 				<!-- <span style="padding-left: 3px;float: left;padding-top: 5px;color: #FFFFFF;font-size: 14px;font-weight:lighter;">®</span> -->
 			<!-- <div style="font-size: 22px;color: #FFFFFF;padding-left: 5px;padding-top: 11px;float: left;font-weight:lighter;">物联网</div> --></a> <a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse"></a>
 			<ul class="nav pull-right">

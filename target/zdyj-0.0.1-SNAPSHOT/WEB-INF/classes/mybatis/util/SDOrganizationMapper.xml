@@ -178,5 +178,16 @@
 		order by d.id limit 1
 	</select>
 
+	<select id="getHouseType" parameterType="pd" resultType="pd" useCache="false">
+		SELECT
+			id house_id
+			,house_code
+			,house_name
+			,house_type
+			,farm_id
+		FROM s_d_house
+		WHERE farm_id = #{farmId}
+			AND id = #{houseId}
+	</select>
 
 </mapper>

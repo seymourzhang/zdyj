@@ -115,4 +115,8 @@ function initTableRow(tableName, dataRow){
     if(data.length==0){
         addRow(tableName, dataRow);
     }
-}
+};
+
+function loadTableData(tableName, jsonData){
+    $("#" + tableName + "Table").bootstrapTable("load",jsonData);
+};

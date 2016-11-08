@@ -9,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-
-
-
+import com.mtc.zljk.user.entity.SDUser;
+import com.mtc.zljk.util.common.Const;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -139,6 +141,15 @@ public class BaseAction {
 		}
 		return "";
 	}
-	
-	
+
+	/**
+	 * 获取用户ID
+	 * @return
+	 */
+	protected int getUserId(){
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
+		return user.getId();
+	}
 }

@@ -66,17 +66,23 @@
         $.ajax({
             url: path + "/breed/deleteRecord",
             data:{"id":temps[0]["id"]},
-            type : "POST",
             dataType: "json",
+            type: "post",
+            async:false,
             success:function (result) {
                 var list = result.obj;
+                for (var i=0; i<list.length; ++i){
+                    var fileName = list[i]["file_name"];
+                    fileName = fileName.replace(/\\/g, "");
+                    list[i]["file_name"] = fileName;
+                }
                 if (result.msg == "1") {
                     layer.msg('删除成功！', {
                         skin: 'layui-layer-lan'
                         , closeBtn: 0
                         , shift: 4 //动画类型
                     },function () {
-                        location.reload();
+                        $("#stockTable").bootstrapTable("load", list);
                     });
                 }
             },
@@ -84,11 +90,32 @@
                 console.info("delete failed!");
             }
         });
+
+    }
+    function reflush(list) {
+//        console.info("1111111111111" + list);
+        $("#stockTable").bootstrapTable("load", list);
     }
 </script>
 <body>
 
-    <button type="button" onclick="uploadConfirm();"><p>上传</p></button>
+    <button type="button" style="top: 20px;
+                                left: 700px;
+                                position: absolute;
+                                width: 108px;
+                                height: 25px;
+                                background: inherit;
+                                background-color: rgba(112, 172, 45, 1);
+                                border: none;
+                                border-radius: 0px;
+                                -moz-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.349019607843137) inset;
+                                -webkit-box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.349019607843137) inset;
+                                box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.349019607843137) inset;
+                                font-family: 'PingFangSC-Regular', 'PingFang SC';
+                                font-weight: 400;
+                                font-style: normal;
+                                color: #FFFFFF;
+                                line-height: 10px;" onclick="uploadConfirm();"><p>上传</p></button>
 
     <button type="button" onclick="deleteRecord();"><p>删除</p></button>
 

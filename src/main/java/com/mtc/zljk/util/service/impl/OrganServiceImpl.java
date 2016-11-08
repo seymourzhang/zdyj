@@ -44,4 +44,8 @@ public class OrganServiceImpl implements OrganService {
         return (List<PageData>) dao.findForList("SDOrganizationMapper.getFarmListByUserId", pd);
     };
 
+    public List<PageData> getHouseType(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDOrganizationMapper.getHouseType",pd);
+	}
+
 }

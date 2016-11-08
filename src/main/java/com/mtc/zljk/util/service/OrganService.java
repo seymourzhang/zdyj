@@ -25,7 +25,7 @@ public interface OrganService {
      * @throws Exception
      */
     List<PageData> getFarmListByUserId(PageData pd) throws Exception;
-	public List<PageData> getOrgListById(PageData pd) throws Exception;
+	List<PageData> getOrgListById(PageData pd) throws Exception;
 
-
+	List<PageData> getHouseType(PageData pd) throws Exception;
 }

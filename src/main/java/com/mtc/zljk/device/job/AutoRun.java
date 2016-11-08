@@ -27,12 +27,12 @@ public class AutoRun {
 //        rotemService.writeData(rotemService.getData());
 //        System.out.println("更新Rotem数据完毕！");
 //
-        System.out.println("更新大牧人数据至数据库...");
-        dmrService.start();
-        System.out.println("更新大牧人数据完毕！");
-//
-        System.out.println("更新引通数据至数据库...");
-        yingtongService.start();
-        System.out.println("更新引通数据完毕！");
+//        System.out.println("更新大牧人数据至数据库...");
+//        dmrService.start();
+//        System.out.println("更新大牧人数据完毕！");
+////
+//        System.out.println("更新引通数据至数据库...");
+//        yingtongService.start();
+//        System.out.println("更新引通数据完毕！");
     }
 }

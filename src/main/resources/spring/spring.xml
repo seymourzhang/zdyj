@@ -79,7 +79,7 @@
 
 	<!-- 事物处理 -->
 	<aop:config>
-		<aop:pointcut id="pc" expression="execution(* com.mtc.zljk.*.service..*Impl.*(..))" />
+		<aop:pointcut id="pc" expression="execution(* com.mtc.zljk.*.service..*impl.*(..))" />
 		<aop:advisor pointcut-ref="pc" advice-ref="txAdvice" />
 	</aop:config>
 

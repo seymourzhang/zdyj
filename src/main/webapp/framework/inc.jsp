@@ -5,7 +5,7 @@
 	var menuId="${pd.id}";
 	var menuPid="${pd.pid}";
 </script>
-<title>智慧监控系统</title>
+<title>正大鸡场管理系统</title>
 <meta name="description" content="overview & stats" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- basic styles -->

@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BatchManageMapper">
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+
+    <!-- 查询可调数量 -->
+    <select id="selectBatchDataCount" parameterType="pd" resultType="pd" useCache="false">
+        SELECT
+            male_count
+            ,female_count
+        FROM s_b_batch_curr
+        WHERE farm_id = #{farm_id}
+                AND house_code = #{house_code}
+                AND status = 1
+                AND is_enable = 1
+    </select>
+
+    <!-- 查询创建批次数据 -->
+    <select id="selectCreateBatchData" parameterType="pd" resultType="pd" useCache="false">
+        SELECT sbbc.batch_id batchId
+        ,sbbc.batch_no batchNo
+        ,org.id houseId
+        ,org.name_cn house
+        ,house.house_type
+        ,org.farm_id farmId
+        ,#{farm_name} farmName
+        ,date_format(sbbc.operation_date, '%Y-%m-%d') operation_date
+        ,sbbc.grow_age
+        ,sbbc.male_weight
+        ,sbbc.male_count
+        ,sbbc.female_weight
+        ,sbbc.female_count
+        ,sbbc.weed_out_total_weight
+        ,sbbc.weed_out_total_count
+        ,sbbc.weed_out_avg_price
+        ,sbbc.breed_days
+        ,sbbc.market_date
+        ,sbbc.variety_id
+        ,sbbc.variety
+        ,sbbc.corporation_id
+        ,sbbc.corporation
+        ,sbbc.bak
+        ,sbbc.create_person
+        ,sbbc.create_time
+        FROM (SELECT id
+        , name_cn
+        , parent_id farm_id
+        FROM s_d_organization
+        WHERE parent_id= #{farm_id}
+        <if test="house_code != null and id != ''">
+            and id=#{house_code}
+        </if>
+        ) org
+        LEFT JOIN (SELECT a.*,b.batch_no FROM s_b_batch_change a
+        JOIN (SELECT * FROM s_b_batch_curr
+        WHERE status = 1 AND is_enable = 1) b
+        ON b.batch_id = a.batch_id
+        WHERE a.operation_type = 2
+        ) sbbc
+        ON org.farm_id = sbbc.farm_id
+        AND org.id = sbbc.house_code
+        LEFT JOIN s_d_house house
+        ON org.id = house.id
+    </select>
+    <!-- 查询重复批次号 -->
+    <select id="selectBatchId" parameterType="pd" resultType="pd" useCache="false">
+        SELECT COUNT(1) num FROM s_b_batch_change WHERE batch_id = #{batch_id}
+    </select>
+    <!-- 保存创建批次数据到当前表 -->
+    <insert id="insertCreateBatchDataToCurr" parameterType="pd"  flushCache="false">
+        INSERT INTO s_b_batch_curr(batch_id
+                    , batch_no
+                    , house_code
+                    , house_name
+                    , farm_id
+                    , operation_date
+                    , grow_age
+                    , male_weight
+                    , male_count
+                    , female_weight
+                    , female_count
+                    , weed_out_total_count
+                    , weed_out_total_weight
+                    , weed_out_avg_price
+                    , breed_days
+                    , market_date
+                    , variety_id
+                    , variety
+                    , corporation_id
+                    , corporation
+                    , bak
+                    , is_enable
+                    , status
+                    , create_person
+                    , create_date
+                    , create_time
+                    , modify_person
+                    , modify_date
+                    , modify_time)
+            VALUES(#{batch_id}
+                    , #{batch_no}
+                    , #{house_code}
+                    , #{house_name}
+                    , #{farm_id}
+                    , date_format(#{operation_date}, '%Y-%m-%d')
+                    , #{grow_age}
+                    , null
+                    , #{male_count}
+                    , null
+                    , #{female_count}
+                    , null
+                    , null
+                    , null
+                    , #{breed_days}
+                    , DATE_ADD(#{operation_date}, INTERVAL #{breed_days} DAY)
+                    , #{variety_id}
+                    , #{variety}
+                    , #{corporation_id}
+                    , #{corporation}
+                    , #{bak}
+                    , 1
+                    , 1
+                    , #{user_id}
+                    , CURDATE()
+                    , CURTIME()
+                    , null
+                    , CURDATE()
+                    , null
+            )
+    </insert>
+    <!-- 保存创建批次数据到历史表 -->
+    <insert id="insertCreateBatchDataToHis" parameterType="pd"  flushCache="false">
+          INSERT INTO s_b_batch_change(service_id
+                    , batch_id
+                    , house_code
+                    , house_name
+                    , farm_id
+                    , operation_date
+                    , grow_age
+                    , male_weight
+                    , male_count
+                    , female_weight
+                    , female_count
+                    , weed_out_total_count
+                    , weed_out_total_weight
+                    , weed_out_avg_price
+                    , breed_days
+                    , market_date
+                    , variety_id
+                    , variety
+                    , corporation_id
+                    , corporation
+                    , bak
+                    , operation_type
+                    , create_person
+                    , create_date
+                    , create_time
+                    , modify_person
+                    , modify_date
+                    , modify_time)
+            VALUES(#{service_id}
+                    , #{batch_id}
+                    , #{house_code}
+                    , #{house_name}
+                    , #{farm_id}
+                    , date_format(#{operation_date}, '%Y-%m-%d')
+                    , #{grow_age}
+                    , null
+                    , #{male_count}
+                    , null
+                    , #{female_count}
+                    , null
+                    , null
+                    , null
+                    , #{breed_days}
+                    , DATE_ADD(#{operation_date}, INTERVAL #{breed_days} DAY)
+                    , #{variety_id}
+                    , #{variety}
+                    , #{corporation_id}
+                    , #{corporation}
+                    , #{bak}
+                    , #{operation_type}
+                    , #{user_id}
+                    , CURDATE()
+                    , CURTIME()
+                    , null
+                    , CURDATE()
+                    , null
+            )
+    </insert>
+    <!-- 初始化批次日报数据 -->
+    <select id="exec_SP_INIT_DAILY_REPORT" parameterType="pd" statementType="CALLABLE">
+        {
+          call SP_INIT_DAILY_REPORT (#{batch_id,mode=IN,jdbcType=VARCHAR})
+        }
+    </select>
+    <!-- 删除过期批次数据 -->
+    <delete id="deleteCreateBatchDataFromCurr" parameterType="pd"  flushCache="false">
+      DELETE FROM s_b_batch_curr WHERE farm_id = #{farm_id} AND house_code = #{house_code} AND status = 0 AND is_enable = 1
+    </delete>
+
+    <!-- 查询修改批次数据 -->
+    <select id="selectEditBatchData" parameterType="pd" resultType="pd" useCache="false">
+        SELECT
+            a.service_id
+            ,org.id orgId
+            ,org.farm_id farmId
+            ,#{farm_name} farmName
+            ,a.operation_date
+            ,COALESCE(a.houseId,org.id) houseId
+            ,COALESCE(a.house,org.name_cn) house
+            ,a.houseIdTarget
+            ,a.houseTarget
+            ,a.female_count
+            ,a.male_count
+            ,a.female_count_target
+            ,a.male_count_target
+            ,a.bak
+        FROM (SELECT id
+                        , name_cn
+                        , parent_id farm_id
+                FROM s_d_organization
+                WHERE parent_id= #{farm_id}) org
+                LEFT JOIN (SELECT farm_id
+                                    ,service_id
+                                    ,date_format(operation_date, '%Y-%m-%d') operation_date
+                                    ,MAX(CASE WHEN COALESCE(female_count,0) &lt;= 0 THEN house_code ELSE '' END) houseId
+                                    ,MAX(CASE WHEN COALESCE(female_count,0) &lt;= 0 THEN house_name ELSE '' END) house
+                                    ,MAX(CASE WHEN female_count &lt;= 0 THEN '' ELSE house_code END) houseIdTarget
+                                    ,MAX(CASE WHEN female_count &lt;= 0 THEN '' ELSE house_name END) houseTarget
+                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN female_count ELSE 0 END) female_count
+                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN male_count ELSE 0 END) male_count
+                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN 0 ELSE female_count END) female_count_target
+                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN 0 ELSE male_count END) male_count_target
+                                    ,MAX(bak) bak
+                            FROM s_b_batch_change
+                            WHERE operation_type = 3
+                                    AND EXISTS (SELECT 1 FROM s_b_batch_curr b
+                                                    WHERE b.farm_id = #{farm_id} AND b.batch_id=batch_id AND b.status = 1 AND b.is_enable = 1)
+                            GROUP BY service_id, farm_id, date_format(operation_date, '%Y-%m-%d')
+                ) a
+        ON org.farm_id = a.farm_id
+        AND org.id = a.houseId
+        ORDER BY a.operation_date DESC
+    </select>
+    <!-- 保存修改批次数据到历史表 -->
+    <insert id="insertEditBatchDataToHis" parameterType="pd"  flushCache="false">
+        INSERT INTO s_b_batch_change(service_id
+                                        , batch_id
+                                        , house_code
+                                        , house_name
+                                        , farm_id
+                                        , operation_date
+                                        , grow_age
+                                        , male_weight
+                                        , male_count
+                                        , female_weight
+                                        , female_count
+                                        , weed_out_total_count
+                                        , weed_out_total_weight
+                                        , weed_out_avg_price
+                                        , breed_days
+                                        , market_date
+                                        , variety_id
+                                        , variety
+                                        , corporation_id
+                                        , corporation
+                                        , bak
+                                        , operation_type
+                                        , create_person
+                                        , create_date
+                                        , create_time
+                                        , modify_date)
+            VALUES(#{service_id}
+                    , #{batchId}
+                    , #{house_code}
+                    , #{house_name}
+                    , #{farm_id}
+                    , date_format(#{operation_date}, '%Y-%m-%d')
+                    , 0
+                    , 0
+                    , #{male_count}*-1
+                    , 0
+                    , #{female_count}*-1
+                    , 0
+                    , 0
+                    , 0
+                    , 0
+                    , #{market_date}
+                    , #{variety_id}
+                    , #{variety}
+                    , #{corporation_id}
+                    , #{corporation}
+                    , #{bak}
+                    , 3
+                    , #{user_id}
+                    , CURDATE()
+                    , CURTIME()
+                    , CURDATE()
+            ),(#{service_id}
+                    , #{batchId}
+                    , #{house_code_target}
+                    , #{house_name_target}
+                    , #{farm_id}
+                    , date_format(#{operation_date}, '%Y-%m-%d')
+                    , 0
+                    , 0
+                    , #{male_count}
+                    , 0
+                    , #{female_count}
+                    , 0
+                    , 0
+                    , 0
+                    , 0
+                    , #{market_date}
+                    , #{variety_id}
+                    , #{variety}
+                    , #{corporation_id}
+                    , #{corporation}
+                    , #{bak}
+                    , 3
+                    , #{user_id}
+                    , CURDATE()
+                    , CURTIME()
+                    , CURDATE()
+              )
+
+    </insert>
+    <!-- 保存修改批次数据到当前表 -->
+    <update id="updateEditBatchDataToCurr" parameterType="pd"  flushCache="false">
+        UPDATE s_b_batch_curr sbbc SET
+            sbbc.male_count = (CASE sbbc.house_code WHEN #{house_code_target} THEN sbbc.male_count + #{male_count} WHEN #{house_code} THEN sbbc.male_count - #{male_count} ELSE sbbc.male_count END)
+            ,sbbc.female_count =  (CASE sbbc.house_code WHEN #{house_code_target} THEN sbbc.female_count+ #{female_count} WHEN #{house_code} THEN sbbc.female_count - #{female_count} ELSE sbbc.female_count END)
+            ,sbbc.modify_person = #{user_id}
+            ,sbbc.modify_date = CURDATE()
+            ,sbbc.modify_time = CURTIME()
+        WHERE sbbc.farm_id = #{farm_id}
+                AND sbbc.house_code IN (#{house_code}, #{house_code_target})
+                AND sbbc.status = 1
+                AND sbbc.is_enable = 1
+    </update>
+
+    <!-- 查询出栏批次数据 -->
+    <select id="selectOverBatchData" parameterType="pd" resultType="pd" useCache="false">
+        SELECT sbbc.batch_id batchId
+                ,(SELECT DISTINCT batch_no FROM s_b_batch_curr
+                    WHERE farm_id = org.farm_id
+                            AND house_code = org.id
+                            AND status = 1 AND is_enable = 1) batchNo
+                ,org.id houseId
+                ,org.name_cn house
+                ,house.house_type
+                ,org.farm_id farmId
+                ,#{farm_name} farmName
+                ,date_format(sbbc.operation_date, '%Y-%m-%d') operation_date
+                ,sbbc.grow_age
+                ,sbbc.male_weight
+                ,sbbc.male_count
+                ,sbbc.female_weight
+                ,sbbc.female_count
+                ,sbbc.weed_out_total_weight
+                ,sbbc.weed_out_total_count
+                ,sbbc.weed_out_avg_price
+                ,sbbc.breed_days
+                ,sbbc.market_date
+                ,sbbc.variety_id
+                ,sbbc.variety
+                ,sbbc.corporation_id
+                ,sbbc.corporation
+                ,sbbc.bak
+                ,sbbc.create_person
+                ,sbbc.create_time
+        FROM (SELECT id
+                    , name_cn
+                    , parent_id farm_id
+                FROM s_d_organization
+                WHERE parent_id= #{farm_id}
+                    <if test="house_code != null and id != ''">
+                        and id=#{house_code}
+                    </if>
+                ) org
+        LEFT JOIN (SELECT * FROM s_b_batch_curr
+                        WHERE farm_id = #{farm_id}
+                            AND status = 0 AND is_enable = 1
+                    ) sbbc
+        ON org.farm_id = sbbc.farm_id
+        AND org.id = sbbc.house_code
+        LEFT JOIN s_d_house house
+        ON org.id = house.id
+    </select>
+    <!-- 保存出栏批次数据到历史表 -->
+    <insert id="insertOverBatchDataToHis" parameterType="pd" flushCache="false">
+          INSERT INTO s_b_batch_change(service_id
+                                        , batch_id
+                                        , house_code
+                                        , house_name
+                                        , farm_id
+                                        , operation_date
+                                        , grow_age
+                                        , male_weight
+                                        , male_count
+                                        , female_weight
+                                        , female_count
+                                        , weed_out_total_count
+                                        , weed_out_total_weight
+                                        , weed_out_avg_price
+                                        , breed_days
+                                        , market_date
+                                        , variety_id
+                                        , variety
+                                        , corporation_id
+                                        , corporation
+                                        , bak
+                                        , operation_type
+                                        , create_person
+                                        , create_date
+                                        , create_time
+                                        , modify_date)
+            VALUES(#{service_id}
+                    , #{batch_id}
+                    , #{house_code}
+                    , #{house_name}
+                    , #{farm_id}
+                    , date_format(#{operation_date}, '%Y-%m-%d')
+                    , 0
+                    , #{male_weight}*-1
+                    , #{male_count}*-1
+                    , #{female_weight}*-1
+                    , #{female_count}*-1
+                    , #{weed_out_total_count}*-1
+                    , #{weed_out_total_weight}*-1
+                    , #{weed_out_avg_price}
+                    , 0
+                    , #{market_date}
+                    , #{variety_id}
+                    , #{variety}
+                    , #{corporation_id}
+                    , #{corporation}
+                    , #{bak}
+                    , 1
+                    , #{user_id}
+                    , CURDATE()
+                    , CURTIME()
+                    , CURDATE()
+            )
+    </insert>
+    <!-- 保存出栏批次数据到当前表 -->
+    <update id="updateOverBatchDataToCurr" parameterType="pd"  flushCache="false">
+        UPDATE s_b_batch_curr sbbc SET
+                sbbc.male_weight = #{male_weight}
+                ,sbbc.female_weight = #{female_weight}
+                ,sbbc.weed_out_total_weight = #{weed_out_total_weight}
+                ,sbbc.weed_out_total_count = #{weed_out_total_count}
+                ,sbbc.weed_out_avg_price = #{weed_out_avg_price}
+                ,sbbc.modify_person = #{user_id}
+                ,sbbc.modify_date = CURDATE()
+                ,sbbc.modify_time = CURTIME()
+                ,sbbc.status = 0
+        WHERE sbbc.batch_id = #{batch_id}
+                AND sbbc.status = 1
+                AND sbbc.is_enable = 1
+    </update>
+
+</mapper>

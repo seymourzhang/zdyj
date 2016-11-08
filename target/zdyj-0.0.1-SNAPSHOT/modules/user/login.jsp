@@ -18,7 +18,7 @@
 		<meta name="description" content="overview & stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<title>智慧监控系统</title>
+		<title>正大鸡场管理系统</title>
 
 		<!-- ace styles -->
 		<script src="<%=path %>/framework/jquery/jquery-1.11.2.min.js" type="text/javascript"></script>
@@ -57,7 +57,7 @@
 	<tr>
 		<td style="background-color: #417CC5;height:85px;">
 			<%-- <div style='float: left;width:170px;height:40px;background-image: url("<%=path%>/modules/user/image/logo.png");background-repeat: no-repeat;' ></div> --%>
-			<div style='float: left;margin-left:20px;font-size:24;color:white;'>中粮肉食物联网系统 V2016</div>
+			<div style='float: left;margin-left:20px;font-size:24;color:white;'>正大鸡场管理系统 V2017</div>
 
 		</td>
 	</tr>
@@ -67,7 +67,7 @@
 				 <form class="bd" id="loginForm"  method="POST" >
 					<table class="win" width="290" cellspacing="0" style="margin:15px auto;" border="0">
 						<tr>
-							<td colspan="2" style="height:60px;border-bottom: 1px solid #c5c5c5;color: #417CC5;font-weight: bold;font-size:35px;font-family:黑体;">中粮肉食物联网</td>
+							<td colspan="2" style="height:60px;border-bottom: 1px solid #c5c5c5;color: #417CC5;font-weight: bold;font-size:35px;font-family:黑体;">正大鸡场管理系统</td>
 						</tr>
 						<tr>
 							<td style="height:50px;width:50px;border-left: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;background:#f2f2f3">
@@ -111,7 +111,7 @@
 		<td align="center" style="height:35px;background: #417CC5;">
 			<div id="fontwrr" >
 				<font color="white" size="2">
-					版权所有(上海农汇信息科技有限公司) 沪ICP备13027505 Copyright©2006-2016 All Rights Reserved
+					版权所有(上海农汇信息科技有限公司) 沪ICP备13027505 Copyright©2006-2017 All Rights Reserved
 				</font>
 			</div>
 		</td>
