@@ -777,7 +777,7 @@
       <workItem from="1478072158076" duration="7414000" />
       <workItem from="1478139699814" duration="44589000" />
       <workItem from="1478482967261" duration="54748000" />
-      <workItem from="1478618062682" duration="4418000" />
+      <workItem from="1478618062682" duration="4531000" />
     </task>
     <task id="LOCAL-00001" summary="提醒任务模块！">
       <created>1477641970405</created>
@@ -790,7 +790,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="306612000" />
+    <option name="totallyTimeSpent" value="306725000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -803,7 +803,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />

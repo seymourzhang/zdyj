@@ -2,3 +2,7 @@
 .svn
 target/*
 target
+target/../*
+*.class
+.idea/*
+.idea
