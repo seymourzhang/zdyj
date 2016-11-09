@@ -68,6 +68,21 @@ function table(tableName,dataColumns,dataJosn) {
                 //
                 // });
             },
+            onClickCell: function (field, value, row, $element) {
+                window.location.href = path + "/breed/download?fileName=" + value;
+                /*if (tableName == "breed" && field == "file_name"){
+                    alert(path + "/breed/download");
+                    $.ajax({
+                        type: "get",
+                        url: path + "/breed/download",
+                        data: {"fileName": value, "id": row.id},
+                        success:function (result) {
+                            console.info("result" );
+                            return result;
+                        }
+                    })
+                }*/
+            }
         });
     };
 
@@ -120,3 +135,4 @@ function initTableRow(tableName, dataRow){
 function loadTableData(tableName, jsonData){
     $("#" + tableName + "Table").bootstrapTable("load",jsonData);
 };
+
