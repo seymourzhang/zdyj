@@ -98,10 +98,10 @@ public class BreedValueBook extends BaseAction {
                 FileUtils.copyInputStreamToFile(file.getInputStream(), f);
                 Msg = "1";
                 j.setSuccess(true);
-            } else if(!(type.toLowerCase().equals("doc") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))){
+            } else if (!(type.toLowerCase().equals("doc") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))) {
                 Msg = "当前上传只支持doc、pdf、xlsx文件类型！";
                 j.setSuccess(false);
-            } else if(file.getSize() > uploadFileMaxSize){
+            } else if (file.getSize() > uploadFileMaxSize) {
                 Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "M ！";
                 j.setSuccess(false);
             }
@@ -136,7 +136,7 @@ public class BreedValueBook extends BaseAction {
             j.setObj(lcd);
             j.setMsg("1");
             j.setSuccess(true);
-        }else{
+        } else {
             j.setMsg("文件名为空！");
             j.setSuccess(false);
         }
@@ -164,26 +164,35 @@ public class BreedValueBook extends BaseAction {
         }
         super.writeJson(j, response);
     }
+
     @RequestMapping("/download")
-    public void download(HttpServletResponse response, HttpServletRequest request, HttpSession session) throws Exception{
+    public void download(HttpServletResponse response, HttpServletRequest request, HttpSession session) throws Exception {
         String path = request.getSession().getServletContext().getRealPath("/");
         String fileName = URLDecoder.decode(request.getParameter("fileName"), "UTF-8");
-        String upFilePath =  path + filePath + fileName;
+        String upFilePath = path + filePath + fileName;
         String downFilePath = path + downloadPath + fileName;
+
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
+
         OutputStream fos = null;
         InputStream fis = null;
         InputStream down = null;
+
         File uploadFile = new File(upFilePath);
         File downloadFile = new File(downFilePath);
         fis = new FileInputStream(uploadFile);
         bis = new BufferedInputStream(fis);
+
         response.reset();
+        String uploadFileName = URLEncoder.encode(uploadFile.getName(), "UTF-8");
+        for (String s : needReplaceChar) {
+            uploadFileName = StringUtils.replace(uploadFileName, s, "\\" + s);
+        }
         fos = response.getOutputStream();
         bos = new BufferedOutputStream(fos);
         response.setContentType("text/html;charset=UTF-8");
-        response.setHeader("Content-disposition","attachment; filename="+ URLEncoder.encode(uploadFile.getName(), "UTF-8"));
+        response.setHeader("Content-disposition", "attachment; filename=" + uploadFileName);
         FileCopyUtils.copy(fis, bos);//spring工具类直接流拷贝
         FileUtils.copyInputStreamToFile(fis, downloadFile);
         bos.flush();

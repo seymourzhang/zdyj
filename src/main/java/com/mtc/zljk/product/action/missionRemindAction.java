@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/product")
-public class MissionRemindAction extends BaseAction{
+public class MissionRemindAction extends BaseAction {
     @Autowired
     private OrganService organService;
 
@@ -41,11 +41,11 @@ public class MissionRemindAction extends BaseAction{
     private FarmTaskService farmTaskService;
 
     @RequestMapping("/missionRemindView")
-    public ModelAndView missionRemindView(Page page, HttpSession session) throws Exception{
+    public ModelAndView missionRemindView(Page page, HttpSession session) throws Exception {
         ModelAndView mav = this.getModelAndView();
         PageData pd = new PageData();
         pd = this.getPageData();
-        SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+        SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
         pd.put("user_id", user.getId());
         List<PageData> lpd = organService.selectOrgByUser(pd);
         List<PageData> tasks = getTasks(pd);
@@ -63,16 +63,16 @@ public class MissionRemindAction extends BaseAction{
     }
 
     @RequestMapping("/saveAdd")
-    public void saveAdd(HttpServletResponse response, HttpSession session) throws Exception{
+    public void saveAdd(HttpServletResponse response, HttpSession session) throws Exception {
         Json j = new Json();
         PageData pd = this.getPageData();
-        SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+        SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
         PageData pageData = new PageData();
         pageData.put("user_id", user.getId());
         List<PageData> lpd = organService.getFarmListByUserId(pageData);
         pageData.put("task_id", pd.get("taskCode"));
         List<PageData> code = getTaskCodeName(pageData);
-        for(int i = 0; i < lpd.size(); ++i){
+        for (int i = 0; i < lpd.size(); ++i) {
             PageData temp = new PageData();
             temp.put("farm_id", lpd.get(i).get("org_id"));
             temp.put("farm_name", lpd.get(i).get("org_name"));
@@ -99,17 +99,17 @@ public class MissionRemindAction extends BaseAction{
     }
 
     @RequestMapping("/deleteTask")
-    public void deleteTask(HttpSession session, HttpServletResponse response) throws Exception{
+    public void deleteTask(HttpSession session, HttpServletResponse response) throws Exception {
         Json j = new Json();
         PageData pd = this.getPageData();
-        SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+        SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
         int num = farmTaskService.updateTaskStatus(pd);
         pd.put("user_id", user.getId());
         List<PageData> tasks = getTasks(pd);
         j.setObj(tasks);
         if (num <= 0) {
             j.setMsg("此次更新失败！");
-        }else{
+        } else {
             j.setMsg("1");
         }
         super.writeJson(j, response);
@@ -126,19 +126,19 @@ public class MissionRemindAction extends BaseAction{
     }
 
 
-    public List<PageData> getTaskTypeName() throws Exception{
+    public List<PageData> getTaskTypeName() throws Exception {
         return taskService.getTaskTypeName();
     }
 
-    public List<PageData> getTaskCodeName(PageData pd) throws Exception{
+    public List<PageData> getTaskCodeName(PageData pd) throws Exception {
         return taskService.getTaskCodeName(pd);
     }
 
-    public List<PageData> getDateType() throws Exception{
+    public List<PageData> getDateType() throws Exception {
         return taskService.getDateTypeName();
     }
 
-    public List<PageData> getTasks(PageData pd) throws Exception{
+    public List<PageData> getTasks(PageData pd) throws Exception {
         List<PageData> lpd = organService.getFarmListByUserId(pd);
         List temp = new ArrayList();
         for (PageData pageData : lpd) {

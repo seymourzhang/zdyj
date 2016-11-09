@@ -63,7 +63,7 @@
         });
     }
     function deleteRecord() {
-        var temps = $("#stockTable").bootstrapTable("getSelections");
+        var temps = $("#breedTable").bootstrapTable("getSelections");
         $.ajax({
             url: path + "/breed/deleteRecord",
             data:{"id":temps[0]["id"]},
@@ -83,7 +83,7 @@
                         , closeBtn: 0
                         , shift: 4 //动画类型
                     },function () {
-                        $("#stockTable").bootstrapTable("load", list);
+                        $("#breedTable").bootstrapTable("load", list);
                     });
                 }
             },
@@ -94,7 +94,7 @@
 
     }
     function reflush(list) {
-        $("#stockTable").bootstrapTable("load", list);
+        $("#breedTable").bootstrapTable("load", list);
     }
 </script>
 <body>
