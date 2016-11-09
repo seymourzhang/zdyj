@@ -65,6 +65,10 @@
                     );
                 } else {
                     $("#files > p").remove();
+                    $('#progress .progress-bar').css(
+                            'width',
+                            0 + '%'
+                    );
                     layer.alert(json.msg, {
                         skin: 'layui-layer-lan'
                         , closeBtn: 0

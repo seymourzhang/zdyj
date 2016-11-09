@@ -11,7 +11,6 @@ import com.mtc.zljk.util.common.PageData;
 import com.mtc.zljk.util.service.OrganService;
 import com.mtc.zljk.monitor.action.MonitorAction;
 
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

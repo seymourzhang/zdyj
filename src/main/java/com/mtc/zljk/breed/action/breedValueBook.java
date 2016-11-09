@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +45,8 @@ public class BreedValueBook extends BaseAction {
     private int uploadFileMaxSize = 10 * 1024 * 1024; //10M
 
     private String filePath = "/modules/file/upload/";
+
+    private String downloadPath = "/modules/file/download/";
 
     private String[] needReplaceChar = {"[", "]", "{", "}"};
 
@@ -74,63 +78,6 @@ public class BreedValueBook extends BaseAction {
         return mav;
     }
 
-    /*@RequestMapping("/saveAttach")
-    public String saveAttach(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
-        Json j = new Json();
-        PageData pd = this.getPageData();
-        pd.put("ISENABLED", "1");
-        SDUser user  = (SDUser)session.getAttribute(Const.SESSION_USER);
-        List<PageData> lol = sdFileService.selectByStatus(pd);
-        String Msg = "";
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        // Set factory constraints
-        factory.setSizeThreshold(4096); // 设置缓冲区大小，这里是4kb
-//        factory.setRepository(eFiles);// 设置缓冲区目录
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        // Set overall request size constraint
-        upload.setSizeMax(uploadFileMaxSize); // 设置最大文件尺寸，这里是10M
-        String realpath = request.getSession().getServletContext().getRealPath(filePath);
-        List<FileItem> items = upload.parseRequest(request);// 得到所有的文件
-        Iterator<FileItem> i = items.iterator();
-        while (i.hasNext()) {
-            FileItem fi = (FileItem) i.next();
-            String fileName = fi.getName();
-            if (fileName != null) {
-                File fullFile = new File(new String(fi.getName().getBytes(), "GBK")); // 解决文件名乱码问题
-                if (!new File(realpath).exists()) {
-                    new File(realpath).mkdirs();
-                }
-                String[] typechoose = fileName.split("\\.");
-                int ichoose = typechoose.length;
-                String type = ichoose > 1 ? typechoose[ichoose - 1] : "";
-                Date date = new Date();
-                if ((type.toLowerCase().equals("docx")
-                        || type.toLowerCase().equals("pdf")
-                        || type.toLowerCase().equals("xlsx")) && fi.getSize() <= uploadFileMaxSize) {
-                    SimpleDateFormat smat = new SimpleDateFormat("yyyyMMddHHmmss");
-//                    String newfilname = smat.format(new Date()) + "." + type;
-                    File savedFile = new File(realpath, fullFile.getName());
-                    fi.write(savedFile);
-                    Msg = "1";
-                    pd.put("file_name", fileName);
-                    pd.put("ISENABLED", "1");
-                    pd.put("file_path", realpath);
-                    pd.put("create_person", user.getId());
-                    pd.put("modify_person", user.getId());
-                    sdFileService.insert(pd);
-                } else if(!(type.toLowerCase().equals("doc") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))){
-                    Msg = "当前上传只支持doc、pdf、xlsx文件类型！";
-                } else if(fi.getSize() > uploadFileMaxSize){
-                    Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "M ！";
-                }
-            }
-        }
-        j.setObj(items);
-        j.setMsg(Msg);
-        super.writeJson(j, response);
-        return "fileuploaddone";
-    }*/
-
     @RequestMapping("/newUpload")
     public
     @ResponseBody
@@ -146,7 +93,7 @@ public class BreedValueBook extends BaseAction {
             String type = ichoose > 1 ? typechoose[ichoose - 1] : "";
             if ((type.toLowerCase().equals("docx")
                     || type.toLowerCase().equals("pdf")
-                    || type.toLowerCase().equals("xlsx")) && f.length() <= uploadFileMaxSize) {
+                    || type.toLowerCase().equals("xlsx")) && file.getSize() <= uploadFileMaxSize) {
                 SimpleDateFormat smat = new SimpleDateFormat("yyyyMMddHHmmss");
                 FileUtils.copyInputStreamToFile(file.getInputStream(), f);
                 Msg = "1";
@@ -154,7 +101,7 @@ public class BreedValueBook extends BaseAction {
             } else if(!(type.toLowerCase().equals("doc") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))){
                 Msg = "当前上传只支持doc、pdf、xlsx文件类型！";
                 j.setSuccess(false);
-            } else if(f.length() > uploadFileMaxSize){
+            } else if(file.getSize() > uploadFileMaxSize){
                 Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "M ！";
                 j.setSuccess(false);
             }
@@ -180,19 +127,19 @@ public class BreedValueBook extends BaseAction {
             for (String s : needReplaceChar) {
                 reName = StringUtils.replace(reName, s, "\\\\" + s);
             }
+            pd.put("file_name", reName);
+            pd.put("file_path", escapePath);
+            pd.put("create_person", user.getId());
+            pd.put("modify_person", user.getId());
+            int i = sdFileService.insert(pd);
+            List<PageData> lcd = sdFileService.selectByStatus(pd);
+            j.setObj(lcd);
+            j.setMsg("1");
+            j.setSuccess(true);
         }else{
             j.setMsg("文件名为空！");
             j.setSuccess(false);
         }
-        pd.put("file_name", reName);
-        pd.put("file_path", escapePath);
-        pd.put("create_person", user.getId());
-        pd.put("modify_person", user.getId());
-        int i = sdFileService.insert(pd);
-        List<PageData> lcd = sdFileService.selectByStatus(pd);
-        j.setObj(lcd);
-        j.setMsg("1");
-        j.setSuccess(true);
         super.writeJson(j, response);
     }
 
@@ -219,24 +166,26 @@ public class BreedValueBook extends BaseAction {
     }
     @RequestMapping("/download")
     public void download(HttpServletResponse response, HttpServletRequest request, HttpSession session) throws Exception{
-
-        String path = servletContext.getRealPath("/");
-        String fileName = request.getParameter("fileName");
-        String filePath =  path + "modules/file/download/" + fileName;
-
+        String path = request.getSession().getServletContext().getRealPath("/");
+        String fileName = URLDecoder.decode(request.getParameter("fileName"), "UTF-8");
+        String upFilePath =  path + filePath + fileName;
+        String downFilePath = path + downloadPath + fileName;
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         OutputStream fos = null;
         InputStream fis = null;
-        File uploadFile = new File(filePath);
+        InputStream down = null;
+        File uploadFile = new File(upFilePath);
+        File downloadFile = new File(downFilePath);
         fis = new FileInputStream(uploadFile);
         bis = new BufferedInputStream(fis);
         response.reset();
         fos = response.getOutputStream();
         bos = new BufferedOutputStream(fos);
-        response.setContentType("text/plain");
-        response.setHeader("Content-disposition","attachment; filename="+uploadFile.getName());
+        response.setContentType("text/html;charset=UTF-8");
+        response.setHeader("Content-disposition","attachment; filename="+ URLEncoder.encode(uploadFile.getName(), "UTF-8"));
         FileCopyUtils.copy(fis, bos);//spring工具类直接流拷贝
+        FileUtils.copyInputStreamToFile(fis, downloadFile);
         bos.flush();
         fis.close();
         bis.close();

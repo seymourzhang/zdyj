@@ -31,7 +31,7 @@
 <script>
     $(function () {
         getColumns();
-        initTable("stock", getColumns(), ${files});
+        initTable("breed", getColumns(), ${files});
     });
     function getColumns() {
         var dataColumns = [{
@@ -40,7 +40,7 @@
             width: '5%',
         }, {
             field: "file_name",
-            title: "文件名"
+            title: "文件名",
         }, {
             field: "bak",
             title: "备注"
@@ -50,6 +50,7 @@
         }];
         return dataColumns;
     }
+
     function uploadConfirm() {
         layer.open({
             type: 2,
@@ -95,9 +96,6 @@
     function reflush(list) {
         $("#stockTable").bootstrapTable("load", list);
     }
-    function changeColor() {
-
-    }
 </script>
 <body>
 
@@ -106,29 +104,19 @@
                                 position: absolute;
                                 width: 108px;
                                 height: 35px;
-                                background: inherit;
                                 background-color: rgba(112, 172, 45, 1);
-                                font-weight: 400;
-                                font-style: normal;
-                                color: #FFFFFF;
-                                line-height: 10px;
-                                margin: 0 0 0px;" onclick="uploadConfirm();" ><p>上传</p></button>
+                                color: #FFFFFF;" onclick="uploadConfirm();" ><p>上传</p></button>
 
     <button type="button" style="top: 45px;
                                 left: 85%;
                                 position: absolute;
                                 width: 108px;
                                 height: 35px;
-                                background: inherit;
                                 background-color: rgba(112, 172, 45, 1);
-                                font-weight: 400;
-                                font-style: normal;
-                                color: #FFFFFF;
-                                line-height: 10px;
-                                margin: 0 0 0px;" onclick="deleteRecord();"><p>删除</p></button>
+                                color: #FFFFFF;" onclick="deleteRecord();"><p>删除</p></button>
 
     <div style="position: relative;top: 150px;overflow-x: auto; overflow-y: auto; height: 76%; width:99%;">
-        <table id="stockTable"></table>
+        <table id="breedTable"></table>
     </div>
 </body>
 </html>
