@@ -124,7 +124,7 @@
 
     <div id="files" class="files" style="position: absolute;left: 142px;top: 20px;width: 200px;"></div>
     <div id="progress" class="progress" style="position: relative; height: 5px; width: 247px; left: 142px;">
-        <div class="progress-bar progress-bar-success"></div>
+        <div class="progress-bar progress-bar-success"></div>       
     </div>
     <!-- The container for the uploaded files -->
 
