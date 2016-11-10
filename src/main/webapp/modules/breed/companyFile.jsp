@@ -41,11 +41,14 @@
         }, {
             field: "file_name",
             title: "文件名",
+            formatter: function(value, row, index){
+                return "<a href=download?id=" + row.id + "&dirName=upload&fileName=" + (value) + ">" + value + "</a>";
+            }
         }, {
             field: "bak",
             title: "备注"
         }, {
-            field: "create_date",
+            field: "create_time",
             title: "上传时间"
         }];
         return dataColumns;
@@ -78,13 +81,8 @@
                     list[i]["file_name"] = fileName;
                 }
                 if (result.msg == "1") {
-                    layer.msg('删除成功！', {
-                        skin: 'layui-layer-lan'
-                        , closeBtn: 0
-                        , shift: 4 //动画类型
-                    },function () {
-                        $("#breedTable").bootstrapTable("load", list);
-                    });
+                    layer.msg('删除成功！');
+                    $("#breedTable").bootstrapTable("load", list);
                 }
             },
             error:function (result) {

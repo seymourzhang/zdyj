@@ -26,11 +26,28 @@ public class SDFileServiceImpl implements SDFileService{
         return (List<PageData>) dao.findForList("SDfileMapper.selectByStatus", pd);
     }
 
+    /***
+     * 更改状态
+     * @param pd
+     * @return
+     * @throws Exception
+     */
     public int updateStatus(PageData pd) throws Exception{
         return (int) dao.update("SDfileMapper.updateStatus", pd);
     }
 
+    /***
+     * 插入上传记录
+     * @param pd
+     * @return
+     * @throws Exception
+     */
     public int insert(PageData pd) throws Exception{
         return (int) dao.save("SDfileMapper.insert", pd);
     }
+
+    public int updateDownloadNum(PageData pd) throws Exception{
+        return (int) dao.update("SDfileMapper.updateDownloadNum", pd);
+    }
+
 }

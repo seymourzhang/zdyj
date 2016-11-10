@@ -14,4 +14,6 @@ public interface SDFileService {
     int insert(PageData pd) throws Exception;
 
     int updateStatus(PageData pd) throws Exception;
+
+    int updateDownloadNum(PageData pd) throws Exception;
 }

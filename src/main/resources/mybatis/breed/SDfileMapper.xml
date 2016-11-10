@@ -19,10 +19,14 @@
                       #{download_num},
                       #{bak},
                       #{create_person},
-                      curdate(),
-                      curdate(),
+                      #{create_date},
+                      #{create_time},
                       #{modify_person},
-                      curdate(),
-                      curdate())
+                      #{modify_date},
+                      #{modify_time})
         </insert>
+
+        <update id="updateDownloadNum" parameterType="pd">
+            UPDATE s_d_file set download_num = download_num + 1, modify_date = #{modify_date}, modify_time = #{modify_time}, modify_person = #{user_id} where id = #{id}
+        </update>
 </mapper>

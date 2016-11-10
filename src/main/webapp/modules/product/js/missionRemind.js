@@ -125,18 +125,6 @@ function addMissionRemind() {
 }
 
 function deleteTask() {
-    /*var list = document.getElementsByName("taskId");
-    var str = new Array();
-    for (var i=0;i<list.length;++i){
-        var ftd = list[i].childNodes;
-        for (var j=0;j<ftd.length;++j) {
-            var temp = ftd.item(j).firstChild;
-            if (temp != null && temp.type == "checkbox") {
-                if (temp.checked)
-                    str.push(temp.value);
-            }
-        }
-    }*/
     var str = new Array();
     var getRows = $('#stockTable').bootstrapTable('getSelections');
     for (var i in getRows){
@@ -163,15 +151,6 @@ function deleteTask() {
                         , shift: 4 //动画类型
                     });
                     var list = result.obj;
-                    /*var taskObj = document.getElementsByName("taskId");
-                    $("#formData tr:not(:first-child)").remove();
-                    for (var i=0; i<list.length; ++i){
-                        var str = "<tr name='taskId'><td><input type='checkbox' value='"+list[i]["id"]+"'/></td><td><p>"+list[i]["id"]
-                            + "</p></td><td><p>"+list[i]["taskType"]+"</p></td><td><p>"+list[i]["task_name"]
-                            + "</p></td><td><p>"+list[i]["dateType"]+"</p></td><td><p>"+list[i]["date_values"]
-                            + "</p></td></tr>";
-                        $("#formData").append(str);
-                    }*/
                     $("#stockTable").bootstrapTable("load",list);
                 }else{
                     // alert(result.msg);

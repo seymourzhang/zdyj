@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,7 +36,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/breed")
-public class BreedValueBook extends BaseAction {
+public class BreedValueBook extends BaseAction implements ServletContextAware {
 
     @Autowired
     private SDFileService sdFileService;
@@ -44,9 +45,9 @@ public class BreedValueBook extends BaseAction {
 
     private int uploadFileMaxSize = 10 * 1024 * 1024; //10M
 
-    private String filePath = "/modules/file/upload/";
+    private String filePath = "modules/file/upload/";
 
-    private String downloadPath = "/modules/file/download/";
+    private String downloadPath = "modules\\file\\download\\";
 
     private String[] needReplaceChar = {"[", "]", "{", "}"};
 
@@ -123,14 +124,22 @@ public class BreedValueBook extends BaseAction {
         String escapePath = StringUtils.replace(realpath, "\\", "\\\\");
         String fileName = pd.get("file_name").toString();
         String reName = fileName;
+        Date curTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
         if (!fileName.isEmpty()) {
             for (String s : needReplaceChar) {
                 reName = StringUtils.replace(reName, s, "\\\\" + s);
             }
             pd.put("file_name", reName);
             pd.put("file_path", escapePath);
+            pd.put("download_num", 0);
             pd.put("create_person", user.getId());
+            pd.put("create_date", formatterDate.format(curTime));
+            pd.put("create_time", formatter.format(curTime));
             pd.put("modify_person", user.getId());
+            pd.put("modify_date", formatterDate.format(curTime));
+            pd.put("modify_time", formatter.format(curTime));
             int i = sdFileService.insert(pd);
             List<PageData> lcd = sdFileService.selectByStatus(pd);
             j.setObj(lcd);
@@ -167,38 +176,51 @@ public class BreedValueBook extends BaseAction {
 
     @RequestMapping("/download")
     public void download(HttpServletResponse response, HttpServletRequest request, HttpSession session) throws Exception {
-        String path = request.getSession().getServletContext().getRealPath("/");
-        String fileName = URLDecoder.decode(request.getParameter("fileName"), "UTF-8");
-        String upFilePath = path + filePath + fileName;
-        String downFilePath = path + downloadPath + fileName;
+        String fileId = request.getParameter("id");
+
+        String path = servletContext.getRealPath("/");
+        String fileName = request.getParameter("fileName");
+        String dirName = request.getParameter("dirName");
+        String filePath =  path + "modules/file/" + dirName + "/" + fileName;
 
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
-
         OutputStream fos = null;
         InputStream fis = null;
-        InputStream down = null;
-
-        File uploadFile = new File(upFilePath);
-        File downloadFile = new File(downFilePath);
+        File uploadFile = new File(filePath);
         fis = new FileInputStream(uploadFile);
         bis = new BufferedInputStream(fis);
-
         response.reset();
-        String uploadFileName = URLEncoder.encode(uploadFile.getName(), "UTF-8");
-        for (String s : needReplaceChar) {
-            uploadFileName = StringUtils.replace(uploadFileName, s, "\\" + s);
-        }
         fos = response.getOutputStream();
         bos = new BufferedOutputStream(fos);
-        response.setContentType("text/html;charset=UTF-8");
-        response.setHeader("Content-disposition", "attachment; filename=" + uploadFileName);
+
+        fileName = new String(fileName.getBytes("gbk"), "iso8859-1");
+        response.setContentType("octets/stream");
+        response.addHeader("Content-Type", "text/html; charset=utf-8");
+        response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
+
+//        response.setContentType("text/plain;charset=UTF-8");
+//        response.setHeader("Content-disposition","attachment; filename=\""+uploadFile.getName() + "\"");
         FileCopyUtils.copy(fis, bos);//spring工具类直接流拷贝
-        FileUtils.copyInputStreamToFile(fis, downloadFile);
         bos.flush();
         fis.close();
         bis.close();
         fos.close();
         bos.close();
+
+        PageData pd = new PageData();
+        Date curTime = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
+        pd.put("id", fileId);
+        SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
+        pd.put("modify_date", formatterDate.format(curTime));
+        pd.put("modify_time", formatter.format(curTime));
+        pd.put("user_id", user.getId());
+        sdFileService.updateDownloadNum(pd);
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext=servletContext;
     }
 }
