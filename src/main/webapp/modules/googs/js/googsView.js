@@ -1,4 +1,8 @@
+var objGoods = new Object();
+
 $(document).ready(function() {
+	initObjGoods();
+
 	$(".date-picker").datepicker({
 		language : 'zh-CN',
 		autoclose : true,
@@ -48,11 +52,17 @@ $(document).ready(function() {
 	var dataJosn;
 	initTable("inStock", getInStockTableColumns(), dataJosn);
 	initTable("outStock", getOutStockTableColumns(), dataJosn);
-	initTable("stock", getStockTableColumns(), dataJosn);
-	
+	initTableWithToolBar("stock",'stockToolbar', getStockTableColumns(), dataJosn);
+	initTableWithToolBar("approvalStock",'approvalStockToolbar', getApprovalStockTableColumns(), dataJosn);
+	initTable("approvalStockChange", getApprovalStockChangeTableColumns(), dataJosn);
+
+
+
 	getInstock();
 	getOutStock();
 	queryStock();
+	queryStockApproval();
+	queryStockApprovalChange();
 	
 })
 
@@ -143,7 +153,7 @@ function inStock() {
 		return;
 	}
 	var exp = $("input[name='exp']").val();
-	if (exp == "") {
+	if (exp == "" && ($("#good_type option:selected").text() == "药品" || $("#good_type option:selected").text() == "疫苗") ) {
 		layer.alert('保质期不能为空!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
@@ -512,6 +522,8 @@ layer.open({
 		  }
 		var param =getRow[0];
 		param["adjustValue"]=adjustValue;
+		param["farm_id"]=objGoods.farmId;
+		param["farm_name"]=objGoods.farm;
 		$.ajax({
 			url : path + "/googs/setStockSum",
 			data : param,
@@ -598,7 +610,38 @@ function getStockTableColumns(){
         title: "库存量"
     }];
 	return dataColumns;
+};
+
+function queryStockApproval(){
+	$.ajax({
+		url : path + "/googs/getStockApproval",
+		data : {
+			farm_id: objGoods.farmId
+		},
+		type : "POST",
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#approvalStockTable").bootstrapTable("load",list);
+		}
+	});
 }
+
+function queryStockApprovalChange(){
+	$.ajax({
+		url : path + "/googs/getStockApprovalChange",
+		data : {
+			farm_id: objGoods.farmId
+		},
+		type : "POST",
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#approvalStockChangeTable").bootstrapTable("load",list);
+		}
+	});
+}
+
 function queryStock(){
 	
 	var param = $.serializeObject($('#stockForm'));
@@ -637,3 +680,100 @@ function queryStock(){
 }
 
 /*****库存****************************************************/
+
+
+//库存调整审批
+function getApprovalStockTableColumns(){
+	var dataColumns = [{
+		radio: true,
+		title: "选择",
+		width: '5%'
+	},{
+		field: "type_name",
+		title: "类型"
+	},{
+		field: "good_name",
+		title: "品名"
+	},{
+		field: "spec_name",
+		title: "规格"
+	},{
+		field: "unit_name",
+		title: "单位"
+	},{
+		field: "corporation",
+		title: "供应方"
+	},{
+		field: "factory_name",
+		title: "生产厂家"
+	},{
+		field: "count",
+		title: "库存调整量"
+	}];
+	return dataColumns;
+}
+function getApprovalStockChangeTableColumns(){
+	var dataColumns = [{
+		field: "operation_date",
+		title: "提交日期"
+	},{
+		field: "farm_name",
+		title: "农场"
+	},{
+		field: "type_name",
+		title: "类型"
+	},{
+		field: "good_name",
+		title: "品名"
+	},{
+		field: "spec_name",
+		title: "规格"
+	},{
+		field: "unit_name",
+		title: "单位"
+	},{
+		field: "corporation",
+		title: "供应方"
+	},{
+		field: "factory_name",
+		title: "生产厂家"
+	},{
+		field: "count",
+		title: "变更内容"
+	},{
+		field: "create_person",
+		title: "提交人"
+	},{
+		field: "bak",
+		title: "备注"
+	}];
+	return dataColumns;
+};
+
+//切换标签页事件处理
+$(function(){
+	$('a[data-toggle="tab"]').on('shown', function (e) {
+		if("库存调整审批" == $(e.target).text()){
+			if (isRead == 0 || isRead == 1) {
+				$(e.relatedTarget).tab('show');
+				layer.alert('无审批权限，请联系管理员!', {
+					skin : 'layui-layer-lan',
+					closeBtn : 0,
+					shift : 4
+					// 动画类型
+				});
+				return;
+			}
+		}
+	});
+});
+
+function initObjGoods(){
+	objGoods.farmId =  document.getElementById("farmId").value;
+	objGoods.farm =  document.getElementById("farm").value;
+
+	document.getElementById("inStockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+	document.getElementById("outStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+	document.getElementById("stockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+	document.getElementById("approvalStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+}

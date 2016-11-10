@@ -62,5 +62,9 @@ public class GoogsServiceImpl implements GoogsService {
 	public List<PageData> getStockSum(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockSum", pd);
 	}
-	
+
+	@Override
+	public List<PageData> getStockApproval(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockApproval", pd);
+	}
 }

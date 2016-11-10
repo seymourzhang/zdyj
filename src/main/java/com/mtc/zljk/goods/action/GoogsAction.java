@@ -58,8 +58,14 @@ public class GoogsAction extends BaseAction {
 		pd2.put("code_type", "spec");
 		List<PageData> spec= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd2});
 		mv.addObject("spec",spec);
-		
-		mv.addObject("farmList",getFarm());
+
+		List<PageData> farmList = getFarm();
+		mv.addObject("farmList",farmList);
+		if(farmList.size()>0){
+			mv.addObject("farmId",farmList.get(0).get("id"));
+			mv.addObject("farm",farmList.get(0).get("name_cn"));
+		}
+
 		mv.addObject("houseList",getHouse());
 		mv.addObject("pd",pd);
 		return mv;
@@ -116,8 +122,8 @@ public class GoogsAction extends BaseAction {
 			googsService.saveStock(pd);
 			pd.put("stock_id",pd.getInteger("id"));
 			pd.put("operation_kind",2);
-			pd.put("farm_id",null);
-			pd.put("farm_name",null);
+			pd.put("farm_id",pd.getString("inStockFarmId"));
+			pd.put("farm_name",pd.getString("inStockFarm"));
 			pd.put("house_id",null);
 			pd.put("house_name",null);
 			pd.put("approve_status",1);
@@ -263,6 +269,7 @@ public class GoogsAction extends BaseAction {
 			int count=Integer.valueOf(adjustValue);
 			if(count>0){//调增，读取库存第一条数据，插入库存变动表
 				PageData pd2=stock.get(0);
+				pd2.putAll(pd);
 				pd2.put("stock_id",stock.get(0).getInteger("id"));
 				pd2.put("create_person",user.getId());
 				pd2.put("create_date", new Date());	
@@ -278,6 +285,7 @@ public class GoogsAction extends BaseAction {
 			}else{
 				BigDecimal number=new BigDecimal(count);
 				for (PageData pageData : stock) {
+					pageData.putAll(pd);
 					BigDecimal cc=pageData.getBigDecimal("count");
 					BigDecimal big_decimal=cc.add(number);
 					int r=big_decimal.compareTo(BigDecimal.ZERO); //和0，Zero比较
@@ -326,7 +334,6 @@ public class GoogsAction extends BaseAction {
 	
 	/**
 	 * 获取农场信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	List<PageData> getFarm() throws Exception {
@@ -335,22 +342,22 @@ public class GoogsAction extends BaseAction {
 		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = this.getPageData();
 		pd.put("user_id", user.getId());
-		List<PageData> orglist=moduleService.service("organServiceImpl", "getOrgList", new Object[]{pd});//farmService.selectAll();
+		List<PageData> orglist=moduleService.service("organServiceImpl", "getFarmByUserId", new Object[]{pd});//farmService.selectAll();
 		int count=0;
 		List<PageData> list=new ArrayList<PageData>();
 		if(orglist!=null&&orglist.size()!=0){
-			count=orglist.get(orglist.size()-1).getInteger("level_id");
+//			count=orglist.get(orglist.size()-1).getInteger("org_level_id");
 			for (PageData pageData : orglist) {
-				if((count-1)==pageData.getInteger("level_id")){
+//				if((count-1)==pageData.getInteger("org_level_id")){
 					PageData paData=new PageData();
-					paData.put("id", pageData.getInteger("id"));
-					paData.put("organization_id", pageData.getInteger("organization_id"));
-					paData.put("name_cn", pageData.getString("name_cn"));
-					paData.put("parent_id", pageData.getInteger("parent_id"));
-					paData.put("level_id", pageData.getInteger("level_id"));
-					paData.put("level_name", pageData.getString("level_name"));
+					paData.put("id", pageData.getInteger("org_id"));
+					paData.put("organization_id", pageData.getInteger("org_code"));
+					paData.put("name_cn", pageData.getString("org_name"));
+					paData.put("parent_id", pageData.getInteger("org_parent_id"));
+					paData.put("level_id", pageData.getInteger("org_level_id"));
+//					paData.put("level_name", pageData.getString("level_name"));
 					list.add(paData);
-				}
+//				}
 			}
 		}
 		return list;
@@ -359,7 +366,6 @@ public class GoogsAction extends BaseAction {
 
 	/**
 	 * 获取栋舍信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	List<PageData> getHouse() throws Exception {
@@ -389,6 +395,37 @@ public class GoogsAction extends BaseAction {
 		
 		return list;
 	}
-	
+
+	/**
+	 * 获得库存调整待审批信息
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/getStockApproval")
+	public void getStockApproval(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		pd.put("approve_status",1);
+		List<PageData> stockApprovalList = googsService.getStockApproval(pd);
+		j.setSuccess(true);
+		j.setObj(stockApprovalList);
+		super.writeJson(j, response);
+	}
+
+    /**
+     * 获得库存调整待审批信息
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping("/getStockApprovalChange")
+    public void getStockApprovalChange(HttpServletResponse response) throws Exception{
+        Json j=new Json();
+        PageData pd = this.getPageData();
+        pd.put("approve_status",0);
+        List<PageData> stockApprovalList = googsService.getStockApproval(pd);
+        j.setSuccess(true);
+        j.setObj(stockApprovalList);
+        super.writeJson(j, response);
+    }
 	
 }

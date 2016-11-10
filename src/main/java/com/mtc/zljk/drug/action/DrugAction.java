@@ -1,0 +1,251 @@
+package com.mtc.zljk.drug.action;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.mtc.zljk.drug.service.DrugService;
+import com.mtc.zljk.user.entity.SDUser;
+import com.mtc.zljk.util.action.BaseAction;
+import com.mtc.zljk.util.common.Const;
+import com.mtc.zljk.util.common.DateUtil;
+import com.mtc.zljk.util.common.Json;
+import com.mtc.zljk.util.common.PageData;
+import com.mtc.zljk.util.service.ModuleService;
+import com.mysql.fabric.xmlrpc.base.Array;
+
+/**
+ * Created by yoven on 10/31/2016.
+ * drug控制类
+ */
+@Controller
+@RequestMapping("/drug")
+public class DrugAction extends BaseAction {
+     
+	@Autowired
+	private DrugService drugService;
+	
+	@Autowired
+	private ModuleService moduleService;
+	
+	@RequestMapping("/showDrug")
+	public ModelAndView showDrug(HttpSession session) throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd.put("user_id", user.getId());
+		List<PageData> farm = moduleService.service("organServiceImpl", "getFarmByUserId", new Object[]{pd});
+		pd.put("farm_id", farm.get(0).get("org_id"));
+		pd.put("farm_name", farm.get(0).get("org_name"));
+		mv.addObject("houseList",moduleService.service("organServiceImpl", "getHouseListByUserId", new Object[]{pd}));
+		mv.addObject("userList",drugService.selectUser());
+		pd.put("good_type", null);
+		mv.addObject("goodsList",drugService.selectGoods(pd));	
+		pd.put("code_desc", "使用方法");
+		mv.addObject("useTypeList",drugService.selectCode(pd));
+		pd.put("code_desc", "物资类别");
+		pd.put("bak1", "s_b_use_drug");
+		mv.addObject("goodTypeList",drugService.selectCode(pd));
+//		List<PageData> drug = drugService.selectDrugPlan(pd);
+		mv.setViewName("/modules/drug/drugView");
+		mv.addObject("pd",pd);		
+		return mv;
+	}
+	
+	@RequestMapping("/drugEdit")
+	public ModelAndView drugEdit(HttpSession session) throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		pd.put("user_id", user.getId());
+		List<PageData> farm = moduleService.service("organServiceImpl", "getFarmByUserId", new Object[]{pd});
+		pd.put("farm_id", farm.get(0).get("org_id"));
+		pd.put("farm_name", farm.get(0).get("org_name"));
+		pd.put("good_type", null);
+		mv.addObject("goodsList",drugService.selectGoods(pd));	
+		pd.put("code_desc", "使用方法");
+		mv.addObject("useTypeList",drugService.selectCode(pd));
+		pd.put("code_desc", "物资类别");
+		pd.put("bak1", "s_b_use_drug");
+		mv.addObject("goodTypeList",drugService.selectCode(pd));
+		mv.setViewName("/modules/drug/drugEdit");
+		mv.addObject("pd",pd);		
+		return mv;
+	}
+	
+	/**
+     * 查询计划数据
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/searchData")
+    public void searchData(HttpServletResponse response)throws Exception{
+        Json j=new Json();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        List<PageData> drug;
+        String ps = pd.get("paramTypeSelectValue").toString();
+        if(ps.equals("plan")){
+	        String tr = (String) pd.get("grow_week_age");        
+	        String[] grow_week_age = tr.split(",");
+	        List<String> gw = java.util.Arrays.asList(grow_week_age);
+	        if(gw.size()==1 && gw.get(0).toString().equals("")){
+	        	pd.put("grow_week_age", null);	
+	        }else{
+	        pd.put("grow_week_age", gw);
+	        }       
+        	drug = drugService.selectDrugPlan(pd);
+        }else if(ps.equals("fact")){
+        	drug = drugService.selectDrugFact();
+        }else{
+        	drug = drugService.selectDrugPlan(pd);
+        }
+          j.setSuccess(true);
+          j.setObj(drug);
+        super.writeJson(j, response);
+    }   
+    
+    /**
+     * 保存计划数据
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/savePlanData")
+    public void savePlanData(HttpServletResponse response, HttpServletRequest request, HttpSession session)throws Exception{
+        Json j=new Json();
+        SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        pd.put("create_person",user.getId());
+        pd.put("modify_person", user.getId());
+        String tr = (String) pd.get("grow_week_age");        
+        String[] grow_week_age = tr.split(",");
+        List<String> gw = java.util.Arrays.asList(grow_week_age);
+        if(gw.size()==1 && gw.get(0).toString().equals("")){
+        	pd.put("grow_week_age", null);	
+        }else{
+        pd.put("grow_week_age", gw);
+        }
+        drugService.saveDrugPlan(pd);
+        PageData pd2 = new PageData();
+        List<PageData> drug = drugService.selectDrugPlan(pd2);
+                j.setObj(drug);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
+    
+    /**
+     * 删除计划数据
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/deletePlanData")
+    public void deletePlanData(HttpServletResponse response)throws Exception{
+        Json j=new Json();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        String tr = (String) pd.get("deleteRow");
+        String[] drugs = tr.split(";");
+        for(String dr:drugs){
+        	int tt = Integer.parseInt(dr);
+        	pd.put("id", tt);
+        	drugService.deleteDrugPlan(pd);
+        }
+        PageData pd2 = new PageData();
+        List<PageData> drug = drugService.selectDrugPlan(pd2);
+                j.setObj(drug);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
+    
+    /**
+     * 保存数据
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/saveData")
+    public void saveData(HttpServletResponse response, HttpServletRequest request, HttpSession session)throws Exception{
+        Json j=new Json();
+        SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        pd.put("create_person",user.getId());
+        pd.put("modify_person", user.getId());
+        drugService.saveDrugFact(pd);
+        List<PageData> drug = drugService.selectDrugFact();
+                j.setObj(drug);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
+    
+    /**
+     * 删除实际表数据
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/deleteData")
+    public void deleteData(HttpServletResponse response)throws Exception{
+        Json j=new Json();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        String tr = (String) pd.get("deleteRow");
+        String[] drugs = tr.split(";");
+        for(String dr:drugs){
+        	int tt = Integer.parseInt(dr);
+        	pd.put("id", tt);
+        	drugService.deleteDrugFact(pd);
+        }
+        
+        List<PageData> drug = drugService.selectDrugFact();
+                j.setObj(drug);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
+    
+    /**
+     * 类型联动名称
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/getGoods")
+    public void getGoods(HttpServletResponse response)throws Exception{
+        Json j=new Json();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        List<PageData> goods = drugService.selectGoods(pd);
+                j.setObj(goods);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
+    
+    /**
+     * 药品联动工厂
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/getFactory")
+    public void getFactory(HttpServletResponse response)throws Exception{
+        Json j=new Json();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        List<PageData> factory = drugService.selectFactory(pd);
+                j.setObj(factory);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
+	
+}

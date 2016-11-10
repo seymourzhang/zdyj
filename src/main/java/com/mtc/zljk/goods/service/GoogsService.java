@@ -26,5 +26,6 @@ public interface GoogsService {
 	public int editStock(PageData pd)throws Exception;
 	
 	public List<PageData> getStockSum(PageData pd) throws Exception;
-	
+
+	public List<PageData> getStockApproval(PageData pd) throws Exception;
 }

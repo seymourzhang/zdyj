@@ -1,10 +1,7 @@
 /**
  * Created by LeLe on 10/20/2016.
  */
-
-function initTable(tableName,dataColumns,dataJosn){
-    //1.初始化Table
-    var oTable = new table(tableName,dataColumns,dataJosn);
+function initOthers(tableName, oTable){
     $('#' +tableName + 'Table').bootstrapTable('removeAll');
     oTable.Init();
 
@@ -16,16 +13,28 @@ function initTable(tableName,dataColumns,dataJosn){
     th.css("color","#fff");
     th.css("background-color","#2586C4");
     $('#' + tableName + 'Table').bootstrapTable('refresh');
+}
+
+function initTable(tableName,dataColumns,dataJosn){
+    //1.初始化Table
+    var oTable = new table(tableName,null,dataColumns,dataJosn);
+    initOthers(tableName, oTable);
 };
 
-function table(tableName,dataColumns,dataJosn) {
+function initTableWithToolBar(tableName,toolBar,dataColumns,dataJosn) {
+    //1.初始化Table
+    var oTable = new table(tableName,toolBar,dataColumns,dataJosn);
+    initOthers(tableName, oTable);
+};
+
+function table(tableName,toolBar,dataColumns,dataJosn) {
     var oTableInit = new Object();
     //初始化Table
     oTableInit.Init = function () {
         $('#'+tableName+'Table').bootstrapTable({
             // url: '',         //请求后台的URL（*）
             // method: 'get',                      //请求方式（*）
-            // toolbar: '#tempToolbar',                //工具按钮用哪个容器
+            toolbar: toolBar,                //工具按钮用哪个容器
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
             pagination: true,                   //是否显示分页（*）

@@ -13,50 +13,20 @@
     <meta charset="utf-8" />
     <%@ include file="../../framework/inc.jsp"%>
 </head>
-<script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
-<link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
-<script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>
-
-<link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">
-<script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
-<script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
-
-<link rel="stylesheet" href="<%=path%>/framework/css/datepicker.css" />
-<style type="text/css">
-    span_customer{padding-right:10px;width:4em;display:block;float:left;line-height:26px;}
-</style>
-
-<style type="text/css">  
-    .personal-mybuluo-head {height: 14px; position: relative;}
-    .personal-mybuluo-wording {position: absolute; top: 0; z-index: 2; left: 50%; background-color: #fff; color: #777; text-align: center
-                                    ; -webkit-transform: translate(-50%,0); transform: translate(-50%,0); padding:0 10px;}
-    .personal-border {position: absolute; top: -7px; left: 0; width: 100%; height: 14px; z-index: 1;}
-    .jmu-border-1px { position: relative; }
-    .jmu-border-1px.border-bottom:after { border-bottom: 1px solid #dedfe0;}
-    @media only screen and (-webkit-min-device-pixel-ratio: 2){}
-    .jmu-border-1px:after { right: -100%; bottom: -100%; -webkit-transform: scale(0.5); }
-    .jmu-border-1px:after {display: block; content: '';position: absolute;top: 0;right: 0;bottom: 0;left: 0;-webkit-transform-origin: 0 0; -webkit-transform: scale(1);pointer-events: none;}  
-</style>  
-
-<script>
-    jQuery(document).ready(function() {
-        App.init(); // initlayout and core plugins
-    });
-</script>
 
 <body style="background-color: #ffffff;">
 <div id="page-content" class="clearfix"  style="padding-top: 10px;">
-    <div class="row-fluid" style="background-color: #ffffff;">
+    <div class="row-fluid">
         <div class="span12">
-            <div class="tabbable tabbable-custom boxless tabs-left" >
-                <ul class="nav nav-pills">
-                    <li  class="active" id="createBatch" style="text-align: center;width:33%;background-color: #BFBFBF;" >
+            <div class="tabbable tabbable-custom boxless" >
+                <ul class="nav nav-pills" style="margin-bottom: 0px; ">
+                    <li  class="active" id="createBatch" style="text-align: center;width:33%;background-color: #BFBFBF;border-right: 1px solid #E0DFDF;" >
                         <a href="#tabCreateBatch" data-toggle="tab" id="createBatchA">进鸡</a>
                     </li>
-                    <li  id="editBatch" style="text-align: center;width:34%;background-color: #BFBFBF; " >
+                    <li  id="editBatch" style="text-align: center;width:33%;background-color: #BFBFBF;border-right: 1px solid #E0DFDF; " >
                         <a href="#tabEditBatch" data-toggle="tab" id="editBatchA">调鸡</a>
                     </li>
-                    <li  id="overBatch" style="text-align: center;width:33%;background-color: #BFBFBF; " >
+                    <li  id="overBatch" style="text-align: center;width:33%;background-color: #BFBFBF;" >
                         <a href="#tabOverBatch" data-toggle="tab" id="overBatchA">出栏</a>
                     </li>
                 </ul>

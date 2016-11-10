@@ -42,9 +42,9 @@
               good_type, 
               spec, 
               unit, 
-              count, 
-              exp, 
-              operation_date, 
+              count,
+			  date_format(exp, '%Y-%m-%d') exp,
+			  date_format(operation_date, '%Y-%m-%d') operation_date,
               corporation_id, 
               factory_id, 
               bak, 
@@ -164,7 +164,7 @@
     
     <!-- 保存库存 -->
     <insert id="saveStock" parameterType="pd"  flushCache="false" keyProperty="id">
-		insert into s_d_stock (
+		insert into s_d_stock (farm_id,farm_name,
 			stock_batch_no,
 			good_id,
 			good_code,
@@ -184,7 +184,7 @@
 			modify_person,
 			modify_date,
 			modify_time
-		) values (
+		) values (#{inStockFarmId},#{inStockFarm},
 			#{stock_batch_no},
 			#{good_id},
 			#{good_code},
@@ -279,9 +279,9 @@
 		        c.unit, 
 		        c2.code_name unit_name,
 		        c.count, 
-		        c.price, 
-		        c.exp, 
-		        c.operation_date, 
+		        c.price,
+	  			date_format(c.exp, '%Y-%m-%d') exp,
+	  			date_format(c.operation_date, '%Y-%m-%d') operation_date,
 		        c.operation_kind, 
 		        c.farm_id, 
 		        c.farm_name, 
@@ -336,7 +336,7 @@
     </select>   
     
     
-    <select id="getStockSum" resultType="pd" useCache="false">  
+  <select id="getStockSum" resultType="pd" useCache="false">
 	   SELECT  s.good_id,
 		       s.good_code,
 		       s.good_name,
@@ -383,5 +383,55 @@
 			       s.unit,
 			       s.corporation_id,
 			       s.factory_id
-    </select>   
+    </select>
+
+
+
+	<select id="getStockApproval" resultType="pd" useCache="false">
+		SELECT
+			  sc.id
+			  ,sc.stock_id
+			  ,sc.good_id
+			  ,sc.good_code
+			  ,sc.good_name
+			  ,sc.good_type
+			  ,c3.code_name type_name
+			  ,sc.spec
+			  ,c1.code_name spec_name
+			  ,sc.unit
+			  ,c2.code_name unit_name
+			  ,sc.count
+			  ,sc.price
+			  ,date_format(sc.exp, '%Y-%m-%d') exp
+			  ,date_format(sc.operation_date, '%Y-%m-%d') operation_date
+			  ,sc.operation_kind
+			  ,sc.corporation_id
+			  ,a.corporation
+			  ,sc.factory_id
+		      ,b.factory_name
+			  ,sc.farm_id
+			  ,sc.farm_name
+			  ,sc.stock_batch_no
+			  ,sc.approve_status
+			  ,sc.bak
+              ,sc.create_person
+		FROM s_d_stock_change sc
+		LEFT JOIN s_d_corporation a   ON a.corporation_id = sc.corporation_id
+		LEFT JOIN s_d_factory b   ON sc.factory_id = b.factory_id
+		LEFT JOIN s_d_code c1 ON c1.biz_code=sc.spec AND c1.code_type='spec'
+		LEFT JOIN s_d_code c2 ON c2.biz_code=sc.unit AND c2.code_type='unit'
+		LEFT JOIN s_d_code c3 ON c3.biz_code=sc.good_type AND c3.code_type='good_type'
+		WHERE sc.operation_kind = 3
+        <if test="approve_status != null and approve_status != ''">
+            <if test="approve_status == '1'">
+                AND sc.approve_status = #{approve_status}
+            </if>
+            <if test="approve_status != '1'">
+                AND sc.approve_status != #{approve_status}
+            </if>
+        </if>
+		        AND sc.farm_id = #{farm_id}
+	</select>
+
+
 </mapper>

@@ -26,3 +26,16 @@
 <!--引入弹窗组件start-->
 <script type="text/javascript" src="<%=path %>/framework/layer/layer.js"></script>
 <!--引入弹窗组件end-->
+
+
+<script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
+<link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
+<script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>
+<link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">
+<script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
+<script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
+<link rel="stylesheet" href="<%=path%>/framework/css/datepicker.css" />
+
+<style type="text/css">
+    span_customer{padding-right:10px;width:4em;display:block;float:left;line-height:26px;}
+</style>

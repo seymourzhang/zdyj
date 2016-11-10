@@ -116,13 +116,13 @@
     }
 </script>
 <body>
-    <span class="btn btn-success fileinput-button" style="left: 335px; height: 35px;">
+    <span class="btn btn-success fileinput-button" style="left: 335px; height: 35px;top: 20px">
             <span>上传</span>
         <!-- The file input field used as target for the file upload widget -->
             <input id="fileupload" type="file" name="eFiles" multiple>
     </span>
 
-    <div id="files" class="files" style="position: absolute;left: 142px;top: 0px;width: 200px;"></div>
+    <div id="files" class="files" style="position: absolute;left: 142px;top: 20px;width: 200px;"></div>
     <div id="progress" class="progress" style="position: relative; height: 5px; width: 247px; left: 142px;">
         <div class="progress-bar progress-bar-success"></div>
     </div>

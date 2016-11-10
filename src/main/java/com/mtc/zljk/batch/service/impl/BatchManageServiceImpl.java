@@ -158,8 +158,7 @@ public class BatchManageServiceImpl implements BatchManageService {
     public PageData saveOverBatchData(PageData pd) throws Exception{
         PageData rt = new PageData();
         pd.put("batch_id",getBatchId(pd));
-        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
-        pd.put("service_id",df.format(new Date()).toString());
+        pd.put("service_id","0");
 
         List<PageData> outList = (List<PageData>) dao.findForList("BatchManageMapper.selectBatchDataCount", pd);
 
