@@ -35,14 +35,14 @@
     });
     function getColumns() {
         var dataColumns = [{
-            radio: true,
+            checkbox: true,
             title: "选择",
             width: '5%',
         }, {
             field: "file_name",
             title: "文件名",
             formatter: function(value, row, index){
-                return "<a href=download?id=" + row.id + "&dirName=upload&fileName=" + (value) + ">" + value + "</a>";
+                return "<a href=download?direct=" + row.file_path + "&id=" + row.id + "&dirName=upload&fileName=" + (value) + ">" + value + "</a>";
             }
         }, {
             field: "bak",
@@ -57,7 +57,7 @@
     function uploadConfirm() {
         layer.open({
             type: 2,
-            title:"提示",
+            title:"文件上传",
             skin: 'layui-layer-lan', //加上边框
             area: ['520px', '370px'], //宽高
             closeBtn: 0,
@@ -67,9 +67,13 @@
     }
     function deleteRecord() {
         var temps = $("#breedTable").bootstrapTable("getSelections");
+        var array = new Array();
+        for(var aa=0; aa<temps.length; ++aa){
+            array.push(temps[aa]["id"]);
+        }
         $.ajax({
             url: path + "/breed/deleteRecord",
-            data:{"id":temps[0]["id"]},
+            data:{"id":array.toString()},
             dataType: "json",
             type: "post",
             async:false,
@@ -97,23 +101,11 @@
 </script>
 <body>
 
-    <button type="button" style="top: 45px;
-                                left: 70%;
-                                position: absolute;
-                                width: 108px;
-                                height: 35px;
-                                background-color: rgba(112, 172, 45, 1);
-                                color: #FFFFFF;" onclick="uploadConfirm();" ><p>上传</p></button>
+    <button type="button" class="btn green" style="top: 25px; right: 13%; position: absolute; width: 108px; height: 35px;" onclick="uploadConfirm();"><p>上传</p></button>
 
-    <button type="button" style="top: 45px;
-                                left: 85%;
-                                position: absolute;
-                                width: 108px;
-                                height: 35px;
-                                background-color: rgba(112, 172, 45, 1);
-                                color: #FFFFFF;" onclick="deleteRecord();"><p>删除</p></button>
+    <button type="button" class="btn green" style="top: 25px; right: 1%; position: absolute; width: 108px; height: 35px;" onclick="deleteRecord();"><p>删除</p></button>
 
-    <div style="position: relative;top: 150px;overflow-x: auto; overflow-y: auto; height: 76%; width:99%;">
+    <div style="position: relative;top: 70px;width:99%;">
         <table id="breedTable"></table>
     </div>
 </body>

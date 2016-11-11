@@ -1,8 +1,12 @@
-.svn/*
 .svn
-target/*
+.svn\
+.svn\*
+.idea
+.idea\
+.idea\*
 target
-target/../*
+target\
+target\*
+target\..\*
 *.class
-.idea/*
-.idea/*.xml
+

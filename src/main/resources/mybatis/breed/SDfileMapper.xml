@@ -4,11 +4,14 @@
 <mapper namespace="SDfileMapper">
     <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
         <select id="selectByStatus" resultType="pd" parameterType="pd" useCache="false">
-            select * from s_d_file where ISENABLED = #{ISENABLED}
+            select *
+            from s_d_file
+            where ISENABLED = #{ISENABLED}
+            ORDER BY create_time DESC
         </select>
 
         <update id="updateStatus" parameterType="pd">
-            UPDATE s_d_file set ISENABLED = 2, modify_date = curdate(), modify_time = curdate(), modify_person = #{user_id} where id = #{id}
+            UPDATE s_d_file set ISENABLED = 2, modify_date = curdate(), modify_time = curdate(), modify_person = #{user_id} where id in (${id})
         </update>
 
         <insert id="insert" parameterType="pd" flushCache="false">
@@ -27,6 +30,6 @@
         </insert>
 
         <update id="updateDownloadNum" parameterType="pd">
-            UPDATE s_d_file set download_num = download_num + 1, modify_date = #{modify_date}, modify_time = #{modify_time}, modify_person = #{user_id} where id = #{id}
+            UPDATE s_d_file set download_num = download_num + 1 where id = #{id}
         </update>
 </mapper>

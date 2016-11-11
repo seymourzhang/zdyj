@@ -82,63 +82,72 @@
             }
         });
     });
-    function uploadSubm(){
+    function uploadSubm() {
         var tips = document.getElementById("tips").value;
         var fileName = $("#files > p")[0].textContent;
-        $.ajax({
-            url:path + "/breed/saveTips",
-            data:{"bak":tips,"file_name":fileName, "ISENABLED":"1"},
-            dataType:"json",
-            success:function (result) {
-                var list = result.obj;
-                for (var i=0; i<list.length; ++i){
-                    var fileName = list[i]["file_name"];
-                    fileName = fileName.replace(/\\/g, "");
-                    list[i]["file_name"] = fileName;
-                }
-                layer.alert('上传成功', {
-                    skin: 'layui-layer-lan'
-                    , closeBtn: 0
-                    , shift: 4 //动画类型
-                },function () {
+        if ($("#files > p").isEmpty) {
+            layer.alert('请上传文件！', {
+                skin: 'layui-layer-lan'
+                , closeBtn: 0
+                , shift: 4 //动画类型
+            })
+            return;
+        } else {
+            $.ajax({
+                url: path + "/breed/saveTips",
+                data: {"bak": tips, "file_name": fileName, "ISENABLED": "1"},
+                dataType: "json",
+                success: function (result) {
+                    var list = result.obj;
+                    for (var i = 0; i < list.length; ++i) {
+                        var fileName = list[i]["file_name"];
+                        fileName = fileName.replace(/\\/g, "");
+                        list[i]["file_name"] = fileName;
+                    }
+                    layer.alert('上传成功', {
+                        skin: 'layui-layer-lan'
+                        , closeBtn: 0
+                        , shift: 4 //动画类型
+                    }, function () {
 //                    parent.parent.document.getElementById("stockTable").bootstrapTable("load", list);
-                    parent.reflush(list);
-                    parent.layer.closeAll();
-                });
-            },
-            error:function (result) {
-                console.info("保存失败！");
-            }
-        })
+                        parent.reflush(list);
+                        parent.layer.closeAll();
+                    });
+                },
+                error: function (result) {
+                    console.info("保存失败！");
+                }
+            })
+        }
     }
     function uploadCanc() {
         parent.layer.closeAll();
     }
 </script>
 <body>
-    <span class="btn btn-success fileinput-button" style="left: 335px; height: 35px;top: 20px">
+    <span class="btn btn-success fileinput-button" style="left: 460px; height: 35px;top: 20px">
             <span>上传</span>
         <!-- The file input field used as target for the file upload widget -->
             <input id="fileupload" type="file" name="eFiles" multiple>
     </span>
 
-    <div id="files" class="files" style="position: absolute;left: 142px;top: 20px;width: 200px;"></div>
-    <div id="progress" class="progress" style="position: relative; height: 5px; width: 247px; left: 142px;">
-        <div class="progress-bar progress-bar-success"></div>       
+    <div id="files" class="files" style="position: absolute;top: 28px;width: 513px;text-align: center;margin: 0 0 0px"></div>
+    <div id="progress" class="progress" style="position: relative; height: 5px; width: 509px; left: 5px; top: 20px;">
+        <div class="progress-bar progress-bar-success"></div>
     </div>
     <!-- The container for the uploaded files -->
 
     <div class="control-group">
-        <label class="control-label" style="width: 100px; left: 142px; position: relative;">备注:</label>
-        <div class="controls" style="margin-left: 142px;">
-            <input id="tips" type="text" style="width: 264px; height: 100px; margin-bottom: 0px" name="user_code" value="">
+        <label class="control-label" style="width: 100px; left: 5px; position: relative;top: 20px;">备注:</label>
+        <div class="controls" style="margin-left: 5px;position: relative;top: 20px;">
+            <input id="tips" type="text" style="width: 510px; height: 130px; margin-bottom: 0px" name="user_code" value="">
         </div>
     </div>
 
-    <div class="form-actions" style="position: relative; padding-left: 180px; float: left; margin-bottom: 0px;">
+    <div class="form-actions" style="position: relative; padding-left: 120px; float: left; margin-bottom: 0px;margin-top: 0px;top: 20px;">
         <button type="button" class="btn blue" onclick="uploadSubm()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <button type="button" class="btn" onclick="uploadCanc()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn" style="position: relative; left: 60px;" onclick="uploadCanc()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
     </div>
 
 </body>

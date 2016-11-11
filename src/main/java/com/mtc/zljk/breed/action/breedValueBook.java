@@ -7,6 +7,7 @@ import com.mtc.zljk.util.common.Const;
 import com.mtc.zljk.util.common.Json;
 import com.mtc.zljk.util.common.Page;
 import com.mtc.zljk.util.common.PageData;
+import org.apache.commons.beanutils.converters.IntegerConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -47,7 +48,7 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
 
     private String filePath = "modules/file/upload/";
 
-    private String downloadPath = "modules\\file\\download\\";
+    private String tempPath = "modules/file/upload/temp";
 
     private String[] needReplaceChar = {"[", "]", "{", "}"};
 
@@ -84,7 +85,7 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
     @ResponseBody
     void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "eFiles", required = false) MultipartFile file) {
         Json j = new Json();
-        String realpath = request.getSession().getServletContext().getRealPath(filePath);
+        String realpath = request.getSession().getServletContext().getRealPath(tempPath);
         String fileName = file.getOriginalFilename();
         File f = new File(realpath + "/" + fileName);
         String Msg = "";
@@ -121,18 +122,25 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         PageData pd = this.getPageData();
         SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
         String realpath = request.getSession().getServletContext().getRealPath(filePath);
+        String tPath = request.getSession().getServletContext().getRealPath(tempPath);
         String escapePath = StringUtils.replace(realpath, "\\", "\\\\");
         String fileName = pd.get("file_name").toString();
+        File f = new File(tPath + "/" + fileName);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatStr = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String dateStr = formatter.format(date);
+        File realFile = new File(realpath + "/" + fileName + "_" + formatStr);
+        FileUtils.copyFileToDirectory(f, realFile);
         String reName = fileName;
         Date curTime = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
         if (!fileName.isEmpty()) {
             for (String s : needReplaceChar) {
                 reName = StringUtils.replace(reName, s, "\\\\" + s);
             }
             pd.put("file_name", reName);
-            pd.put("file_path", escapePath);
+            pd.put("file_path", escapePath + "\\" + fileName + "_" + formatStr);
             pd.put("download_num", 0);
             pd.put("create_person", user.getId());
             pd.put("create_date", formatterDate.format(curTime));
@@ -160,7 +168,7 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         pd.put("user_id", user.getId());
         int i = sdFileService.updateStatus(pd);
         List<PageData> lcd = new ArrayList<>();
-        if (i == 1) {
+        if (i  >= 1) {
             PageData pageData = new PageData();
             pageData.put("ISENABLED", "1");
             lcd = sdFileService.selectByStatus(pageData);
@@ -181,13 +189,14 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         String path = servletContext.getRealPath("/");
         String fileName = request.getParameter("fileName");
         String dirName = request.getParameter("dirName");
-        String filePath =  path + "modules/file/" + dirName + "/" + fileName;
+        String dir = request.getParameter("direct");
+//        String filePath =  path + "modules/file/" + dirName + "/" + fileName;
 
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         OutputStream fos = null;
         InputStream fis = null;
-        File uploadFile = new File(filePath);
+        File uploadFile = new File(dir);
         fis = new FileInputStream(uploadFile);
         bis = new BufferedInputStream(fis);
         response.reset();
@@ -214,8 +223,6 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
         pd.put("id", fileId);
         SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
-        pd.put("modify_date", formatterDate.format(curTime));
-        pd.put("modify_time", formatter.format(curTime));
         pd.put("user_id", user.getId());
         sdFileService.updateDownloadNum(pd);
     }
