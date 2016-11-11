@@ -100,8 +100,8 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
                 FileUtils.copyInputStreamToFile(file.getInputStream(), f);
                 Msg = "1";
                 j.setSuccess(true);
-            } else if (!(type.toLowerCase().equals("doc") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))) {
-                Msg = "当前上传只支持doc、pdf、xlsx文件类型！";
+            } else if (!(type.toLowerCase().equals("docx") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))) {
+                Msg = "当前上传只支持docx、pdf、xlsx文件类型！";
                 j.setSuccess(false);
             } else if (file.getSize() > uploadFileMaxSize) {
                 Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "M ！";
@@ -130,17 +130,19 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         SimpleDateFormat formatStr = new SimpleDateFormat("yyyyMMddHHmmss");
         SimpleDateFormat formatterDate = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
-        String dateStr = formatter.format(date);
-        File realFile = new File(realpath + "/" + fileName + "_" + formatStr);
-        FileUtils.copyFileToDirectory(f, realFile);
+        String dateStr = formatStr.format(date);
+        String[] name = fileName.split("\\.");
+        File realFile = new File(realpath + name[0] + "_" + dateStr + "." + name[1]);
+        FileUtils.copyFile(f, realFile);
         String reName = fileName;
         Date curTime = new Date();
         if (!fileName.isEmpty()) {
             for (String s : needReplaceChar) {
                 reName = StringUtils.replace(reName, s, "\\\\" + s);
+                name[0] = StringUtils.replace(name[0], s, "\\\\" + s);
             }
             pd.put("file_name", reName);
-            pd.put("file_path", escapePath + "\\" + fileName + "_" + formatStr);
+            pd.put("file_path", escapePath + name[0] +  "_" + dateStr + "." + name[1]);
             pd.put("download_num", 0);
             pd.put("create_person", user.getId());
             pd.put("create_date", formatterDate.format(curTime));
@@ -191,7 +193,7 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         String dirName = request.getParameter("dirName");
         String dir = request.getParameter("direct");
 //        String filePath =  path + "modules/file/" + dirName + "/" + fileName;
-
+        dir = StringUtils.replace(StringUtils.replace(dir, "\\\\", "\\"), "\\]", "]");
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         OutputStream fos = null;
