@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SBGrowingStdMapper">
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+    <select id="selectByVarietyId" parameterType="pd" resultType="pd">
+        select
+              id,
+              variety_id,
+              variety,
+              grow_week_age,
+              female_week_avg_weed_out,
+              female_week_total_weed_out,
+              female_life,
+              male_weight,
+              female_weight,
+              avg_feed_daliy,
+              total_feed,
+              evenness,
+              female_max_std_weight,
+              female_min_std_weight,
+              create_person,
+              create_date,
+              create_time,
+              modify_person,
+              modify_date,
+              modify_time
+        from s_b_growing_std where 1=1
+        <if test="variety_id != null">
+          and variety_id = #{variety_id}
+        </if>
+        <if test="variety_id == null">
+          and variety_id = 1
+        </if>
+    </select>
+</mapper>

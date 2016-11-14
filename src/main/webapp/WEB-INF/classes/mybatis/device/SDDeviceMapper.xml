@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SDDeviceMapper">
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+
+    <!-- 查询数据 -->
+    <select id="findDevice" parameterType="pd" resultType="pd" useCache="false">
+        SELECT distinct device_code device_id
+                ,bak1 app_key
+        FROM s_d_device
+        WHERE device_type=#{device_type}
+              and d_status=2
+    </select>
+
+</mapper>

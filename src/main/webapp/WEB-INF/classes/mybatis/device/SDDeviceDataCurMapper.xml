@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SDDeviceDataCurMapper">
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+
+    <!-- 查询数据 -->
+    <select id="findById" parameterType="pd" resultType="pd" useCache="false">
+        SELECT * FROM s_d_device_data_cur
+        WHERE id = #{id}
+    </select>
+
+    <!-- 清除数据 -->
+    <delete id="delete" parameterType="pd" flushCache="false">
+        DELETE FROM s_d_device_data_cur
+        where id = #{id}
+    </delete>
+
+    <!-- 插入数据 -->
+    <insert id="insert" parameterType="pd" flushCache="false">
+        INSERT INTO s_d_device_data_cur(id
+                                        , device_id
+                                        , device_type
+                                        , port_id
+                                        , source_code
+                                        , alarm_code
+                                        , set_temp
+                                        , outside_temp
+                                        , avg_temp
+                                        , inside_temp1
+                                        , inside_temp2
+                                        , inside_temp3
+                                        , inside_temp4
+                                        , humidity
+                                        , water_consumption
+                                        , negative_pressure
+                                        , co2
+                                        , small_fan_1
+                                        , small_fan_2
+                                        , small_fan_3
+                                        , larger_fan_1
+                                        , larger_fan_2
+                                        , larger_fan_3
+                                        , fenestella
+                                        , skateboard
+                                        , refrigeration
+                                        , heating
+                                        ,collect_datetime)
+        VALUES (#{id}
+                ,#{device_id}
+                ,#{device_type}
+                ,#{port_id}
+                ,#{source_code}
+                ,#{alarm_code}
+                ,#{set_temp}
+                ,#{outside_temp}
+                ,#{avg_temp}
+                ,#{inside_temp1}
+                ,#{inside_temp2}
+                ,#{inside_temp3}
+                ,#{inside_temp4}
+                ,#{humidity}
+                ,#{water_consumption}
+                ,#{negative_pressure}
+                ,#{co2}
+                ,#{small_fan_1}
+                ,#{small_fan_2}
+                ,#{small_fan_3}
+                ,#{larger_fan_1}
+                ,#{larger_fan_2}
+                ,#{larger_fan_3}
+                ,#{fenestella}
+                ,#{skateboard}
+                ,#{refrigeration}
+                ,#{heating}
+                ,current_timestamp())
+    </insert>
+    
+    <update id="updateYT" parameterType="pd" flushCache="false">
+		update  s_d_device_data_cur
+		       set collect_datetime			= #{collect_datetime}
+			<if test="co2 != null and co2 != ''">
+				, co2				= #{co2}
+			</if>
+			<if test="negative_pressure != null and negative_pressure != ''">
+				, negative_pressure				= #{negative_pressure}
+			</if>
+			where 
+				device_id = #{device_id} and  device_type=#{device_type} and port_id=#{port_id}
+	</update>
+    
+    
+
+</mapper>

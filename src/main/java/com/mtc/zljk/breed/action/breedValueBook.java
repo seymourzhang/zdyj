@@ -1,5 +1,6 @@
 package com.mtc.zljk.breed.action;
 
+import com.mtc.zljk.breed.service.SBGrowingStdService;
 import com.mtc.zljk.breed.service.SDFileService;
 import com.mtc.zljk.user.entity.SDUser;
 import com.mtc.zljk.util.action.BaseAction;
@@ -42,6 +43,9 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
     @Autowired
     private SDFileService sdFileService;
 
+    @Autowired
+    private SBGrowingStdService sbGrowingStdService;
+
     ServletContext servletContext;
 
     private int uploadFileMaxSize = 10 * 1024 * 1024; //10M
@@ -80,10 +84,22 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         return mav;
     }
 
+    @RequestMapping("/breedStandardView")
+    public ModelAndView breedStandard(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
+        ModelAndView mav = this.getModelAndView();
+        PageData pd = new PageData();
+        List<PageData> ldp = sbGrowingStdService.selectByVarietyId(pd);
+        JSONArray a = new JSONArray();
+        for (PageData data : ldp) {
+            a.put(data);
+        }
+        mav.addObject("standards", a);
+        mav.setViewName("modules/breed/breedStandard");
+        return mav;
+    }
+
     @RequestMapping("/newUpload")
-    public
-    @ResponseBody
-    void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "eFiles", required = false) MultipartFile file) {
+    public void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "eFiles", required = false) MultipartFile file) {
         Json j = new Json();
         String realpath = request.getSession().getServletContext().getRealPath(tempPath);
         String fileName = file.getOriginalFilename();

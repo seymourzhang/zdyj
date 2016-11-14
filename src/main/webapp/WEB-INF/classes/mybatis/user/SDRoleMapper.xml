@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="SDRoleMapper" >
+  <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+
+    <select id="getRoleList" resultType="pd" useCache="false">
+      SELECT   role_id, 
+		       role_name, 
+		       create_person, 
+		       create_date, 
+		       create_time, 
+		       modify_person, 
+		       modify_date, 
+		       modify_time 
+		FROM   s_d_role
+		order by role_id
+    </select>
+     <!-- 通过用户id查询所属角色 -->
+    <select id="getRoleByUserId" resultType="pd" useCache="false">
+      SELECT id, 
+             user_id, 
+             role_id, 
+             create_person, 
+             create_date, 
+             create_time, 
+             modify_person, 
+             modify_date, 
+             modify_time 
+	  FROM   s_d_user_role
+	  where user_id= #{user_id}
+    </select>
+    <!-- 新增用户所属角色 -->
+	<insert id="saveUserRole" parameterType="pd" flushCache="false">
+		INSERT INTO s_d_user_role(
+		     user_id, 
+		     role_id,
+		     create_person, 
+		     create_date, 
+		     create_time, 
+		     modify_person, 
+		     modify_date, 
+		     modify_time
+		  ) VALUES(
+		    #{user_id},
+			#{role_id},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		  )
+	</insert>
+	<!-- 修改用户信息 -->
+	<update id="editUserRole" parameterType="pd" flushCache="false">
+		update  s_d_user_role
+			set modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			<if test="role_id != null and role_id != ''">
+				,role_id = #{role_id}
+			</if>
+			where 
+				user_id = #{user_id}
+	</update>
+	
+    
+</mapper>

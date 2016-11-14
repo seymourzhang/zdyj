@@ -3,6 +3,7 @@ package com.mtc.zljk.breed.service.impl;
 import com.mtc.zljk.breed.service.SDFileService;
 import com.mtc.zljk.util.common.PageData;
 import com.mtc.zljk.util.dao.impl.DaoSupport;
+import org.apache.commons.collections.functors.ExceptionPredicate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -46,8 +47,13 @@ public class SDFileServiceImpl implements SDFileService{
         return (int) dao.save("SDfileMapper.insert", pd);
     }
 
+    /***
+     * 修改下载次数
+     * @param pd
+     * @return
+     * @throws Exception
+     */
     public int updateDownloadNum(PageData pd) throws Exception{
         return (int) dao.update("SDfileMapper.updateDownloadNum", pd);
     }
-
 }

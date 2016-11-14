@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SDfileMapper">
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+        <select id="selectByStatus" resultType="pd" parameterType="pd" useCache="false">
+            select *
+            from s_d_file
+            where ISENABLED = #{ISENABLED}
+            ORDER BY create_time DESC
+        </select>
+
+        <update id="updateStatus" parameterType="pd">
+            UPDATE s_d_file set ISENABLED = 2, modify_date = curdate(), modify_time = curdate(), modify_person = #{user_id} where id in (${id})
+        </update>
+
+        <insert id="insert" parameterType="pd" flushCache="false">
+            INSERT INTO s_d_file (file_name, ISENABLED, file_path, download_num, bak, create_person, create_date, create_time, modify_person, modify_date, modify_time)
+              values(#{file_name},
+                      #{ISENABLED},
+                      #{file_path},
+                      #{download_num},
+                      #{bak},
+                      #{create_person},
+                      #{create_date},
+                      #{create_time},
+                      #{modify_person},
+                      #{modify_date},
+                      #{modify_time})
+        </insert>
+
+        <update id="updateDownloadNum" parameterType="pd">
+            UPDATE s_d_file set download_num = download_num + 1 where id = #{id}
+        </update>
+</mapper>

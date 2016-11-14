@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="SBFarmTaskMapper" >
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+    <insert id="insertBatch" parameterType="pd">
+        INSERT INTO s_b_farm_task (farm_id, 
+                                    farm_name, 
+                                    task_id, 
+                                    task_name, 
+                                    task_type, 
+                                    task_status, 
+                                    date_type, 
+                                    date_values, 
+                                    week_group, 
+                                    create_person, 
+                                    create_date, 
+                                    create_time, 
+                                    modify_person, 
+                                    modify_date, 
+                                    modify_time)
+        VALUES
+              (#{farm_id},#{farm_name},#{task_id},#{task_name},
+              #{task_type},#{task_status},#{date_type},#{date_values},
+              #{week_group},#{create_person},#{create_date},#{create_time},
+              #{modify_person},#{modify_date},#{modify_time})
+    </insert>
+
+    <select id="selectByUserIdOrStatus" resultType="pd" useCache="false">
+        SELECT
+              f.id,
+              f.farm_id,
+              f.task_id,
+              f.task_name,
+              f.task_type,
+              f.task_status,
+              f.date_type,
+              f.date_values,
+              f.week_group,
+              (SELECT c.code_name FROM s_d_code c where c.code_type = 'task_type' AND f.task_type = c.biz_code) AS taskType,
+              (SELECT d.code_name FROM s_d_code d WHERE d.code_type = 'date_type' AND f.date_type = d.biz_code) AS dateType
+        FROM s_b_farm_task f
+        WHERE f.farm_id IN (${farmIds}) AND f.task_status = 'Y'
+    </select>
+
+    <update id="updateTaskStatus" parameterType="pd">
+        UPDATE s_b_farm_task SET task_status = 'N' WHERE id IN (${id});
+    </update>
+</mapper>

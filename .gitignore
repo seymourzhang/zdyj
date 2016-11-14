@@ -1,12 +1,12 @@
-.svn
-.svn\
-.svn\*
-.idea
-.idea\
-.idea\*
-target
-target\
-target\*
-target\..\*
+\.svn
+\.svn\
+\.svn\*
+\.idea
+\.idea\
+\.idea\*
+\target
+\target\
+\target\*
+\target\..\*
 *.class
 
