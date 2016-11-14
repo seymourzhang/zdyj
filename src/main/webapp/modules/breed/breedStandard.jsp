@@ -38,26 +38,70 @@
             title: "生长周龄",
         }, {
             title: "母鸡死淘率%",
-//            title: "每周平均",
-//            field: "female_week_total_weed_out",
-            mergeCells:function (options) {
-                index = 1;
-                options.field = "female_week_avg_weed_out";
-                options.title = "母鸡死淘率%";
-                options.rowspan = 3;
-                options.colspan = 4;
-                index = 2;
-                options.field = "female_week_avg_weed_out";
-                options.title = "母鸡死淘率%";
-                options.rowspan = 3;
-                options.colspan = 4;
-            }
+            colspan: 2,
         }, {
-            field: "bak",
-            title: "备注"
+            field: "female_week_avg_weed_out",
+            title: "每周平均",
         }, {
-            field: "create_time",
-            title: "上传时间"
+            field: "female_week_total_weed_out",
+            title: "累计",
+        }, {
+            field: "female_life",
+            title: "母鸡成活率%",
+        }, {
+            title: "平均体重（克）",
+            colspan: 2,
+        }, {
+            field: "female_weight",
+            title: "母鸡",
+        }, {
+            field: "male_weight",
+            title: "公鸡",
+        }, {
+            title: "产蛋率%",
+            colspan: 2,
+        }, {
+            field: "cl_laying_rate",
+            title: "存栏鸡",
+        }, {
+            field: "rs_laying_rate",
+            title: "入舍鸡",
+        }, {
+            title: "每只入舍母鸡产蛋数（枚）",
+            colspan: 2,
+        }, {
+            field: "rs_female_laying_avg_count",
+            title: "每周平均",
+        }, {
+            field: "rs_female_laying_total_count",
+            title: "累计",
+        }, {
+            field: "qualified_egg_rate",
+            title: "合格种蛋率%",
+        }, {
+            title: "每只入舍母鸡产合格种蛋数（枚）",
+            colspan: 2,
+        }, {
+            field: "rs_female_avg_qualified_count",
+            title: "每周平均",
+        }, {
+            field: "rs_female_total_qualified_count",
+            title: "累计",
+        }, {
+            field: "chick_hatching_rate",
+            title: "雏鸡孵化率%",
+        }, {
+            field: "chick_hatching_rate",
+            title: "种雏孵化率%",
+        }, {
+            title: "种雏数（只）",
+            colspan: 2,
+        }, {
+            field: "breeding_chick_avg_count",
+            title: "每周平均",
+        }, {
+            field: "breeding_chick_total_count",
+            title: "累计",
         }];
         return dataColumns;
     };

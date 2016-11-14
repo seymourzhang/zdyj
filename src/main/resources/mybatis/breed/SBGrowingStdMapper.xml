@@ -5,32 +5,48 @@
     <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
     <select id="selectByVarietyId" parameterType="pd" resultType="pd">
         select
-              id,
-              variety_id,
-              variety,
-              grow_week_age,
-              female_week_avg_weed_out,
-              female_week_total_weed_out,
-              female_life,
-              male_weight,
-              female_weight,
-              avg_feed_daliy,
-              total_feed,
-              evenness,
-              female_max_std_weight,
-              female_min_std_weight,
-              create_person,
-              create_date,
-              create_time,
-              modify_person,
-              modify_date,
-              modify_time
-        from s_b_growing_std where 1=1
+            gs.variety_id,
+            gs.variety,
+            gs.grow_week_age,
+            gs.female_week_avg_weed_out,
+            gs.female_week_total_weed_out,
+            gs.female_life,
+            gs.male_weight,
+            gs.female_weight,
+            gs.avg_feed_daliy,
+            gs.total_feed,
+            gs.evenness,
+            gs.female_max_std_weight,
+            gs.female_min_std_weight,
+            les.variety_id,
+            les.variety,
+            les.grow_week_age,
+            les.lay_egg_week_age,
+            les.female_week_avg_weed_out,
+            les.female_week_total_weed_out,
+            les.female_life,
+            les.male_weight,
+            les.female_weight,
+            les.cl_laying_rate,
+            les.rs_laying_rate,
+            les.rs_female_laying_avg_count,
+            les.rs_female_laying_total_count,
+            les.qualified_egg_rate,
+            les.rs_female_avg_qualified_count,
+            les.rs_female_total_qualified_count,
+            les.chick_hatching_rate,
+            les.breeding_chick_hatching,
+            les.breeding_chick_avg_count,
+            les.breeding_chick_total_count,
+            les.create_person
+        from s_b_growing_std gs
+        LEFT join s_b_lay_egg_std les on gs.variety_id = les.variety_id
+        where 1=1
         <if test="variety_id != null">
-          and variety_id = #{variety_id}
+          and gs.variety_id = #{variety_id}
         </if>
         <if test="variety_id == null">
-          and variety_id = 1
+          and gs.variety_id = 1
         </if>
     </select>
 </mapper>
