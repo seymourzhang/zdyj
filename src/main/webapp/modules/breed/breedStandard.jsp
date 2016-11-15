@@ -26,11 +26,14 @@
     <script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
     <script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
     <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
+
+    <script type="text/javascript" src="<%=path%>/modules/breed/js/breedStandard.js"></script>
 </head>
 <script>
     $(function () {
         getColumns();
         initTable("breedSTD", getColumns(), ${standards});
+        $("#varietyName").init();
     });
     function getColumns() {
         var dataColumns = [{
@@ -38,77 +41,192 @@
             title: "生长周龄",
         }, {
             title: "母鸡死淘率%",
-            colspan: 2,
-        }, {
-            field: "female_week_avg_weed_out",
-            title: "每周平均",
-        }, {
-            field: "female_week_total_weed_out",
-            title: "累计",
-        }, {
+        },{
             field: "female_life",
             title: "母鸡成活率%",
         }, {
             title: "平均体重（克）",
-            colspan: 2,
-        }, {
-            field: "female_weight",
-            title: "母鸡",
-        }, {
-            field: "male_weight",
-            title: "公鸡",
-        }, {
+        },{
             title: "产蛋率%",
-            colspan: 2,
-        }, {
-            field: "cl_laying_rate",
-            title: "存栏鸡",
-        }, {
-            field: "rs_laying_rate",
-            title: "入舍鸡",
         }, {
             title: "每只入舍母鸡产蛋数（枚）",
-            colspan: 2,
-        }, {
-            field: "rs_female_laying_avg_count",
-            title: "每周平均",
-        }, {
-            field: "rs_female_laying_total_count",
-            title: "累计",
         }, {
             field: "qualified_egg_rate",
             title: "合格种蛋率%",
-        }, {
+        },{
             title: "每只入舍母鸡产合格种蛋数（枚）",
-            colspan: 2,
-        }, {
-            field: "rs_female_avg_qualified_count",
-            title: "每周平均",
-        }, {
-            field: "rs_female_total_qualified_count",
-            title: "累计",
         }, {
             field: "chick_hatching_rate",
             title: "雏鸡孵化率%",
         }, {
-            field: "chick_hatching_rate",
+            field: "breeding_chick_hatching",
             title: "种雏孵化率%",
         }, {
             title: "种雏数（只）",
-            colspan: 2,
-        }, {
-            field: "breeding_chick_avg_count",
-            title: "每周平均",
-        }, {
-            field: "breeding_chick_total_count",
-            title: "累计",
         }];
         return dataColumns;
     };
 </script>
 <body>
-    <div style="position: relative;top: 70px;width:99%;">
-        <table id="breedSTDTable"></table>
+    <div id="page-content" class="clearfix" style="padding-top: 10px;">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="tabbable tabbable-custom boxless">
+                    <ul class="nav nav-pills" style="margin-bottom: 0px;" id = "uiTab">
+                        <li  class="active" style="text-align: center; width:33%; background-color: #BFBFBF;border-right: 1px solid #E0DFDF;" >
+                            <a href="#tab_1" data-toggle="tab" onclick="BroilerHlh(1);">海兰褐父母代育成</a>
+                        </li>
+                        <li  style="text-align: center; width:33%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF;" >
+                            <a href="#tab_2" data-toggle="tab" onclick="BroilerHlh(3);">罗曼褐父母代育成</a>
+                        </li>
+                        <li  style="text-align: center; width:33%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF; " >
+                            <a href="#tab_3" data-toggle="tab" onclick="BroilerHlh(2);">罗曼褐父母代产蛋</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" style="border:none">
+                        <%-- 海兰褐父母代育成 --%>
+                        <div class="tab-pane active" id="tab_1">
+                            <div style="position: relative;top: 70px;width:99%;">
+                                <%--<table id="breedSTDTable"></table>--%>
+                                <div class="bootstrap-table">
+                                    <div class="fixed-table-container">
+                                        <div class="fixed-table-body">
+                                            <table id="varietyName1">
+                                                <tr>
+                                                    <th data-valign="middle" data-align="center">${varietyName}</th>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="breedSTD1Table">
+                                    <thead>
+                                    <tr>
+                                        <th rowspan="2" data-valign="middle" data-align="center">生长周龄</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">母鸡死淘率%</th>
+                                        <th rowspan="2" data-field="female_life" data-valign="middle" data-align="center">母鸡成活率%</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">平均体重（克）</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">饲料消耗（克/只）</th>
+                                        <th rowspan="2" data-field="chick_hatching_rate" data-valign="middle" data-align="center">均匀度%</th>
+                                        <th rowspan="2" colspan="2" data-field="breeding_chick_hatching" data-valign="middle" data-align="center">母鸡体重范围</th>
+                                    </tr>
+                                    <tr>
+                                        <th data-field="female_week_avg_weed_out" data-align="center">每周平均</th>
+                                        <th data-field="female_week_total_weed_out" data-align="center">累计</th>
+
+                                        <th data-field="female_weight" data-align="center">母鸡</th>
+                                        <th data-field="male_weight" data-align="center">公鸡</th>
+
+                                        <th data-field="avg_feed_daliy" data-align="center">克/只/天</th>
+                                        <th data-field="total_feed" data-align="center">累计</th>
+
+                                        <th data-field="female_min_std_weight" data-align="center"></th>
+                                        <th data-field="female_max_std_weight" data-align="center"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <%-- 罗曼褐父母代育成 --%>
+                        <div class="tab-pane active" id="tab_2">
+                            <div style="position: relative;top: 70px;width:99%;">
+                                <%--<table id="breedSTDTable"></table>--%>
+                                <div class="bootstrap-table">
+                                    <div class="fixed-table-container">
+                                        <div class="fixed-table-body">
+                                            <table id="varietyName2">
+                                                <tr>
+                                                    <th data-valign="middle" data-align="center">${varietyName}</th>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="breedSTD2Table">
+                                    <thead>
+                                    <tr>
+                                        <th rowspan="2" data-valign="middle" data-align="center">生长周龄</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">母鸡死淘率%</th>
+                                        <th rowspan="2" data-field="female_life" data-valign="middle" data-align="center">母鸡成活率%</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">平均体重（克）</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">饲料消耗（克/只）</th>
+                                        <th rowspan="2" data-field="chick_hatching_rate" data-valign="middle" data-align="center">均匀度%</th>
+                                        <th rowspan="2" colspan="2" data-field="breeding_chick_hatching" data-valign="middle" data-align="center">母鸡体重范围</th>
+                                    </tr>
+                                    <tr>
+                                        <th data-field="female_week_avg_weed_out" data-align="center">每周平均</th>
+                                        <th data-field="female_week_total_weed_out" data-align="center">累计</th>
+
+                                        <th data-field="female_weight" data-align="center">母鸡</th>
+                                        <th data-field="male_weight" data-align="center">公鸡</th>
+
+                                        <th data-field="avg_feed_daliy" data-align="center">克/只/天</th>
+                                        <th data-field="total_feed" data-align="center">累计</th>
+
+                                        <th data-field="female_min_std_weight" data-align="center"></th>
+                                        <th data-field="female_max_std_weight" data-align="center"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <%-- 海兰褐父母代产蛋 --%>
+                        <div class="tab-pane active" id="tab_3">
+                            <div style="position: relative;top: 70px;width:99%;">
+                                <%--<table id="breedSTDTable"></table>--%>
+                                <div class="bootstrap-table">
+                                    <div class="fixed-table-container">
+                                        <div class="fixed-table-body">
+                                            <table id="varietyName3">
+                                                <tr>
+                                                    <th data-valign="middle" data-align="center">${varietyName}</th>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table id="breedSTD3Table">
+                                    <thead>
+                                    <tr>
+                                        <th rowspan="2" data-valign="middle" data-align="center">生长周龄</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">母鸡死淘率%</th>
+                                        <th rowspan="2" data-field="female_life" data-valign="middle" data-align="center">母鸡成活率%</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">平均体重（克）</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">产蛋率%</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">每只入舍母鸡产蛋数（枚）</th>
+                                        <th rowspan="2" data-field="qualified_egg_rate" data-valign="middle" data-align="center">合格种蛋率%</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">每只入舍母鸡产合格种蛋数（枚）</th>
+                                        <th rowspan="2" data-field="chick_hatching_rate" data-valign="middle" data-align="center">雏鸡孵化率%</th>
+                                        <th rowspan="2" data-field="breeding_chick_hatching" data-valign="middle" data-align="center">种雏孵化率%</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">种雏数（只）</th>
+                                    </tr>
+                                    <tr>
+                                        <th data-field="female_week_avg_weed_out" data-align="center">每周平均</th>
+                                        <th data-field="female_week_total_weed_out" data-align="center">累计</th>
+
+                                        <th data-field="female_weight" data-align="center">母鸡</th>
+                                        <th data-field="male_weight" data-align="center">公鸡</th>
+
+                                        <th data-field="cl_laying_rate" data-align="center">存栏鸡</th>
+                                        <th data-field="rs_laying_rate" data-align="center">入舍鸡</th>
+
+                                        <th data-field="rs_female_laying_avg_count" data-align="center">每周平均</th>
+                                        <th data-field="rs_female_laying_total_count" data-align="center">累计</th>
+
+                                        <th data-field="rs_female_avg_qualified_count" data-align="center">每周平均</th>
+                                        <th data-field="rs_female_total_qualified_count" data-align="center">累计</th>
+
+                                        <th data-field="breeding_chick_avg_count" data-align="center">每周平均</th>
+                                        <th data-field="breeding_chick_total_count" data-align="center">累计</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -19,4 +19,8 @@ public class SBGrowingStdServiceImpl implements SBGrowingStdService{
     public List<PageData> selectByVarietyId(PageData pd) throws Exception{
         return (List<PageData>) dao.findForList("SBGrowingStdMapper.selectByVarietyId", pd);
     }
+
+    public List<PageData> selectBroilByVarietyId(PageData pd) throws Exception{
+        return (List<PageData>) dao.findForList("SBGrowingStdMapper.selectBroilByVarietyId", pd);
+    }
 }

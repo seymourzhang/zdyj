@@ -88,14 +88,39 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
     public ModelAndView breedStandard(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception{
         ModelAndView mav = this.getModelAndView();
         PageData pd = new PageData();
-        List<PageData> ldp = sbGrowingStdService.selectByVarietyId(pd);
+        List<PageData> ldp = sbGrowingStdService.selectBroilByVarietyId(pd);
         JSONArray a = new JSONArray();
         for (PageData data : ldp) {
             a.put(data);
         }
-        mav.addObject("standards", a);
+        mav.addObject("varietyName", ldp.size() == 0 ? null : ldp.get(0).get("variety"));
+        mav.addObject("standards", ldp.size() == 0 ? null : a);
         mav.setViewName("modules/breed/breedStandard");
         return mav;
+    }
+
+    @RequestMapping("/searchBreedStandard")
+    public void searchBreedStandard(HttpSession session, HttpServletResponse response) throws Exception{
+        Json j = new Json();
+        PageData pd = this.getPageData();
+        String varietyId = pd.get("variety_id").toString();
+        List<PageData> lpd = new ArrayList<>();
+        if ("3".equals(varietyId)) {
+            pd.put("variety_id", 2);
+            lpd = sbGrowingStdService.selectByVarietyId(pd);
+        }else if ("1".equals(varietyId)){
+            lpd = sbGrowingStdService.selectBroilByVarietyId(pd);
+        }else if ("2". equals(varietyId)){
+            lpd = sbGrowingStdService.selectBroilByVarietyId(pd);
+        }
+        if (lpd.size() != 0) {
+            j.setObj(lpd);
+            j.setSuccess(true);
+        }else{
+            j.setMsg("暂无数据！");
+            j.setSuccess(false);
+        }
+        super.writeJson(j, response);
     }
 
     @RequestMapping("/newUpload")

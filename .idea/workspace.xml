@@ -2,37 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="7c407c5e-5728-4549-8de2-9164f1c37940" name="Default" comment="养殖宝典--公司政策文件">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/mybatis/breed" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/classes" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/js" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SBGrowingStdService.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SDFileService.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStdServiceImpl.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SDFileServiceImpl.java" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/mybatis/breed/SBGrowingStdMapper.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/mybatis/breed/SDfileMapper.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/framework/jquery/jquery.fileupload.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/framework/jquery/jquery.iframe-transport.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/framework/jquery/jquery.ui.widget.js" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/breedStandard.jsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/companyFile.jsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/css/bootstrap.min.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/css/jquery.fileupload.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/css/style.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/editFile.jsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/modules/breed/js/breedStandard.js" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zdyj.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/device/service/impl/DeviceServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/device/service/impl/DeviceServiceImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/action/MissionRemindAction.java" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/action/MissionRemindAction.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/spring/spring-mvc.xml" afterPath="$PROJECT_DIR$/src/main/resources/spring/spring-mvc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/product/js/missionRemind.js" afterPath="$PROJECT_DIR$/src/main/webapp/modules/product/js/missionRemind.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/product/missionRemind.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/modules/product/missionRemind.jsp" />
     </list>
     <ignored path="zdyj.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -71,8 +51,8 @@
       <file leaf-file-name="BreedValueBook.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="629">
-              <caret line="220" column="41" selection-start-line="220" selection-start-column="41" selection-end-line="220" selection-end-column="41" />
+            <state relative-caret-position="249">
+              <caret line="90" column="71" selection-start-line="90" selection-start-column="71" selection-end-line="90" selection-end-column="71" />
               <folding />
             </state>
           </provider>
@@ -81,42 +61,69 @@
       <file leaf-file-name="breedStandard.jsp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/breed/breedStandard.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="933">
-              <caret line="55" column="24" selection-start-line="55" selection-start-column="24" selection-end-line="55" selection-end-column="24" />
+            <state relative-caret-position="1788">
+              <caret line="168" column="44" selection-start-line="168" selection-start-column="44" selection-end-line="168" selection-end-column="44" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="bootstrap-table.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/framework/js/bootstrap_table/bootstrap-table.js">
+      <file leaf-file-name="breedStandard.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/breed/js/breedStandard.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="55860">
-              <caret line="2940" column="9" selection-start-line="2940" selection-start-column="9" selection-end-line="2940" selection-end-column="9" />
+            <state relative-caret-position="1444">
+              <caret line="76" column="65" selection-start-line="76" selection-start-column="65" selection-end-line="76" selection-end-column="65" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="googsView.jsp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/googs/googsView.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-6194">
+              <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="21" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="googsView.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/googs/js/googsView.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2524">
+              <caret line="323" column="9" selection-start-line="323" selection-start-column="9" selection-end-line="323" selection-end-column="9" />
               <folding>
-                <marker date="1477623446282" expanded="true" signature="18817:18829" ph="..." />
-                <marker date="1477623446282" expanded="true" signature="80135:80141" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="10832:10851" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="10853:10859" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="10890:10953" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="10968:11023" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11048:11086" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11132:11186" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11211:11249" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11294:11349" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11485:11566" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11581:11636" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11716:11754" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11756:11762" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="11807:11845" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="11914:11968" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12049:12087" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12089:12095" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="12145:12183" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12249:12304" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12440:12506" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12521:12577" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12584:12590" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="12590:12596" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="12623:12652" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12706:12777" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12786:12792" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="12792:12798" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="12870:12941" ph="..." />
+                <marker date="1478773033997" expanded="true" signature="12949:12955" ph="&amp;nbsp;" />
+                <marker date="1478773033997" expanded="true" signature="12955:12961" ph="&amp;nbsp;" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="table.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/framework/table/table.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2318">
-              <caret line="122" column="54" selection-start-line="122" selection-start-column="40" selection-end-line="122" selection-end-column="54" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="companyFile.jsp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/breed/companyFile.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="665">
-              <caret line="35" column="27" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -124,8 +131,18 @@
       <file leaf-file-name="SBGrowingStdService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SBGrowingStdService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="9" column="38" selection-start-line="9" selection-start-column="38" selection-end-line="9" selection-end-column="38" />
+            <state relative-caret-position="190">
+              <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="table.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/framework/table/table.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="608">
+              <caret line="32" column="4" selection-start-line="32" selection-start-column="4" selection-end-line="32" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -134,8 +151,8 @@
       <file leaf-file-name="SBGrowingStdServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStdServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="247">
-              <caret line="19" column="85" selection-start-line="19" selection-start-column="85" selection-end-line="19" selection-end-column="85" />
+            <state relative-caret-position="323">
+              <caret line="23" column="97" selection-start-line="23" selection-start-column="97" selection-end-line="23" selection-end-column="97" />
               <folding />
             </state>
           </provider>
@@ -144,8 +161,8 @@
       <file leaf-file-name="SBGrowingStdMapper.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/mybatis/breed/SBGrowingStdMapper.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="912">
-              <caret line="48" column="17" selection-start-line="48" selection-start-column="17" selection-end-line="48" selection-end-column="17" />
+            <state relative-caret-position="496">
+              <caret line="46" column="76" selection-start-line="46" selection-start-column="76" selection-end-line="46" selection-end-column="76" />
               <folding />
             </state>
           </provider>
@@ -154,8 +171,8 @@
       <file leaf-file-name="console.sql" pinned="false" current-in-tab="false">
         <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/70fd8af8-1515-4e40-87f7-a75d186d33ad/console.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2394">
-              <caret line="126" column="16" selection-start-line="126" selection-start-column="16" selection-end-line="126" selection-end-column="16" />
+            <state relative-caret-position="721">
+              <caret line="125" column="87" selection-start-line="125" selection-start-column="57" selection-end-line="125" selection-end-column="87" />
               <folding />
             </state>
           </provider>
@@ -184,7 +201,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/service/organizationService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/service/OrganizationService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/service/impl/OrganizationServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/monitor/action/MonitorAction.java" />
@@ -227,13 +243,14 @@
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SBGrowingStd.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStd.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SDFileServiceImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStdServiceImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SBGrowingStdService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/framework/table/table.js" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/breed/companyFile.jsp" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/70fd8af8-1515-4e40-87f7-a75d186d33ad/console.sql" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SBGrowingStdService.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStdServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/resources/mybatis/breed/SBGrowingStdMapper.xml" />
+        <option value="$PROJECT_DIR$/src/main/webapp/modules/breed/js/breedStandard.js" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/breed/breedStandard.jsp" />
       </list>
     </option>
@@ -541,7 +558,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="WEB-INF" />
+              <option name="myItemId" value="modules" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -567,11 +584,109 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="WEB-INF" />
+              <option name="myItemId" value="modules" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="classes" />
+              <option name="myItemId" value="googs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="zdyj" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="modules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="googs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="zdyj" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="modules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="breed" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="zdyj" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="modules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="breed" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1055,6 +1170,68 @@
       <envs />
       <method />
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Cold Fusion runner description" factoryName="Cold Fusion" custom_browser="" web_path="">
+      <method />
+    </configuration>
     <configuration default="true" type="CucumberJavaRunConfigurationType" factoryName="Cucumber java">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="myFilePath" />
@@ -1137,6 +1314,14 @@
         </option>
         <option name="vmOptions" />
       </ExternalSystemSettings>
+      <method />
+    </configuration>
+    <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
+      <setting name="vmparams" value="" />
+      <setting name="cmdLine" value="run-app" />
+      <setting name="passParentEnv" value="true" />
+      <setting name="launchBrowser" value="true" />
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <method />
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
@@ -1452,7 +1637,7 @@
       <workItem from="1478844182922" duration="15666000" />
       <workItem from="1479092418896" duration="9151000" />
       <workItem from="1479106231353" duration="13401000" />
-      <workItem from="1479177543707" duration="1217000" />
+      <workItem from="1479177543707" duration="21364000" />
     </task>
     <task id="LOCAL-00001" summary="提醒任务模块！">
       <created>1477641970405</created>
@@ -1461,11 +1646,18 @@
       <option name="project" value="LOCAL" />
       <updated>1477641970405</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="养殖宝典--公司政策文件">
+      <created>1479181274688</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1479181274688</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="395414000" />
+    <option name="totallyTimeSpent" value="415561000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1494,6 +1686,7 @@
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42361864" sideWeight="0.4968017" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21908316" sideWeight="0.48754063" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.195629" sideWeight="0.5124594" order="4" side_tool="true" content_ui="tabs" />
@@ -1509,7 +1702,6 @@
       <window_info id="SVN Properties" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42361864" sideWeight="0.4968017" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -1559,14 +1751,15 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="提醒任务模块！" />
-    <option name="LAST_COMMIT_MESSAGE" value="提醒任务模块！" />
+    <MESSAGE value="养殖宝典--公司政策文件" />
+    <option name="LAST_COMMIT_MESSAGE" value="养殖宝典--公司政策文件" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="79" />
+      <option name="time" value="83" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1575,8 +1768,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2-sources.jar!/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java" />
-    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.3.2/commons-lang3-3.3.2-sources.jar!/org/apache/commons/lang3/StringEscapeUtils.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/Alidayu/job/RemindInfoFiltrateExecuteJob.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="890">
@@ -1664,13 +1855,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/googs/googsView.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="127" column="83" selection-start-line="127" selection-start-column="66" selection-end-line="127" selection-end-column="83" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/user/entity/SDUser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
@@ -1749,6 +1933,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2831">
           <caret line="149" column="38" selection-start-line="149" selection-start-column="38" selection-end-line="149" selection-end-column="38" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1757,7 +1942,7 @@
         <state relative-caret-position="87">
           <caret line="90" column="0" selection-start-line="90" selection-start-column="0" selection-end-line="90" selection-end-column="0" />
           <folding>
-            <element signature="e#2076#2077#0" expanded="true" />
+            <element signature="e#2076#2077#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1797,22 +1982,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SBGrowingStdService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="9" column="38" selection-start-line="9" selection-start-column="38" selection-end-line="9" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStdServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="19" column="85" selection-start-line="19" selection-start-column="85" selection-end-line="19" selection-end-column="85" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/target/zdyj-0.0.1-SNAPSHOT/WEB-INF/classes/com/mtc/zljk/breed/action/BreedValueBook.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-953">
@@ -1821,13 +1990,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/target/classes/com/mtc/zljk/breed/action/BreedValueBook.class" />
-    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/4.0.6.RELEASE/spring-web-4.0.6.RELEASE-sources.jar!/org/springframework/web/method/support/InvocableHandlerMethod.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="131" column="0" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1219">
@@ -1840,14 +2002,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="19">
           <caret line="6" column="1726" selection-start-line="6" selection-start-column="1726" selection-end-line="6" selection-end-column="1726" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/framework/table/table.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2318">
-          <caret line="122" column="54" selection-start-line="122" selection-start-column="40" selection-end-line="122" selection-end-column="54" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1870,34 +2024,120 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/framework/table/table.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="608">
+          <caret line="32" column="4" selection-start-line="32" selection-start-column="4" selection-end-line="32" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/googs/js/googsView.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2524">
+          <caret line="323" column="9" selection-start-line="323" selection-start-column="9" selection-end-line="323" selection-end-column="9" />
+          <folding>
+            <marker date="1478773033997" expanded="true" signature="10832:10851" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="10853:10859" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="10890:10953" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="10968:11023" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11048:11086" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11132:11186" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11211:11249" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11294:11349" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11485:11566" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11581:11636" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11716:11754" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11756:11762" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="11807:11845" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="11914:11968" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12049:12087" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12089:12095" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="12145:12183" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12249:12304" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12440:12506" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12521:12577" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12584:12590" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="12590:12596" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="12623:12652" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12706:12777" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12786:12792" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="12792:12798" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="12870:12941" ph="..." />
+            <marker date="1478773033997" expanded="true" signature="12949:12955" ph="&amp;nbsp;" />
+            <marker date="1478773033997" expanded="true" signature="12955:12961" ph="&amp;nbsp;" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/4.0.6.RELEASE/spring-web-4.0.6.RELEASE-sources.jar!/org/springframework/web/method/support/InvocableHandlerMethod.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="214" column="0" selection-start-line="214" selection-start-column="0" selection-end-line="214" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/70fd8af8-1515-4e40-87f7-a75d186d33ad/console.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2394">
-          <caret line="126" column="16" selection-start-line="126" selection-start-column="16" selection-end-line="126" selection-end-column="16" />
+        <state relative-caret-position="721">
+          <caret line="125" column="87" selection-start-line="125" selection-start-column="57" selection-end-line="125" selection-end-column="87" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/SBGrowingStdService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="190">
+          <caret line="12" column="31" selection-start-line="12" selection-start-column="31" selection-end-line="12" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStdServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="23" column="97" selection-start-line="23" selection-start-column="97" selection-end-line="23" selection-end-column="97" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/googs/googsView.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-6194">
+          <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="21" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/mybatis/breed/SBGrowingStdMapper.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="912">
-          <caret line="48" column="17" selection-start-line="48" selection-start-column="17" selection-end-line="48" selection-end-column="17" />
+        <state relative-caret-position="496">
+          <caret line="46" column="76" selection-start-line="46" selection-start-column="76" selection-end-line="46" selection-end-column="76" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/breed/js/breedStandard.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1444">
+          <caret line="76" column="65" selection-start-line="76" selection-start-column="65" selection-end-line="76" selection-end-column="65" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/modules/breed/breedStandard.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="933">
-          <caret line="55" column="24" selection-start-line="55" selection-start-column="24" selection-end-line="55" selection-end-column="24" />
+        <state relative-caret-position="1788">
+          <caret line="168" column="44" selection-start-line="168" selection-start-column="44" selection-end-line="168" selection-end-column="44" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="220" column="41" selection-start-line="220" selection-start-column="41" selection-end-line="220" selection-end-column="41" />
+        <state relative-caret-position="249">
+          <caret line="90" column="71" selection-start-line="90" selection-start-column="71" selection-end-line="90" selection-end-column="71" />
           <folding />
         </state>
       </provider>

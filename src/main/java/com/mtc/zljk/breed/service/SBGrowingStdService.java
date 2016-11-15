@@ -9,4 +9,6 @@ import java.util.List;
  */
 public interface SBGrowingStdService {
     List<PageData> selectByVarietyId(PageData pd) throws Exception;
+
+    List<PageData> selectBroilByVarietyId(PageData pd) throws Exception;
 }
