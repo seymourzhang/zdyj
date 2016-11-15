@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /.svn
 /.svn\
 /.svn\*
@@ -9,4 +10,17 @@
 /target\*
 /target\..\*
 /*.class
+=======
+\.svn
+\.svn\
+\.svn\*
+\.idea
+\.idea\
+\.idea\*
+\target
+\target\
+\target\*
+\target\..\*
+*.class
+>>>>>>> 5493c5ef7380f2e7f6809b4f2500b086f22b99d0
 

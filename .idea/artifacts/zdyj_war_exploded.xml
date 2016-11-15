@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="zdyj:war exploded">
+  <artifact type="exploded-war" build-on-make="true" name="zdyj:war exploded">
     <output-path>$PROJECT_DIR$/target/zdyj-0.0.1-SNAPSHOT</output-path>
     <root id="root">
       <element id="directory" name="WEB-INF">
