@@ -75,6 +75,7 @@ function BroilerHlh(varietyId) {
         success: function (result) {
             var list = result.obj;
             initTable("breedSTD" + varietyId, dataColumns, list);
+            $("#breedSTD" + varietyId +　"Table").bootstrapTable("load", list);
         }
     });
 }

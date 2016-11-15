@@ -31,41 +31,8 @@
 </head>
 <script>
     $(function () {
-        getColumns();
-        initTable("breedSTD", getColumns(), ${standards});
-        $("#varietyName").init();
+        BroilerHlh(1);
     });
-    function getColumns() {
-        var dataColumns = [{
-            field: "grow_week_age",
-            title: "生长周龄",
-        }, {
-            title: "母鸡死淘率%",
-        },{
-            field: "female_life",
-            title: "母鸡成活率%",
-        }, {
-            title: "平均体重（克）",
-        },{
-            title: "产蛋率%",
-        }, {
-            title: "每只入舍母鸡产蛋数（枚）",
-        }, {
-            field: "qualified_egg_rate",
-            title: "合格种蛋率%",
-        },{
-            title: "每只入舍母鸡产合格种蛋数（枚）",
-        }, {
-            field: "chick_hatching_rate",
-            title: "雏鸡孵化率%",
-        }, {
-            field: "breeding_chick_hatching",
-            title: "种雏孵化率%",
-        }, {
-            title: "种雏数（只）",
-        }];
-        return dataColumns;
-    };
 </script>
 <body>
     <div id="page-content" class="clearfix" style="padding-top: 10px;">
@@ -77,10 +44,10 @@
                             <a href="#tab_1" data-toggle="tab" onclick="BroilerHlh(1);">海兰褐父母代育成</a>
                         </li>
                         <li  style="text-align: center; width:33%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF;" >
-                            <a href="#tab_2" data-toggle="tab" onclick="BroilerHlh(3);">罗曼褐父母代育成</a>
+                            <a href="#tab_2" data-toggle="tab" onclick="BroilerHlh(2);">罗曼褐父母代育成</a>
                         </li>
                         <li  style="text-align: center; width:33%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF; " >
-                            <a href="#tab_3" data-toggle="tab" onclick="BroilerHlh(2);">罗曼褐父母代产蛋</a>
+                            <a href="#tab_3" data-toggle="tab" onclick="BroilerHlh(3);">罗曼褐父母代产蛋</a>
                         </li>
                     </ul>
                     <div class="tab-content" style="border:none">
@@ -108,7 +75,7 @@
                                         <th colspan="2" data-valign="middle" data-align="center">平均体重（克）</th>
                                         <th colspan="2" data-valign="middle" data-align="center">饲料消耗（克/只）</th>
                                         <th rowspan="2" data-field="chick_hatching_rate" data-valign="middle" data-align="center">均匀度%</th>
-                                        <th rowspan="2" colspan="2" data-field="breeding_chick_hatching" data-valign="middle" data-align="center">母鸡体重范围</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">母鸡体重范围</th>
                                     </tr>
                                     <tr>
                                         <th data-field="female_week_avg_weed_out" data-align="center">每周平均</th>
@@ -151,7 +118,7 @@
                                         <th colspan="2" data-valign="middle" data-align="center">平均体重（克）</th>
                                         <th colspan="2" data-valign="middle" data-align="center">饲料消耗（克/只）</th>
                                         <th rowspan="2" data-field="chick_hatching_rate" data-valign="middle" data-align="center">均匀度%</th>
-                                        <th rowspan="2" colspan="2" data-field="breeding_chick_hatching" data-valign="middle" data-align="center">母鸡体重范围</th>
+                                        <th colspan="2" data-valign="middle" data-align="center">母鸡体重范围</th>
                                     </tr>
                                     <tr>
                                         <th data-field="female_week_avg_weed_out" data-align="center">每周平均</th>
