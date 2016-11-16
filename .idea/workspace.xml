@@ -51,8 +51,8 @@
       <file leaf-file-name="BreedValueBook.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="249">
-              <caret line="90" column="71" selection-start-line="90" selection-start-column="71" selection-end-line="90" selection-end-column="71" />
+            <state relative-caret-position="154">
+              <caret line="40" column="48" selection-start-line="40" selection-start-column="48" selection-end-line="40" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -250,8 +250,8 @@
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/service/impl/SBGrowingStdServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/resources/mybatis/breed/SBGrowingStdMapper.xml" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/breed/js/breedStandard.js" />
-        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/breed/breedStandard.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java" />
       </list>
     </option>
   </component>
@@ -1637,7 +1637,7 @@
       <workItem from="1478844182922" duration="15666000" />
       <workItem from="1479092418896" duration="9151000" />
       <workItem from="1479106231353" duration="13401000" />
-      <workItem from="1479177543707" duration="21626000" />
+      <workItem from="1479177543707" duration="22311000" />
     </task>
     <task id="LOCAL-00001" summary="提醒任务模块！">
       <created>1477641970405</created>
@@ -1657,7 +1657,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="415823000" />
+    <option name="totallyTimeSpent" value="416508000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1669,7 +1669,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -2136,8 +2136,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/mtc/zljk/breed/action/BreedValueBook.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="249">
-          <caret line="90" column="71" selection-start-line="90" selection-start-column="71" selection-end-line="90" selection-end-column="71" />
+        <state relative-caret-position="154">
+          <caret line="40" column="48" selection-start-line="40" selection-start-column="48" selection-end-line="40" selection-end-column="48" />
           <folding />
         </state>
       </provider>
