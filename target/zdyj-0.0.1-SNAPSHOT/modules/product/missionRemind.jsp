@@ -15,29 +15,13 @@
 %>
 <html>
 <head>
-
     <meta charset="UTF-8">
     <%@ include file="../../framework/inc.jsp"%>
-    <link rel="stylesheet" href="<%=path%>/modules/product/css/style.css" media="screen" type="text/css" />
-
-
-    <script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
-    <link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
-    <script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>
-
-    <link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">
-    <script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
-    <script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
-    <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
-    <script type="text/javascript" src="<%=path%>/modules/product/js/missionRemind.js"></script>
-
-
-
 </head>
 <script>
     jQuery(document).ready(function () {
         checkDate($("#wd")[0]);
-        initTable("stock", getStockTableColumns(), ${tasks});
+        initTableWithToolBar("stock", "taskReminderToolbar", getStockTableColumns(), ${tasks});
     });
     function checkDate(wd) {
         var che = document.getElementsByName("week");
@@ -53,105 +37,102 @@
     }
 </script>
 <body>
-<%--<div style="text-align:center;clear:both;">
-    <script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
-    <script src="/follow.js" type="text/javascript"></script>
-</div>--%>
-   <div class="panels">
-        <table class="panel">
-            <tr>
-                <td style="width: 50px;"><p style="width: 70px">任务类别</p></td>
-                <td>
-                    <select id="taskType" class="select1" style="margin: 0px;" onchange="queryNext();">
-                        <c:if test="${!empty task_type}">
-                            <c:forEach var="type" items="${task_type}">
-                                <option value="${type.task_type}">${type.code_name}</option>
-                            </c:forEach>
-                        </c:if>
-                    </select>
-                </td>
-                <td>
-                    <select id="wd" class="select2" style="width: 80px;margin: 0px;" onchange="checkDate(this);">
-                        <c:if test="${!empty date_type}">
-                            <c:forEach var="type" items="${date_type}">
-                                <option value="${type.biz_code}">${type.code_name}</option>
-                            </c:forEach>
-                        </c:if>
-                    </select>
-                </td>
-                <td>
-                    <input id="dateValues" class="select1" style="position: relative;left: 20px;height: 30px;width: 250px;"/>
-                </td>
-                <td>
-                    <button style="position: relative; left: 100px;height: 30px;width: 80px;" class="btn green"  onclick="addMissionRemind();">增加</button>
-                </td>
-            </tr>
-            <tr>
-                <td><p style="width: 50px;">任务项</p></td>
-                <td>
-                    <select id="taskCode" class="select1" style="margin: 0px;">
-                        <c:if test="${!empty task_code}">
-                            <c:forEach var="code" items="${task_code}">
-                                <option value="${code.task_id}">${code.task_name}</option>
-                            </c:forEach>
-                        </c:if>
-                    </select>
-                </td>
-                <td><p style="position:relative; top: 5px; left: 50px;">提醒日期</p></td>
-                <td>
-                    <div id="weeks">
-                        <table style="position: relative;left: 20px;">
-                            <tr>
-                                <td><input name="week" type="checkbox" value="1"/></td><td><p style="width: 40px;margin: 0px;">周一</p></td>
-                                <td><input name="week" type="checkbox" value="2"/></td><td><p style="width: 40px;margin: 0px;">周二</p></td>
-                                <td><input name="week" type="checkbox" value="3"/></td><td><p style="width: 40px;margin: 0px;">周三</p></td>
-                                <td><input name="week" type="checkbox" value="4"/></td><td><p style="width: 40px;margin: 0px;">周四</p></td>
-                            </tr>
-                            <tr>
-                                <td><input name="week" type="checkbox" value="5"/></td><td><p style="width: 40px;margin: 0px;">周五</p></td>
-                                <td><input name="week" type="checkbox" value="6"/></td><td><p style="width: 40px;margin: 0px;">周六</p></td>
-                                <td><input name="week" type="checkbox" value="7"/></td><td><p style="width: 40px;margin: 0px;">周日</p></td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-                <td>
-                    <button style="position: relative; left: 100px; height: 30px;width: 80px;" class="btn green" onclick="deleteTask();">删除</button>
-                </td>
-            </tr>
-        </table>
-       <hr style="width: 100%;background: #848484;height: 5px;position: relative;top: 30px;">
 
-       <label style="position: relative;top: 30px;text-align: center;height: 20px; width: 84%; font-size: 30px;background: #FFFFFF;"><p>${org_name}</p></label>
+<div id="page-content" class="clearfix" style="padding-top: 10px;">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span4" align="left">
+                <span_customer>任务类别</span_customer>
+                <select id="taskType" onchange="queryNext();">
+                    <c:if test="${!empty task_type}">
+                        <c:forEach var="type" items="${task_type}">
+                            <option value="${type.task_type}">${type.code_name}</option>
+                        </c:forEach>
+                    </c:if>
+                </select>
+            </div>
+            <div class="span4" align="left">
+                <select id="wd" onchange="checkDate(this);" style="width: 80px; height: 30px">
+                    <c:if test="${!empty date_type}">
+                        <c:forEach var="type" items="${date_type}">
+                            <option value="${type.biz_code}">${type.code_name}</option>
+                        </c:forEach>
+                    </c:if>
+                </select>
+                <input id="dateValues" style="width: 320px; height: 30px"/>
+            </div>
+            <div class="span4" align="left">
 
-       <div style="position: relative;top: 50px;overflow-x: auto; overflow-y: auto; height: 76%; width:99%;">
+            </div>
+        </div>
 
-           <table id="stockTable"></table>
+        <div class="row-fluid">
+            <div class="span4" align="left">
+                <span_customer>任务项</span_customer>
+                <select id="taskCode" >
+                    <c:if test="${!empty task_code}">
+                        <c:forEach var="code" items="${task_code}">
+                            <option value="${code.task_id}">${code.task_name}</option>
+                        </c:forEach>
+                    </c:if>
+                </select>
+            </div>
+            <div class="span4" align="left">
+                <span_customer>提醒日期</span_customer>
+                <div id="weeks">
+                    <table>
+                        <tr>
+                            <td><input name="week" type="checkbox" value="1"/></td><td><p>周一</p></td>
+                            <td><input name="week" type="checkbox" value="2"/></td><td><p>周二</p></td>
+                            <td><input name="week" type="checkbox" value="3"/></td><td><p>周三</p></td>
+                            <td><input name="week" type="checkbox" value="4"/></td><td><p>周四</p></td>
+                            <td><input name="week" type="checkbox" value="5"/></td><td><p>周五</p></td>
+                            <td><input name="week" type="checkbox" value="6"/></td><td><p>周六</p></td>
+                            <td><input name="week" type="checkbox" value="7"/></td><td><p>周日</p></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="span4" align="left">
+                <button class="btn green"  onclick="addMissionRemind();">增加</button>
+            </div>
+        </div>
 
-           <%--<table id="formData" style="text-align: center;width: 100%;height: 100%;" border="1">
-               <tr style="background: #04488a; color: #FFFFFF;text-align: center;">
-                   <td><p>选择</p></td>
-                   <td><p>编号</p></td>
-                   <td><p>任务类别</p></td>
-                   <td><p>任务项</p></td>
-                   <td><p>时间单位</p></td>
-                   <td><p>循环周期</p></td>
-               </tr>
-               <c:forEach var="task" items="${tasks}">
-               <tr name="taskId">
-                   <td><input type="checkbox" value="${task.id}"/></td>
-                   <td><p>${task.id}</p></td>
-                   <td><p>${task.taskType}</p></td>
-                   <td><p>${task.task_name}</p></td>
-                   <td><p>${task.dateType}</p></td>
-                   <td><p>${task.date_values}</p></td>
-               </tr>
-               </c:forEach>
-           </table>--%>
-       </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <hr style="height:10px;border:none;border-top:1px solid #555555;" />
+            </div>
+        </div>
 
+        <div class="row-fluid">
+            <div class="span4" align="left">
+                <div id="taskReminderToolbar" class="btn-group">
+                    <button id='taskReminderToolbar_btn_delete' type='button' class='btn blue' style="display: inline;" onclick="javascript:deleteTask();">
+                        <span class='glyphicon glyphicon-plus' aria-hidden='true'></span>删除
+                    </button>
+                </div>
+
+            </div>
+            <div class="span4" align="center">
+                <p id = "factFarmTitle" align="center">
+                    <font size='4' ><B>${org_name}</B></font>
+                </p>
+            </div>
+            <div class="span4" align="left">
+
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span12" align="left">
+                <table id="stockTable"></table>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
+<script type="text/javascript" src="<%=path%>/modules/product/js/missionRemind.js"></script>
 
 </body>
 

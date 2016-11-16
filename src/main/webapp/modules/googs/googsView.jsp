@@ -203,7 +203,7 @@
 
 										</div>
 										<div class="span3" align="left">
-											<button type="button" class="btn green" onclick="outStock()" >耗用</button>
+											<button type="button" class="btn green" onclick="outStock()" >确认</button>
 										</div>
 									</div>
 								</div>
@@ -334,10 +334,10 @@
 								<div class="span4" align="left">
 									<div id="approvalStockFrame" align="left">
 										<div id="approvalStockToolbar" class="btn-group">
-											<button id='approvalStockToolbar_btn_reject' type='button' class='btn blue' style="display: inline;" onclick="javascript:rejectStockChange();">
+											<button id='approvalStockToolbar_btn_reject' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(0);">
 												<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>驳回
 											</button>
-											<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:approvalStockChange();">
+											<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(1);">
 												<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>通过
 											</button>
 										</div>

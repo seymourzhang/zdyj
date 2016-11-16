@@ -477,7 +477,7 @@ function getMessages(){
 	}
 	 var getRow = $('#stockTable').bootstrapTable('getSelections');
 	 if(getRow==null||getRow==''){
-		 layer.alert('请先选择需要调整的库存信息!', {
+		 layer.msg('请先选择需要调整的库存信息!', {
 				skin : 'layui-layer-lan',
 				closeBtn : 0,
 				shift : 4
@@ -512,32 +512,96 @@ function getMessages(){
 }
 /****弹出调整窗口*****/
 function openAdjustWin(getRow){
-var str = '<div style="padding-left: 10px;">&nbsp;</div>';
-    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;color: #999999;"><span style="display:block;width: 60px;float:left;text-align: right;">类型:</span><span style="display:block;width: 110px;float:left;">'+getRow[0].type_name+'</span> <span style="display:block;width:60px;float:left;text-align: right;">品名:</span><span style="display:block;width: 110px;float:left;">'+getRow[0].good_name+'</span><span style="display:block;width: 50px;float:left;text-align: right;">规格:</span><style="display:block;width: 100px;float:left;">'+getRow[0].spec_name+'</span></span></span> </div>';
-    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;padding-top: 10px;color: #999999;"><span style="display:block;width: 60px;float:left;text-align: right;">生产厂家:</span>';
-    if (getRow[0].factory_name == null) {
-		str+='<span style="display:block;width: 110px;float:left;">&nbsp;</span> ';   
-	 }else{
-		 str+='<span style="display:block;width: 110px;float:left;">'+getRow[0].factory_name+'</span> ';   
-	 }
-    str+='<span style="display:block;width:60px;float:left;text-align: right;">供应方:</span>';
-    if(getRow[0].corporation == null) {
-    	 str+='<span style="display:block;width: 110px;float:left;">&nbsp;</span> ';   
-    }else{
-    	 str+='<span style="display:block;width: 110px;float:left;">'+getRow[0].corporation+'</span>';
-    }
-    str+='<span style="display:block;width: 50px;float:left;text-align: right;">单位:</span><style="display:block;width: 100px;float:left;">'+getRow[0].unit_name+'</span></span></span> </div>';
-    str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;"><span style="display:block;width: 210px;float:left;padding-top: 10px;">调整数量:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: 5px;" name="count" id="adjustValue"/></span> <span style="display:block;width: 141px;float:left;padding-top: 20px;color: #999999;">调整后库存量:&nbsp;&nbsp;<span id="adjustNum">'+getRow[0].stockCount+'</span></span><span style="display:block;width: 120px;float:left;padding-top: 20px;color: #999999;">当前库存量:&nbsp;&nbsp;'+getRow[0].stockCount+'</span> </div>';
+var str = '<br><div class="container-fluid" >';
+	str += '<div class="row-fluid">';
+		str += '<div class="span2">';
+			str += '类型:';
+		str += '</div>';
+			str += '<div class="span2" >';
+				str += getRow[0].type_name ;
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '品名:' ;
+		str += '</div>';
+			str += '<div class="span2" >';
+				str += getRow[0].good_name ;
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '规格:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += getRow[0].spec_name ;
+			str += '</div>';
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+		str += '<div class="span2">';
+			str += '生产厂家:';
+		str += '</div>';
+			str += '<div class="span2">';
+				if (getRow[0].factory_name == null) {
+					str += '';
+				}else{
+					str += getRow[0].factory_name ;
+				}
+			str += '</div>';
+		str += '<div class="span2">';
+			str+='供应方:';
+		str += '</div>';
+			str += '<div class="span2">';
+				if(getRow[0].corporation == null) {
+					str += '';
+				}else{
+					str += getRow[0].corporation;
+				}
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '单位:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += getRow[0].unit_name;
+			str += '</div>';
+	str += '</div>';
+
+	str += '<div class="row-fluid" >';
+		str += '<div class="span2">';
+			str += '调整数量:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += '<input type="text" style="width: 70px;" name="count" id="adjustValue"/>';
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '调整后库存量:;';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += '<span id="adjustNum">' + getRow[0].stockCount+'</span>';
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '当前库存量:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += getRow[0].stockCount;
+			str += '</div>';
+	str += '</div>';
+	str += '<div class="row-fluid">';
+		str += '<div class="span2">';
+			str += '备注:';
+		str += '</div>';
+			str += '<div class="span10">';
+				str += '<input type="text" style="width: 380px;" name="adjustRemark" id="adjustRemark"/>';
+			str += '</div>';
+	str += '</div>';
+	str += '</div>';
 layer.open({
 	  type: 1,
-	  skin: 'layui-layer-green', //加上边框
-	  area: ['530px', '240px'], //宽高
+	  skin: 'layui-layer-lan', //加上边框
+	  area: ['570px', '255px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
 		  var adjustValue=$("#adjustValue").val();
 		  if(adjustValue==null||adjustValue==''){
-				 layer.alert('请输入调整数量!', {
+				 layer.msg('请输入调整数量!', {
 						skin : 'layui-layer-lan',
 						closeBtn : 0,
 						shift : 4
@@ -546,7 +610,7 @@ layer.open({
 				 return;
 			}
 		  if(isNaN(adjustValue)){
-			  layer.alert('请输入数字!', {
+			  layer.msg('请输入数字!', {
 					skin : 'layui-layer-lan',
 					closeBtn : 0,
 					shift : 4
@@ -556,6 +620,7 @@ layer.open({
 		  }
 		var param =getRow[0];
 		param["adjustValue"]=adjustValue;
+		param["remark"] = $("#adjustRemark").val();
 		param["farm_id"]=objGoods.farmId;
 		param["farm_name"]=objGoods.farm;
 		$.ajax({
@@ -566,14 +631,14 @@ layer.open({
 			success : function(result) {
 				layer.close(index); 
 				if(result.msg=="1") {
-					layer.alert('操作成功,进入审批流程!', {
+					layer.msg('操作成功,进入审批流程!', {
 						skin : 'layui-layer-lan',
 						closeBtn : 0,
 						shift : 4
 					// 动画类型
 					});
 				}else{
-					layer.alert('操作失败!', {
+					layer.msg('操作失败!', {
 						skin : 'layui-layer-lan',
 						closeBtn : 0,
 						shift : 4
@@ -587,7 +652,7 @@ layer.open({
 $("#adjustValue").blur(function(){
 	  var adjustValue=$("#adjustValue").val();
 	  if(isNaN(adjustValue)){
-		  layer.alert('请输入数字!', {
+		  layer.msg('请输入数字!', {
 				skin : 'layui-layer-lan',
 				closeBtn : 0,
 				shift : 4
@@ -597,7 +662,7 @@ $("#adjustValue").blur(function(){
 	  }else{
 		  var num=Number(getRow[0].stockCount)+Number($("#adjustValue").val());
 			if(num<0){
-				layer.alert('调整后的数量小于零!', {
+				layer.msg('调整后的数量小于零!', {
 					skin : 'layui-layer-lan',
 					closeBtn : 0,
 					shift : 4
@@ -737,6 +802,9 @@ function getApprovalStockTableColumns(){
 	},{
 		field: "count",
 		title: "库存调整量"
+	},{
+		field: "bak",
+		title: "备注"
 	}];
 	return dataColumns;
 }
@@ -781,6 +849,18 @@ function getApprovalStockChangeTableColumns(){
 //切换标签页事件处理
 $(function(){
 	$('a[data-toggle="tab"]').on('shown', function (e) {
+		if("入库" == $(e.target).text()){
+			getInstock();
+			return;
+		}
+		if("耗用" == $(e.target).text()){
+			getOutStock();
+			return;
+		}
+		if("库存调整" == $(e.target).text()){
+			queryStock();
+			return;
+		}
 		if("库存调整审批" == $(e.target).text()){
 			if (isRead == 0 || isRead == 1) {
 				$(e.relatedTarget).tab('show');
@@ -792,6 +872,9 @@ $(function(){
 				});
 				return;
 			}
+			queryStockApproval();
+			queryStockApprovalChange();
+			return;
 		}
 	});
 });
@@ -806,41 +889,36 @@ function initObjGoods(){
 	document.getElementById("approvalStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
 }
 
-function rejectStockChange() {
+function rejectStockChange(remark) {
 	var row = $('#approvalStockTable').bootstrapTable('getSelections');
 	if (row.length == 1) {
-		layer.confirm('是否确认？', {
-			skin: 'layui-layer-lan'
-			, closeBtn: 0
-			, shift: 4 //动画类型
-		}, function ok() {
-			var param = row[0];
-			var id = param["id"];
-			$.ajax({
-				url: path + "/googs/rejectStockChange",
-				data: {
-					id: id
-				},
-				type: "POST",
-				dataType: "json",
-				success: function (result) {
-					if (result.success) {
-						layer.msg("驳回成功！", {
-							skin: 'layui-layer-lan'
-							, closeBtn: 0
-							, shift: 4 //动画类型
-						});
-						queryStockApproval();
-						queryStockApprovalChange();
-					} else {
-						layer.msg("驳回出错，请联系管理员！", {
-							skin: 'layui-layer-lan'
-							, closeBtn: 0
-							, shift: 4 //动画类型
-						});
-					}
+		var param = row[0];
+		var id = param["id"];
+		$.ajax({
+			url: path + "/googs/rejectStockChange",
+			data: {
+				id: id,
+				remark: remark
+			},
+			type: "POST",
+			dataType: "json",
+			success: function (result) {
+				if (result.success) {
+					layer.msg("驳回成功！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+					queryStockApproval();
+					queryStockApprovalChange();
+				} else {
+					layer.msg("驳回出错，请联系管理员！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
 				}
-			});
+			}
 		});
 
 	} else {
@@ -852,41 +930,36 @@ function rejectStockChange() {
 	}
 };
 
-function approvalStockChange(){
+function approvalStockChange(remark){
 	var row =  $('#approvalStockTable').bootstrapTable('getSelections');
 	if(row.length == 1){
-		layer.confirm('是否确认？', {
-			skin: 'layui-layer-lan'
-			, closeBtn: 0
-			, shift: 4 //动画类型
-		}, function ok() {
-			var param =row[0];
-			var id = param["id"];
-			$.ajax({
-				url : path + "/googs/approvalStockChange",
-				data : {
-					id: id
-				},
-				type : "POST",
-				dataType : "json",
-				success : function(result) {
-					if(result.success){
-						layer.msg("通过成功！", {
-							skin: 'layui-layer-lan'
-							, closeBtn: 0
-							, shift: 4 //动画类型
-						});
-						queryStockApproval();
-						queryStockApprovalChange();
-					} else{
-						layer.msg("通过出错，请联系管理员！", {
-							skin: 'layui-layer-lan'
-							, closeBtn: 0
-							, shift: 4 //动画类型
-						});
-					}
+		var param =row[0];
+		var id = param["id"];
+		$.ajax({
+			url : path + "/googs/approvalStockChange",
+			data : {
+				id: id,
+				remark: remark
+			},
+			type : "POST",
+			dataType : "json",
+			success : function(result) {
+				if(result.success){
+					layer.msg("通过成功！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+					queryStockApproval();
+					queryStockApprovalChange();
+				} else{
+					layer.msg("通过出错，请联系管理员！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
 				}
-			});
+			}
 		});
 	} else{
 		layer.msg("请先选择待审批记录！", {
@@ -897,3 +970,39 @@ function approvalStockChange(){
 	}
 };
 
+
+/****弹出审批窗口*****/
+function openApprovalWin(flag) {
+	var str = '<br><div class="container-fluid" >';
+			str += '<div class="row-fluid">';
+				str += '<div class="span2">';
+					str += '备注:';
+				str += '</div>';
+					str += '<div class="span10">';
+						str += '<input type="text" style="width: 350px;" name="approvalRemark" id="approvalRemark"/>';
+					str += '</div>';
+			str += '</div>';
+			str += '<div class="row-fluid">';
+				str += '<div class="span12">';
+					str += '是否确认？';
+				str += '</div>';
+			str += '</div>';
+		str += '</div>';
+	layer.open({
+		type: 1,
+		skin: 'layui-layer-lan', //加上边框
+		area: ['500px', '200px'], //宽高
+		content: str,
+		btn: ['确定', '取消'],
+		yes: function (index) {
+			rt = $("#approvalRemark").val();
+			layer.close(index);
+			if(flag == 1){
+				approvalStockChange(rt);
+			} else{
+				rejectStockChange(rt);
+			}
+
+		}
+	});
+};

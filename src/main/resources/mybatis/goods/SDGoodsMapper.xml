@@ -238,7 +238,8 @@
 			create_time,
 			modify_person,
 			modify_date,
-			modify_time
+			modify_time,
+			bak
 		) values (
 			#{stock_id},
 			#{good_id},
@@ -265,7 +266,8 @@
 			#{create_time},
 			#{modify_person},
 			#{modify_date},
-			#{modify_time}
+			#{modify_time},
+			#{remark}
 		)
 	</insert>
   
@@ -301,7 +303,8 @@
 				c.create_time, 
 		        c.modify_person, 
 		        c.modify_date, 
-		        c.modify_time 
+		        c.modify_time,
+	  			c.bak
 		FROM s_d_stock_change c
 		left join s_d_corporation a
 		on a.corporation_id = c.corporation_id
@@ -437,7 +440,7 @@
 
 	<!-- 审批 -->
 	<update id="approvalStockChange" parameterType="pd" flushCache="false">
-		UPDATE s_d_stock_change SET approve_status= #{approve_status}
+		UPDATE s_d_stock_change SET approve_status= #{approve_status}, bak = CONCAT("【", bak, "】 => ",#{remark})
 		WHERE operation_kind=3
 			AND id = #{id}
 	</update>

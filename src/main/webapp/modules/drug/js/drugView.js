@@ -203,7 +203,7 @@ function addDrug(){
 			"use_type": use_type,
 			"instruction": instruction1
 	    };
-	document.getElementById("reflushText2").style.display="inline";
+	// document.getElementById("reflushText2").style.display="inline";
 	$.ajax({
         // async: true,
         url: path+"/drug/saveData",
@@ -224,7 +224,7 @@ function addDrug(){
            
         }
     });
-	document.getElementById("reflushText2").style.display="none";	
+	// document.getElementById("reflushText2").style.display="none";
 }
 
 function deleteDrug(){
@@ -243,7 +243,7 @@ function deleteDrug(){
     for(var i = 0; i < deleteRow.length; i++){
     	deleteRow2 = deleteRow2+deleteRow[i].id+";";
     }
-    document.getElementById("reflushText2").style.display="inline";
+    // document.getElementById("reflushText2").style.display="inline";
 	$.ajax({
         // async: true,
         url: path+"/drug/deleteData",
@@ -254,7 +254,7 @@ function deleteDrug(){
         // timeout:50000,
         success: function(result) {     
                 var obj = result.obj;
-                initTable("fact", getTableDataColumns("fact"), []);
+				initTableWithToolBar("fact", "factToolbar", getTableDataColumns("fact"), []);
                 if(null != obj) {
                     var dataJosn = $.parseJSON(JSON.stringify(obj));
                     $("#factTable").bootstrapTable('load',dataJosn);
@@ -264,7 +264,7 @@ function deleteDrug(){
            
         }
     });
-	document.getElementById("reflushText2").style.display="none";
+	// document.getElementById("reflushText2").style.display="none";
 }
 
 function searchData(paramTypeSelectValue){
@@ -278,10 +278,10 @@ function searchData(paramTypeSelectValue){
     	    	"instruction": $("#instruction").val(),
     	    	"paramTypeSelectValue" : "plan"
     	    };  
-    	document.getElementById("reflushText").style.display="inline";
+    	// document.getElementById("reflushText").style.display="inline";
     }else{
     	p={"paramTypeSelectValue" :"fact"};
-    	document.getElementById("reflushText2").style.display="inline";
+    	// document.getElementById("reflushText2").style.display="inline";
     }
     $.ajax({
         // async: true,
@@ -304,9 +304,9 @@ function searchData(paramTypeSelectValue){
         }
     });
     if(paramTypeSelectValue=="plan"){
-    document.getElementById("reflushText").style.display="none";
+    // document.getElementById("reflushText").style.display="none";
     }else{
-    	document.getElementById("reflushText2").style.display="none";	
+    	// document.getElementById("reflushText2").style.display="none";
     }
 };
 
@@ -353,15 +353,13 @@ function getTableDataColumns(paramTypeSelectValue){
 
 function getPlanTableDataColumns(){
     var dataColumns = [{
-        checkbox: true,
-        width: '5%'
-    }, {
         field: "id",
         title: "ID",
         visible: false
     }, {
         field: "grow_week_age",
-        title: "生长周龄"
+        title: "生长周龄",
+		width: '5%'
     }, {
         field: "drug_name",
         title: "疫苗名称"
