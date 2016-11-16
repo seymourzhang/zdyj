@@ -70,12 +70,12 @@
 											</select>
 										</div>
 										<div class="span3" align="left">
-											<span_customer>单入库量</span_customer>
+											<span_customer>入库数量</span_customer>
 											<input type="text"  name="count"  id="sssasd"  />
 										</div>
 										<div class="span3" align="left">
 											<span_customer>单价</span_customer>
-											<input type="text"  name="price"  />
+											<input type="text"  name="price" id="sssasdPrice" />
 										</div>
 									</div>
 
@@ -246,10 +246,8 @@
 										</div>
 										<div class="span3" align="left">
 											<span_customer>品名</span_customer>
-											<div class="controls" style="margin-left: 80px;">
 												<select id="good_id_stock" tabindex="1"  name="good_id">
 												</select>
-											</div>
 										</div>
 										<div class="span3" align="left">
 											<span_customer>规格</span_customer>
@@ -336,10 +334,10 @@
 								<div class="span4" align="left">
 									<div id="approvalStockFrame" align="left">
 										<div id="approvalStockToolbar" class="btn-group">
-											<button id='approvalStockToolbar_btn_reject' type='button' class='btn blue' style="display: inline;" onclick="javascript:;">
+											<button id='approvalStockToolbar_btn_reject' type='button' class='btn blue' style="display: inline;" onclick="javascript:rejectStockChange();">
 												<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>驳回
 											</button>
-											<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:;">
+											<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:approvalStockChange();">
 												<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>通过
 											</button>
 										</div>

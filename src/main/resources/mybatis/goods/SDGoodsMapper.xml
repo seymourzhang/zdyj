@@ -56,6 +56,9 @@
               modify_time 
 	    FROM   s_d_stock
 	    where 1=1
+		<if test="flag != null and flag != ''">
+			and count > 0
+		</if>
 		<if test="good_type != null"> 
 			and good_type = #{good_type}
 		</if>
@@ -208,7 +211,7 @@
 	</insert>
 	
 	 <!-- 保存库存变动 -->
-    <insert id="saveStockcChange" parameterType="pd"  flushCache="false" keyProperty="id">
+    <insert id="saveStockcChange" parameterType="pd"  flushCache="false" useGeneratedKeys="true" keyProperty="id">
 		insert into s_d_stock_change (
 			stock_id,
 			good_id,
@@ -278,7 +281,7 @@
 		        c1.code_name spec_name,
 		        c.unit, 
 		        c2.code_name unit_name,
-		        c.count, 
+	  			(CASE WHEN c.count > 0 THEN c.count ELSE c.count*(-1) END) count,
 		        c.price,
 	  			date_format(c.exp, '%Y-%m-%d') exp,
 	  			date_format(c.operation_date, '%Y-%m-%d') operation_date,
@@ -414,24 +417,35 @@
 			  ,sc.stock_batch_no
 			  ,sc.approve_status
 			  ,sc.bak
-              ,sc.create_person
+			  ,u.user_real_name create_person
 		FROM s_d_stock_change sc
 		LEFT JOIN s_d_corporation a   ON a.corporation_id = sc.corporation_id
 		LEFT JOIN s_d_factory b   ON sc.factory_id = b.factory_id
 		LEFT JOIN s_d_code c1 ON c1.biz_code=sc.spec AND c1.code_type='spec'
 		LEFT JOIN s_d_code c2 ON c2.biz_code=sc.unit AND c2.code_type='unit'
 		LEFT JOIN s_d_code c3 ON c3.biz_code=sc.good_type AND c3.code_type='good_type'
+		LEFT JOIN s_d_user u ON u.id = sc.create_person
 		WHERE sc.operation_kind = 3
-        <if test="approve_status != null and approve_status != ''">
-            <if test="approve_status == '1'">
-                AND sc.approve_status = #{approve_status}
-            </if>
-            <if test="approve_status != '1'">
-                AND sc.approve_status != #{approve_status}
-            </if>
+        <if test="currFlag != null and currFlag != ''">
+			AND sc.approve_status = 1
         </if>
+		<if test="currFlag == null or currFlag == ''">
+			AND sc.approve_status != 1
+		</if>
 		        AND sc.farm_id = #{farm_id}
 	</select>
 
+	<!-- 审批 -->
+	<update id="approvalStockChange" parameterType="pd" flushCache="false">
+		UPDATE s_d_stock_change SET approve_status= #{approve_status}
+		WHERE operation_kind=3
+			AND id = #{id}
+	</update>
 
+	<!-- 更新提醒数据 -->
+	<select id="exec_SP_STOCK_REMIND" parameterType="pd" statementType="CALLABLE">
+		{
+			call SP_STOCK_REMIND (#{id,mode=IN,jdbcType=VARCHAR})
+		}
+	</select>
 </mapper>

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.mtc.zljk.util.common.PageData;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletResponse;
 
 public interface GoogsService {
 	
@@ -28,4 +31,8 @@ public interface GoogsService {
 	public List<PageData> getStockSum(PageData pd) throws Exception;
 
 	public List<PageData> getStockApproval(PageData pd) throws Exception;
+
+	public int approvalStockChange(PageData pd) throws Exception;
+
+	public int updateRemindData(PageData pd) throws Exception;
 }

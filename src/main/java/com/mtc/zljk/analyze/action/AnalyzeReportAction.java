@@ -26,4 +26,59 @@ public class AnalyzeReportAction extends BaseAction {
         return mv;
     }
 
+    @RequestMapping(value="/showDrugs")
+    public ModelAndView showDrugs(Page page)throws Exception{
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        pd.put("user_id", getUserId());
+        ModelAndView mv = this.getModelAndView();
+        mv.setViewName("modules/analyze/drug");
+        mv.addObject("pd",pd);
+        return mv;
+    }
+
+    @RequestMapping(value="/showWeeklyReport")
+    public ModelAndView showWeeklyReport(Page page)throws Exception{
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        pd.put("user_id", getUserId());
+        ModelAndView mv = this.getModelAndView();
+        mv.setViewName("modules/analyze/weeklyReport");
+        mv.addObject("pd",pd);
+        return mv;
+    }
+
+    @RequestMapping(value="/showDailyProductionReport")
+    public ModelAndView showDailyProductionReport(Page page)throws Exception{
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        pd.put("user_id", getUserId());
+        ModelAndView mv = this.getModelAndView();
+        mv.setViewName("modules/analyze/dailyProductionReport");
+        mv.addObject("pd",pd);
+        return mv;
+    }
+
+    @RequestMapping(value="/showWeeklyProductionReport")
+    public ModelAndView showWeeklyProductionReport(Page page)throws Exception{
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        pd.put("user_id", getUserId());
+        ModelAndView mv = this.getModelAndView();
+        mv.setViewName("modules/analyze/weeklyProductionReport");
+        mv.addObject("pd",pd);
+        return mv;
+    }
+
+    @RequestMapping(value="/showCurveAnalysis")
+    public ModelAndView showCurveAnalysis(Page page)throws Exception{
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        pd.put("user_id", getUserId());
+        ModelAndView mv = this.getModelAndView();
+        mv.setViewName("modules/analyze/curveAnalysis");
+        mv.addObject("pd",pd);
+        return mv;
+    }
+
 }

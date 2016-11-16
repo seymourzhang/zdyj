@@ -56,8 +56,6 @@ $(document).ready(function() {
 	initTableWithToolBar("approvalStock",'approvalStockToolbar', getApprovalStockTableColumns(), dataJosn);
 	initTable("approvalStockChange", getApprovalStockChangeTableColumns(), dataJosn);
 
-
-
 	getInstock();
 	getOutStock();
 	queryStock();
@@ -133,22 +131,27 @@ function inStock() {
 		return;
 	}
 	var count = $("input[name='count']").val();
-	if (count == "") {
-		layer.alert('入库量不能为空!', {
+	var test = parseInt(count);
+	if (isNaN(test) || test <= 0)
+	{
+		layer.alert('入库量必须是大于0的数字，请重新输入!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
 			shift : 4
-		// 动画类型
+			// 动画类型
 		});
 		return;
 	}
+
 	var price = $("input[name='price']").val();
-	if (price == "") {
-		layer.alert('单价不能为空!', {
+	test = parseInt(price);
+	if (isNaN(test) || test <= 0)
+	{
+		layer.alert('单价必须是大于0的数字，请重新输入!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
 			shift : 4
-		// 动画类型
+			// 动画类型
 		});
 		return;
 	}
@@ -162,25 +165,39 @@ function inStock() {
 		});
 		return;
 	}
-	var param = $.serializeObject($('#inStockForm'));
-	$.ajax({
-		url : path + "/googs/inStock",
-		data : param,
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			if (result.msg == '1') {
-				getInstock();
-			}else{
-				layer.alert('操作失败!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
-				return;
+	layer.confirm('是否确认？', {
+		skin: 'layui-layer-lan'
+		, closeBtn: 0
+		, shift: 4 //动画类型
+	}, function ok() {
+		var param = $.serializeObject($('#inStockForm'));
+		param["approve_status"] = 2;
+		$.ajax({
+			url : path + "/googs/inStock",
+			data : param,
+			type : "POST",
+			dataType : "json",
+			success : function(result) {
+				if (result.msg == '1') {
+					layer.msg("入库成功！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+					document.getElementById("sssasd").value = "";
+					document.getElementById("sssasdPrice").value = "";
+					getInstock();
+				}else{
+					layer.alert('操作失败!', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					return;
+				}
 			}
-		}
+		});
 	});
 }
 function getInStockTableColumns(){
@@ -282,44 +299,61 @@ function outStock() {
 		return;
 	}
 	var count_out = $("#count_out").val();
-	if (count_out == "") {
-		layer.alert('耗用量不能为空!', {
+	var test = parseInt(count_out);
+	if (isNaN(test) || test <= 0)
+	{
+		layer.alert('耗用数量必须是大于0的数字，请重新输入!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
 			shift : 4
-		// 动画类型
+			// 动画类型
 		});
 		return;
 	}
 
-	var param = $.serializeObject($('#outStockForm'));
-	$.ajax({
-		url : path + "/googs/outStock",
-		data : param,
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			if (result.msg == '1') {
-				getOutStock();
-			} else if (result.msg == '2') {
-				layer.alert('库存不足！', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
-				return;
-			}else{
-				layer.alert('操作失败!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
-				alert("操作失败！");
+	layer.confirm('是否确认？', {
+		skin: 'layui-layer-lan'
+		, closeBtn: 0
+		, shift: 4 //动画类型
+	}, function ok() {
+		var param = $.serializeObject($('#outStockForm'));
+		param["approve_status"] = 2;
+		$.ajax({
+			url : path + "/googs/outStock",
+			data : param,
+			type : "POST",
+			dataType : "json",
+			success : function(result) {
+				if (result.msg == '1') {
+					layer.msg('耗用成功！', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					document.getElementById("count_out").value = "";
+					getOutStock();
+				} else if (result.msg == '2') {
+					layer.msg('耗用失败，库存不足！', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					return;
+				}else{
+					layer.msg('操作失败!', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					return;
+				}
 			}
-		}
+		});
 	});
+
 }
 function getOutStockTableColumns(){
 	var dataColumns = [{
@@ -443,7 +477,7 @@ function getMessages(){
 	}
 	 var getRow = $('#stockTable').bootstrapTable('getSelections');
 	 if(getRow==null||getRow==''){
-		 layer.alert('请选择要调整的数据!', {
+		 layer.alert('请先选择需要调整的库存信息!', {
 				skin : 'layui-layer-lan',
 				closeBtn : 0,
 				shift : 4
@@ -574,17 +608,11 @@ $("#adjustValue").blur(function(){
 			}
 	  }
  });
-	
-	
-	
-	
-	
 }
 
 
 function getStockTableColumns(){
-	var dataColumns = [{
-		radio: true,
+	var dataColumns = [{radio: true,
         title: "选择",
         width: '5%'
     },{
@@ -611,39 +639,8 @@ function getStockTableColumns(){
     }];
 	return dataColumns;
 };
-
-function queryStockApproval(){
-	$.ajax({
-		url : path + "/googs/getStockApproval",
-		data : {
-			farm_id: objGoods.farmId
-		},
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			var list = result.obj;
-			$("#approvalStockTable").bootstrapTable("load",list);
-		}
-	});
-}
-
-function queryStockApprovalChange(){
-	$.ajax({
-		url : path + "/googs/getStockApprovalChange",
-		data : {
-			farm_id: objGoods.farmId
-		},
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			var list = result.obj;
-			$("#approvalStockChangeTable").bootstrapTable("load",list);
-		}
-	});
-}
-
 function queryStock(){
-	
+
 	var param = $.serializeObject($('#stockForm'));
 	$.ajax({
 		url : path + "/googs/getStockSum",
@@ -679,13 +676,44 @@ function queryStock(){
 	});
 }
 
-/*****库存****************************************************/
+function queryStockApproval(){
+	$.ajax({
+		url : path + "/googs/getStockApproval",
+		data : {
+			farm_id: objGoods.farmId
+		},
+		type : "POST",
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#approvalStockTable").bootstrapTable("load",list);
+		}
+	});
+}
+function queryStockApprovalChange(){
+	$.ajax({
+		url : path + "/googs/getStockApprovalChange",
+		data : {
+			farm_id: objGoods.farmId
+		},
+		type : "POST",
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#approvalStockChangeTable").bootstrapTable("load",list);
+		}
+	});
+}
 
+/*****库存****************************************************/
 
 //库存调整审批
 function getApprovalStockTableColumns(){
 	var dataColumns = [{
-		radio: true,
+			field: "id",
+			title: "序号",
+			visible: false
+	},{radio: true,
 		title: "选择",
 		width: '5%'
 	},{
@@ -777,3 +805,95 @@ function initObjGoods(){
 	document.getElementById("stockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
 	document.getElementById("approvalStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
 }
+
+function rejectStockChange() {
+	var row = $('#approvalStockTable').bootstrapTable('getSelections');
+	if (row.length == 1) {
+		layer.confirm('是否确认？', {
+			skin: 'layui-layer-lan'
+			, closeBtn: 0
+			, shift: 4 //动画类型
+		}, function ok() {
+			var param = row[0];
+			var id = param["id"];
+			$.ajax({
+				url: path + "/googs/rejectStockChange",
+				data: {
+					id: id
+				},
+				type: "POST",
+				dataType: "json",
+				success: function (result) {
+					if (result.success) {
+						layer.msg("驳回成功！", {
+							skin: 'layui-layer-lan'
+							, closeBtn: 0
+							, shift: 4 //动画类型
+						});
+						queryStockApproval();
+						queryStockApprovalChange();
+					} else {
+						layer.msg("驳回出错，请联系管理员！", {
+							skin: 'layui-layer-lan'
+							, closeBtn: 0
+							, shift: 4 //动画类型
+						});
+					}
+				}
+			});
+		});
+
+	} else {
+		layer.msg("请先选择待审批记录！", {
+			skin: 'layui-layer-lan'
+			, closeBtn: 0
+			, shift: 4 //动画类型
+		});
+	}
+};
+
+function approvalStockChange(){
+	var row =  $('#approvalStockTable').bootstrapTable('getSelections');
+	if(row.length == 1){
+		layer.confirm('是否确认？', {
+			skin: 'layui-layer-lan'
+			, closeBtn: 0
+			, shift: 4 //动画类型
+		}, function ok() {
+			var param =row[0];
+			var id = param["id"];
+			$.ajax({
+				url : path + "/googs/approvalStockChange",
+				data : {
+					id: id
+				},
+				type : "POST",
+				dataType : "json",
+				success : function(result) {
+					if(result.success){
+						layer.msg("通过成功！", {
+							skin: 'layui-layer-lan'
+							, closeBtn: 0
+							, shift: 4 //动画类型
+						});
+						queryStockApproval();
+						queryStockApprovalChange();
+					} else{
+						layer.msg("通过出错，请联系管理员！", {
+							skin: 'layui-layer-lan'
+							, closeBtn: 0
+							, shift: 4 //动画类型
+						});
+					}
+				}
+			});
+		});
+	} else{
+		layer.msg("请先选择待审批记录！", {
+			skin: 'layui-layer-lan'
+			, closeBtn: 0
+			, shift: 4 //动画类型
+		});
+	}
+};
+
