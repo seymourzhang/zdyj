@@ -72,8 +72,9 @@ public class MissionRemindAction extends BaseAction {
         List<PageData> lpd = organService.selectOrgByUser(pageData);
         pageData.put("task_id", pd.get("taskCode"));
         List<PageData> code = getTaskCodeName(pageData);
-        List<PageData> tasks = farmTaskService.selectByUserIdOrStatus(pageData);
-        if (tasks.size() != 0) {
+        pageData.put("orgIds", lpd.get(0).get("id"));
+        List<PageData> tempT = farmTaskService.selectByTashId(pageData);
+        if (tempT.size() == 0) {
             for (int i = 0; i < lpd.size(); ++i) {
                 PageData temp = new PageData();
                 temp.put("org_id", lpd.get(i).get("id"));
@@ -94,13 +95,13 @@ public class MissionRemindAction extends BaseAction {
                 temp.put("modify_time", new Date());
                 farmTaskService.insert(temp);
             }
+            List<PageData> tasks = getTasks(pageData);
             j.setMsg("1");
             j.setObj(tasks);
             j.setSuccess(true);
         }else{
             j.setMsg("您设定的任务，与之前任务相似，请重新设定！");
             j.setSuccess(false);
-            j.setObj(tasks);
         }
         super.writeJson(j, response);
     }
