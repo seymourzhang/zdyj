@@ -77,6 +77,20 @@ public class OrgAction extends BaseAction{
 		j.setObj(orglist);
 		super.writeJson(j, response);
 	}
-	
+
+	@RequestMapping("/getOrgByUser")
+	public void getOrgByUser(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = this.getPageData();
+		pd.put("user_id", user.getId());
+		pd.put("flag",1);
+		List<PageData> orglist = organService.selectOrgByUser(pd);
+		j.setSuccess(true);
+		j.setObj(orglist);
+		super.writeJson(j, response);
+	}
 
 }

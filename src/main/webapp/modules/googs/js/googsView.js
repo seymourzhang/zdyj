@@ -56,8 +56,6 @@ $(document).ready(function() {
 	initTableWithToolBar("approvalStock",'approvalStockToolbar', getApprovalStockTableColumns(), dataJosn);
 	initTable("approvalStockChange", getApprovalStockChangeTableColumns(), dataJosn);
 
-
-
 	getInstock();
 	getOutStock();
 	queryStock();
@@ -133,22 +131,27 @@ function inStock() {
 		return;
 	}
 	var count = $("input[name='count']").val();
-	if (count == "") {
-		layer.alert('入库量不能为空!', {
+	var test = parseInt(count);
+	if (isNaN(test) || test <= 0)
+	{
+		layer.alert('入库量必须是大于0的数字，请重新输入!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
 			shift : 4
-		// 动画类型
+			// 动画类型
 		});
 		return;
 	}
+
 	var price = $("input[name='price']").val();
-	if (price == "") {
-		layer.alert('单价不能为空!', {
+	test = parseInt(price);
+	if (isNaN(test) || test <= 0)
+	{
+		layer.alert('单价必须是大于0的数字，请重新输入!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
 			shift : 4
-		// 动画类型
+			// 动画类型
 		});
 		return;
 	}
@@ -162,25 +165,39 @@ function inStock() {
 		});
 		return;
 	}
-	var param = $.serializeObject($('#inStockForm'));
-	$.ajax({
-		url : path + "/googs/inStock",
-		data : param,
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			if (result.msg == '1') {
-				getInstock();
-			}else{
-				layer.alert('操作失败!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
-				return;
+	layer.confirm('是否确认？', {
+		skin: 'layui-layer-lan'
+		, closeBtn: 0
+		, shift: 4 //动画类型
+	}, function ok() {
+		var param = $.serializeObject($('#inStockForm'));
+		param["approve_status"] = 2;
+		$.ajax({
+			url : path + "/googs/inStock",
+			data : param,
+			type : "POST",
+			dataType : "json",
+			success : function(result) {
+				if (result.msg == '1') {
+					layer.msg("入库成功！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+					document.getElementById("sssasd").value = "";
+					document.getElementById("sssasdPrice").value = "";
+					getInstock();
+				}else{
+					layer.alert('操作失败!', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					return;
+				}
 			}
-		}
+		});
 	});
 }
 function getInStockTableColumns(){
@@ -282,44 +299,61 @@ function outStock() {
 		return;
 	}
 	var count_out = $("#count_out").val();
-	if (count_out == "") {
-		layer.alert('耗用量不能为空!', {
+	var test = parseInt(count_out);
+	if (isNaN(test) || test <= 0)
+	{
+		layer.alert('耗用数量必须是大于0的数字，请重新输入!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
 			shift : 4
-		// 动画类型
+			// 动画类型
 		});
 		return;
 	}
 
-	var param = $.serializeObject($('#outStockForm'));
-	$.ajax({
-		url : path + "/googs/outStock",
-		data : param,
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			if (result.msg == '1') {
-				getOutStock();
-			} else if (result.msg == '2') {
-				layer.alert('库存不足！', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
-				return;
-			}else{
-				layer.alert('操作失败!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
-				alert("操作失败！");
+	layer.confirm('是否确认？', {
+		skin: 'layui-layer-lan'
+		, closeBtn: 0
+		, shift: 4 //动画类型
+	}, function ok() {
+		var param = $.serializeObject($('#outStockForm'));
+		param["approve_status"] = 2;
+		$.ajax({
+			url : path + "/googs/outStock",
+			data : param,
+			type : "POST",
+			dataType : "json",
+			success : function(result) {
+				if (result.msg == '1') {
+					layer.msg('耗用成功！', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					document.getElementById("count_out").value = "";
+					getOutStock();
+				} else if (result.msg == '2') {
+					layer.msg('耗用失败，库存不足！', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					return;
+				}else{
+					layer.msg('操作失败!', {
+						skin : 'layui-layer-lan',
+						closeBtn : 0,
+						shift : 4
+						// 动画类型
+					});
+					return;
+				}
 			}
-		}
+		});
 	});
+
 }
 function getOutStockTableColumns(){
 	var dataColumns = [{
@@ -443,7 +477,7 @@ function getMessages(){
 	}
 	 var getRow = $('#stockTable').bootstrapTable('getSelections');
 	 if(getRow==null||getRow==''){
-		 layer.alert('请选择要调整的数据!', {
+		 layer.msg('请先选择需要调整的库存信息!', {
 				skin : 'layui-layer-lan',
 				closeBtn : 0,
 				shift : 4
@@ -478,32 +512,96 @@ function getMessages(){
 }
 /****弹出调整窗口*****/
 function openAdjustWin(getRow){
-var str = '<div style="padding-left: 10px;">&nbsp;</div>';
-    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;color: #999999;"><span style="display:block;width: 60px;float:left;text-align: right;">类型:</span><span style="display:block;width: 110px;float:left;">'+getRow[0].type_name+'</span> <span style="display:block;width:60px;float:left;text-align: right;">品名:</span><span style="display:block;width: 110px;float:left;">'+getRow[0].good_name+'</span><span style="display:block;width: 50px;float:left;text-align: right;">规格:</span><style="display:block;width: 100px;float:left;">'+getRow[0].spec_name+'</span></span></span> </div>';
-    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;padding-top: 10px;color: #999999;"><span style="display:block;width: 60px;float:left;text-align: right;">生产厂家:</span>';
-    if (getRow[0].factory_name == null) {
-		str+='<span style="display:block;width: 110px;float:left;">&nbsp;</span> ';   
-	 }else{
-		 str+='<span style="display:block;width: 110px;float:left;">'+getRow[0].factory_name+'</span> ';   
-	 }
-    str+='<span style="display:block;width:60px;float:left;text-align: right;">供应方:</span>';
-    if(getRow[0].corporation == null) {
-    	 str+='<span style="display:block;width: 110px;float:left;">&nbsp;</span> ';   
-    }else{
-    	 str+='<span style="display:block;width: 110px;float:left;">'+getRow[0].corporation+'</span>';
-    }
-    str+='<span style="display:block;width: 50px;float:left;text-align: right;">单位:</span><style="display:block;width: 100px;float:left;">'+getRow[0].unit_name+'</span></span></span> </div>';
-    str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;"><span style="display:block;width: 210px;float:left;padding-top: 10px;">调整数量:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: 5px;" name="count" id="adjustValue"/></span> <span style="display:block;width: 141px;float:left;padding-top: 20px;color: #999999;">调整后库存量:&nbsp;&nbsp;<span id="adjustNum">'+getRow[0].stockCount+'</span></span><span style="display:block;width: 120px;float:left;padding-top: 20px;color: #999999;">当前库存量:&nbsp;&nbsp;'+getRow[0].stockCount+'</span> </div>';
+var str = '<br><div class="container-fluid" >';
+	str += '<div class="row-fluid">';
+		str += '<div class="span2">';
+			str += '类型:';
+		str += '</div>';
+			str += '<div class="span2" >';
+				str += getRow[0].type_name ;
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '品名:' ;
+		str += '</div>';
+			str += '<div class="span2" >';
+				str += getRow[0].good_name ;
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '规格:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += getRow[0].spec_name ;
+			str += '</div>';
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+		str += '<div class="span2">';
+			str += '生产厂家:';
+		str += '</div>';
+			str += '<div class="span2">';
+				if (getRow[0].factory_name == null) {
+					str += '';
+				}else{
+					str += getRow[0].factory_name ;
+				}
+			str += '</div>';
+		str += '<div class="span2">';
+			str+='供应方:';
+		str += '</div>';
+			str += '<div class="span2">';
+				if(getRow[0].corporation == null) {
+					str += '';
+				}else{
+					str += getRow[0].corporation;
+				}
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '单位:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += getRow[0].unit_name;
+			str += '</div>';
+	str += '</div>';
+
+	str += '<div class="row-fluid" >';
+		str += '<div class="span2">';
+			str += '调整数量:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += '<input type="text" style="width: 70px;" name="count" id="adjustValue"/>';
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '调整后库存量:;';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += '<span id="adjustNum">' + getRow[0].stockCount+'</span>';
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '当前库存量:';
+		str += '</div>';
+			str += '<div class="span2">';
+				str += getRow[0].stockCount;
+			str += '</div>';
+	str += '</div>';
+	str += '<div class="row-fluid">';
+		str += '<div class="span2">';
+			str += '备注:';
+		str += '</div>';
+			str += '<div class="span10">';
+				str += '<input type="text" style="width: 380px;" name="adjustRemark" id="adjustRemark"/>';
+			str += '</div>';
+	str += '</div>';
+	str += '</div>';
 layer.open({
 	  type: 1,
-	  skin: 'layui-layer-green', //加上边框
-	  area: ['530px', '240px'], //宽高
+	  skin: 'layui-layer-lan', //加上边框
+	  area: ['570px', '255px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
 		  var adjustValue=$("#adjustValue").val();
 		  if(adjustValue==null||adjustValue==''){
-				 layer.alert('请输入调整数量!', {
+				 layer.msg('请输入调整数量!', {
 						skin : 'layui-layer-lan',
 						closeBtn : 0,
 						shift : 4
@@ -512,7 +610,7 @@ layer.open({
 				 return;
 			}
 		  if(isNaN(adjustValue)){
-			  layer.alert('请输入数字!', {
+			  layer.msg('请输入数字!', {
 					skin : 'layui-layer-lan',
 					closeBtn : 0,
 					shift : 4
@@ -522,6 +620,7 @@ layer.open({
 		  }
 		var param =getRow[0];
 		param["adjustValue"]=adjustValue;
+		param["remark"] = $("#adjustRemark").val();
 		param["farm_id"]=objGoods.farmId;
 		param["farm_name"]=objGoods.farm;
 		$.ajax({
@@ -532,14 +631,14 @@ layer.open({
 			success : function(result) {
 				layer.close(index); 
 				if(result.msg=="1") {
-					layer.alert('操作成功,进入审批流程!', {
+					layer.msg('操作成功,进入审批流程!', {
 						skin : 'layui-layer-lan',
 						closeBtn : 0,
 						shift : 4
 					// 动画类型
 					});
 				}else{
-					layer.alert('操作失败!', {
+					layer.msg('操作失败!', {
 						skin : 'layui-layer-lan',
 						closeBtn : 0,
 						shift : 4
@@ -553,7 +652,7 @@ layer.open({
 $("#adjustValue").blur(function(){
 	  var adjustValue=$("#adjustValue").val();
 	  if(isNaN(adjustValue)){
-		  layer.alert('请输入数字!', {
+		  layer.msg('请输入数字!', {
 				skin : 'layui-layer-lan',
 				closeBtn : 0,
 				shift : 4
@@ -563,7 +662,7 @@ $("#adjustValue").blur(function(){
 	  }else{
 		  var num=Number(getRow[0].stockCount)+Number($("#adjustValue").val());
 			if(num<0){
-				layer.alert('调整后的数量小于零!', {
+				layer.msg('调整后的数量小于零!', {
 					skin : 'layui-layer-lan',
 					closeBtn : 0,
 					shift : 4
@@ -574,17 +673,11 @@ $("#adjustValue").blur(function(){
 			}
 	  }
  });
-	
-	
-	
-	
-	
 }
 
 
 function getStockTableColumns(){
-	var dataColumns = [{
-		radio: true,
+	var dataColumns = [{radio: true,
         title: "选择",
         width: '5%'
     },{
@@ -611,39 +704,8 @@ function getStockTableColumns(){
     }];
 	return dataColumns;
 };
-
-function queryStockApproval(){
-	$.ajax({
-		url : path + "/googs/getStockApproval",
-		data : {
-			farm_id: objGoods.farmId
-		},
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			var list = result.obj;
-			$("#approvalStockTable").bootstrapTable("load",list);
-		}
-	});
-}
-
-function queryStockApprovalChange(){
-	$.ajax({
-		url : path + "/googs/getStockApprovalChange",
-		data : {
-			farm_id: objGoods.farmId
-		},
-		type : "POST",
-		dataType : "json",
-		success : function(result) {
-			var list = result.obj;
-			$("#approvalStockChangeTable").bootstrapTable("load",list);
-		}
-	});
-}
-
 function queryStock(){
-	
+
 	var param = $.serializeObject($('#stockForm'));
 	$.ajax({
 		url : path + "/googs/getStockSum",
@@ -679,13 +741,44 @@ function queryStock(){
 	});
 }
 
-/*****库存****************************************************/
+function queryStockApproval(){
+	$.ajax({
+		url : path + "/googs/getStockApproval",
+		data : {
+			farm_id: objGoods.farmId
+		},
+		type : "POST",
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#approvalStockTable").bootstrapTable("load",list);
+		}
+	});
+}
+function queryStockApprovalChange(){
+	$.ajax({
+		url : path + "/googs/getStockApprovalChange",
+		data : {
+			farm_id: objGoods.farmId
+		},
+		type : "POST",
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#approvalStockChangeTable").bootstrapTable("load",list);
+		}
+	});
+}
 
+/*****库存****************************************************/
 
 //库存调整审批
 function getApprovalStockTableColumns(){
 	var dataColumns = [{
-		radio: true,
+			field: "id",
+			title: "序号",
+			visible: false
+	},{radio: true,
 		title: "选择",
 		width: '5%'
 	},{
@@ -709,6 +802,9 @@ function getApprovalStockTableColumns(){
 	},{
 		field: "count",
 		title: "库存调整量"
+	},{
+		field: "bak",
+		title: "备注"
 	}];
 	return dataColumns;
 }
@@ -753,6 +849,18 @@ function getApprovalStockChangeTableColumns(){
 //切换标签页事件处理
 $(function(){
 	$('a[data-toggle="tab"]').on('shown', function (e) {
+		if("入库" == $(e.target).text()){
+			getInstock();
+			return;
+		}
+		if("耗用" == $(e.target).text()){
+			getOutStock();
+			return;
+		}
+		if("库存调整" == $(e.target).text()){
+			queryStock();
+			return;
+		}
 		if("库存调整审批" == $(e.target).text()){
 			if (isRead == 0 || isRead == 1) {
 				$(e.relatedTarget).tab('show');
@@ -764,6 +872,9 @@ $(function(){
 				});
 				return;
 			}
+			queryStockApproval();
+			queryStockApprovalChange();
+			return;
 		}
 	});
 });
@@ -777,3 +888,121 @@ function initObjGoods(){
 	document.getElementById("stockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
 	document.getElementById("approvalStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
 }
+
+function rejectStockChange(remark) {
+	var row = $('#approvalStockTable').bootstrapTable('getSelections');
+	if (row.length == 1) {
+		var param = row[0];
+		var id = param["id"];
+		$.ajax({
+			url: path + "/googs/rejectStockChange",
+			data: {
+				id: id,
+				remark: remark
+			},
+			type: "POST",
+			dataType: "json",
+			success: function (result) {
+				if (result.success) {
+					layer.msg("驳回成功！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+					queryStockApproval();
+					queryStockApprovalChange();
+				} else {
+					layer.msg("驳回出错，请联系管理员！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+				}
+			}
+		});
+
+	} else {
+		layer.msg("请先选择待审批记录！", {
+			skin: 'layui-layer-lan'
+			, closeBtn: 0
+			, shift: 4 //动画类型
+		});
+	}
+};
+
+function approvalStockChange(remark){
+	var row =  $('#approvalStockTable').bootstrapTable('getSelections');
+	if(row.length == 1){
+		var param =row[0];
+		var id = param["id"];
+		$.ajax({
+			url : path + "/googs/approvalStockChange",
+			data : {
+				id: id,
+				remark: remark
+			},
+			type : "POST",
+			dataType : "json",
+			success : function(result) {
+				if(result.success){
+					layer.msg("通过成功！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+					queryStockApproval();
+					queryStockApprovalChange();
+				} else{
+					layer.msg("通过出错，请联系管理员！", {
+						skin: 'layui-layer-lan'
+						, closeBtn: 0
+						, shift: 4 //动画类型
+					});
+				}
+			}
+		});
+	} else{
+		layer.msg("请先选择待审批记录！", {
+			skin: 'layui-layer-lan'
+			, closeBtn: 0
+			, shift: 4 //动画类型
+		});
+	}
+};
+
+
+/****弹出审批窗口*****/
+function openApprovalWin(flag) {
+	var str = '<br><div class="container-fluid" >';
+			str += '<div class="row-fluid">';
+				str += '<div class="span2">';
+					str += '备注:';
+				str += '</div>';
+					str += '<div class="span10">';
+						str += '<input type="text" style="width: 350px;" name="approvalRemark" id="approvalRemark"/>';
+					str += '</div>';
+			str += '</div>';
+			str += '<div class="row-fluid">';
+				str += '<div class="span12">';
+					str += '是否确认？';
+				str += '</div>';
+			str += '</div>';
+		str += '</div>';
+	layer.open({
+		type: 1,
+		skin: 'layui-layer-lan', //加上边框
+		area: ['500px', '200px'], //宽高
+		content: str,
+		btn: ['确定', '取消'],
+		yes: function (index) {
+			rt = $("#approvalRemark").val();
+			layer.close(index);
+			if(flag == 1){
+				approvalStockChange(rt);
+			} else{
+				rejectStockChange(rt);
+			}
+
+		}
+	});
+};

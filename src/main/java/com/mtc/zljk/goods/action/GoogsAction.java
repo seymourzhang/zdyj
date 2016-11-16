@@ -66,7 +66,7 @@ public class GoogsAction extends BaseAction {
 			mv.addObject("farm",farmList.get(0).get("name_cn"));
 		}
 
-		mv.addObject("houseList",getHouse());
+		mv.addObject("houseList",getHouse(farmList.get(0).getInteger("id")));
 		mv.addObject("pd",pd);
 		return mv;
 		
@@ -119,6 +119,9 @@ public class GoogsAction extends BaseAction {
 		pd.put("modify_date", new Date());	
 		pd.put("modify_time", new Date());
 		try {
+			if("".equals(pd.getString("exp"))){
+				pd.put("exp",null);
+			}
 			googsService.saveStock(pd);
 			pd.put("stock_id",pd.getInteger("id"));
 			pd.put("operation_kind",2);
@@ -126,7 +129,6 @@ public class GoogsAction extends BaseAction {
 			pd.put("farm_name",pd.getString("inStockFarm"));
 			pd.put("house_id",null);
 			pd.put("house_name",null);
-			pd.put("approve_status",1);
 			googsService.saveStockcChange(pd);
 			j.setMsg("1");
 			j.setSuccess(true);
@@ -153,6 +155,7 @@ public class GoogsAction extends BaseAction {
 		Json j=new Json();
 		PageData pd = this.getPageData();
 		List<PageData> stockChange = googsService.getStockChange(pd);
+
 		if(stockChange!=null&&stockChange.size()>0){
 			j.setMsg("1");
 			j.setSuccess(true);
@@ -178,15 +181,16 @@ public class GoogsAction extends BaseAction {
 		pd2.put("id", house.get(0).getInteger("parent_id"));
 		List<PageData> farm=moduleService.service("organServiceImpl", "getOrgListById", new Object[]{pd2});
 		
-		
+		pd.put("flag",1);
 		List<PageData> stock = googsService.getStock(pd);
 		BigDecimal count=new BigDecimal(pd.getString("count"));
 		BigDecimal num=googsService.getSumCount(pd);
-		if(count.compareTo(num)==1){
+		if(stock.size()==0 || count.compareTo(num)==1){
 			j.setMsg("2");
 		}else{
 			for (PageData pageData : stock) {
 				BigDecimal cc=pageData.getBigDecimal("count");
+				pageData.put("approve_status",pd.getString("approve_status"));
 				if(count.compareTo(cc)==1){//消耗量大于库存，第一条库存不够消耗
 					count=count.subtract(cc);
 					pageData.put("operation_date",pd.getString("operation_date"));
@@ -201,13 +205,11 @@ public class GoogsAction extends BaseAction {
 						pageData.put("create_time", new Date());
 						pageData.put("stock_id",pageData.getInteger("id"));
 						pageData.put("operation_kind",1);
-						
-						pageData.put("count",cc);
+						pageData.put("count",BigDecimal.valueOf(-1).multiply(cc));
 						pageData.put("farm_id",farm.get(0).getInteger("id"));
 						pageData.put("farm_name",farm.get(0).getString("name_cn"));
 						pageData.put("house_id",house.get(0).getInteger("id"));
 						pageData.put("house_name",house.get(0).getString("name_cn"));
-						pageData.put("approve_status",1);
 						googsService.saveStockcChange(pageData);
 					}
 				}else{
@@ -223,13 +225,13 @@ public class GoogsAction extends BaseAction {
 						pageData.put("create_time", new Date());
 						pageData.put("stock_id",pageData.getInteger("id"));
 						pageData.put("operation_kind",1);
-						pageData.put("count", count);
+						pageData.put("count",BigDecimal.valueOf(-1).multiply(count));
 						pageData.put("farm_id",farm.get(0).getInteger("id"));
 						pageData.put("farm_name",farm.get(0).getString("name_cn"));
 						pageData.put("house_id",house.get(0).getInteger("id"));
 						pageData.put("house_name",house.get(0).getString("name_cn"));
-						pageData.put("approve_status",1);
 						googsService.saveStockcChange(pageData);
+						break;
 					}
 				}
 			}
@@ -282,6 +284,7 @@ public class GoogsAction extends BaseAction {
 				pd2.put("count",count);
 				pd2.put("approve_status",1);
 				googsService.saveStockcChange(pd2);
+				googsService.updateRemindData(pd2);
 			}else{
 				BigDecimal number=new BigDecimal(count);
 				for (PageData pageData : stock) {
@@ -316,9 +319,12 @@ public class GoogsAction extends BaseAction {
 						pageData.put("count",number);
 						pageData.put("approve_status",1);
 						googsService.saveStockcChange(pageData);
+
 					}
+					googsService.updateRemindData(pageData);
 				}
 			}
+
 			j.setSuccess(true);
 			j.setMsg("1");
 		} catch (Exception e) {
@@ -368,12 +374,13 @@ public class GoogsAction extends BaseAction {
 	 * 获取栋舍信息
 	 * @return 数据列表
      */
-	List<PageData> getHouse() throws Exception {
+	List<PageData> getHouse(Integer farmId) throws Exception {
 		Subject currentUser = SecurityUtils.getSubject();  
 		Session session = currentUser.getSession();
 		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = this.getPageData();
 		pd.put("user_id", user.getId());
+		pd.put("parent_id",farmId);
 		List<PageData> orglist=moduleService.service("organServiceImpl", "getOrgList", new Object[]{pd});//farmService.selectAll();
 		int count=0;
 		List<PageData> list=new ArrayList<PageData>();
@@ -405,7 +412,7 @@ public class GoogsAction extends BaseAction {
 	public void getStockApproval(HttpServletResponse response) throws Exception{
 		Json j=new Json();
 		PageData pd = this.getPageData();
-		pd.put("approve_status",1);
+		pd.put("currFlag",1);
 		List<PageData> stockApprovalList = googsService.getStockApproval(pd);
 		j.setSuccess(true);
 		j.setObj(stockApprovalList);
@@ -421,11 +428,51 @@ public class GoogsAction extends BaseAction {
     public void getStockApprovalChange(HttpServletResponse response) throws Exception{
         Json j=new Json();
         PageData pd = this.getPageData();
-        pd.put("approve_status",0);
+        pd.put("currFlag",null);
         List<PageData> stockApprovalList = googsService.getStockApproval(pd);
         j.setSuccess(true);
         j.setObj(stockApprovalList);
         super.writeJson(j, response);
     }
-	
+
+	/**
+	 * 驳回审批
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/rejectStockChange")
+	public void rejectStockChange(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		pd.put("approve_status",3);
+		int result = googsService.approvalStockChange(pd);
+		googsService.updateRemindData(pd);
+		if(result == 1){
+			j.setSuccess(true);
+		} else{
+			j.setSuccess(false);
+		}
+		super.writeJson(j, response);
+	}
+
+
+	/**
+	 * 通过审批
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping("/approvalStockChange")
+	public void approvalStockChange(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		pd.put("approve_status",2);
+		int result = googsService.approvalStockChange(pd);
+		googsService.updateRemindData(pd);
+		if(result == 1){
+			j.setSuccess(true);
+		} else{
+			j.setSuccess(false);
+		}
+		super.writeJson(j, response);
+	}
 }

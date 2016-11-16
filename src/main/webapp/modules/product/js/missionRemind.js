@@ -94,11 +94,7 @@ function addMissionRemind() {
                     success: function (result) {
                         if (result.msg == '1') {
                             // alert("保存成功!");
-                            layer.msg('保存成功！', {
-                                skin: 'layui-layer-lan'
-                                , closeBtn: 0
-                                , shift: 4 //动画类型
-                            });
+                            layer.msg('保存成功！');
                             var list = result.obj;
                             $("#stockTable").bootstrapTable("load", list);
                             /*$("#formData tr:not(:first-child)").remove();
@@ -111,11 +107,7 @@ function addMissionRemind() {
                             }*/
                         } else {
                             // alert("保存失败！");
-                            layer.msg('保存失败！', {
-                                skin: 'layui-layer-lan'
-                                , closeBtn: 0
-                                , shift: 4 //动画类型
-                            });
+                            layer.msg(result.msg);
                         }
                     }
                 });
@@ -127,41 +119,40 @@ function addMissionRemind() {
 function deleteTask() {
     var str = new Array();
     var getRows = $('#stockTable').bootstrapTable('getSelections');
-    for (var i in getRows){
+    var code = document.getElementById("taskCode").value;
+    for (var i in getRows) {
         str.push(getRows[i]["id"]);
     }
-    if (str == []){
+    if (str == []) {
         layer.alert('请选择需要删除的任务！', {
             skin: 'layui-layer-lan'
             , closeBtn: 0
             , shift: 4 //动画类型
         });
-        return;
     } else {
-        $.ajax({
-            url:path + "/product/deleteTask",
-            data:{"id":str.toString()},
-            dataType:"json",
-            success:function (result) {
-                if (result.msg == '1'){
-                    // alert("删除成功！");
-                    layer.msg('删除成功！', {
-                        skin: 'layui-layer-lan'
-                        , closeBtn: 0
-                        , shift: 4 //动画类型
-                    });
-                    var list = result.obj;
-                    $("#stockTable").bootstrapTable("load",list);
-                }else{
-                    // alert(result.msg);
-                    layer.msg(result.msg, {
-                        skin: 'layui-layer-lan'
-                        , closeBtn: 0
-                        , shift: 4 //动画类型
-                    });
-                }
+        layer.confirm('请确认是否删除的任务！', {
+                skin: 'layui-layer-lan'
+                , closeBtn: 0
+                , shift: 4 //动画类型
+            }, function () {
+                $.ajax({
+                    url: path + "/product/deleteTask",
+                    data: {"id": str.toString()},
+                    dataType: "json",
+                    success: function (result) {
+                        if (result.msg == '1') {
+                            // alert("删除成功！");
+                            layer.msg('删除成功！');
+                            var list = result.obj;
+                            $("#stockTable").bootstrapTable("load", list);
+                        } else {
+                            // alert(result.msg);
+                            layer.msg(result.msg);
+                        }
+                    }
+                })
             }
-        })
+        );
     }
 }
 function queryNext(){

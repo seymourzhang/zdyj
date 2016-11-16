@@ -67,4 +67,14 @@ public class GoogsServiceImpl implements GoogsService {
 	public List<PageData> getStockApproval(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockApproval", pd);
 	}
+
+	@Override
+	public int approvalStockChange(PageData pd) throws Exception{
+		return (Integer)dao.update("SDGoodsMapper.approvalStockChange", pd);
+	}
+
+	@Override
+	public int updateRemindData(PageData pd) throws Exception{
+		return (int) dao.save("SDGoodsMapper.exec_SP_STOCK_REMIND", pd);
+	}
 }

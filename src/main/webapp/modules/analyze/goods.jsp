@@ -6,8 +6,8 @@
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
-	String urlPre = "../../../fr/ReportServer?reportlet=" + path.replace("/","") ;
-	String urlParamUserId = "?user_id=";
+//	String urlPre = "../../../fr/ReportServer?reportlet=" + path.replace("/","") ;
+//	String urlParamUserId = "?user_id=";
 %>
 
 <!DOCTYPE html>
@@ -35,22 +35,29 @@
 						</li>
 					</ul>
 
-					<div class="tab-content">
+					<input id="toolBarFarmParmUserId" type="hidden" value="${pd.user_id}">
+					<input id="toolBarFarmParmPath" type="hidden" value="<%=path%>">
+					<div id = "toolBarFarm" class="row-fluid">
+
+					</div>
+
+
+					<div class="tab-content" style="border:none">
 						<div class="tab-pane active" id="tab_1">
-							<iframe id="inStockForm" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="<%=urlPre%>/inStockForm.cpt<%=urlParamUserId%>${pd.user_id} ">
+							<%--<iframe id="inStockForm" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="<%=urlPre%>/inStockForm.cpt<%=urlParamUserId%>${pd.user_id} ">--%>
+							<iframe id="iframe_tab_1" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="">
 							</iframe>
 						</div>
 					
 
 						<div class="tab-pane" id="tab_2">
-				2
-
+							<iframe id="iframe_tab_2" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="">
+							</iframe>
 						</div>
 
 						<div class="tab-pane " id="tab_3">
-					3
-								
-
+							<iframe id="iframe_tab_3" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="">
+							</iframe>
 						</div>
 					</div>
 
@@ -66,6 +73,7 @@
 	<!-- #main-content -->
 	<script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>
 	<script type="text/javascript" src="<%=path%>/modules/analyze/js/analyzeReport.js"></script>
+	<script type="text/javascript" src="<%=path%>/modules/analyze/js/goods.js"></script>
 	<!-- 确认窗口 -->
 
 </body>

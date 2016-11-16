@@ -175,7 +175,10 @@
 		where c.obj_type = 2
 	  		and d.level_id = (select max(aa.level_id) - 2 from s_d_organization aa)
 			and b.user_id = #{user_id}
-		order by d.id limit 1
+		order by d.id
+		<if test="flag == null">
+			limit 1
+		</if>
 	</select>
 
 	<select id="getHouseType" parameterType="pd" resultType="pd" useCache="false">

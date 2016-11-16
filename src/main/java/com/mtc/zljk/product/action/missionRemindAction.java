@@ -53,7 +53,7 @@ public class MissionRemindAction extends BaseAction {
         for (PageData task : tasks) {
             a.put(task);
         }
-        mav.addObject("org_name", lpd.get(0).get("name_cn").toString());
+        mav.addObject("org_name", lpd.size() == 0 ? "暂无数据！" : lpd.get(0).get("name_cn"));
         mav.addObject("task_type", getTaskTypeName());
         mav.addObject("task_code", getTaskCodeName(pd));
         mav.addObject("date_type", getDateType());
@@ -69,32 +69,39 @@ public class MissionRemindAction extends BaseAction {
         SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
         PageData pageData = new PageData();
         pageData.put("user_id", user.getId());
-        List<PageData> lpd = organService.getFarmListByUserId(pageData);
+        List<PageData> lpd = organService.selectOrgByUser(pageData);
         pageData.put("task_id", pd.get("taskCode"));
         List<PageData> code = getTaskCodeName(pageData);
-        for (int i = 0; i < lpd.size(); ++i) {
-            PageData temp = new PageData();
-            temp.put("farm_id", lpd.get(i).get("org_id"));
-            temp.put("farm_name", lpd.get(i).get("org_name"));
-            temp.put("task_id", pd.get("taskCode"));
-            temp.put("task_name", code.get(0).get("task_name"));
-            temp.put("task_type", pd.get("taskType"));
-            temp.put("task_status", "Y");
-            temp.put("week_age_type", "null");
-            temp.put("date_type", pd.get("taskWD"));
-            temp.put("date_values", pd.get("dateValues"));
-            temp.put("week_group", pd.get("weeks"));
-            temp.put("create_person", user.getId());
-            temp.put("create_date", new Date());
-            temp.put("create_time", new Date());
-            temp.put("modify_person", user.getId());
-            temp.put("modify_date", new Date());
-            temp.put("modify_time", new Date());
-            farmTaskService.insert(temp);
+        List<PageData> tasks = farmTaskService.selectByUserIdOrStatus(pageData);
+        if (tasks.size() != 0) {
+            for (int i = 0; i < lpd.size(); ++i) {
+                PageData temp = new PageData();
+                temp.put("org_id", lpd.get(i).get("id"));
+                temp.put("org_name", lpd.get(i).get("name_cn"));
+                temp.put("task_id", pd.get("taskCode"));
+                temp.put("task_name", code.get(0).get("task_name"));
+                temp.put("task_type", pd.get("taskType"));
+                temp.put("task_status", "Y");
+                temp.put("week_age_type", "null");
+                temp.put("date_type", pd.get("taskWD"));
+                temp.put("date_values", pd.get("dateValues"));
+                temp.put("week_group", pd.get("weeks"));
+                temp.put("create_person", user.getId());
+                temp.put("create_date", new Date());
+                temp.put("create_time", new Date());
+                temp.put("modify_person", user.getId());
+                temp.put("modify_date", new Date());
+                temp.put("modify_time", new Date());
+                farmTaskService.insert(temp);
+            }
+            j.setMsg("1");
+            j.setObj(tasks);
+            j.setSuccess(true);
+        }else{
+            j.setMsg("您设定的任务，与之前任务相似，请重新设定！");
+            j.setSuccess(false);
+            j.setObj(tasks);
         }
-        List<PageData> tasks = getTasks(pageData);
-        j.setMsg("1");
-        j.setObj(tasks);
         super.writeJson(j, response);
     }
 
@@ -139,13 +146,13 @@ public class MissionRemindAction extends BaseAction {
     }
 
     public List<PageData> getTasks(PageData pd) throws Exception {
-        List<PageData> lpd = organService.getFarmListByUserId(pd);
+        List<PageData> lpd = organService.selectOrgByUser(pd);
         List temp = new ArrayList();
         for (PageData pageData : lpd) {
-            temp.add(pageData.get("org_id").toString());
+            temp.add(pageData.get("id").toString());
         }
-        String farmIds = MonitorAction.listToString(temp);
-        pd.put("farmIds", farmIds);
+        String orgIds = MonitorAction.listToString(temp);
+        pd.put("orgIds", orgIds);
         List<PageData> tasks = farmTaskService.selectByUserIdOrStatus(pd);
         return tasks;
     }
