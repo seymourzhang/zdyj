@@ -27,4 +27,8 @@ public class FarmTaskServiceImpl implements FarmTaskService {
     public int updateTaskStatus(PageData pd) throws Exception{
         return (Integer) dao.update("SBFarmTaskMapper.updateTaskStatus", pd);
     }
+
+    public List<PageData> selectByTashId(PageData pd) throws Exception{
+        return (List<PageData>) dao.findForList("SBFarmTaskMapper.selectByTashId", pd);
+    }
 }

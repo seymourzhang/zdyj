@@ -32,15 +32,15 @@ function addMissionRemind() {
     var temp = date.value.split("");
     var flag = true;
     temp.forEach(function (c) {
-        if (c == ',' && temp.length > 2 && flag){
+        if (c == ',' && temp.length > 2 && flag) {
             flag = false;
-        }else if (c != ',' && temp.length <= 2 && flag){
+        } else if (c != ',' && temp.length <= 2 && flag) {
             flag = false;
         }
     });
     if (flag) {
         // alert("您输入的时间间隔值格式错误，正确格式为:1,2,3,.....");
-        layer.alert('您输入的时间间隔值格式错误，正确格式为:1,2,3,.....', {
+        layer.alert('您输入的时间间隔值格式错误或重复时间间隔值，正确格式为:1,2,3,.....', {
             skin: 'layui-layer-lan'
             ,closeBtn: 0
             ,shift: 4 //动画类型
@@ -107,7 +107,12 @@ function addMissionRemind() {
                             }*/
                         } else {
                             // alert("保存失败！");
-                            layer.msg(result.msg);
+                            layer.alert(result.msg, {
+                                skin: 'layui-layer-lan'
+                                , closeBtn: 0
+                                , shift: 4 //动画类型
+                            });
+                            return;
                         }
                     }
                 });

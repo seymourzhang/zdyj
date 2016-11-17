@@ -31,4 +31,12 @@ public interface FarmTaskService {
      * @throws Exception
      */
     int updateTaskStatus(PageData pd) throws Exception;
+
+    /***
+     * 查询是否有相同任务
+     * @param pd
+     * @return
+     * @throws Exception
+     */
+    List<PageData> selectByTashId(PageData pd) throws Exception;
 }

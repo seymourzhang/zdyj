@@ -39,11 +39,25 @@
               (SELECT c.code_name FROM s_d_code c where c.code_type = 'task_type' AND f.task_type = c.biz_code) AS taskType,
               (SELECT d.code_name FROM s_d_code d WHERE d.code_type = 'date_type' AND f.date_type = d.biz_code) AS dateType
         FROM s_b_farm_task f
-        WHERE f.org_id IN (${orgIds}) AND f.task_status = 'Y'
-        <if test="task_id != null">
-            AND f.task_id != ${task_id}
-        </if>
+        WHERE f.org_id = ${orgIds} AND f.task_status = 'Y'
         ORDER BY f.create_time DESC
+    </select>
+
+    <select id="selectByTashId" resultType="pd" useCache="false">
+        SELECT
+        f.id,
+        f.org_id,
+        f.task_id,
+        f.task_name,
+        f.task_type,
+        f.task_status,
+        f.date_type,
+        f.date_values,
+        f.week_group,
+        (SELECT c.code_name FROM s_d_code c where c.code_type = 'task_type' AND f.task_type = c.biz_code) AS taskType,
+        (SELECT d.code_name FROM s_d_code d WHERE d.code_type = 'date_type' AND f.date_type = d.biz_code) AS dateType
+        FROM s_b_farm_task f
+        WHERE f.org_id = ${orgIds} AND f.task_status = 'Y' AND f.task_id = ${task_id}
     </select>
 
     <update id="updateTaskStatus" parameterType="pd">
