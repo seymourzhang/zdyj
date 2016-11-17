@@ -4,6 +4,11 @@
     <list default="true" readonly="true" id="7c407c5e-5728-4549-8de2-9164f1c37940" name="Default" comment="生产管理--提醒任务--修改需求">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/classes" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/zdyj.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/goods/action/GoogsAction.java" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/goods/action/GoogsAction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/goods/service/GoogsService.java" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/goods/service/GoogsService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/goods/service/impl/GoogsServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/goods/service/impl/GoogsServiceImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/util/action/OrgAction.java" afterPath="$PROJECT_DIR$/src/main/java/com/mtc/zljk/util/action/OrgAction.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/modules/googs/js/googsView.js" afterPath="$PROJECT_DIR$/src/main/webapp/modules/googs/js/googsView.js" />
     </list>
     <ignored path="zdyj.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -68,7 +73,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="401">
               <caret line="45" column="65" selection-start-line="45" selection-start-column="65" selection-end-line="45" selection-end-column="65" />
-              <folding />
+              <folding>
+                <marker date="1479355302362" expanded="true" signature="308:1316" ph="INSERT INTO s_b_farm_task... " />
+                <marker date="1479355302362" expanded="true" signature="1414:2029" ph="SELECT f.id,... s_b_farm_task" />
+                <marker date="1479355302362" expanded="true" signature="1672:1767" ph="SELECT c.cod... s_d_code" />
+                <marker date="1479355302362" expanded="true" signature="1797:1892" ph="SELECT d.cod... s_d_code" />
+                <marker date="1479355302362" expanded="true" signature="2119:2659" ph="SELECT f.id,... s_b_farm_task" />
+                <marker date="1479355302362" expanded="true" signature="2317:2412" ph="SELECT c.cod... s_d_code" />
+                <marker date="1479355302362" expanded="true" signature="2436:2531" ph="SELECT d.cod... s_d_code" />
+                <marker date="1479355302362" expanded="true" signature="2737:2799" ph="UPDATE s_b_f... " />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -176,11 +190,11 @@
         <option value="$PROJECT_DIR$/src/main/webapp/modules/breed/breedStandard.jsp" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/breed/js/breedStandard.js" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/70fd8af8-1515-4e40-87f7-a75d186d33ad/console.sql" />
-        <option value="$PROJECT_DIR$/src/main/resources/mybatis/product/SBFarmTaskMapper.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/service/FarmTaskService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/service/impl/FarmTaskServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/mtc/zljk/product/action/MissionRemindAction.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/modules/product/js/missionRemind.js" />
+        <option value="$PROJECT_DIR$/src/main/resources/mybatis/product/SBFarmTaskMapper.xml" />
       </list>
     </option>
   </component>
@@ -776,7 +790,7 @@
       <workItem from="1479223642702" duration="2966000" />
       <workItem from="1479262275807" duration="26957000" />
       <workItem from="1479307097210" duration="3776000" />
-      <workItem from="1479349141065" duration="5042000" />
+      <workItem from="1479349141065" duration="5367000" />
     </task>
     <task id="LOCAL-00001" summary="提醒任务模块！">
       <created>1477641970405</created>
@@ -824,7 +838,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="454564000" />
+    <option name="totallyTimeSpent" value="454889000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1244,7 +1258,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="401">
           <caret line="45" column="65" selection-start-line="45" selection-start-column="65" selection-end-line="45" selection-end-column="65" />
-          <folding />
+          <folding>
+            <marker date="1479355302362" expanded="true" signature="308:1316" ph="INSERT INTO s_b_farm_task... " />
+            <marker date="1479355302362" expanded="true" signature="1414:2029" ph="SELECT f.id,... s_b_farm_task" />
+            <marker date="1479355302362" expanded="true" signature="1672:1767" ph="SELECT c.cod... s_d_code" />
+            <marker date="1479355302362" expanded="true" signature="1797:1892" ph="SELECT d.cod... s_d_code" />
+            <marker date="1479355302362" expanded="true" signature="2119:2659" ph="SELECT f.id,... s_b_farm_task" />
+            <marker date="1479355302362" expanded="true" signature="2317:2412" ph="SELECT c.cod... s_d_code" />
+            <marker date="1479355302362" expanded="true" signature="2436:2531" ph="SELECT d.cod... s_d_code" />
+            <marker date="1479355302362" expanded="true" signature="2737:2799" ph="UPDATE s_b_f... " />
+          </folding>
         </state>
       </provider>
     </entry>
