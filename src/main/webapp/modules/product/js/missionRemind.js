@@ -29,18 +29,34 @@ function getStockTableColumns(){
 function addMissionRemind() {
     var array = new Array();
     var date = $("#dateValues")[0];
-    var temp = date.value.split("");
-    var flag = true;
+    var temp = date.value.split(",");
+    var flag = false;
+    var numArray = new Array();
+    var msg = "";
     temp.forEach(function (c) {
-        if (c == ',' && temp.length > 2 && flag) {
-            flag = false;
-        } else if (c != ',' && temp.length <= 2 && flag) {
-            flag = false;
+        if (!isNaN(parseInt(c))){
+            numArray.push(c);
+        }else{
+            msg = "您输入的时间间隔值错误，正确的格式为:1,2,3,...";
+            flag = true;
+            return;
         }
     });
+    if (!flag) {
+        var s = temp.join(",") + ",";
+        for (var i = 0; i < temp.length; i++) {
+            var aa = s.replace(temp[i] + ",", "");
+            var bb = aa.indexOf(temp[i] + ",");
+            if (bb > -1) {
+                msg = "您输入的时间间隔有相同值！";
+                flag = true;
+                break;
+            }
+        }
+    }
     if (flag) {
         // alert("您输入的时间间隔值格式错误，正确格式为:1,2,3,.....");
-        layer.alert('您输入的时间间隔值格式错误或重复时间间隔值，正确格式为:1,2,3,.....', {
+        layer.alert(msg, {
             skin: 'layui-layer-lan'
             ,closeBtn: 0
             ,shift: 4 //动画类型
