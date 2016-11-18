@@ -12,7 +12,7 @@
             + request.getServerName() + ":" + request.getServerPort()
             + path + "/";
 %>
-<html>
+<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <%@ include file="../../framework/inc.jsp"%>
@@ -126,7 +126,7 @@
 </script>
 <body>
     <span class="btn btn-success fileinput-button" style="left: 460px; height: 35px;top: 20px">
-            <span>上传</span>
+            <span>浏览</span>
         <!-- The file input field used as target for the file upload widget -->
             <input id="fileupload" type="file" name="eFiles" multiple>
     </span>

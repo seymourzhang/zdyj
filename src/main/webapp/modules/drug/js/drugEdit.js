@@ -103,7 +103,7 @@ function addDrug(){
 			"instruction": instruction,
 			"grow_week_age":$("#grow_week_age").val()
 	    };
-	document.getElementById("reflushText").style.display="inline";
+	// document.getElementById("reflushText").style.display="inline";
 	$.ajax({
         // async: true,
         url: path+"/drug/savePlanData",
@@ -124,7 +124,7 @@ function addDrug(){
            
         }
     });
-	document.getElementById("reflushText").style.display="none";	
+	// document.getElementById("reflushText").style.display="none";
 }
 
 function deleteDrug(){
@@ -143,7 +143,7 @@ function deleteDrug(){
     for(var i = 0; i < deleteRow.length; i++){
     	deleteRow2 = deleteRow2+deleteRow[i].id+";";
     }
-    document.getElementById("reflushText").style.display="inline";
+    // document.getElementById("reflushText").style.display="inline";
 	$.ajax({
         // async: true,
         url: path+"/drug/deletePlanData",
@@ -164,13 +164,13 @@ function deleteDrug(){
            
         }
     });
-	document.getElementById("reflushText").style.display="none";
+	// document.getElementById("reflushText").style.display="none";
 }
 
 function searchData(){
 //    var dataJosn;
     var p= {"paramTypeSelectValue":"plan2"};  
-    	document.getElementById("reflushText").style.display="inline";
+    	// document.getElementById("reflushText").style.display="inline";
     $.ajax({
         // async: true,
         url: path+"/drug/searchData",
@@ -191,7 +191,7 @@ function searchData(){
            
         }
     });
-    document.getElementById("reflushText").style.display="none";
+    // document.getElementById("reflushText").style.display="none";
 };
 
 function getTableEmptyRow(tableName){

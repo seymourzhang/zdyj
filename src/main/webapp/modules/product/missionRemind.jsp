@@ -1,43 +1,26 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Seymour
-  Date: 2016/10/19
-  Time: 16:43
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme() + "://"
             + request.getServerName() + ":" + request.getServerPort()
             + path + "/";
 %>
-<html>
+
+<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <%@ include file="../../framework/inc.jsp"%>
 </head>
 <script>
-    jQuery(document).ready(function () {
-        checkDate($("#wd")[0]);
-        initTableWithToolBar("stock", "taskReminderToolbar", getStockTableColumns(), ${tasks});
-    });
-    function checkDate(wd) {
-        var che = document.getElementsByName("week");
-        if (wd.value == '1') {
-            for (var i = 0; i < che.length; ++i) {
-                che[i].disabled = true;
-            }
-        } else {
-            for (var i = 0; i < che.length; ++i) {
-                che[i].disabled = false;
-            }
-        }
-    }
+        jQuery(document).ready(function () {
+            checkDate($("#wd")[0]);
+            setData(${tasks});
+            <%--initTableWithToolBar("stock", "taskReminderToolbar", getStockTableColumns(), ${tasks});--%>
+        });
 </script>
-<body>
-
+<body style="background-color: #ffffff;">
 <div id="page-content" class="clearfix" style="padding-top: 10px;">
     <div class="container-fluid">
         <div class="row-fluid">
@@ -82,13 +65,13 @@
                 <div id="weeks">
                     <table>
                         <tr>
-                            <td><input name="week" type="checkbox" value="1"/></td><td><p>周一</p></td>
-                            <td><input name="week" type="checkbox" value="2"/></td><td><p>周二</p></td>
-                            <td><input name="week" type="checkbox" value="3"/></td><td><p>周三</p></td>
-                            <td><input name="week" type="checkbox" value="4"/></td><td><p>周四</p></td>
-                            <td><input name="week" type="checkbox" value="5"/></td><td><p>周五</p></td>
-                            <td><input name="week" type="checkbox" value="6"/></td><td><p>周六</p></td>
-                            <td><input name="week" type="checkbox" value="7"/></td><td><p>周日</p></td>
+                            <td><input name="week" type="checkbox" value="1"/>周一</td>
+                            <td><input name="week" type="checkbox" value="2"/>周二</td>
+                            <td><input name="week" type="checkbox" value="3"/>周三</td>
+                            <td><input name="week" type="checkbox" value="4"/>周四</td>
+                            <td><input name="week" type="checkbox" value="5"/>周五</td>
+                            <td><input name="week" type="checkbox" value="6"/>周六</td>
+                            <td><input name="week" type="checkbox" value="7"/>周日</td>
                         </tr>
                     </table>
                 </div>
@@ -130,10 +113,13 @@
         </div>
     </div>
 </div>
-
+<script type="text/javascript">
+    var isRead="${pd.write_read}";//菜单是否只读
+</script>
+<!-- #main-content -->
+<script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>
 <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
 <script type="text/javascript" src="<%=path%>/modules/product/js/missionRemind.js"></script>
-
+<!-- 确认窗口 -->
 </body>
-
 </html>

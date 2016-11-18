@@ -26,7 +26,7 @@
             <div id = "toolBarFarm" class="row-fluid">
 
             </div>
-            <iframe id="iframe_tab_1" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="">
+            <iframe id="iframe_tab_1" name="inStockForm" width="99.8%" height="700" frameborder="no" allowtransparency="yes" src="">
             </iframe>
         </div>
 

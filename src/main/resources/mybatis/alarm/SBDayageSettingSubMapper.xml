@@ -608,6 +608,7 @@
 		 house_id ,
 		 day_age ,
 		 high_alarm_co2 ,
+		 set_co2,
 		 set_humidity ,
 		 memo ,
 		 create_person ,
@@ -621,6 +622,7 @@
 			#{houseId},
 			#{day_age},
 			#{high_alarm_co2},
+			#{set_co2},
 			#{set_humidity},
 			#{memo},
 			#{create_person},
@@ -653,8 +655,8 @@
 			#{houseId},
 			#{day_age},
 			#{set_water_deprivation},
-			#{high_alarm_co2},
 			#{high_water_deprivation},
+			#{low_water_deprivation},
 			#{set_humidity},
 			#{memo},
 			#{create_person},
@@ -784,7 +786,7 @@
 	   </if>
 	   <!-- 二氧化碳 -->
 	   <if test="alarm_type == 3"> 
-		UPDATE s_b_dayage_setting_sub SET high_alarm_co2 = #{high_alarm_co2}
+		UPDATE s_b_dayage_setting_sub SET high_alarm_co2 = #{high_alarm_co2} , set_co2 = #{set_co2}
 		 , modify_person = #{modify_person}
 		  , modify_date = #{modify_date} , modify_time = #{modify_time}
 		WHERE uid_num = #{uid_num}
@@ -879,6 +881,7 @@
 			high_alarm_negative_pressure,
 			low_alarm_negative_pressure,
 			high_alarm_co2,
+			set_co2,
 			set_water_deprivation,
 			high_water_deprivation,
 			low_water_deprivation,
@@ -902,6 +905,7 @@
 				#{item.high_alarm_negative_pressure},
 				#{item.low_alarm_negative_pressure},
 				#{item.high_alarm_co2},
+				#{item.set_co2},
 				#{item.set_water_deprivation},
 				#{item.high_water_deprivation},
 				#{item.low_water_deprivation},
@@ -937,7 +941,7 @@
 	   <!-- 二氧化碳 -->
 	   <if test="alarm_type == 3"> 
 	   <foreach collection="list" index="index" item="item"  open="" separator=";" close="" > 
-		UPDATE s_b_dayage_temp_sub SET high_alarm_co2 = #{item.high_alarm_co2} 
+		UPDATE s_b_dayage_temp_sub SET high_alarm_co2 = #{item.high_alarm_co2} , set_co2 = #{item.set_co2}
 		 , modify_person = #{item.modify_person}
 		  , modify_date = #{item.modify_date} , modify_time = #{item.modify_time}
 		WHERE uid_num = #{item.uid_num} AND farm_id = #{item.farmId} AND house_id = #{item.houseId} 

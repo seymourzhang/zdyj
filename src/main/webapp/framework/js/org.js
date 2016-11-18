@@ -15,20 +15,20 @@ $(document).ready(function() {
 				if(i==0){
 					str += "<div class='span3' style='width: 180px;'>";
 					str += "<div class='control-group'>";
-					str += "<label class='control-label' style='width: 30px;'>" + list[i].level_name + "</label>";
-					str += "<div class='controls' style='margin-left: 35px;'>";
+					str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
+					str += "<div class='controls' style='margin-left: 65px;'>";
 					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;' onchange='getOrgList("+(list[i].level_id+1)+")' class='m-wrap span12' tabindex='1' name='orgId"+list[i].level_id+"'>";
 					for (var j = 0; j < orglist.length; j++) {
 						if (orglist[j].level_id == list[i].level_id&&pid==orglist[j].parent_id) {
-							str +="<option value=" + orglist[j].id + ","+orglist[j].organization_id+">" + orglist[j].name_cn + "</option>";
+							str +="<option value=" + orglist[j].id + ","+orglist[j].organization_id+","+orglist[j].name_cn+">" + orglist[j].name_cn + "</option>";
 						}
 					}
 				
 				}else{
 					str += "<div class='span3' style='width: 120px;'>";
 					str += "<div class='control-group'>";
-					str += "<label class='control-label' style='width: 30px;'>" + list[i].level_name + "</label>";
-					str += "<div class='controls' style='margin-left: 35px;'>";
+					str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
+					str += "<div class='controls' style='margin-left: 65px;'>";
 					str += "<select id='orgId"+list[i].level_id+"' style='width: 100px;' onchange='getOrgList("+(list[i].level_id+1)+")' class='m-wrap span12' tabindex='1' name='orgId"+list[i].level_id+"'>";
 					str +=getChildList(list[i].parent_id);
 				}
@@ -54,7 +54,7 @@ function getChildList(em){
     	var re = $.parseJSON(result);
     	var list = re.obj;
     	for (var i = 0; i < list.length; i++) {
-				str +="<option value=" + list[i].id + ","+list[i].organization_id+">" + list[i].name_cn + "</option>";
+				str +="<option value=" + list[i].id + ","+list[i].organization_id+","+list[i].name_cn+">" + list[i].name_cn + "</option>";
 		}
     });
     return str;
@@ -92,7 +92,7 @@ function getOrgList(id){
 					var list = result.obj;
 					$("#orgId"+id+" option").remove();
 					for (var i = 0; i < list.length; i++) {
-						$("#orgId"+id).append("<option value=" + list[i].id + ","+list[i].organization_id+">" + list[i].name_cn + "</option>");
+						$("#orgId"+id).append("<option value=" + list[i].id + ","+list[i].organization_id+","+list[i].name_cn+">" + list[i].name_cn + "</option>");
 					}
 					getOrgList(id+1);
 					OrgSearch(count0rg,num);

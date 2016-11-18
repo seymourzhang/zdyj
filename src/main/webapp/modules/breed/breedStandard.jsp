@@ -13,7 +13,7 @@
             + request.getServerName() + ":" + request.getServerPort()
             + path + "/";
 %>
-<html>
+<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <%@ include file="../../framework/inc.jsp"%>
@@ -79,9 +79,9 @@
                             <%--<table id="breedSTDTable"></table>--%>
                                 <div class="row-fluid">
                                     <div class="span12">
-                                        <p id = "varietyName1" align="center">
-                                            <font size='4' ><B>${varietyName}</B></font>
-                                        </p>
+                                        <%--<p id = "varietyName1" align="center">--%>
+                                            <%--<font size='4' ><B>${varietyName}</B></font>--%>
+                                        <%--</p>--%>
                                         <table id="breedSTD1Table">
                                             <thead>
                                                 <tr>
@@ -117,9 +117,9 @@
                             <%--<table id="breedSTDTable"></table>--%>
                                 <div class="row-fluid">
                                     <div class="span12">
-                                        <p id = "varietyName2" align="center">
-                                            ${varietyName}
-                                        </p>
+                                        <%--<p id = "varietyName2" align="center">--%>
+                                            <%--${varietyName}--%>
+                                        <%--</p>--%>
                                         <table id="breedSTD2Table">
                                             <thead>
                                             <tr>
@@ -154,9 +154,9 @@
                             <%--<table id="breedSTDTable"></table>--%>
                                 <div class="row-fluid">
                                     <div class="span12">
-                                        <p id = "varietyName3" align="center">
-                                            ${varietyName}
-                                        </p>
+                                        <%--<p id = "varietyName3" align="center">--%>
+                                            <%--${varietyName}--%>
+                                        <%--</p>--%>
                                         <table id="breedSTD3Table">
                                             <thead>
                                             <tr>

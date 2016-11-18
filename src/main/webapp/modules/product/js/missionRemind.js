@@ -1,6 +1,26 @@
 /**
  * Created by Seymour on 2016/10/26.
  */
+var dataList = [];
+
+$(document).ready(function() {
+    initTableWithToolBar("stock", "taskReminderToolbar", getStockTableColumns(), []);
+    $("#stockTable").bootstrapTable("load", dataList);
+});
+
+function checkDate(wd) {
+    var che = document.getElementsByName("week");
+    if (wd.value == '1') {
+        for (var i = 0; i < che.length; ++i) {
+            che[i].disabled = true;
+        }
+    } else {
+        for (var i = 0; i < che.length; ++i) {
+            che[i].disabled = false;
+        }
+    }
+};
+
 //新增
 function getStockTableColumns(){
     var dataColumns = [{
@@ -192,4 +212,8 @@ function queryNext(){
             }
         }
     })
+};
+
+function setData(dataList){
+    this.dataList = dataList;
 }

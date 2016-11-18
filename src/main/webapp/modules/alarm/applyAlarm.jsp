@@ -20,15 +20,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   <script>
   jQuery(document).ready(function() {
-// 	  if(document.getElementById("house1").value ==${house.id }){
-// 		  document.getElementById("house1").checked = true;
-// 	  }else if(document.getElementById("house2").value ==${house.id }){
-// 		  document.getElementById("house2").checked = true;
-// 	  }else if(document.getElementById("house3").value ==${house.id }){
-// 		  document.getElementById("house3").checked = true;
-// 	  }else if(document.getElementById("house4").value ==${house.id }){
-// 		  document.getElementById("house4").checked = true;
-// 	  }
+
 	});
   
   function  applyAlarm(){
@@ -54,86 +46,81 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!--    <div class="portlet-body form" style="padding-top: 15px;margin-left: 10px;"> -->
 	<!-- BEGIN FORM-->
 <!--     <form action="<%=path %>/alarm/applyAlarm" class="form-horizontal"  onsubmit="return submitForm()" > -->
-        <form id="applyAlarm_form" class="form-horizontal"   > 
-		<input type="hidden" name="farmId" id="farmId"  value="${farm.id}"/>							
-		<input type="hidden" name="houseId" id="houseId"  value="${house.id}"/>	
+<!--         <form id="applyAlarm_form" class="form-horizontal"   >  -->			
+			<div class="tab-content">
+						<div class="tab-pane active" id="tab_1">
+							<div class="portlet-body form1">
+							<!-- BEGIN FORM-->
+								<form id="applyAlarm_form">
+		<input type="hidden" name="farmId" id="farmId"  value="${farmId}"/>							
+		<input type="hidden" name="houseId" id="houseId"  value="${houseId}"/>	
 		<input type="hidden" name="houseId2" id="houseId2" />		
 		<input type="hidden" name="alarm_type" id="alarm_type" value="${alarm_type}"/>
-		<table style="margin-left: 10px;height: 10px;width: 500px;margin-top: 30px;">							
-               <tr>
-               <th>当前农场:</th>
-               <td>${farm.farm_name_chs}</td>
-               <th>当前栋舍:</th>
-               <td>${house.house_name }</td>
-               </tr> 
-               <tr></tr> <tr></tr><tr></tr>
-               <c:if test="${!empty houseList}">
-               <%int i=1; %>
-                <tr style="margin-top: 60px;height: 90px;">
-                <th style="text-align: center;" colspan="2" height="60px;"> 
-                                                                    应用至:
-               </th>
-		       <c:forEach var="houselist" items="${houseList}">
-		       <c:if test="${houselist.id!=house.id }">
-               <td style="text-align: center;" colspan="2" height="60px;"> 
-              <input type="checkbox" id="house<%=i %>" name="house<%=i %>" value="${houselist.id }" onclick="xuanze();"/>
-               ${houselist.house_name }
-               </td>  
-               <script>
+								<div class="form-horizontal" style="height: 40px;">
+									<div class="span6" style="width: 300px;">
+										<div class="control-group">
+										  <label class="control-label" style="width: 60px;">当前农场:</label>
+										  <div class="controls" style="margin-left: 70px;width: 150px;margin-top: 7px;">
+											${farm}
+										  </div>
+										</div>
+									</div>
+									<div class="span6" style="width: 150px;">
+										<div class="control-group">
+										  <label class="control-label" style="width: 60px;margin-left: -30px;">当前栋舍:</label>
+										  <div class="controls" style="margin-left: 40px;margin-top: 7px;">
+										  	 ${house }
+										  </div>
+										</div>
+									</div>
+									<c:if test="${!empty houseList}">
+                                     <%int i=1; %>
+									<div class="span12" style="width: 550px;">
+										<div class="control-group">
+										  <label class="control-label" style="width: 100px;margin-left: 70px;"> 应用至:</label>										  
+										  	<c:forEach var="houselist" items="${houseList}">
+		                                     <c:if test="${houselist.org_code!=houseId }"> 
+		                                  <div class="controls" style="margin-left: 300px;margin-top: 5px;">
+		                                  <input type="checkbox" id="house<%=i %>" name="house<%=i %>" value="${houselist.org_code }" onclick="xuanze();" style="margin-top: 0px;"/>
+                                           ${houselist.org_name }
+										  </div>
+										  <script>
                function xuanze(){
-//             		  if(document.getElementById("house1").checked == true && document.getElementById("house1").value !=${house.id }){
             			  document.getElementById("houseId2").value = $("#house"+<%=i %>).val();
-//             		  }
-//             		  else if(document.getElementById("house2").checked == true && document.getElementById("house2").value !=${house.id }){
-//             			  document.getElementById("houseId2").value = $("#house2").val();
-//             		  }else if(document.getElementById("house3").checked == true && document.getElementById("house3").value !=${house.id }){
-//             			  document.getElementById("houseId2").value = $("#house3").val();
-//             		  }else if(document.getElementById("house4").checked == true && document.getElementById("house4").value !=${house.id }){
-//             			  document.getElementById("houseId2").value = $("#house4").val();
-//             		  }
             	  }
                </script>                                     
                </c:if>
                <%i++; %>
                </c:forEach> 
-               </tr>
-               </c:if>
-<!--                <tr> -->
-<!--                <td style="text-align: center;" colspan="4" height="60px;"> -->
-<!--                <input type="checkbox" id="house2" name="house2" value="2" onclick="xuanze();"/>02栋舍 -->
-<!--                </td>  -->
-<!--                </tr>   -->
-                  
-<!--                <c:if test="${farm.id==house.farm_id }"> -->
-<!--                <tr> -->
-<!--                <td style="text-align: center;" colspan="4" height="60px;"> -->
-<!--                <input type="checkbox" id="house3" name="house3" value="3" onclick="xuanze();"/>03栋舍 -->
-<!--                </td>    -->
-<!--                </tr> -->
-<!--                <tr>        -->
-<!--                <td style="text-align: center;" colspan="4" height="60px;"> -->
-<!--                <input type="checkbox" id="house4" name="house4" value="4" onclick="xuanze();"/>04栋舍 -->
-<!--                </td> -->
-<!--                </tr> -->
-<!--                </c:if>                              -->
+										</div>
+									</div>
+									</c:if>
+									
+									<div class="span6" style="width: 220px;">
+										  <div class="controls" style="margin-left: 100px;width: 520px;">
+											 <button type="button" class="btn blue" onclick="applyAlarm()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
+										  </div>
+									</div>
+									<div class="span6" style="width: 220px;">
+										  <div class="controls" style="margin-left: 60px;">
+											 <button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
+										  </div>
+									</div>
+								</div>
+								</form>
+								<!-- end from -->
+							</div>
+						</div>
+
+					</div>
 			
-			</table>
-			<table style="margin-left: 10px;height: 10px;width: 500px;margin-top: 10px;">
-			<tr style="margin-top: 10px;height: 30px;">
-           <td style="text-align: center;" colspan="2">
-           <button type="button" class="btn blue" onclick="applyAlarm()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
-           </td>
-           <td style="text-align: center;" colspan="2">
-           <button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
-           </td>
-           </tr>
-			</table>
+			
 		<script>
 			function closeB(){
 				parent.layer.closeAll();
 			}
 		</script>
-		</form>
+<!-- 		</form> -->
 		<!-- END FORM-->  
 <!-- 	</div> -->
   </body>

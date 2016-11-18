@@ -1,42 +1,12 @@
 //var tickInterval=7;
+var count0rg;
+var num;
+var paramTypeList = new Array("TemperatureCurve","NegativePressure","Carbon","Water");
+var paramTypeSelectValue = null;
 
-function reflushAlarm(){
-	var param;
-	if($("#farmId").val()==""){
-		param=null;
-	}else{
-		param = {"farmId":$("#farmId").val()};
-	}
- $.ajax({
-     // async: true,
-     url: path+"/alarm/reflushAlarm",
-     data: param,
-     type : "POST",
-     dataType: "json",
-     cache: false,
-     // timeout:50000,
-     success: function(result) {
-         var list = eval(result.obj);
-		 var select = document.getElementById("houseId");
-		 $("#houseId option").remove();
-		 var option = null; // document.createElement("option");
-//		 option.innerHTML += "<option id=\"o1\" value=\"\" >"+"全部"+"</option>";
-//		 select.appendChild(option);
-//		 document.getElementById("o1").setAttribute("value", "");
-         for(var i=0;i<list.length;i++){
-//        	 option = document.createElement("option");
-//    		 option.innerHTML += "<option value="+list[i]["id"]+" >"+list[i]["house_name"]+"</option>";
-//    		 select.appendChild(option);
-    		 $("#houseId").append("<option value=" + list[i].id + ">" + list[i].house_name+ "</option>");
-//    		 document.getElementById(list[i]["id"]).setAttribute("value",list[i]["id"]);
-		 }
-//         $("#houseId").val(list[0].id);
-            search();
-     }
- });
-
+function OrgSearch(count0rg,num){
+	search();
 }
-
 
 //新增
 function addAlarmUrl(){
@@ -53,8 +23,8 @@ function addAlarmUrl(){
 		type: 2, 
 		title: "新增",
 		skin: 'layui-layer-lan',
-		area: ['750px', '400px'],
-	    content: path+"/alarm/addAlarmUrl?farmId="+$("#farmId").val()+"&houseId="+$("#houseId").val()
+		area: ['750px', '300px'],
+	    content: path+"/alarm/addAlarmUrl?farmId="+$("#orgId" + (count0rg - 1)).val().split(",")[1]+"&houseId="+$("#orgId" + count0rg).val().split(",")[1]
 	    +"&alarm_type="+$("#alarmType").val()
     });
 }
@@ -73,8 +43,8 @@ function applyAlarmUrl(){
 		type: 2, 
 		title: "应用至",
 		skin: 'layui-layer-lan',
-		area: ['530px', '300px'],
-	    content: path+"/alarm/applyAlarmUrl?farmId="+$("#farmId").val()+"&houseId="+$("#houseId").val()+
+		area: ['530px', '250px'],
+	    content: path+"/alarm/applyAlarmUrl?farmId="+$("#orgId" + (count0rg - 1)).val().split(",")[1]+"&houseId="+$("#orgId" + count0rg).val().split(",")[1]+
 	    "&alarm_type="+$("#alarmType").val()
     });		
 }
@@ -94,7 +64,7 @@ function bindingUserUrl(){
 		title: "上传报警联系人",
 		skin: 'layui-layer-lan',
 		area: ['570px', '400px'],
-	    content: path+"/alarm/bindingUserUrl?farmId="+$("#farmId").val()+"&houseId="+$("#houseId").val()+
+	    content: path+"/alarm/bindingUserUrl?farmId="+$("#orgId" + (count0rg - 1)).val().split(",")[1]+"&houseId="+$("#orgId" + count0rg).val().split(",")[1]+
 	    "&alarm_type="+$("#alarmType").val()
     });
 }
@@ -157,8 +127,8 @@ function  querySBDayageSettingSub(){
 		type : "post",
 		url : path + "/alarm/queryAlarm",
 		data : {
-			"farmId" : $("#farmId").val(),//农场
-			"houseId" : $("#houseId").val(),//栋舍
+			"farmId" : $("#orgId" + (count0rg - 1)).val().split(",")[1],//农场
+			"houseId" : $("#orgId" + count0rg).val().split(",")[1],//栋舍
 			"alarm_type" : $("#alarmType").val(),//报警类别
 		},
 		dataType: "json",
@@ -170,7 +140,7 @@ function  querySBDayageSettingSub(){
 //			var setNegativePressure = new Array();
 			var highAlarmNegativePressure = new Array();
 			var lowAlarmNegativePressure = new Array();
-//			var setCo2 = new Array();
+			var setCo2 = new Array();
 			var highAlarmCo2 = new Array();
 //			var lowAlarmCo2 = new Array();
 			var setWaterDeprivation = new Array();
@@ -218,22 +188,25 @@ function  querySBDayageSettingSub(){
 		            name: '低报负压',
 		            data: lowAlarmNegativePressure
 		        }];
-				yName='负压(Pa)';
+				yName='光照(Lux)';
 				suffixName = 'Pa';
 			}else if(alarmtype1=="3"){
 				for (var i = 0; i < list.length; i++) {
 					if(list[i].high_alarm_co2!=undefined){
 					xNames.push(list[i].day_age+'日龄');
-//					setCo2.push(list[i].set_co2);
+					setCo2.push(list[i].set_co2);
 					highAlarmCo2.push(list[i].high_alarm_co2 );
 //					lowAlarmCo2.push(list[i].low_alarm_co2 );
 					}
 				}
 				alarmType5 = [{
-		            name: '高报二氧化碳',
+		            name: 'CO2报警值',
 		            data: highAlarmCo2
+		        },{
+		            name: 'CO2参考值',
+		            data: setCo2
 		        }];
-				yName='二氧化碳(ml/m³)';
+				yName='CO2(ml/m³)';
 				suffixName = 'ml/m³';
 			}else if(alarmtype1=="4"){
 				for (var i = 0; i < list.length; i++) {
@@ -338,32 +311,97 @@ function batchChange(){
 		  });
 		return;
 	}
-	var alarms=document.getElementsByName("checkedSBDayageSettingSubId");
-	var id;
-	var day_age;
-	if(alarms == null){
-		return;
-	}
-	var num =0;
-	for(var i=0;i<alarms.length;i++){
-		if(alarms[i].checked){
-			id= alarms[i].id;
-			day_age = $("#day_age"+id).val();
-			num++;
-		}
-	}
-	if(num ==0){
-		alert("请选择警报记录");
-		closediv();
-		return;
-	}
-    document.forms[0].action = path+"/alarm/deleteAlarm?uid_num="+id+"&day_age="+day_age;
-    document.forms[0].submit();
+	var deleteRow;
+	var deleteRow2 ="";
+    deleteRow = $('#'+paramTypeSelectValue+'Table').bootstrapTable('getSelections');
+    if(deleteRow==null||deleteRow==''){
+		 layer.alert('请选择要删除的数据!', {
+				skin : 'layui-layer-lan',
+				closeBtn : 0,
+				shift : 4
+			// 动画类型
+			});
+		 return;
+	 }
+    for(var i = 0; i < deleteRow.length; i++){
+    	deleteRow2 = deleteRow2+deleteRow[i].uid_num+";";
+    }
+    document.getElementById("reflushText").style.display="inline";
+	$.ajax({
+        // async: true,
+        url: path+"/alarm/deleteAlarm",
+        data: {"deleteRow":deleteRow2,
+        	   "farmId":$("#orgId" + (count0rg - 1)).val().split(",")[1],
+        	   "houseId":$("#orgId" + count0rg).val().split(",")[1],
+        	   "alarm_type":$("#alarmType").val()},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {     
+                var obj = result.obj;
+                initTable(paramTypeSelectValue, getTableDataColumns(paramTypeSelectValue), []);
+                if(null != obj) {
+                    var dataJosn = $.parseJSON(JSON.stringify(obj));
+                    $("#"+paramTypeSelectValue+"Table").bootstrapTable('load',dataJosn);
+                } else{
+                    initTableRow(paramTypeSelectValue, getTableEmptyRow(paramTypeSelectValue));
+                }
+                querySBDayageSettingSub();
+        }
+    });
+	document.getElementById("reflushText").style.display="none";
 }
 
 //检索
 function search(){
-	$("#alarmForm").submit();
+	changeFrame();
+    var p = {
+        farmId: $("#orgId" + (count0rg - 1)).val().split(",")[1],
+        houseId: $("#orgId" + count0rg).val().split(",")[1],
+        alarm_type: $("#alarmType").val()
+    };
+    document.getElementById("reflushText").style.display="inline";
+    $.ajax({
+        // async: true,
+        url: path+"/alarm/queryAlarm2",
+        data: p,
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+            if(result.success==false){
+                document.getElementById(paramTypeSelectValue + 'Table').style.display="none";
+//                hideTableToolBar();
+                layer.alert(result.msg, {
+                    skin: 'layui-layer-lan'
+                    ,closeBtn: 0
+                    ,shift: 4 //动画类型
+                });
+            } else {
+                var obj = result.obj;
+                initTable(paramTypeSelectValue, getTableDataColumns(paramTypeSelectValue), []);
+                if(null != obj) {
+                    var dataJosn = $.parseJSON(JSON.stringify(obj));
+                    $("#" + paramTypeSelectValue + "Table").bootstrapTable('load',dataJosn);
+                } else{
+                    initTableRow(paramTypeSelectValue, getTableEmptyRow(paramTypeSelectValue));
+                }
+                var obj1 = result.obj1;
+                if(obj1 != ""){
+                 document.getElementById('alarm_delay').value= obj1.alarm_delay;
+	       		 document.getElementById('temp_cpsation').value= obj1.temp_cpsation;
+	       		 document.getElementById('yincang').value= obj1.alarm_way;
+	       		 document.getElementById('temp_cordon').value= obj1.temp_cordon;
+                }
+//                showTableToolBar(paramTypeSelectValue);
+                querySBDayageSettingSub();
+            }
+        }
+    });
+    document.getElementById("reflushText").style.display="none";
+	
 }
 
 //修改
@@ -376,65 +414,107 @@ function update(){
 		  });
 		return;
 	}
-	var alarms=document.getElementsByName("checkedSBDayageSettingSubId");
-	var id,set_temp,high_alarm_temp,low_alarm_temp,high_alarm_negative_pressure,low_alarm_negative_pressure,
-	high_alarm_co2,set_water_deprivation,high_water_deprivation,low_water_deprivation,day_age,alarm_delay,
-	temp_cpsation,yincang,temp_cordon;
-	if(alarms == null){
-		return;
-	}
-	var num =0;
-	alarm_delay=$("#alarm_delay").val();
-	temp_cpsation=$("#temp_cpsation").val();
-	yincang=$("#yincang").val();
-	temp_cordon=$("#temp_cordon").val();
-	for(var i=0;i<alarms.length;i++){
-		if(alarms[i].checked){
-			id= alarms[i].id;
-			day_age= $("#day_age"+id).val();
-			if($("#alarmType").val()==1){
-				set_temp = $("#set_temp"+id).val();
-				high_alarm_temp = $("#high_alarm_temp"+id).val();
-				low_alarm_temp = $("#low_alarm_temp"+id).val();
-				document.forms[0].action = path+"/alarm/updateAlarm?uid_num="+id+"&set_temp="+set_temp+"&high_alarm_temp="+high_alarm_temp
-				+"&low_alarm_temp="+low_alarm_temp+"&day_age="+day_age+"&alarm_delay="+alarm_delay
-				+"&temp_cpsation="+temp_cpsation+"&alarm_way="+yincang+"&temp_cordon="+temp_cordon;
-			}else if($("#alarmType").val()==2){
-//				set_negative_pressure = $("#set_negative_pressure"+id).val();
-				high_alarm_negative_pressure = $("#high_alarm_negative_pressure"+id).val();
-				low_alarm_negative_pressure = $("#low_alarm_negative_pressure"+id).val();
-				document.forms[0].action = path+"/alarm/updateAlarm?uid_num="+id+
-				"&high_alarm_negative_pressure="+high_alarm_negative_pressure+"&low_alarm_negative_pressure="+low_alarm_negative_pressure
-				+"&day_age="+day_age+"&alarm_delay="+alarm_delay
-				+"&temp_cpsation="+temp_cpsation+"&alarm_way="+yincang+"&temp_cordon="+temp_cordon;
-			}else if($("#alarmType").val()==3){
-//				set_co2 = $("#set_co2c"+id).val();
-				high_alarm_co2 = $("#high_alarm_co2c"+id).val();
-//				low_alarm_co2 = $("#low_alarm_co2c"+id).val();
-				document.forms[0].action = path+"/alarm/updateAlarm?uid_num="+id+"&high_alarm_co2="+high_alarm_co2+
-				"&day_age="+day_age+"&alarm_delay="+alarm_delay
-				+"&temp_cpsation="+temp_cpsation+"&alarm_way="+yincang+"&temp_cordon="+temp_cordon;
-			}else{
-				set_water_deprivation = $("#set_water_deprivation"+id).val();
-				high_water_deprivation = $("#high_water_deprivation"+id).val();
-				low_water_deprivation = $("#low_water_deprivation"+id).val();
-				document.forms[0].action = path+"/alarm/updateAlarm?uid_num="+id+"&set_water_deprivation="+set_water_deprivation+
-				"&high_water_deprivation="+high_water_deprivation
-				+"&low_water_deprivation="+low_water_deprivation+"&day_age="+day_age+"&alarm_delay="+alarm_delay
-				+"&temp_cpsation="+temp_cpsation+"&alarm_way="+yincang+"&temp_cordon="+temp_cordon;
-			}
-			num++;
-			break;
-		}
-	}
-	if(num ==0){
-//		alert("请选择警报记录");
-//		return;
-		document.forms[0].action = path+"/alarm/updateHouseAlarm?alarm_delay="+alarm_delay
-		+"&temp_cpsation="+temp_cpsation+"&alarm_way="+yincang+"&temp_cordon="+temp_cordon;	
-	}
 
-    document.forms[0].submit();
+	var updateRow;
+	var updateRow2="";
+	updateRow = $('#' + paramTypeSelectValue + 'Table').bootstrapTable('getSelections');
+    if (updateRow.length==0) {
+    	updateHouseAlarm();
+        layer.alert('请先进行设置！!', {
+            skin: 'layui-layer-lan'
+            ,closeBtn: 0
+            ,shift: 4 //动画类型
+        });
+        return;
+    }
+    if($("#alarmType").val()==1){
+    	for(var i = 0; i < updateRow.length; i++){
+        	updateRow2 = updateRow2+updateRow[i].uid_num+","+updateRow[i].farm_id+","+updateRow[i].house_id+","+updateRow[i].day_age+","+
+        	updateRow[i].set_temp+","+updateRow[i].high_alarm_temp+","+updateRow[i].low_alarm_temp+";";
+        }
+    }else if($("#alarmType").val()==2){
+    	for(var i = 0; i < updateRow.length; i++){
+        	updateRow2 = updateRow2+updateRow[i].uid_num+","+updateRow[i].farm_id+","+updateRow[i].house_id+","+updateRow[i].day_age+";";
+        }
+    }else if($("#alarmType").val()==3){
+    	for(var i = 0; i < updateRow.length; i++){
+        	updateRow2 = updateRow2+updateRow[i].uid_num+","+updateRow[i].farm_id+","+updateRow[i].house_id+","+updateRow[i].day_age+","+
+        	updateRow[i].set_co2+","+updateRow[i].high_alarm_co2+";";
+        }
+    }
+    
+    var p = {
+    		alarm_delay: $("#alarm_delay").val(),
+    		temp_cpsation: $("#temp_cpsation").val(),
+    		yincang: $("#yincang").val(),
+    		temp_cordon: $("#temp_cordon").val(),
+    		alarm_type:$("#alarmType").val(),
+    		updateRow: updateRow2
+        };
+    
+	$.ajax({
+        // async: true,
+        url: path+"/alarm/updateAlarm",
+        data: p,
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	querySBDayageSettingSub();
+        	var obj = result.obj;
+            initTable(paramTypeSelectValue, getTableDataColumns(paramTypeSelectValue), []);
+            if(null != obj) {
+                var dataJosn = $.parseJSON(JSON.stringify(obj));
+                $("#"+paramTypeSelectValue+"Table").bootstrapTable('load',dataJosn);
+            } else{
+                initTableRow(paramTypeSelectValue, getTableEmptyRow(paramTypeSelectValue));
+            }
+        	if(result.success==false){
+                // alert("保存失败！"+result.msg);
+                layer.alert('保存失败！'+result.msg, {
+                    skin: 'layui-layer-lan'
+                    ,closeBtn: 0
+                    ,shift: 4 //动画类型
+                });
+            } else {
+                // var list = eval(result.obj);
+                layer.alert('保存成功！', {
+                    skin: 'layui-layer-lan'
+                    ,closeBtn: 0
+                    ,shift: 4 //动画类型
+                });
+            }
+        
+        }
+    });
+}
+
+function updateHouseAlarm(){
+	var p = {
+    		alarm_delay: $("#alarm_delay").val(),
+    		temp_cpsation: $("#temp_cpsation").val(),
+    		yincang: $("#yincang").val(),
+    		temp_cordon: $("#temp_cordon").val()
+        };
+	$.ajax({
+        // async: true,
+        url: path+"/alarm/updateHouseAlarm",
+        data: p,
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        success: function(result) {
+                var obj = result.obj;
+                if(obj != ""){
+                 document.getElementById('alarm_delay').value= obj.alarm_delay;
+	       		 document.getElementById('temp_cpsation').value= obj.temp_cpsation;
+	       		 document.getElementById('yincang').value= obj.alarm_way;
+	       		 document.getElementById('temp_cordon').value= obj.temp_cordon;
+                }
+            
+        }
+    });
 }
 
 //关闭等待窗口  
@@ -501,3 +581,504 @@ function showdiv(str) {
     txt.innerHTML = str;  
     document.getElementById("msgDiv").appendChild(txt);  
 }  
+
+
+
+
+function changeFrame(){
+	if($("#alarmType").val()=="1"){
+		paramTypeSelectValue = paramTypeList[0];
+	}else if($("#alarmType").val()=="2"){
+		paramTypeSelectValue = paramTypeList[1];
+	}else if($("#alarmType").val()=="3"){
+		paramTypeSelectValue = paramTypeList[2];
+	}else if($("#alarmType").val()=="4"){
+		paramTypeSelectValue = paramTypeList[3];
+	}
+    // alert(selectOption.value);
+    for(tmp in paramTypeList) {
+        var ui = document.getElementById(paramTypeList[tmp]+"Frame");
+        if(paramTypeSelectValue == paramTypeList[tmp]){
+            ui.style.display="block";
+        }else {
+            ui.style.display="none";
+        }
+    }
+};
+
+function getTableDataColumns(paramTypeSelectValue){
+    if(paramTypeSelectValue == paramTypeList[0]) {
+        return getTempTableDataColumns();
+    }
+    if(paramTypeSelectValue == paramTypeList[1]) {
+        return getNegaTableDataColumns();
+    }
+    if(paramTypeSelectValue == paramTypeList[2]) {
+        return getCarbonTableDataColumns();
+    }
+    if(paramTypeSelectValue == paramTypeList[3]) {
+        return getWaterTableDataColumns();
+    }
+}
+
+function getTableEmptyRow(tableName){
+    var count = $('#' + tableName + 'Table').bootstrapTable('getData').length;
+    count += -10000;
+    var emptyRow ;
+    var defaultValue = "";
+    if(tableName == paramTypeList[0]) {
+        emptyRow = {id: count,
+                    Day: defaultValue,
+                    Target: defaultValue,
+                    Heat: defaultValue,
+                    Tunnel: defaultValue,
+                    MinLevel: defaultValue,
+                    MaxLevel: defaultValue
+                    };
+    }
+    if(tableName == paramTypeList[1]) {
+        emptyRow = {id: count,
+            FromTime: defaultValue,
+            ToTime: defaultValue,
+            TunnelDiff: defaultValue,
+            Till_Humid: defaultValue,
+            On: defaultValue,
+            Off: defaultValue
+        };
+    }
+    if(tableName == paramTypeList[2]) {
+        emptyRow = {id: count,
+            FromTime: defaultValue,
+            ToTime: defaultValue,
+            Trg_Diff: defaultValue,
+            Till_Humid: defaultValue,
+            On: defaultValue,
+            Off: defaultValue
+        };
+    }
+    if(tableName == paramTypeList[3]) {
+        emptyRow = {id: count,
+            Day: defaultValue,
+            FromTime: defaultValue,
+            ToTime: defaultValue,
+            Intencity: defaultValue
+        };
+    }
+
+    return emptyRow;
+}
+
+function getTempTableDataColumns(){
+    var dataColumns = [{
+        checkbox: true,
+        width: '5%'
+    }, {
+        field: "uid_num",
+        title: "ID",
+        visible: false
+    }, {
+        field: "day_age",
+        title: "日龄",
+        editable: {
+            type: 'text',
+            title: '日龄',
+            mode: 'inline',
+            setValue: null,
+            validate: function (v) {
+                if (!v) return '日龄不能为空';
+            }
+        },
+        width: '5%'
+    }, {
+        field: "set_temp",
+        title: "目标温度",
+        editable: {
+            type: 'text',
+            title: '目标温度',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '目标温度不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "high_alarm_temp",
+        title: "高报温度",
+        editable: {
+            type: 'text',
+            title: '高报温度',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '高报温度不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "low_alarm_temp",
+        title: "低报温度",
+        editable: {
+            type: 'text',
+            title: '低报温度',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '低报温度不能为空';
+            }
+        },
+        width: '18%'
+    }];
+    return dataColumns;
+}
+
+function getNegaTableDataColumns(){
+    var dataColumns = [{
+        checkbox: true,
+        width: '5%'
+    }, {
+        field: "uid_num",
+        title: "ID",
+        visible: false
+    }, {
+        field: "day_age",
+        title: "日龄",
+        editable: {
+            type: 'text',
+            title: '日龄',
+            mode: 'inline',
+            setValue: null,
+            validate: function (v) {
+                if (!v) return '日龄不能为空';
+            }
+        },
+        width: '5%'
+    }, {
+        field: "high_lux",
+        title: "光照上限制",
+        editable: {
+            type: 'text',
+            title: '光照上限制',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '光照上限制不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "low_lux",
+        title: "光照下限制",
+        editable: {
+            type: 'text',
+            title: '光照下限制',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '光照下限制不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "set_lux",
+        title: "光照参考值",
+        editable: {
+            type: 'text',
+            title: '光照参考值',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '光照参考值不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "start_time",
+        title: "开启时间",
+        editable: {
+            type: 'text',
+            title: '开启时间',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '开启时间不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "end_time",
+        title: "关闭时间",
+        editable: {
+            type: 'text',
+            title: '关闭时间',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '关闭时间不能为空';
+            }
+        },
+        width: '18%'
+    }];
+    return dataColumns;
+}
+
+function getCarbonTableDataColumns(){
+    var dataColumns = [{
+        checkbox: true,
+        width: '5%'
+    }, {
+        field: "uid_num",
+        title: "ID",
+        visible: false
+    }, {
+        field: "day_age",
+        title: "日龄",
+        editable: {
+            type: 'text',
+            title: '日龄',
+            mode: 'inline',
+            setValue: null,
+            validate: function (v) {
+                if (!v) return '日龄不能为空';
+            }
+        },
+        width: '5%'
+    }, {
+        field: "high_alarm_co2",
+        title: "CO2报警值",
+        editable: {
+            type: 'text',
+            title: 'CO2报警值',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return 'CO2报警值不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "set_co2",
+        title: "CO2参考值",
+        editable: {
+            type: 'text',
+            title: 'CO2参考值',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return 'CO2参考值不能为空';
+            }
+        },
+        width: '18%'
+    }];
+    return dataColumns;
+}
+
+function getWaterTableDataColumns(){
+    var dataColumns = [{
+        checkbox: true,
+        width: '5%'
+    }, {
+        field: "uid_num",
+        title: "ID",
+        visible: false
+    }, {
+        field: "day_age",
+        title: "日龄",
+        editable: {
+            type: 'text',
+            title: '日龄',
+            mode: 'inline',
+            setValue: null,
+            validate: function (v) {
+                if (!v) return '日龄不能为空';
+            }
+        },
+        width: '5%'
+    }, {
+        field: "set_water_deprivation",
+        title: "目标耗水",
+        editable: {
+            type: 'text',
+            title: '目标耗水',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '目标耗水不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "high_water_deprivation",
+        title: "高报耗水",
+        editable: {
+            type: 'text',
+            title: '高报耗水',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '高报耗水不能为空';
+            }
+        },
+        width: '18%'
+    }, {
+        field: "low_water_deprivation",
+        title: "低报耗水",
+        editable: {
+            type: 'text',
+            title: '低报耗水',
+            mode: 'inline',
+            validate: function (v) {
+                if (!v) return '低报耗水不能为空';
+            }
+        },
+        width: '18%'
+    }];
+    return dataColumns;
+}
+
+
+/****弹出新增窗口*****/
+function openAdjustWin(){
+	var str = '<div style="padding-left: 10px;">&nbsp;</div>';
+	    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;"><span style="display:block;width: 110px;float:left;margin-left:0px;">农场:</span><span style="display:block;width: 210px;float:left;margin-left:-70px;">'+$("#orgId" + (count0rg - 1)).val().split(",")[2]+'</span> ';
+	    str+='<span style="display:block;width: 110px;float:left;margin-left:0px;">栋舍:</span><span style="display:block;width: 110px;float:left;margin-left:-70px;">'+$("#orgId" + count0rg).val().split(",")[2]+'</span>';
+	    str+='<span style="display:block;width: 110px;float:left;margin-left:0px;">日龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age"/></span></div>';
+//	    str+='<span style="display:block;width:60px;float:left;text-align: right;">报警类别:&nbsp;&nbsp; <select style="width: 100px;margin-top: 5px;" name="alarm_type" id="alarmType" value=""/></select></span>';
+	    str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;margin-top: 20px;">';
+	    if($("#alarmType").val() == "1") {
+	    	 str+='<span style="display:block;width: 110px;float:left;">目标温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="set_temp" id="set_temp"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:70px;">高报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="high_alarm_temp" id="high_alarm_temp"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:70px;">低报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="low_alarm_temp" id="low_alarm_temp"/></span></div> ';   
+	    }else if($("#alarmType").val() == "2"){
+	    	 str+='<span style="display:block;width: 110px;float:left;">光照上限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_lux" id="high_lux"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:90px;">光照下限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="low_lux" id="low_lux"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:90px;">光照参照值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_lux" id="set_lux"/></span></div> ';
+	    }else if($("#alarmType").val() == "3"){
+	    	str+='<span style="display:block;width: 110px;float:left;">CO2报警值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_alarm_co2" id="high_alarm_co2"/></span> ';     
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:90px;">CO2参考值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_co2" id="set_co2"/></span></div> ';
+	    }
+	    str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;"><label style="padding-left: 110px;color: red; width:500px; text-align: center;margin-top: 25px;" id="addAlarm_msg"></label></div>';
+	layer.open({
+		  type: 1,
+		  skin: 'layui-layer-green', //加上边框
+		  area: ['630px', '240px'], //宽高
+		  title:"新增",
+		  content: str,
+		  btn: ['确定','取消'],
+		  yes: function(index){
+			if(submitForm()){ 
+		    var param;
+			if($("#alarmType").val() == "1") {
+				param = {
+						day_age: $("#day_age").val(),
+						farmId: $("#orgId" + (count0rg - 1)).val().split(",")[1],
+						houseId: $("#orgId" + count0rg).val().split(",")[1],
+						alarm_type: $("#alarmType").val(),
+						high_alarm_temp: $("#high_alarm_temp").val(),
+						low_alarm_temp: $("#low_alarm_temp").val(),
+						set_temp: $("#set_temp").val()
+		        };
+			}else if($("#alarmType").val() == "2") {
+				param = {
+						day_age: $("#day_age").val(),
+						farmId: $("#orgId" + (count0rg - 1)).val().split(",")[1],
+						houseId: $("#orgId" + count0rg).val().split(",")[1],
+						alarm_type: $("#alarmType").val(),
+						high_lux: $("#high_lux").val(),
+						low_lux: $("#low_lux").val(),
+						set_lux: $("#set_lux").val()
+		        };
+			}else {
+				param = {
+						day_age: $("#day_age").val(),
+						farmId: $("#orgId" + (count0rg - 1)).val().split(",")[1],
+						houseId: $("#orgId" + count0rg).val().split(",")[1],
+						alarm_type: $("#alarmType").val(),
+						high_alarm_co2: $("#high_alarm_co2").val(),
+						set_co2: $("#set_co2").val()
+		        };
+			}
+
+			$.ajax({
+				url : path + "/alarm/addAlarm",
+				data : param,
+				type : "POST",
+				dataType : "json",
+				success : function(result) {
+					layer.close(index); 
+					search();
+					if(result.msg=="1") {
+						layer.alert('操作成功!', {
+							skin : 'layui-layer-lan',
+							closeBtn : 0,
+							shift : 4
+						// 动画类型
+						});
+					}else{
+						layer.alert('操作失败!', {
+							skin : 'layui-layer-lan',
+							closeBtn : 0,
+							shift : 4
+						// 动画类型
+						});
+					}
+				}
+			});
+		  }
+		  }
+		});
+	}
+
+
+function submitForm(){
+	var day_age=$("input[name='day_age']").val();
+	var set_temp=$("input[name='set_temp']").val();
+	var high_alarm_temp=$("input[name='high_alarm_temp']").val();
+	var low_alarm_temp=$("input[name='low_alarm_temp']").val();
+	var high_lux=$("input[name='high_lux']").val();
+	var low_lux=$("input[name='low_lux']").val();
+	var set_lux=$("input[name='set_lux']").val();
+	var high_alarm_co2=$("input[name='high_alarm_co2']").val();
+	var set_alarm_co2=$("input[name='set_alarm_co2']").val();
+	if(day_age =="" ){
+			$('#addAlarm_msg').html("日龄不能为空！");
+			return false;
+	}
+	if(day_age < 0 ){
+			$('#addAlarm_msg').html("日龄不能负！");
+			return false;
+	}
+	if($("#alarmType").val()=="1"){
+		if(set_temp =="" ){
+			$('#addAlarm_msg').html("目标温度不能为空！");
+			return false;
+	}else if(high_alarm_temp =="" ){
+		$('#addAlarm_msg').html("高报温度不能为空！");
+		return false;
+}else if(low_alarm_temp =="" ){
+	$('#addAlarm_msg').html("低报温度不能为空！");
+	return false;
+  }	
+	}else if($("#alarmType").val()=="2"){
+		if(high_lux =="" ){
+		$('#addAlarm_msg').html("光照上限制不能为空！");
+		return false;
+}else if(low_lux =="" ){
+	$('#addAlarm_msg').html("光照下限制不能为空！");
+	return false;
+  }else if(set_lux =="" ){
+		$('#addAlarm_msg').html("光照参照值不能为空！");
+		return false;
+	  }		
+	}else if($("#alarmType").val()=="3"){
+
+		if(high_alarm_co2 =="" ){
+		$('#addAlarm_msg').html("CO2报警值不能为空！");
+		return false;
+}else if(set_alarm_co2 =="" ){
+	$('#addAlarm_msg').html("CO2参考值不能为空！");
+	return false;
+  }	
+	}
+	//showdiv('加载中，请稍候');
+return true;
+}
+
+
+
+
+
+
+
+
+
+
+

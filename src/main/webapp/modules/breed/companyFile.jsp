@@ -13,7 +13,7 @@
             + request.getServerName() + ":" + request.getServerPort()
             + path + "/";
 %>
-<html>
+<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <%@ include file="../../framework/inc.jsp"%>
@@ -100,13 +100,20 @@
     }
 </script>
 <body>
+    <p></p>
+    <div class="row-fluid">
+        <div class="span6" align="left">
+            <button type="button" class="btn green" onclick="uploadConfirm();">上传</button>
+            <button type="button" class="btn green" onclick="deleteRecord();">删除</button>
+        </div>
+        <div class="span6" align="right">
 
-    <button type="button" class="btn green" style="top: 25px; right: 13%; position: absolute; width: 108px; height: 35px;" onclick="uploadConfirm();"><p>上传</p></button>
-
-    <button type="button" class="btn green" style="top: 25px; right: 1%; position: absolute; width: 108px; height: 35px;" onclick="deleteRecord();"><p>删除</p></button>
-
-    <div style="position: relative;top: 70px;width:99%;">
-        <table id="breedTable"></table>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12" align="left">
+            <table id="breedTable"></table>
+        </div>
     </div>
 </body>
 </html>

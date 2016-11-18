@@ -3,18 +3,17 @@
  */
 var urlPath = "../../../fr/ReportServer?reportlet=";
 // var urlPath = "http://localhost:8080/fr/ReportServer?reportlet=";
-var urlParam = "&farm_id=";
+var urlParam = "&org_id=";
 var currTabId = "tab_1";
 var currFrameId = "iframe_" + currTabId;
 var tabList = {};
 var frameList = {};
-var farmList = [];
-var currFarmId = "";
+var orgList = [];
+var currOrgId = "";
 var path = "";
 var userId = "";
 
-
-//初始化
+//获取对象实例
 function getInstance(tabList, frameList){
     this.tabList = tabList;
     this.frameList = frameList;
@@ -35,23 +34,28 @@ function initToolBarFarm(){
         data : {},
         dataType : "json",
         success : function(result) {
-            farmList = result.obj;
+            orgList = result.obj;
+            if(orgList.length > 0){
+                currOrgId = orgList[0].id;
+            }
             divStr += "<div class='span12' align='left'>";
-            for(var farm in farmList){
-                divStr += "<a id='btn_" + i + "' value = '" + farmList[farm].id + "' href='javascript:;' class='btn blue' onclick='openUrl(" + farmList[farm].id + ");'></i>" + farmList[farm].name_cn + "</a>&nbsp;&nbsp;";
+            for(var key in orgList){
+                divStr += "<a id='btn_" + i + "' value = '" + orgList[key].id + "' href='javascript:;' class='btn blue' onclick='openUrl(" + orgList[key].id + ");'></i>" + orgList[key].name_cn + "</a>&nbsp;&nbsp;";
                 i+=1;
             }
             divStr += "</div>";
             document.getElementById("toolBarFarm").innerHTML = divStr;
+            openUrl(currOrgId);
         }
     });
 };
 
 //打开url
-function openUrl(farmId){
-    // alert($("#createBatchBtnSave").attr("value"));
-    currFarmId = farmId ;
-    openUrlByFramId(frameList[currFrameId], farmId);
+function openUrl(orgId){
+    if(orgId != "" && orgId != null){
+        currOrgId = orgId ;
+        openUrlByFramId(frameList[currFrameId], currOrgId);
+    }
 };
 
 //通过farm id打开url
@@ -64,9 +68,10 @@ function openUrlByFramId(reportName, paramValue){
 
 //切换标签页事件处理
 $(function(){
+    document.documentElement.style.overflowY = 'hidden';
     $('a[data-toggle="tab"]').on('shown', function (e) {
         currTabId = tabList[$(e.target).text()];
         currFrameId = "iframe_" + currTabId;
-        openUrl(currFarmId);
+        openUrl(currOrgId);
     });
 });

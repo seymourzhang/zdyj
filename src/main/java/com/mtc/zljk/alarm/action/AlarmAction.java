@@ -47,30 +47,11 @@ public class AlarmAction extends BaseAction{
 	@RequestMapping("/showAlarm")
 	public ModelAndView showAlarm() throws Exception {
 		ModelAndView mv = this.getModelAndView();
-//		PageData pd = this.getPageData();
-//		pd.put("alarm_type", 1);
-//		pd.put("farmId", 1);
-//		pd.put("houseId", 1);
-		PageData pd2 = new PageData();
-		List<PageData> mc2 = moduleService.service("farmServiceImpl", "selectAll", null);
-		List<PageData> mc3 = moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd2});
-		pd2.put("farmId", mc2.get(0).get("id"));
-		pd2.put("houseId", mc3.get(0).get("id"));
-		pd2.put("alarm_type", 1);
-		List<PageData> mcl = alarmService.selectByCondition1(pd2);
+		PageData pd = new PageData();
 		mv.setViewName("/modules/alarm/alarm");
-		mv.addObject("sBDayageSettingSubList",mcl);
-		mv.addObject("alarmType",1);
-		List<PageData> mc4 = alarmService.selectSBHouseAlarmByCondition(pd2);
-	    if(mc4.size()!=0){
-		mv.addObject("houseAlarm",mc4.get(0));	    
-	    }else{
-	    	mv.addObject("houseAlarm",null);	 	
-	    }
-		mv.addObject("farmList",mc2);
-		mv.addObject("houseList",mc3);
-		pd2.put("code_type", "alarm_delay");
-		mv.addObject("alarm_delay",alarmService.selectSBCode(pd2));
+		pd.put("code_type", "alarm_delay");
+		mv.addObject("pd",pd);
+		mv.addObject("alarm_delay",alarmService.selectSBCode(pd));
 		return mv;
 	}
 	
@@ -112,61 +93,48 @@ public class AlarmAction extends BaseAction{
 	 * @throws Exception
 	 */
 	@RequestMapping("/queryAlarm2")
-	public ModelAndView queryAlarm2() throws Exception {
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = this.getPageData();
-		alarm_type = pd.get("alarm_type").toString();
-		List<PageData> mcl = alarmService.selectByCondition(pd);
-		mv.setViewName("/modules/alarm/alarm");
-		mv.addObject("sBDayageSettingSubList",mcl);
-	    mv.addObject("alarmType",pd.get("alarm_type"));
-	    List<PageData> mc2 = alarmService.selectSBHouseAlarmByCondition(pd);
-	    if(mc2.size()!=0){
-		mv.addObject("houseAlarm",mc2.get(0));	    
-	    }else{
-	    	mv.addObject("houseAlarm",null);	 	
-	    }
-	    mv.addObject("farmList",moduleService.service("farmServiceImpl", "selectAll", null));
-		mv.addObject("houseList",moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd}));
-		mv.addObject("pd",pd);
-		pd.put("code_type", "alarm_delay");
-		mv.addObject("alarm_delay",alarmService.selectSBCode(pd));
-		return mv;
-	}
-	
-	@RequestMapping("/reflushAlarm")
-	public void reflushAlarm(HttpServletResponse response) throws Exception{
+	public void queryAlarm2(HttpServletResponse response,HttpServletRequest request) throws Exception {
 		Json j=new Json();
 		PageData pd = this.getPageData();
-		List<PageData> mcl = moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd});
+		alarm_type = (String) pd.get("alarm_type");
+		List<PageData> mcl = alarmService.selectByCondition(pd);
+	    List<PageData> mc2 = alarmService.selectSBHouseAlarmByCondition(pd);
+	    if(mc2.size()!=0){
+		j.setObj1(mc2.get(0));
+	    }else{
+	    	j.setObj1("");
+	    }
 		j.setSuccess(true);
-		j.setObj(mcl);
+		j.setObj(mcl);	
 		super.writeJson(j, response);
 	}
 	
 	@RequestMapping("/deleteAlarm")
-	public ModelAndView deleteAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
-		ModelAndView mv = this.getModelAndView();
+	public void deleteAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
+//		ModelAndView mv = this.getModelAndView();
+		Json g=new Json();
 		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
 		PageData pd = this.getPageData();
 		pd.put("modify_person",user.getId());
 		pd.put("modify_date", new Date());	
 		pd.put("modify_time", new Date());
-		
+		String tr = (String) pd.get("deleteRow");
+        String[] alarmSet = tr.split(";");
+        for(String as:alarmSet){
+        int tt = Integer.parseInt(as);
+        	pd.put("uid_num", tt);        	
 		List<PageData> pageData1 = alarmService.selectByCondition(pd);
 	    float set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
 			  high_alarm_negative_pressure1=0,high_alarm_negative_pressure3=0,
 			  low_alarm_negative_pressure1=0,low_alarm_negative_pressure3=0,
-			  high_alarm_co21=0,high_alarm_co23=0,
+			  set_co21=0,high_alarm_co21=0,set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 			  set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 		int uid_num=0,day_age=0,day_age2=0;
 		if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==1){
 			//计算温度差、基值
 			for(int i=0;i<pageData1.size();i++){
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i==0){
 					if(pageData1.size() != 1){
 						//目标温度2
 						set_temp3 = Float.valueOf(pageData1.get(i+1).get("set_temp").toString()).floatValue();
@@ -180,9 +148,7 @@ public class AlarmAction extends BaseAction{
 					}
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){
 						//目标温度差2
 						set_temp1 = (Float.valueOf(pageData1.get(i+1).get("set_temp").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("set_temp").toString()).floatValue())/
@@ -211,9 +177,7 @@ public class AlarmAction extends BaseAction{
 		}else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2){
 			//计算负压差、基值
 			for(int i=0;i<pageData1.size();i++){
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i==0){
 					if(pageData1.size() != 1){
 						//高报负压2
 						high_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue();
@@ -225,9 +189,7 @@ public class AlarmAction extends BaseAction{
 					}
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){					
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){					
 						//高报负压差2
 						high_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
@@ -250,10 +212,10 @@ public class AlarmAction extends BaseAction{
 		}else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==3){
 			//计算二氧化碳差、基值
 			for(int i=0;i<pageData1.size();i++){
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i==0){
 					if(pageData1.size() != 1){
+						//目标二氧化碳2
+						set_co23 = Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue();
 						//高报二氧化碳2
 						high_alarm_co23 = Float.valueOf(pageData1.get(i+1).get("high_alarm_co2").toString()).floatValue();
 					//uid_num
@@ -262,9 +224,13 @@ public class AlarmAction extends BaseAction{
 					}
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){
+					//目标二氧化碳差2
+					set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
+					((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
+					//目标二氧化碳2
+					set_co23 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差2
 						high_alarm_co21 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -281,9 +247,7 @@ public class AlarmAction extends BaseAction{
 		}else{
 			for(int i=0;i<pageData1.size();i++){
 				//计算耗水差、基值
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i==0){
 					if(pageData1.size() != 1){
 						//目标耗水2
 						set_water_deprivation3 = Float.valueOf(pageData1.get(i+1).get("set_water_deprivation").toString()).floatValue();
@@ -297,9 +261,7 @@ public class AlarmAction extends BaseAction{
 					}
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){
 						//目标耗水差2
 						set_water_deprivation1 = (Float.valueOf(pageData1.get(i+1).get("set_water_deprivation").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("set_water_deprivation").toString()).floatValue())/
@@ -359,6 +321,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age)*24+j));
 					pd5.put("high_alarm_negative_pressure",null);
 					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
@@ -394,6 +357,7 @@ public class AlarmAction extends BaseAction{
 						pd5.put("low_alarm_temp",null);
 						pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age)*24+j));
 						pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age)*24+j));
+						pd5.put("set_co2",null);
 						pd5.put("high_alarm_co2",null);
 						pd5.put("set_water_deprivation", null);
 						pd5.put("high_water_deprivation",null);
@@ -429,6 +393,7 @@ public class AlarmAction extends BaseAction{
 						pd5.put("low_alarm_temp",null);
 						pd5.put("high_alarm_negative_pressure",null);
 						pd5.put("low_alarm_negative_pressure",null);
+						pd5.put("set_co2",set_co23+set_co21*((i-day_age)*24+j));
 						pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age)*24+j));
 						pd5.put("set_water_deprivation", null);
 						pd5.put("high_water_deprivation",null);
@@ -464,6 +429,7 @@ public class AlarmAction extends BaseAction{
 						pd5.put("low_alarm_temp",null);
 						pd5.put("high_alarm_negative_pressure",null);
 						pd5.put("low_alarm_negative_pressure",null);
+						pd5.put("set_co2",null);
 						pd5.put("high_alarm_co2",null);
 						pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age)*24+j));
 						pd5.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*((i-day_age)*24+j));
@@ -478,29 +444,24 @@ public class AlarmAction extends BaseAction{
 		
 	    alarmService.deleteSBDayageSettingSub(pd);
 	    alarmService.deleteSBDayageTempSub(pd);
-
+	    }
 		alarm_type = pd.get("alarm_type").toString();
 		List<PageData> mcl = alarmService.selectByCondition(pd);
-		mv.setViewName("/modules/alarm/alarm");
-		mv.addObject("sBDayageSettingSubList",mcl);
-	    mv.addObject("alarmType",pd.get("alarm_type"));
-	    List<PageData> mc2 = alarmService.selectSBHouseAlarmByCondition(pd);
-	    if(mc2.size()!=0){
-		mv.addObject("houseAlarm",mc2.get(0));	    
-	    }else{
-	    	mv.addObject("houseAlarm",null);	 	
-	    }
-	    mv.addObject("farmList",moduleService.service("farmServiceImpl", "selectAll", null));
-		mv.addObject("houseList",moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd}));
-		mv.addObject("pd",pd);
-		pd.put("code_type", "alarm_delay");
-		mv.addObject("alarm_delay",alarmService.selectSBCode(pd));
-		return mv;
+//	    List<PageData> mc2 = alarmService.selectSBHouseAlarmByCondition(pd);
+//	    if(mc2.size()!=0){
+//			g.setObj1(mc2.get(0));
+//		    }else{
+//		    	g.setObj1("");
+//		    }
+	    g.setSuccess(true);
+		g.setObj(mcl);	
+		super.writeJson(g, response);
 	}
 	
 	@RequestMapping("/updateHouseAlarm")
-	public ModelAndView updateHouseAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
-		ModelAndView mv = this.getModelAndView();
+	public void updateHouseAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
+//		ModelAndView mv = this.getModelAndView();
+		Json j=new Json();
 		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
 		PageData pd = this.getPageData();
 		pd.put("modify_person",user.getId());
@@ -509,38 +470,60 @@ public class AlarmAction extends BaseAction{
 		alarmService.updateSBHouseAlarm(pd);
 		
 		alarm_type = pd.get("alarm_type").toString();
-		List<PageData> mcl = alarmService.selectByCondition(pd);
-		mv.setViewName("/modules/alarm/alarm");
-		mv.addObject("sBDayageSettingSubList",mcl);
-	    mv.addObject("alarmType",pd.get("alarm_type"));
-	    List<PageData> mc2 = alarmService.selectSBHouseAlarmByCondition(pd);
-	    if(mc2.size()!=0){
-		mv.addObject("houseAlarm",mc2.get(0));	    
-	    }else{
-	    	mv.addObject("houseAlarm",null);	 	
-	    }
-	    mv.addObject("farmList",moduleService.service("farmServiceImpl", "selectAll", null));
-		mv.addObject("houseList",moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd}));
-		mv.addObject("pd",pd);
-		pd.put("code_type", "alarm_delay");
-		mv.addObject("alarm_delay",alarmService.selectSBCode(pd));
-		return mv;
+//		List<PageData> mcl = alarmService.selectByCondition(pd);
+	    List<PageData> mc1 = alarmService.selectSBHouseAlarmByCondition(pd);
+	    if(mc1.size()!=0){
+			j.setObj(mc1.get(0));
+		    }else{
+		    	j.setObj("");
+		    }
+		j.setSuccess(true);
+//		j.setObj(mcl);	
+		super.writeJson(j, response);
 	}
 	
 	@RequestMapping("/updateAlarm")
-	public ModelAndView updateAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
-		ModelAndView mv = this.getModelAndView();
+	public void updateAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
+		Json g=new Json();
 		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
 		PageData pd1 = this.getPageData();
+		PageData pd = new PageData();
 		pd1.put("modify_person",user.getId());
 		pd1.put("modify_date", new Date());	
 		pd1.put("modify_time", new Date());
+		String tr = (String) pd1.get("updateRow");
+        String[] alarmSet = tr.split(";");
+        for(String as:alarmSet){
+        String[] alarmSet2 = as.split(",");	
+        int uidnum = Integer.parseInt(alarmSet2[0]);
+    	pd1.put("uid_num", uidnum); 
+    	int farmId = Integer.parseInt(alarmSet2[1]);
+    	pd1.put("farmId", farmId); 
+    	int houseId = Integer.parseInt(alarmSet2[2]);
+    	pd1.put("houseId", houseId);
+    	int dayage = Integer.parseInt(alarmSet2[3]);
+    	pd1.put("day_age", dayage);
+    	if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==1){
+    	 	float set_temp = Float.parseFloat(alarmSet2[4]);
+    	 	pd1.put("set_temp", set_temp);
+    	 	float high_alarm_temp = Float.parseFloat(alarmSet2[5]);
+    	 	pd1.put("high_alarm_temp", high_alarm_temp);
+    	 	float low_alarm_temp = Float.parseFloat(alarmSet2[6]);
+    	 	pd1.put("low_alarm_temp", low_alarm_temp);
+    	}else if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==2){
+    		
+    	}else if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==3){
+    		float set_co2 = Float.parseFloat(alarmSet2[4]);
+    	 	pd1.put("set_co2", set_co2);
+    	 	float high_alarm_co2 = Float.parseFloat(alarmSet2[5]);
+    	 	pd1.put("high_alarm_co2", high_alarm_co2);
+    	}
+    	
 	    alarmService.updateSBDayageSettingSub(pd1);
 	    
 	    //栋舍报警设置
 	    alarmService.updateSBHouseAlarm(pd1);
-	    
-	    PageData pd = new PageData();
+	    	    
 	    pd.put("farmId", pd1.get("farmId"));
 	    pd.put("houseId", pd1.get("houseId"));
 	    pd.put("day_age", pd1.get("day_age"));
@@ -550,17 +533,15 @@ public class AlarmAction extends BaseAction{
 				set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
 			  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
 			  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
-			  high_alarm_co2=0,high_alarm_co21=0,high_alarm_co22=0,			  
-			  high_alarm_co23=0,
+			  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,			  
+			  set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 			  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 		int uid_num=0,day_age=0,day_age2=0;
 		if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==1){
 			//计算温度差、基值
 			for(int i=0;i<pageData1.size();i++){
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==0){
 					//目标温度差1
 					set_temp = (Float.valueOf(pageData1.get(i).get("set_temp").toString()).floatValue() - 
 							Float.valueOf(pageData1.get(i).get("set_temp").toString()).floatValue())/
@@ -604,9 +585,7 @@ public class AlarmAction extends BaseAction{
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){
 						//目标温度差1
 						set_temp = (Float.valueOf(pageData1.get(i).get("set_temp").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("set_temp").toString()).floatValue())/
@@ -650,9 +629,7 @@ public class AlarmAction extends BaseAction{
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
 					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
 					break;
-				}else if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData1.size()-1){
+				}else if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==pageData1.size()-1){
 						//目标温度差
 						set_temp = (Float.valueOf(pageData1.get(i).get("set_temp").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("set_temp").toString()).floatValue())/
@@ -678,9 +655,7 @@ public class AlarmAction extends BaseAction{
 		}else if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==2){
 			//计算负压差、基值
 			for(int i=0;i<pageData1.size();i++){
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==0){
 					//目标负压差1
 //					set_negative_pressure = (Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //							Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue())/
@@ -724,9 +699,7 @@ public class AlarmAction extends BaseAction{
 					 }
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){
 						//目标负压差1
 //						set_negative_pressure = (Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //								Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue())/
@@ -769,9 +742,7 @@ public class AlarmAction extends BaseAction{
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
 					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
 					break;
-				}else if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData1.size()-1){
+				}else if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==pageData1.size()-1){
 						//目标负压差
 //						set_negative_pressure = (Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //								Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue())/
@@ -797,15 +768,13 @@ public class AlarmAction extends BaseAction{
 		}else if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==3){
 			//计算二氧化碳差、基值
 			for(int i=0;i<pageData1.size();i++){
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==0){
 					//目标二氧化碳差1
-//					set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
-//							Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
-//					(Float.valueOf(pd.get("day_age").toString()).floatValue()*24);
+					set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
+					(Float.valueOf(pd.get("day_age").toString()).floatValue()*24);
 					//目标二氧化碳1
-//					set_co22 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
+					set_co22 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
 					//高报二氧化碳差1
 					high_alarm_co2 = (Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue() - 
 							Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -820,11 +789,11 @@ public class AlarmAction extends BaseAction{
 //					low_alarm_co22 = Float.valueOf(pageData1.get(i).get("low_alarm_co2").toString()).floatValue();
                         if(pageData1.size()!=1){
 						//目标二氧化碳差2
-//						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳2
-//						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
+						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差2
 						high_alarm_co21 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -843,15 +812,13 @@ public class AlarmAction extends BaseAction{
                         }
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){
 						//目标二氧化碳差1
-//						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
+						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳1
-//						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
+						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差1
 						high_alarm_co2 = (Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -866,11 +833,11 @@ public class AlarmAction extends BaseAction{
 //						low_alarm_co22 = Float.valueOf(pageData1.get(i-1).get("low_alarm_co2").toString()).floatValue();
 
 						//目标二氧化碳差2
-//						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳2
-//						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
+						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差2
 						high_alarm_co21 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -888,15 +855,13 @@ public class AlarmAction extends BaseAction{
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
 					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
 					break;
-				}else if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData1.size()-1){
+				}else if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==pageData1.size()-1){
 						//目标二氧化碳差
-//						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
+						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳
-//						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
+						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差
 						high_alarm_co2 = (Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -916,9 +881,7 @@ public class AlarmAction extends BaseAction{
 		}else{
 			for(int i=0;i<pageData1.size();i++){
 				//计算耗水差、基值
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==0){
 					//目标耗水差1
 					set_water_deprivation = (Float.valueOf(pageData1.get(i).get("set_water_deprivation").toString()).floatValue() - 
 							Float.valueOf(pageData1.get(i).get("set_water_deprivation").toString()).floatValue())/
@@ -962,9 +925,7 @@ public class AlarmAction extends BaseAction{
 					    }
 					break;
 				}else 
-				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+				if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){
 						//目标耗水差1
 						set_water_deprivation = (Float.valueOf(pageData1.get(i).get("set_water_deprivation").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("set_water_deprivation").toString()).floatValue())/
@@ -1006,9 +967,7 @@ public class AlarmAction extends BaseAction{
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
 					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
 					break;
-				}else if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
-						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData1.size()-1){
+				}else if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==pageData1.size()-1){
 						//目标耗水差
 						set_water_deprivation = (Float.valueOf(pageData1.get(i).get("set_water_deprivation").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("set_water_deprivation").toString()).floatValue())/
@@ -1066,6 +1025,7 @@ public class AlarmAction extends BaseAction{
 					pd4.put("low_alarm_temp",low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
 					pd4.put("high_alarm_negative_pressure",null);
 					pd4.put("low_alarm_negative_pressure",null);
+					pd4.put("set_co2",null);
 					pd4.put("high_alarm_co2",null);
 					pd4.put("set_water_deprivation", null);
 					pd4.put("high_water_deprivation",null);
@@ -1101,6 +1061,7 @@ public class AlarmAction extends BaseAction{
 //					pd3.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*(i+1));
 					pd4.put("high_alarm_negative_pressure",high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
 					pd4.put("low_alarm_negative_pressure",low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+					pd4.put("set_co2",null);
 					pd4.put("high_alarm_co2",null);
 					pd4.put("set_water_deprivation", null);
 					pd4.put("high_water_deprivation",null);
@@ -1135,7 +1096,7 @@ public class AlarmAction extends BaseAction{
 					pd4.put("low_alarm_temp",null);
 					pd4.put("high_alarm_negative_pressure",null);
 					pd4.put("low_alarm_negative_pressure",null);
-//					pd3.put("set_co2", set_co22+set_co2*(i+1));
+					pd4.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 					pd4.put("high_alarm_co2",high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //					pd3.put("low_alarm_co2",low_alarm_co22+low_alarm_co2*(i+1));
 					pd4.put("set_water_deprivation", null);
@@ -1171,6 +1132,7 @@ public class AlarmAction extends BaseAction{
 					pd4.put("low_alarm_temp",null);
 					pd4.put("high_alarm_negative_pressure",null);
 					pd4.put("low_alarm_negative_pressure",null);
+					pd4.put("set_co2",null);
 					pd4.put("high_alarm_co2",null);
 					pd4.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
 					pd4.put("high_water_deprivation",high_water_deprivation2+high_water_deprivation*((i-day_age)*24+j));
@@ -1215,6 +1177,7 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age3)*24+j));
 						   pd6.put("high_alarm_negative_pressure",null);
 						   pd6.put("low_alarm_negative_pressure",null);
+						   pd6.put("set_co2",null);
 						   pd6.put("high_alarm_co2",null);
 						   pd6.put("set_water_deprivation", null);
 						   pd6.put("high_water_deprivation",null);
@@ -1250,6 +1213,7 @@ public class AlarmAction extends BaseAction{
 //							pd4.put("set_negative_pressure", set_negative_pressure3+set_negative_pressure1*(i+1));
 						   pd6.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age3)*24+j));
 						   pd6.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age3)*24+j));
+						   pd6.put("set_co2",null);
 						   pd6.put("high_alarm_co2",null);
 						   pd6.put("set_water_deprivation", null);
 						   pd6.put("high_water_deprivation",null);
@@ -1284,7 +1248,7 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("low_alarm_temp",null);
 						   pd6.put("high_alarm_negative_pressure",null);
 						   pd6.put("low_alarm_negative_pressure",null);
-//							pd4.put("set_co2", set_co23+set_co21*(i+1));
+						   pd6.put("set_co2", set_co23+set_co21*((i-day_age3)*24+j));
 						   pd6.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age3)*24+j));
 //							pd4.put("low_alarm_co2",low_alarm_co23+low_alarm_co21*(i+1));
 						   pd6.put("set_water_deprivation", null);
@@ -1320,6 +1284,7 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("low_alarm_temp",null);
 						   pd6.put("high_alarm_negative_pressure",null);
 						   pd6.put("low_alarm_negative_pressure",null);
+						   pd6.put("set_co2",null);
 						   pd6.put("high_alarm_co2",null);
 						   pd6.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));
 						   pd6.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*((i-day_age3)*24+j));
@@ -1330,24 +1295,18 @@ public class AlarmAction extends BaseAction{
 					   alarmService.saveSBDayageTempSub(list2);
 				   }
 			   }
-
+	         }
 			alarm_type = pd.get("alarm_type").toString();
 			List<PageData> mcl = alarmService.selectByCondition(pd);
-			mv.setViewName("/modules/alarm/alarm");
-			mv.addObject("sBDayageSettingSubList",mcl);
-		    mv.addObject("alarmType",pd.get("alarm_type"));
 		    List<PageData> mc2 = alarmService.selectSBHouseAlarmByCondition(pd);
 		    if(mc2.size()!=0){
-			mv.addObject("houseAlarm",mc2.get(0));	    
-		    }else{
-		    	mv.addObject("houseAlarm",null);	 	
-		    }
-		    mv.addObject("farmList",moduleService.service("farmServiceImpl", "selectAll", null));
-			mv.addObject("houseList",moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd}));
-			mv.addObject("pd",pd);
-			pd.put("code_type", "alarm_delay");
-			mv.addObject("alarm_delay",alarmService.selectSBCode(pd));
-			return mv;
+				g.setObj1(mc2.get(0));
+			    }else{
+			    	g.setObj1("");
+			    }
+			g.setSuccess(true);
+			g.setObj(mcl);	
+			super.writeJson(g, response);
 						
 	}
 	
@@ -1355,7 +1314,6 @@ public class AlarmAction extends BaseAction{
 	public void addAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
 		Json j2=new Json();
 		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
-		ModelAndView mv = this.getModelAndView();
 		PageData pd = this.getPageData();
 		List<PageData> pageData5 = alarmService.selectByCondition3(pd);//主要条件：农场、栋舍、日龄
 		int pdID =0;
@@ -1378,11 +1336,11 @@ public class AlarmAction extends BaseAction{
 		}
 
 		float set_temp=0,high_alarm_temp=0,low_alarm_temp=0,set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp2=0,high_alarm_temp2=0,low_alarm_temp2=0,
-				set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
+			  set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
 			  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
 			  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
-			  high_alarm_co2=0,high_alarm_co21=0,high_alarm_co22=0,
-			  high_alarm_co23=0,
+			  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,
+			  set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 			  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 		int uid_num=0;
@@ -1616,18 +1574,18 @@ public class AlarmAction extends BaseAction{
 						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
 					//目标二氧化碳1
-//					set_co22 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
+					set_co22 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
 					//高报二氧化碳1
 					high_alarm_co22 = Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue();
 					//低报二氧化碳1
 //					low_alarm_co22 = Float.valueOf(pageData1.get(i).get("low_alarm_co2").toString()).floatValue();
 					if(pageData1.size()!=1){	
 						//目标二氧化碳差2
-//						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳2
-//						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
+						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差2
 						high_alarm_co21 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -1650,11 +1608,11 @@ public class AlarmAction extends BaseAction{
 						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
 						//目标二氧化碳差1
-//						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
+						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳1
-//						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
+						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差1
 						high_alarm_co2 = (Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -1668,11 +1626,11 @@ public class AlarmAction extends BaseAction{
 						//低报二氧化碳1
 //						low_alarm_co22 = Float.valueOf(pageData1.get(i-1).get("low_alarm_co2").toString()).floatValue();
 						//目标二氧化碳差2
-//						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						set_co21 = (Float.valueOf(pageData1.get(i+1).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳2
-//						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
+						set_co23 = Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差2
 						high_alarm_co21 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -1695,11 +1653,11 @@ public class AlarmAction extends BaseAction{
 						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData1.size()-1){
 						//目标二氧化碳差
-//						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
-//								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
-//						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
+						set_co2 = (Float.valueOf(pageData1.get(i).get("set_co2").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标二氧化碳
-//						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
+						set_co22 = Float.valueOf(pageData1.get(i-1).get("set_co2").toString()).floatValue();
 						//高报二氧化碳差
 						high_alarm_co2 = (Float.valueOf(pageData1.get(i).get("high_alarm_co2").toString()).floatValue() - 
 								Float.valueOf(pageData1.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -1860,6 +1818,7 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("low_alarm_temp", low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
 				    	pd3.put("high_alarm_negative_pressure", null);
 				    	pd3.put("low_alarm_negative_pressure", null);
+				    	pd3.put("set_co2", null);
 				    	pd3.put("high_alarm_co2", null);
 				    	pd3.put("set_water_deprivation", null);
 				    	pd3.put("high_water_deprivation", null);
@@ -1896,6 +1855,7 @@ public class AlarmAction extends BaseAction{
 //				    	pd2.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*((i+1-day_age)*j));
 				    	pd3.put("high_alarm_negative_pressure", high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
 				    	pd3.put("low_alarm_negative_pressure", low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+				    	pd3.put("set_co2", null);
 				    	pd3.put("high_alarm_co2", null);
 				    	pd3.put("set_water_deprivation", null);
 				    	pd3.put("high_water_deprivation", null);
@@ -1931,7 +1891,7 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("low_alarm_temp", null);
 				    	pd3.put("high_alarm_negative_pressure", null);
 				    	pd3.put("low_alarm_negative_pressure", null);
-//				    	pd2.put("set_co2", set_co22+set_co2*((i+1)*j));
+				    	pd3.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 				    	pd3.put("high_alarm_co2", high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //				    	pd2.put("low_alarm_co2", low_alarm_co22+low_alarm_co2*((i+1-day_age)*j));
 				    	pd3.put("set_water_deprivation", null);
@@ -1968,6 +1928,7 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("low_alarm_temp", null);
 				    	pd3.put("high_alarm_negative_pressure", null);
 				    	pd3.put("low_alarm_negative_pressure", null);
+				    	pd3.put("set_co2", null);
 				    	pd3.put("high_alarm_co2", null);
 				    	pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
 				    	pd3.put("high_water_deprivation", high_water_deprivation2+high_water_deprivation*((i-day_age)*24+j));
@@ -2013,6 +1974,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age3)*24+j));
 					pd5.put("high_alarm_negative_pressure",null);
 					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
@@ -2049,6 +2011,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("low_alarm_temp",null);
 					pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age3)*24+j));
 					pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age3)*24+j));
+					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
@@ -2085,6 +2048,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("low_alarm_temp",null);
 					pd5.put("high_alarm_negative_pressure",null);
 					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_co2",set_co23+set_co21*((i-day_age3)*24+j));
 					pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age3)*24+j));
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
@@ -2121,6 +2085,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("low_alarm_temp",null);
 					pd5.put("high_alarm_negative_pressure",null);
 					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));
 					pd5.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*((i-day_age3)*24+j));
@@ -2148,8 +2113,8 @@ public class AlarmAction extends BaseAction{
 		PageData pd = this.getPageData();
 		mv.setViewName("modules/alarm/addAlarm");
 		mv.addObject("pd",pd);
-		mv.addObject("farmList",moduleService.service("farmServiceImpl", "selectAll", null));
-		mv.addObject("houseList",moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd}));
+//		mv.addObject("farmList",moduleService.service("farmServiceImpl", "selectAll", null));
+//		mv.addObject("houseList",moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd}));
 		return mv;
 	}
 	
@@ -2417,22 +2382,25 @@ public class AlarmAction extends BaseAction{
 	}
 	
 	@RequestMapping(value="/applyAlarmUrl")
-	public ModelAndView applyAlarmUrl()throws Exception{
+	public ModelAndView applyAlarmUrl(HttpServletRequest request)throws Exception{
 		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		mv.setViewName("modules/alarm/applyAlarm");
 		mv.addObject("pd",pd);
-		List<PageData> object =  moduleService.service("farmServiceImpl", "selectByCondition", new Object[]{pd});
-		List<PageData> object2 = moduleService.service("farmServiceImpl", "selectHouseById", new Object[]{pd});
-		PageData object3 = object.get(0);
-		PageData object4 = object2.get(0);
-		mv.addObject("farm",object3);
-		mv.addObject("house",object4);
-		PageData pd2 = new PageData();
-		pd2.put("farmId", pd.get("farmId"));
-		List<PageData> object5 = moduleService.service("farmServiceImpl", "selectHouseById", new Object[]{pd2});
-		mv.addObject("houseList",object5);
+		pd.put("organization_id", pd.get("farmId"));		
+		List<PageData> farm = moduleService.service("organServiceImpl", "getOrgListById", new Object[]{pd});
+		mv.addObject("farm",farm.get(0).get("name_cn"));//农场名称
+		mv.addObject("farmId",farm.get(0).get("organization_id"));//农场organization_id
+		pd.put("organization_id", pd.get("houseId"));
+		List<PageData> house = moduleService.service("organServiceImpl", "getOrgListById", new Object[]{pd});
+		mv.addObject("house",house.get(0).get("name_cn")); //栋舍名称
+		mv.addObject("houseId",house.get(0).get("organization_id")); //栋舍organization_id
+		pd.put("farm_id", farm.get(0).get("id"));
+		pd.put("user_id", user.getId());
+		List<PageData> houseList = moduleService.service("organServiceImpl", "getHouseListByUserId", new Object[]{pd});
+		mv.addObject("houseList",houseList);
 		mv.addObject("alarm_type",pd.get("alarm_type"));
 		return mv;
 	}
@@ -2441,7 +2409,7 @@ public class AlarmAction extends BaseAction{
 	public void applyAlarm(HttpServletResponse response,HttpServletRequest request) throws Exception{
 		Json j2=new Json();
 		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
-		ModelAndView mv = this.getModelAndView();
+//		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		List<PageData> pageData = alarmService.selectByCondition(pd);
@@ -2471,7 +2439,7 @@ public class AlarmAction extends BaseAction{
 //			pd.put("set_negative_pressure", pageData1.get("set_negative_pressure"));
 			pd.put("high_alarm_negative_pressure", pageData1.get("high_alarm_negative_pressure"));
 			pd.put("low_alarm_negative_pressure", pageData1.get("low_alarm_negative_pressure"));
-//			pd.put("set_co2", pageData1.get("set_co2"));
+			pd.put("set_co2", pageData1.get("set_co2"));
 			pd.put("high_alarm_co2", pageData1.get("high_alarm_co2"));
 //			pd.put("low_alarm_co2", pageData1.get("low_alarm_co2"));
 			pd.put("set_water_deprivation", pageData1.get("set_water_deprivation"));
@@ -2496,8 +2464,8 @@ public class AlarmAction extends BaseAction{
 							set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
 						  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
 						  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
-						  high_alarm_co2=0,high_alarm_co21=0,high_alarm_co22=0,
-						  high_alarm_co23=0,
+						  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,
+						  set_co23=0,high_alarm_co23=0,
 						  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 						  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 					int uid_num=0;
@@ -2724,18 +2692,18 @@ public class AlarmAction extends BaseAction{
 									pageData5.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 											pageData5.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
 								//目标二氧化碳1
-//								set_co22 = Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue();
+								set_co22 = Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue();
 								//高报二氧化碳1
 								high_alarm_co22 = Float.valueOf(pageData5.get(i).get("high_alarm_co2").toString()).floatValue();
 								//低报二氧化碳1
 //								low_alarm_co22 = Float.valueOf(pageData5.get(i).get("low_alarm_co2").toString()).floatValue();
 								if(pageData5.size()!=1){	
 									//目标二氧化碳差2
-//									set_co21 = (Float.valueOf(pageData5.get(i+1).get("set_co2").toString()).floatValue() - 
-//											Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue())/
-//									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									set_co21 = (Float.valueOf(pageData5.get(i+1).get("set_co2").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 									//目标二氧化碳2
-//									set_co23 = Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue();
+									set_co23 = Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue();
 									//高报二氧化碳差2
 									high_alarm_co21 = (Float.valueOf(pageData5.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 											Float.valueOf(pageData5.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -2758,11 +2726,11 @@ public class AlarmAction extends BaseAction{
 									pageData5.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 											pageData5.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData5.size()-1){
 									//目标二氧化碳差1
-//									set_co2 = (Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue() - 
-//											Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue())/
-//									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
+									set_co2 = (Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue())/
+									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
 									//目标二氧化碳1
-//									set_co22 = Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue();
+									set_co22 = Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue();
 									//高报二氧化碳差1
 									high_alarm_co2 = (Float.valueOf(pageData5.get(i).get("high_alarm_co2").toString()).floatValue() - 
 											Float.valueOf(pageData5.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -2776,11 +2744,11 @@ public class AlarmAction extends BaseAction{
 									//低报二氧化碳1
 //									low_alarm_co22 = Float.valueOf(pageData5.get(i-1).get("low_alarm_co2").toString()).floatValue();
 									//目标二氧化碳差2
-//									set_co21 = (Float.valueOf(pageData5.get(i+1).get("set_co2").toString()).floatValue() - 
-//											Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue())/
-//									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									set_co21 = (Float.valueOf(pageData5.get(i+1).get("set_co2").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 									//目标二氧化碳2
-//									set_co23 = Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue();
+									set_co23 = Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue();
 									//高报二氧化碳差2
 									high_alarm_co21 = (Float.valueOf(pageData5.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 											Float.valueOf(pageData5.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -2802,11 +2770,11 @@ public class AlarmAction extends BaseAction{
 									pageData5.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 											pageData5.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData5.size()-1){
 									//目标二氧化碳差
-//									set_co2 = (Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue() - 
-//											Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue())/
-//									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
+									set_co2 = (Float.valueOf(pageData5.get(i).get("set_co2").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue())/
+									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
 									//目标二氧化碳
-//									set_co22 = Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue();
+									set_co22 = Float.valueOf(pageData5.get(i-1).get("set_co2").toString()).floatValue();
 									//高报二氧化碳差
 									high_alarm_co2 = (Float.valueOf(pageData5.get(i).get("high_alarm_co2").toString()).floatValue() - 
 											Float.valueOf(pageData5.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -2961,6 +2929,7 @@ public class AlarmAction extends BaseAction{
 							pd3.put("low_alarm_temp",low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
 							pd3.put("high_alarm_negative_pressure",null);
 							pd3.put("low_alarm_negative_pressure",null);
+							pd3.put("set_co2",null);
 							pd3.put("high_alarm_co2",null);
 							pd3.put("set_water_deprivation", null);
 							pd3.put("high_water_deprivation",null);
@@ -2997,6 +2966,7 @@ public class AlarmAction extends BaseAction{
 //							pd3.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*(i+1));
 							pd3.put("high_alarm_negative_pressure",high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
 							pd3.put("low_alarm_negative_pressure",low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+							pd3.put("set_co2",null);
 							pd3.put("high_alarm_co2",null);
 							pd3.put("set_water_deprivation", null);
 							pd3.put("high_water_deprivation",null);
@@ -3032,7 +3002,7 @@ public class AlarmAction extends BaseAction{
 								pd3.put("low_alarm_temp",null);
 								pd3.put("high_alarm_negative_pressure",null);
 								pd3.put("low_alarm_negative_pressure",null);
-//							pd3.put("set_co2", set_co22+set_co2*(i+1));
+							pd3.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 							pd3.put("high_alarm_co2",high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //							pd3.put("low_alarm_co2",low_alarm_co22+low_alarm_co2*(i+1));
 							pd3.put("set_water_deprivation", null);
@@ -3069,6 +3039,7 @@ public class AlarmAction extends BaseAction{
 								pd3.put("low_alarm_temp",null);
 								pd3.put("high_alarm_negative_pressure",null);
 								pd3.put("low_alarm_negative_pressure",null);
+								pd3.put("set_co2",null);
 								pd3.put("high_alarm_co2",null);
 							pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
 							pd3.put("high_water_deprivation",high_water_deprivation2+high_water_deprivation*((i-day_age)*24+j));
@@ -3112,6 +3083,7 @@ public class AlarmAction extends BaseAction{
 								pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*(i+1));
 								pd5.put("high_alarm_negative_pressure",null);
 								pd5.put("low_alarm_negative_pressure",null);
+								pd5.put("set_co2",null);
 								pd5.put("high_alarm_co2",null);
 								pd5.put("set_water_deprivation", null);
 								pd5.put("high_water_deprivation",null);
@@ -3148,6 +3120,7 @@ public class AlarmAction extends BaseAction{
 //								pd4.put("set_negative_pressure", set_negative_pressure3+set_negative_pressure1*(i+1));
 								pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*(i+1));
 								pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*(i+1));
+								pd5.put("set_co2",null);
 								pd5.put("high_alarm_co2",null);
 								pd5.put("set_water_deprivation", null);
 								pd5.put("high_water_deprivation",null);
@@ -3183,7 +3156,7 @@ public class AlarmAction extends BaseAction{
 									pd5.put("low_alarm_temp",null);
 									pd5.put("high_alarm_negative_pressure",null);
 									pd5.put("low_alarm_negative_pressure",null);
-//								pd4.put("set_co2", set_co23+set_co21*(i+1));
+								pd5.put("set_co2", set_co23+set_co21*(i+1));
 								pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*(i+1));
 //								pd4.put("low_alarm_co2",low_alarm_co23+low_alarm_co21*(i+1));
 								pd5.put("set_water_deprivation", null);
@@ -3220,6 +3193,7 @@ public class AlarmAction extends BaseAction{
 									pd5.put("low_alarm_temp",null);
 									pd5.put("high_alarm_negative_pressure",null);
 									pd5.put("low_alarm_negative_pressure",null);
+									pd5.put("set_co2",null);
 									pd5.put("high_alarm_co2",null);
 								pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*(i+1));
 								pd5.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*(i+1));
@@ -3239,11 +3213,11 @@ public class AlarmAction extends BaseAction{
 				pdID = Integer.valueOf(alarmService.selectByCondition3(pd).get(0).get("uid_num").toString()).intValue();
 				
 				float set_temp=0,high_alarm_temp=0,low_alarm_temp=0,set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp2=0,high_alarm_temp2=0,low_alarm_temp2=0,
-						set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
+					  set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
 					  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
 					  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
-					  high_alarm_co2=0,high_alarm_co21=0,high_alarm_co22=0,
-					  high_alarm_co23=0,
+					  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,
+					  set_co23=0,high_alarm_co23=0,
 					  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 					  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 				int uid_num=0;
@@ -3473,18 +3447,18 @@ public class AlarmAction extends BaseAction{
 								pageData8.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 										pageData8.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
 							//目标二氧化碳1
-//							set_co22 = Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue();
+							set_co22 = Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue();
 							//高报二氧化碳1
 							high_alarm_co22 = Float.valueOf(pageData8.get(i).get("high_alarm_co2").toString()).floatValue();
 							//低报二氧化碳1
 //							low_alarm_co22 = Float.valueOf(pageData8.get(i).get("low_alarm_co2").toString()).floatValue();
 							if(pageData8.size()!=1){	
 								//目标二氧化碳差2
-//								set_co21 = (Float.valueOf(pageData8.get(i+1).get("set_co2").toString()).floatValue() - 
-//										Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue())/
-//								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								set_co21 = (Float.valueOf(pageData8.get(i+1).get("set_co2").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 								//目标二氧化碳2
-//								set_co23 = Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue();
+								set_co23 = Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue();
 								//高报二氧化碳差2
 								high_alarm_co21 = (Float.valueOf(pageData8.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 										Float.valueOf(pageData8.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -3507,11 +3481,11 @@ public class AlarmAction extends BaseAction{
 								pageData8.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 										pageData8.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData8.size()-1){
 								//目标二氧化碳差1
-//								set_co2 = (Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue() - 
-//										Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue())/
-//								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
+								set_co2 = (Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
 								//目标二氧化碳1
-//								set_co22 = Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue();
+								set_co22 = Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue();
 								//高报二氧化碳差1
 								high_alarm_co2 = (Float.valueOf(pageData8.get(i).get("high_alarm_co2").toString()).floatValue() - 
 										Float.valueOf(pageData8.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -3525,11 +3499,11 @@ public class AlarmAction extends BaseAction{
 								//低报二氧化碳1
 //								low_alarm_co22 = Float.valueOf(pageData8.get(i-1).get("low_alarm_co2").toString()).floatValue();
 								//目标二氧化碳差2
-//								set_co21 = (Float.valueOf(pageData8.get(i+1).get("set_co2").toString()).floatValue() - 
-//										Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue())/
-//								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								set_co21 = (Float.valueOf(pageData8.get(i+1).get("set_co2").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 								//目标二氧化碳2
-//								set_co23 = Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue();
+								set_co23 = Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue();
 								//高报二氧化碳差2
 								high_alarm_co21 = (Float.valueOf(pageData8.get(i+1).get("high_alarm_co2").toString()).floatValue() - 
 										Float.valueOf(pageData8.get(i).get("high_alarm_co2").toString()).floatValue())/
@@ -3552,11 +3526,11 @@ public class AlarmAction extends BaseAction{
 								pageData8.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
 										pageData8.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData8.size()-1){
 								//目标二氧化碳差
-//								set_co2 = (Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue() - 
-//										Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue())/
-//								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
+								set_co2 = (Float.valueOf(pageData8.get(i).get("set_co2").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
 								//目标二氧化碳
-//								set_co22 = Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue();
+								set_co22 = Float.valueOf(pageData8.get(i-1).get("set_co2").toString()).floatValue();
 								//高报二氧化碳差
 								high_alarm_co2 = (Float.valueOf(pageData8.get(i).get("high_alarm_co2").toString()).floatValue() - 
 										Float.valueOf(pageData8.get(i-1).get("high_alarm_co2").toString()).floatValue())/
@@ -3712,6 +3686,7 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("low_alarm_temp", low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
 						    	pd3.put("high_alarm_negative_pressure", null);
 						    	pd3.put("low_alarm_negative_pressure", null);
+						    	pd3.put("set_co2", null);
 						    	pd3.put("high_alarm_co2", null);
 						    	pd3.put("set_water_deprivation", null);
 						    	pd3.put("high_water_deprivation", null);
@@ -3748,6 +3723,7 @@ public class AlarmAction extends BaseAction{
 //						    	pd3.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*((i+1-day_age)*j));
 						    	pd3.put("high_alarm_negative_pressure", high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
 						    	pd3.put("low_alarm_negative_pressure", low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+						    	pd3.put("set_co2", null);
 						    	pd3.put("high_alarm_co2", null);
 						    	pd3.put("set_water_deprivation", null);
 						    	pd3.put("high_water_deprivation", null);
@@ -3783,7 +3759,7 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("low_alarm_temp", null);
 						    	pd3.put("high_alarm_negative_pressure", null);
 						    	pd3.put("low_alarm_negative_pressure", null);
-//						    	pd3.put("set_co2", set_co22+set_co2*((i+1-day_age)*j));
+						    	pd3.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 						    	pd3.put("high_alarm_co2", high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //						    	pd3.put("low_alarm_co2", low_alarm_co22+low_alarm_co2*((i+1-day_age)*j));
 						    	pd3.put("set_water_deprivation", null);
@@ -3820,6 +3796,7 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("low_alarm_temp", null);
 						    	pd3.put("high_alarm_negative_pressure", null);
 						    	pd3.put("low_alarm_negative_pressure", null);
+						    	pd3.put("set_co2", null);
 						    	pd3.put("high_alarm_co2", null);
 						    	pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
 						    	pd3.put("high_water_deprivation", high_water_deprivation2+high_water_deprivation*((i-day_age)*24+j));
@@ -3861,6 +3838,7 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age3)*24+j));
 							    	pd5.put("high_alarm_negative_pressure",null);
 							    	pd5.put("low_alarm_negative_pressure",null);
+							    	pd5.put("set_co2",null);
 							    	pd5.put("high_alarm_co2",null);
 							    	pd5.put("set_water_deprivation", null);
 							    	pd5.put("high_water_deprivation",null);
@@ -3894,6 +3872,7 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("low_alarm_temp",null);
 							    	pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age3)*24+j));
 							    	pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age3)*24+j));
+							    	pd5.put("set_co2",null);
 							    	pd5.put("high_alarm_co2",null);
 							    	pd5.put("set_water_deprivation", null);
 							    	pd5.put("high_water_deprivation",null);
@@ -3927,6 +3906,7 @@ public class AlarmAction extends BaseAction{
 								    	pd5.put("low_alarm_temp",null);
 								    	pd5.put("high_alarm_negative_pressure",null);
 								    	pd5.put("low_alarm_negative_pressure",null);
+								    	pd5.put("set_co2",set_co23+set_co21*((i-day_age3)*24+j));
 								    	pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age3)*24+j));
 								    	pd5.put("set_water_deprivation", null);
 								    	pd5.put("high_water_deprivation",null);
@@ -3960,6 +3940,7 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("low_alarm_temp",null);
 							    	pd5.put("high_alarm_negative_pressure",null);
 							    	pd5.put("low_alarm_negative_pressure",null);
+							    	pd5.put("set_co2",null);
 							    	pd5.put("high_alarm_co2",null);
 							    	pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));
 							    	pd5.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*((i-day_age3)*24+j));
