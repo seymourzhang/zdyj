@@ -28,7 +28,8 @@ public class LoginFilter extends  OncePerRequestFilter {
 	        String[] notFilter = new String[] {"/zdyj/index.jsp","/zdyj/modules/user/login.jsp",
 					"/zdyj/login/mobileLogin","/zdyj/monitor/responseall","/zdyj/alarmCurr/mobileAlarm",
 					"/zdyj/alarmCurr/mobileAlarmCurr","/zdyj/alarmCurr/mobilesSolveAlarmCurr","/zdyj/login/login",
-					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/login"};
+					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/login",
+					"/zdyj/loginMobile/queryDetail"};
 	  
 	        // 请求的url  
 	        String url = request.getRequestURI();  
