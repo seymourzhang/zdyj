@@ -4,6 +4,6 @@
 var ar ;
 
 $(document).ready(function() {
-    ar = getInstance({}, {});
+    ar = getInstance({入库:"tab_1"}, {iframe_tab_1:"dailyProductionReport.frm"});
     ar.initToolBarFarm();
 });

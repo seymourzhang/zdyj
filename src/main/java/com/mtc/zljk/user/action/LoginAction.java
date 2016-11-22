@@ -77,7 +77,7 @@ public class LoginAction extends BaseAction {
 	 * varro
 	 * 2016-8-1
 	 */
-	@RequestMapping("/mobileLogin")
+	/*@RequestMapping("/mobileLogin")
 	public void mobileLogin(HttpServletRequest request,HttpServletResponse response)throws Exception {
 		//shiro管理的session
 		Subject currentUser = SecurityUtils.getSubject();  
@@ -134,7 +134,7 @@ public class LoginAction extends BaseAction {
 		}
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		DealSuccOrFail.dealApp(request,response,dealRes,resJson);
-	}
+	}*/
 	
 	private JSONObject genUserInfo(SDUser tSDUser) throws JSONException{
 		JSONObject userInfo = null;

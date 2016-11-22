@@ -25,11 +25,9 @@ public class LoginFilter extends  OncePerRequestFilter {
 	            throws ServletException, IOException {  
 	  
 	        // 不拦截的url  
-	        String[] notFilter = new String[] {"/zdyj/index.jsp","/zdyj/modules/user/login.jsp",
-					"/zdyj/login/mobileLogin","/zdyj/monitor/responseall","/zdyj/alarmCurr/mobileAlarm",
+	        String[] notFilter = new String[] {"/zdyj/index.jsp","/zdyj/modules/user/login.jsp","/zdyj/monitor/responseall","/zdyj/alarmCurr/mobileAlarm",
 					"/zdyj/alarmCurr/mobileAlarmCurr","/zdyj/alarmCurr/mobilesSolveAlarmCurr","/zdyj/login/login",
-					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/login",
-					"/zdyj/loginMobile/queryDetail"};
+					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/*"};
 	  
 	        // 请求的url  
 	        String url = request.getRequestURI();  
@@ -71,9 +69,9 @@ public class LoginFilter extends  OncePerRequestFilter {
 	        if(url.endsWith(".css") || url.endsWith(".js")|| url.endsWith(".png")|| url.endsWith(".png")|| url.endsWith(".jpg")|| url.endsWith(".ico")|| url.endsWith(".css")){  
 	            return false;  
 	        }  
-	        //含有notFilter中的任何一个则不进行拦截  
+	        //含有notFilter中的任何一个则不进行拦截
 	        for (String s : notFilter) {  
-	            if (url.indexOf(s) != -1) {  
+	            if (url.indexOf(s.replace("*","")) != -1) {
 	                return false;  
 	            }  
 	        }  

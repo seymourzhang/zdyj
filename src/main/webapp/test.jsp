@@ -50,7 +50,7 @@ function submit(){
 		    }
 		});
 	}else{
-		alert('请输入相关参数') ; 
+		alert('请输入相关参数');
 	}
 	
 }

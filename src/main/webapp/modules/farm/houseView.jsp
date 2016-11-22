@@ -20,7 +20,7 @@
 
 				<div class="row-fluid">
 					<div class="span12" align="right">
-						<a href="javascript:;" class="btn green" onclick="addFarm();"><i class="icon-plus"></i> 新增</a>
+						<a href="javascript:;" class="btn green" onclick="addHouse();"><i class="icon-plus"></i> 新增</a>
 					</div>
 				</div>
 
@@ -34,24 +34,26 @@
 
 							<tr style="background-color: #1288C0; color: white;" >
 								<th class="hidden-480" style="text-align: center;">编号</th>
-								<th>农场名称</th>
-								<th>地区</th>
-								<th>养殖品种</th>
-								<th>养殖方式</th>
+								<th>舍号</th>
+								<th>所属农场</th>
+								<th>栋舍类别</th>
+								<th>数据采集器编号</th>
 								<th>操作</th>
 							</tr>
 
 							</thead>
 							<tbody>
-							<c:if test="${!empty SDFarmList}">
-								<c:forEach var="fl" items="${SDFarmList}" varStatus="vs">
+							<c:if test="${!empty SDHouseList}">
+								<c:forEach var="hl" items="${SDHouseList}" varStatus="vs">
 									<tr class="odd gradeX">
-										<td class="hidden-480" style="text-align: center;">${fl.id}</td>
-										<td>${fl.farm_name_chs}</td>
-										<td>${fl.province}${fl.city}${fl.area}</td>
-										<td>${fl.code_name1}</td>
-										<td>${fl.code_name}</td>
-										<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editFarm(${fl.id})" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delFarm(${fl.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
+										<td class="hidden-480" style="text-align: center;">${hl.id}</td>
+										<td>${hl.house_name}</td>
+										<td>${hl.farm_name_chs}</td>
+										<td>${hl.code_name}</td>
+										<td>${hl.deviceName}</td>
+										<td class="center hidden-480" style="width: 145px;">
+											<a href="javascript:void(0);" onclick="editHouse('${hl.id}','${hl.deviceID}')" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp;
+											<a href="javascript:void(0);" onclick="delHouse(${hl.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
 									</tr>
 								</c:forEach>
 							</c:if>
@@ -60,10 +62,7 @@
 					</div>
 				</div>
 
-
-
 			</div>
-
 		</div>
 	</div>
 	<!-- #main-content -->

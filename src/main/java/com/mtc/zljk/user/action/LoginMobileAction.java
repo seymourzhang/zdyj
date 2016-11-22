@@ -248,9 +248,9 @@ public class LoginMobileAction extends BaseAction{
 		ModelAndView mav = new ModelAndView("framework/default");
 		return mav;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 退出系统
 	 * @param request

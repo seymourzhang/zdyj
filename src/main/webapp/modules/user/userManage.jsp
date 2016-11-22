@@ -27,155 +27,71 @@
 					<form action="<%=path%>/user/userManage" method="post" style="background-color: #ffffff;" id="userForm">
 						<%-- <input type="hidden" name="id" value="${pd.id}">
 						<input type="hidden" name="pid" value="${pd.pid}"> --%>
-					  <div class="span12">
-							<!-- BEGIN PORTLET-->
-							<div class="portlet box blue1">
-								<div class="portlet-title">
-									<div class="caption">
-										<i class="icon-reorder"></i>检索条件
-									</div>
-									<!-- <div class="tools">
-
-										<a href="javascript:;" class="collapse"></a>
-
-									</div> -->
-									<div class="actions">
-
-										<a href="javascript:search();" class="btn green"><i class="icon-search"></i> 查询</a>
-
-									</div>
-
+							<div class="row-fluid">
+								<div class="span4" align="left">
+									<span_customer>用户名称</span_customer>
+									<input type="text" value="${pd.user_real_name }" placeholder="模糊查询中文名" name="user_real_name"">
 								</div>
-
-								<div class="portlet-body form1">
-									<!-- BEGIN FORM-->
-									<div class="form-horizontal" style="height: 40px;">
-										<div style="height: 20px;">
-											<%-- <div class="span4">
-												<div class="control-group">
-													<label class="control-label" style="width: 60px;">农场</label>
-													<div class="controls" style="margin-left: 65px;">
-														<select id="farmId" class="m-wrap span12" tabindex="1" name="farm_id" >	
-			                                               	<option value="">全部</option>
-			                                                 <c:if test="${!empty farmList}">
-			                                                 	<c:forEach items="${farmList}" var="farm">
-																	<option value="${farm.id }" <c:if test="${pd.farm_id==farm.id}">selected</c:if>>${farm.farm_name_chs }</option>
-															 	</c:forEach>
-		                                                 	 </c:if>
-														</select>
-													</div>
-												</div>
-											</div> --%>
-
-											<!--/span-->
-
-											<div class="span4">
-
-												<div class="control-group">
-
-													<label class="control-label" style="width: 60px;">中文名</label>
-
-													<div class="controls" style="margin-left: 65px;">
-
-														<input type="text" class="m-wrap span12" value="${pd.user_real_name }" placeholder="模糊查询中文名" name="user_real_name"">
-
-													</div>
-
-												</div>
-
-											</div>
-
-											<!--/span-->
-
-											<!--/span-->
-
-											<div class="span4">
-
-												<div class="control-group">
-
-													<label class="control-label" style="width: 60px;">手机号</label>
-
-													<div class="controls" style="margin-left: 65px;">
-
-														<input type="text" class="m-wrap span12" value="${pd.user_mobile_1 }" placeholder="模糊查询手机号" name="user_mobile_1">
-
-													</div>
-
-												</div>
-
-											</div>
-
-											<!--/span-->
-
-										</div>
-
-									</div>
-
-									<!-- END FORM-->
+								<div class="span4" align="left">
+									<span_customer>手机号</span_customer>
+									<input type="text" value="${pd.user_mobile_1 }" placeholder="模糊查询手机号" name="user_mobile_1">
 								</div>
-
+								<div class="span4" align="left">
+									<a href="javascript:search();" class="btn green"><i class="icon-search"></i> 查询</a>
+								</div>
 							</div>
 
-							<!-- END PORTLET-->
-
-							<div class="portlet box blue1">
-
-								<div class="portlet-title">
-
-									<div class="caption">
-										<i class="icon-globe"></i>用户信息
-									</div>
-
-									<!-- <div class="tools">
-
-										<a href="javascript:;" class="collapse"></a>
-
-									</div> -->
-									<div class="actions">
-
-										<a href="javascript:;" class="btn green" onclick="add();"><i class="icon-plus"></i> 新增</a>
-
-									</div>
+							<div class="row-fluid">
+								<div class="span12">
+									<hr style="height:10px;border:none;border-top:1px solid #555555;" />
 								</div>
+							</div>
 
-								<div class="portlet-body" id="user_date_table">
+							<div class="row-fluid">
+								<div class="span12">
+									<a href="javascript:;" class="btn blue" onclick="add();"><i class="icon-plus"></i> 新增</a>
+								</div>
+							</div>
+
+							<div class="row-fluid">
+								<div class="span12">
 									<table class="table table-striped table-bordered table-hover" id="sample_1">
 
 										<thead>
 
-											<tr>
-												<th class="hidden-480" style="text-align: center;">编号</th>
-												<th>用户名</th>
-												<th>中文名</th>
-												<th>手机</th>
-												<!-- <th>所属农场</th>
-												<th>所属栋舍</th> -->
-												<th>状态</th>
-												<th>操作</th>
-											</tr>
+										<tr style="background-color: #1288C0; color: white;" >
+											<th class="hidden-480" style="text-align: center;">编号</th>
+											<th>用户名</th>
+											<th>中文名</th>
+											<th>手机</th>
+											<!-- <th>所属农场</th>
+                                            <th>所属栋舍</th> -->
+											<th>状态</th>
+											<th>操作</th>
+										</tr>
 										</thead>
 										<tbody>
-											<c:if test="${!empty listUser}">
-												<c:forEach var="lu" items="${listUser}" varStatus="vs">
-													<tr class="odd gradeX">
-														<td class="hidden-480" style="text-align: center;">${lu.id}</td>
-														<td>${lu.user_code}</td>
-														<td>${lu.user_real_name}</td>
-														<td>${lu.user_mobile_1 != null ? lu.user_mobile_1 : 0}</td>
+										<c:if test="${!empty listUser}">
+											<c:forEach var="lu" items="${listUser}" varStatus="vs">
+												<tr class="odd gradeX">
+													<td class="hidden-480" style="text-align: center;">${lu.id}</td>
+													<td>${lu.user_code}</td>
+													<td>${lu.user_real_name}</td>
+													<td>${lu.user_mobile_1 != null ? lu.user_mobile_1 : 0}</td>
 														<%-- <td>${lu.farm_name_chs}</td>
-														<td>${lu.house_name}</td> --%>
-														<c:choose>
-															<c:when test="${lu.user_status=='1'}">
-																<td>正常</td>
-															</c:when>
-															<c:otherwise>
-																<td>冻结</td>
-															</c:otherwise>
-														</c:choose>
-														<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editUser(${lu.id},${lu.farm_id!=null? lu.farm_id :'0'},'${lu.house_code!=null?lu.house_code:'0'}')" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delUser(${lu.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
-													</tr>
-												</c:forEach>
-											</c:if>
+                                                        <td>${lu.house_name}</td> --%>
+													<c:choose>
+														<c:when test="${lu.user_status=='1'}">
+															<td>正常</td>
+														</c:when>
+														<c:otherwise>
+															<td>冻结</td>
+														</c:otherwise>
+													</c:choose>
+													<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editUser(${lu.id},${lu.farm_id!=null? lu.farm_id :'0'},'${lu.house_code!=null?lu.house_code:'0'}')" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delUser(${lu.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
+												</tr>
+											</c:forEach>
+										</c:if>
 
 										</tbody>
 									</table>
@@ -188,7 +104,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
+
 					</form>
 				</div> 
 		 </div> 

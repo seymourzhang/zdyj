@@ -38,16 +38,12 @@ public class FarmAction extends BaseAction{
     
     @Autowired
 	private ModuleService moduleService;
-	
-	@RequestMapping("/farmView")
-	public ModelAndView farmView(Page page,HttpSession session) throws Exception {
+
+	@RequestMapping("/houseView")
+	public ModelAndView houseView(Page page,HttpSession session) throws Exception {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		/**农场信息-Varro-2016-7-26-**/
-		List<PageData> farmList= farmService.findFarm(pd);
-		mv.addObject("SDFarmList",farmList);
-		
 		/**栋舍信息-Varro-2016-7-26-**/
 		List<PageData> hoList= farmService.findHouse(pd);
 		List<PageData> houseList=new ArrayList<PageData>();
@@ -69,31 +65,46 @@ public class FarmAction extends BaseAction{
 			pageData.put("deviceID", deviceID);
 			pageData.put("deviceName", deviceName);
 			houseList.add(pageData);
-			
+
 		}
 		mv.addObject("SDHouseList",houseList);
-		
-		/**批次信息-Varro-2016-7-26-**/
-		page.setPd(pd);
-		List<PageData> balist = farmService.findBatchlistPage(page);
-		List<PageData> batchList=new ArrayList<PageData>();
-		for (PageData pageData : balist) {
-			PageData paDate = new PageData();
-			paDate.put("operation_type", "1");
-			paDate.put("batch_no", pageData.getString("batch_no"));
-			paDate.put("farmId",pageData.get("farm_id"));
-			paDate.put("houseId", pageData.get("house_code"));
-			List<PageData> bblist= farmService.selectBatchByCondition(paDate);
-			if(bblist.size()!=0){
-				pageData.put("batch_flag", "1");
-			}
-			if(bblist.size()!=0 && Integer.parseInt(pageData.get("operation_type").toString())==2){
-			   continue;
-			}
-			batchList.add(pageData);
-		}
 		mv.addObject("pd",pd);
-		mv.addObject("SDBatchList",batchList);
+		mv.setViewName("/modules/farm/houseView");
+		return mv;
+	}
+
+	@RequestMapping("/farmView")
+	public ModelAndView farmView(Page page,HttpSession session) throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		/**农场信息-Varro-2016-7-26-**/
+		List<PageData> farmList= farmService.findFarm(pd);
+		mv.addObject("SDFarmList",farmList);
+		
+
+//
+//		/**批次信息-Varro-2016-7-26-**/
+//		page.setPd(pd);
+//		List<PageData> balist = farmService.findBatchlistPage(page);
+//		List<PageData> batchList=new ArrayList<PageData>();
+//		for (PageData pageData : balist) {
+//			PageData paDate = new PageData();
+//			paDate.put("operation_type", "1");
+//			paDate.put("batch_no", pageData.getString("batch_no"));
+//			paDate.put("farmId",pageData.get("farm_id"));
+//			paDate.put("houseId", pageData.get("house_code"));
+//			List<PageData> bblist= farmService.selectBatchByCondition(paDate);
+//			if(bblist.size()!=0){
+//				pageData.put("batch_flag", "1");
+//			}
+//			if(bblist.size()!=0 && Integer.parseInt(pageData.get("operation_type").toString())==2){
+//			   continue;
+//			}
+//			batchList.add(pageData);
+//		}
+		mv.addObject("pd",pd);
+//		mv.addObject("SDBatchList",batchList);
 		
 		mv.setViewName("/modules/farm/farmView");
 		return mv;
@@ -678,7 +689,6 @@ public class FarmAction extends BaseAction{
 	
 	/**
 	 * 获取农场信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	List<PageData> getFarmList() throws Exception {

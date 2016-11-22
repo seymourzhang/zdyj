@@ -19,6 +19,7 @@ import com.mtc.zljk.util.common.Const;
 import com.mtc.zljk.util.common.Json;
 import com.mtc.zljk.util.common.PageData;
 import com.mtc.zljk.util.service.OrganService;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/org")
@@ -26,8 +27,21 @@ public class OrgAction extends BaseAction{
 	
 	@Autowired
 	private OrganService  organService;
-	
-	
+
+	/**
+	 * 跳转到批次管理页面
+	 * raymon 2016-10-18
+	 * @return
+	 */
+	@RequestMapping(value="/orgManage")
+	public ModelAndView showOrgManage()throws Exception{
+		PageData pd = this.getPageData();
+		ModelAndView mv = this.getModelAndView();
+		mv.setViewName("modules/util/orgManage");
+		mv.addObject("pd",pd);
+		return mv;
+	}
+
 	@RequestMapping("/getOrg")
 	public void getOrg(HttpServletResponse response) throws Exception{
 		Subject currentUser = SecurityUtils.getSubject();  
