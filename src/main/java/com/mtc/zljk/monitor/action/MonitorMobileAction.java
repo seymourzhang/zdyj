@@ -1,5 +1,6 @@
 package com.mtc.zljk.monitor.action;
 
+import com.mtc.zljk.alarm.service.AlarmCurrService;
 import com.mtc.zljk.monitor.service.MonitorService;
 import com.mtc.zljk.user.entity.SDUser;
 import com.mtc.zljk.util.action.BaseAction;
@@ -27,6 +28,9 @@ public class MonitorMobileAction extends BaseAction {
     @Autowired
     private MonitorService monitorService;
 
+    @Autowired
+    private AlarmCurrService alarmCurrService;
+
     @RequestMapping("/monitoring")
     public void monitoring(HttpServletRequest request, HttpServletResponse response) throws Exception {
         /*Json j=new Json();
@@ -43,7 +47,9 @@ public class MonitorMobileAction extends BaseAction {
         JSONObject tUserJson = jsonObject.getJSONObject("params");
         int FarmId = tUserJson.optInt("FarmId");
         List<PageData> mcl = new ArrayList<>();
-        pd.put("farmId", FarmId);
+        List farm = new ArrayList();
+        farm.add(FarmId);
+        pd.put("farmId", farm);
         mcl = monitorService.selectByCondition(pd);
         JSONArray monitor = new JSONArray();
         if (mcl.size() == 0){
@@ -53,27 +59,36 @@ public class MonitorMobileAction extends BaseAction {
         }else{
             for (PageData data : mcl) {
                 JSONObject jo = new JSONObject();
-                jo.put("houseName", "");
+                jo.put("houseName", data.get("house_name"));
                 jo.put("dayAge", data.get("date_age"));
-                jo.put("out_temp", data.get("outside_temp"));
-                jo.put("tempLeft1", data.get("inside_temp1"));
-                jo.put("tempLeft2", data.get("inside_temp2"));
-                jo.put("tempMiddle1", data.get("inside_temp3"));
-                jo.put("tempMiddle2", data.get("inside_temp4"));
-                jo.put("tempRight1", data.get("inside_temp5"));
-                jo.put("tempRight2", data.get("inside_temp5"));
-                jo.put("tar_temp", data.get("inside_set_temp"));
-                jo.put("avg_temp", data.get("inside_avg_temp"));
-                jo.put("H_temp", data.get("high_alarm_temp"));
-                jo.put("L_temp", data.get("low_alarm_temp"));
+                jo.put("out_temp", data.get("outside_temp").toString() + "℃");
+                jo.put("tempLeft1", data.get("inside_temp1").toString() + "℃");
+                jo.put("tempLeft2", data.get("inside_temp2").toString() + "℃");
+                jo.put("tempMiddle1", data.get("inside_temp3").toString() + "℃");
+                jo.put("tempMiddle2", data.get("inside_temp4").toString() + "℃");
+                jo.put("tempRight1", data.get("inside_temp5").toString() + "℃");
+                jo.put("tempRight2", data.get("inside_temp5").toString() + "℃");
+                jo.put("tar_temp", data.get("inside_set_temp").toString() + "℃");
+                jo.put("avg_temp", data.get("inside_avg_temp").toString() + "℃");
+                jo.put("H_temp", data.get("high_alarm_temp").toString() + "℃");
+                jo.put("L_temp", data.get("low_alarm_temp").toString() + "℃");
                 jo.put("point_temp", data.get("point_temp_diff"));
                 jo.put("humi", data.get("inside_humidity"));
                 jo.put("CO2", data.get("co2"));
-                jo.put("illumination", data.get(""));
-                jo.put("power_status", data.get("power_status"));
+//                jo.put("illumination", data.get("lux"));
+                jo.put("power_status", data.get("power_status").equals("1") ? "正常" : "断电");
+                jo.put("temp_in1_alarm", data.get("temp_in1_alarm"));
+                jo.put("temp_in2_alarm", data.get("temp_in2_alarm"));
+                jo.put("temp_in3_alarm", data.get("temp_in3_alarm"));
+                jo.put("temp_avg_alarm", data.get("temp_avg_alarm"));
+                jo.put("point_temp_alarm", data.get("point_temp_alarm"));
+                jo.put("power_status_alarm", data.get("power_status_alarm"));
+                jo.put("co2_alarm", data.get("co2_alarm"));
+                jo.put("lux_alarm", data.get("lux_alarm"));
+                monitor.put(jo);
             }
             resJson.put("Result", "Success");
-            resJson.put("MonitorData", mcl);
+            resJson.put("MonitorData", monitor);
             dealRes = Constants.RESULT_SUCCESS;
         }
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);

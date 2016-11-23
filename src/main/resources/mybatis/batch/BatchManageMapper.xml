@@ -43,6 +43,7 @@
         ,sbbc.bak
         ,sbbc.create_person
         ,sbbc.create_time
+        ,devi.device_code
         FROM (SELECT id
         , name_cn
         , parent_id farm_id
@@ -62,6 +63,8 @@
         AND org.id = sbbc.house_code
         LEFT JOIN s_d_house house
         ON org.id = house.id
+        LEFT JOIN s_b_devi_house devi
+        on devi.house_id = house.id
     </select>
     <!-- 查询重复批次号 -->
     <select id="selectBatchId" parameterType="pd" resultType="pd" useCache="false">

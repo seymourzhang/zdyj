@@ -113,20 +113,20 @@
                 , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarm_code
                 , mc.date_age
                 , mc.week_age
-                , format(mc.inside_temp1,1) inside_temp1
-                , format(mc.inside_temp2,1) inside_temp2
-                , format(mc.inside_temp3,1) inside_temp3
-                , format(mc.inside_temp4,1) inside_temp4
-                , mc.inside_temp5
-                , mc.inside_temp6
-                , mc.inside_temp7
-                , mc.inside_temp8
-                , mc.inside_temp9
-                , format(mc.inside_avg_temp,1) inside_avg_temp
-                , format(mc.inside_set_temp,1) inside_set_temp
-                , mc.high_alarm_temp
-                , mc.low_alarm_temp
-                , format(mc.outside_temp,1) outside_temp
+                , truncate(format(mc.inside_temp1,1),1) inside_temp1
+                , truncate(format(mc.inside_temp2,1),1) inside_temp2
+                , truncate(format(mc.inside_temp3,1),1) inside_temp3
+                , truncate(format(mc.inside_temp4,1),1) inside_temp4
+                , truncate(mc.inside_temp5,1) inside_temp5
+                , truncate(mc.inside_temp6,1) inside_temp6
+                , truncate(mc.inside_temp7,1) inside_temp7
+                , truncate(mc.inside_temp8,1) inside_temp8
+                , truncate(mc.inside_temp9,1) inside_temp9
+                , truncate(format(mc.inside_avg_temp,1),1) inside_avg_temp
+                , truncate(format(mc.inside_set_temp,1),1) inside_set_temp
+                , truncate(mc.high_alarm_temp,1) high_alarm_temp
+                , truncate(mc.low_alarm_temp,1) low_alarm_temp
+                , truncate(format(mc.outside_temp,1),1) outside_temp
                 , format(mc.inside_humidity,0) inside_humidity
                 , format((mc.inside_avg_temp-mc.inside_set_temp),1) point_temp_diff
                 , format(mc.target_humidity,0) target_humidity
@@ -148,6 +148,14 @@
                 , e.code_name fenestella_name
                 , f.farm_name_chs farm_name
                 , h.house_name house_name
+                , IFNULL((SELECT (CASE WHEN alarm_code like 'QH%' THEN 'H' WHEN alarm_code like 'QL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('QH1','QL1') LIMIT 1),'N') AS temp_in1_alarm
+                , IFNULL((SELECT (CASE WHEN alarm_code like 'ZH%' THEN 'H' WHEN alarm_code like 'ZL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('ZH1','ZL1') LIMIT 1),'N') AS temp_in2_alarm
+                , IFNULL((SELECT (CASE WHEN alarm_code like 'HH%' THEN 'H' WHEN alarm_code like 'HL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('HH1','HL1') LIMIT 1),'N') AS temp_in3_alarm
+                , IFNULL((SELECT (CASE WHEN alarm_code like '%H' THEN 'H' WHEN alarm_code like '%L%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('B001H','B001L') LIMIT 1),'N') AS temp_avg_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0001' LIMIT 1) AS point_temp_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0002' LIMIT 1) AS power_status_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0003' LIMIT 1) AS co2_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0004' LIMIT 1) AS lux_alarm
         FROM s_b_monitor_curr mc
         LEFT JOIN s_d_code c
         ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'

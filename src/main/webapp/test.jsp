@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>App接口测试</title>
 	<base href="<%=basePath%>">
-	<script type="text/javascript" src="common/js/jquery-1.6.1.min.js"></script>
+    <script src="<%=path %>/framework/jquery/jquery-1.11.2.min.js" type="text/javascript"></script>
 </head>
 <body>
 	<h2>App接口测试：</h2>
