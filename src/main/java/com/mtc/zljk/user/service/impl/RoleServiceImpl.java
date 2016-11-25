@@ -35,5 +35,10 @@ public class RoleServiceImpl implements RoleService {
 		dao.update("SDRoleMapper.editUserRole", pd);
 		
 	}
+
+	@Override
+	public void insertRightsObj(PageData pd) throws Exception {
+		dao.save("SDRoleMapper.insertRightsObj", pd);
+	}
 	
 }

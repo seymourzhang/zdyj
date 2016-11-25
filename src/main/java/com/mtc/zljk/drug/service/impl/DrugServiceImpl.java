@@ -62,8 +62,8 @@ public class DrugServiceImpl implements DrugService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<PageData> selectUser() throws Exception{
-		return (List<PageData>) dao.findForList("SDDrugMapper.selectUser", null);
+	public List<PageData> selectUser(PageData pd) throws Exception{
+		return (List<PageData>) dao.findForList("SDDrugMapper.selectUser", pd);
 	}
 	
 	@SuppressWarnings("unchecked")

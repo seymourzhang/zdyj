@@ -24,6 +24,16 @@ public class DeviceQuota {
     public DeviceQuotaType INSIDE_TEMP2 = new DeviceQuotaType("inside_temp2","温度2","3005");
     public DeviceQuotaType INSIDE_TEMP3 = new DeviceQuotaType("inside_temp3","温度3","3006");
     public DeviceQuotaType INSIDE_TEMP4 = new DeviceQuotaType("inside_temp4","温度4","3007");
+
+    public DeviceQuotaType INSIDE_TEMP5 = new DeviceQuotaType("inside_temp5","温度5");
+    public DeviceQuotaType INSIDE_TEMP6 = new DeviceQuotaType("inside_temp6","温度6");
+    public DeviceQuotaType INSIDE_TEMP7 = new DeviceQuotaType("inside_temp7","温度7");
+    public DeviceQuotaType INSIDE_TEMP8 = new DeviceQuotaType("inside_temp8","温度8");
+    public DeviceQuotaType INSIDE_TEMP9 = new DeviceQuotaType("inside_temp9","温度9");
+    public DeviceQuotaType LUX = new DeviceQuotaType("lux","光照1");
+    public DeviceQuotaType STATUS = new DeviceQuotaType("status","状态");
+    public DeviceQuotaType YT_DATETIME = new DeviceQuotaType("yt_datetime","原始数据时间");
+
     public DeviceQuotaType HUMIDITY = new DeviceQuotaType("humidity","湿度","3033");
     public DeviceQuotaType WATER_CONSUMPTION = new DeviceQuotaType("water_consumption","耗水","3026");
     public DeviceQuotaType CO2 = new DeviceQuotaType("co2","二氧化碳");
@@ -63,6 +73,16 @@ public class DeviceQuota {
         list.add(INSIDE_TEMP2);
         list.add(INSIDE_TEMP3);
         list.add(INSIDE_TEMP4);
+
+        list.add(INSIDE_TEMP5);
+        list.add(INSIDE_TEMP6);
+        list.add(INSIDE_TEMP7);
+        list.add(INSIDE_TEMP8);
+        list.add(INSIDE_TEMP9);
+        list.add(LUX);
+        list.add(STATUS);
+        list.add(YT_DATETIME);
+
         list.add(HUMIDITY);
         list.add(WATER_CONSUMPTION);
         list.add(CO2);

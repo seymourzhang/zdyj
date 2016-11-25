@@ -48,4 +48,32 @@ public class OrganServiceImpl implements OrganService {
 		return (List<PageData>) dao.findForList("SDOrganizationMapper.getHouseType",pd);
 	}
 
+	public List<PageData> getOrganizationList(PageData pd) throws Exception{
+		return (List<PageData>) dao.findForList("SDOrganizationMapper.getOrganizationList", pd);
+	}
+
+	public List<PageData> getMaxOrgLevelId(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDOrganizationMapper.getMaxOrgLevelId", pd);
+	}
+
+	public int insertOrg(PageData pd) throws Exception {
+		return (Integer) dao.save("SDOrganizationMapper.insertOrg", pd);
+	}
+
+	public int updateOrg(PageData pd) throws Exception {
+		return (Integer) dao.update("SDOrganizationMapper.updateOrg", pd);
+	}
+
+	public int deleteOrg(PageData pd) throws Exception {
+		return (Integer) dao.delete("SDOrganizationMapper.deleteOrg", pd);
+	}
+
+	public List<PageData> getFarmForMapping(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDOrganizationMapper.getFarmForMapping", pd);
+	}
+
+	public int setFarmMapping(PageData pd) throws Exception {
+		return (Integer) dao.update("SDOrganizationMapper.setFarmMapping", pd);
+	}
+
 }

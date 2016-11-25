@@ -28,6 +28,10 @@ public class MonitorServiceImpl implements MonitorService {
 		return (List<PageData>) dao.findForList("MonitorCurrMapper.selectByCondition", pd);
 	}
 
+	public PageData selectAlarmCounts(PageData pd) throws Exception{
+		return (PageData) dao.findForObject("MonitorCurrMapper.selectAlarmCounts", pd);
+	}
+
 	/**
 	 * 运行调度任务
 	 * @throws Exception

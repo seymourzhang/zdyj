@@ -52,6 +52,10 @@ public class AlarmAction extends BaseAction{
 		pd.put("code_type", "alarm_delay");
 		mv.addObject("pd",pd);
 		mv.addObject("alarm_delay",alarmService.selectSBCode(pd));
+		pd.put("code_type", "time");
+		Json j = new Json();
+		j.setObj(alarmService.selectSBCode(pd));
+		mv.addObject("hourList",j.getObj());
 		return mv;
 	}
 	
@@ -125,8 +129,8 @@ public class AlarmAction extends BaseAction{
         	pd.put("uid_num", tt);        	
 		List<PageData> pageData1 = alarmService.selectByCondition(pd);
 	    float set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
-			  high_alarm_negative_pressure1=0,high_alarm_negative_pressure3=0,
-			  low_alarm_negative_pressure1=0,low_alarm_negative_pressure3=0,
+	    	  set_lux1=0,set_lux3=0,high_lux1=0,high_lux3=0,
+			  low_lux1=0,low_lux3=0,
 			  set_co21=0,high_alarm_co21=0,set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 			  set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
@@ -179,33 +183,35 @@ public class AlarmAction extends BaseAction{
 			for(int i=0;i<pageData1.size();i++){
 				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i==0){
 					if(pageData1.size() != 1){
-						//高报负压2
-						high_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压2
-						low_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue();
+						//光照参考值2
+						set_lux3 = Float.valueOf(pageData1.get(i+1).get("set_lux").toString()).floatValue();
+						//光照上限制2
+						high_lux3 = Float.valueOf(pageData1.get(i+1).get("high_lux").toString()).floatValue();
+						//光照下限制2
+						low_lux3 = Float.valueOf(pageData1.get(i+1).get("low_lux").toString()).floatValue();
 					//uid_num
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
-					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
+					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
 					}
 					break;
 				}else 
 				if(pageData1.get(i).get("uid_num").toString().equals(pd.get("uid_num").toString()) && i>0 && i<pageData1.size()-1){					
 						//高报负压差2
-						high_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
+						high_lux1 = (Float.valueOf(pageData1.get(i+1).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
 						//高报负压2
-						high_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
+						high_lux3 = Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue();
 						//低报负压差2
-						low_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
+						low_lux1 = (Float.valueOf(pageData1.get(i+1).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
 						//低报负压2
-						low_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
+						low_lux3 = Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue();
 					//uid_num
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
-					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
-					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
+					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
+					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
 					break;
 				}
 			}
@@ -319,8 +325,9 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_temp", set_temp3+set_temp1*((i-day_age)*24+j));
 					pd5.put("high_alarm_temp",high_alarm_temp3+high_alarm_temp1*((i-day_age)*24+j));
 					pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age)*24+j));
-					pd5.put("high_alarm_negative_pressure",null);
-					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_lux",null);
+					pd5.put("high_lux",null);
+					pd5.put("low_lux",null);
 					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", null);
@@ -355,8 +362,12 @@ public class AlarmAction extends BaseAction{
 						pd5.put("set_temp", null);
 						pd5.put("high_alarm_temp",null);
 						pd5.put("low_alarm_temp",null);
-						pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age)*24+j));
-						pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age)*24+j));
+//						pd5.put("set_lux",set_lux3+set_lux1*((i-day_age)*24+j));
+//						pd5.put("high_lux",high_lux3+high_lux1*((i-day_age)*24+j));
+//						pd5.put("low_lux",low_lux3+low_lux1*((i-day_age)*24+j));
+						pd5.put("set_lux",set_lux3+set_lux1*((day_age2-1-day_age)*24+24));
+						pd5.put("high_lux",high_lux3+high_lux1*((day_age2-1-day_age)*24+24));
+						pd5.put("low_lux",low_lux3+low_lux1*((day_age2-1-day_age)*24+24));
 						pd5.put("set_co2",null);
 						pd5.put("high_alarm_co2",null);
 						pd5.put("set_water_deprivation", null);
@@ -391,8 +402,9 @@ public class AlarmAction extends BaseAction{
 						pd5.put("set_temp", null);
 						pd5.put("high_alarm_temp",null);
 						pd5.put("low_alarm_temp",null);
-						pd5.put("high_alarm_negative_pressure",null);
-						pd5.put("low_alarm_negative_pressure",null);
+						pd5.put("set_lux",null);
+						pd5.put("high_lux",null);
+						pd5.put("low_lux",null);
 						pd5.put("set_co2",set_co23+set_co21*((i-day_age)*24+j));
 						pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age)*24+j));
 						pd5.put("set_water_deprivation", null);
@@ -427,8 +439,9 @@ public class AlarmAction extends BaseAction{
 						pd5.put("set_temp", null);
 						pd5.put("high_alarm_temp",null);
 						pd5.put("low_alarm_temp",null);
-						pd5.put("high_alarm_negative_pressure",null);
-						pd5.put("low_alarm_negative_pressure",null);
+						pd5.put("set_lux",null);
+						pd5.put("high_lux",null);
+						pd5.put("low_lux",null);
 						pd5.put("set_co2",null);
 						pd5.put("high_alarm_co2",null);
 						pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age)*24+j));
@@ -511,7 +524,17 @@ public class AlarmAction extends BaseAction{
     	 	float low_alarm_temp = Float.parseFloat(alarmSet2[6]);
     	 	pd1.put("low_alarm_temp", low_alarm_temp);
     	}else if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==2){
-    		
+    		pd1.put("day_age", dayage*7);
+    		float set_lux = Float.parseFloat(alarmSet2[4]);
+    	 	pd1.put("set_lux", set_lux);
+    	 	float high_lux = Float.parseFloat(alarmSet2[5]);
+    	 	pd1.put("high_lux", high_lux);
+    	 	float low_lux = Float.parseFloat(alarmSet2[6]);
+    	 	pd1.put("low_lux", low_lux);
+    	 	String start_time = alarmSet2[7];
+    	 	pd1.put("start_time", start_time);
+    	 	String end_time = alarmSet2[8];
+    	 	pd1.put("end_time", end_time);
     	}else if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==3){
     		float set_co2 = Float.parseFloat(alarmSet2[4]);
     	 	pd1.put("set_co2", set_co2);
@@ -531,8 +554,8 @@ public class AlarmAction extends BaseAction{
 	    List<PageData> pageData1 = alarmService.selectByCondition(pd);
 	    float set_temp=0,high_alarm_temp=0,low_alarm_temp=0,set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp2=0,high_alarm_temp2=0,low_alarm_temp2=0,
 				set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
-			  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
-			  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
+			  set_lux=0,high_lux=0,set_lux1=0,high_lux1=0,set_lux2=0,high_lux2=0,set_lux3=0,high_lux3=0,
+			  low_lux=0,low_lux1=0,low_lux2=0,low_lux3=0,
 			  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,			  
 			  set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
@@ -662,18 +685,24 @@ public class AlarmAction extends BaseAction{
 //					(Float.valueOf(pd.get("day_age").toString()).floatValue()*24);
 					//目标负压1
 //					set_negative_pressure2 = Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue();
-					//高报负压差1
-					high_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-							Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
+					//光照参照值差1
+					set_lux = (Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue())/
 					(Float.valueOf(pd.get("day_age").toString()).floatValue()*24);
-					//高报负压1
-					high_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-					//低报负压差1
-					low_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-							Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
+					//光照参照值1
+					set_lux2 = Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue();
+					//光照上限制差1
+					high_lux = (Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue())/
 					(Float.valueOf(pd.get("day_age").toString()).floatValue()*24);
-					//低报负压
-					low_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+					//光照上限制1
+					high_lux2 = Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue();
+					//光照下限制差1
+					low_lux = (Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue())/
+					(Float.valueOf(pd.get("day_age").toString()).floatValue()*24);
+					//光照下限制
+					low_lux2 = Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue();
 					 if(pageData1.size()!=1){
 						//目标负压差2
 //						set_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
@@ -681,21 +710,27 @@ public class AlarmAction extends BaseAction{
 //						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标负压2
 //						set_negative_pressure3 = Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差2
-						high_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//高报负压2
-						high_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差2
-						low_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//低报负压
-						low_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+						//光照参照值差2
+						 set_lux1 = (Float.valueOf(pageData1.get(i+1).get("set_lux").toString()).floatValue() - 
+									Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue())/
+							((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+							//光照参照值2
+							set_lux3 = Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue();
+						//光照上限制差2
+						high_lux1 = (Float.valueOf(pageData1.get(i+1).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照上限制2
+						high_lux3 = Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue();
+						//光照下限制差2
+						low_lux1 = (Float.valueOf(pageData1.get(i+1).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照下限制
+						low_lux3 = Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue();
 					//uid_num
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
-					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
+					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
 					 }
 					break;
 				}else 
@@ -706,18 +741,24 @@ public class AlarmAction extends BaseAction{
 //						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标负压1
 //						set_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差1
-						high_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//高报负压1
-						high_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差1
-						low_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//低报负压1
-						low_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
+					//光照参照值差1
+					set_lux = (Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue())/
+					((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+					//光照参照值1
+					set_lux2 = Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue();
+						//光照上限制差1
+						high_lux = (Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照上限制1
+						high_lux2 = Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue();
+						//光照下限制差1
+						low_lux = (Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照下限制1
+						low_lux2 = Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue();
 
 						//目标负压差2	
 //						set_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
@@ -725,22 +766,28 @@ public class AlarmAction extends BaseAction{
 //						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标负压2
 //						set_negative_pressure3 = Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差2
-						high_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//高报负压2
-						high_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差2
-						low_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//低报负压2
-						low_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+						//光照参照值差2
+						set_lux1 = (Float.valueOf(pageData1.get(i+1).get("set_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照参照值2
+						set_lux3 = Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue();
+						//光照上限制差2
+						high_lux1 = (Float.valueOf(pageData1.get(i+1).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照上限制2
+						high_lux3 = Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue();
+						//光照下限制差2
+						low_lux1 = (Float.valueOf(pageData1.get(i+1).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照下限制2
+						low_lux3 = Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue();
 					//uid_num
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
-					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
-					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
+					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
+					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
 					break;
 				}else if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==pageData1.size()-1){
 						//目标负压差
@@ -749,19 +796,25 @@ public class AlarmAction extends BaseAction{
 //						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标负压
 //						set_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差
-						high_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//高报负压
-						high_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差
-						low_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//低报负压
-						low_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
-						day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
+					//光照参照值差
+					set_lux = (Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue())/
+					((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+					//光照参照值
+					set_lux2 = Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue();
+						//光照上限制差
+						high_lux = (Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照上限制
+						high_lux2 = Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue();
+						//光照下限制差
+						low_lux = (Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照下限制
+						low_lux2 = Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue();
+						day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
 					break;
 				}
 			}
@@ -1023,8 +1076,9 @@ public class AlarmAction extends BaseAction{
 					pd4.put("set_temp", set_temp2+set_temp*((i-day_age)*24+j));
 					pd4.put("high_alarm_temp",high_alarm_temp2+high_alarm_temp*((i-day_age)*24+j));
 					pd4.put("low_alarm_temp",low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
-					pd4.put("high_alarm_negative_pressure",null);
-					pd4.put("low_alarm_negative_pressure",null);
+					pd4.put("set_lux",null);
+					pd4.put("high_lux",null);
+					pd4.put("low_lux",null);
 					pd4.put("set_co2",null);
 					pd4.put("high_alarm_co2",null);
 					pd4.put("set_water_deprivation", null);
@@ -1059,8 +1113,12 @@ public class AlarmAction extends BaseAction{
 					pd4.put("high_alarm_temp",null);
 					pd4.put("low_alarm_temp",null);
 //					pd3.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*(i+1));
-					pd4.put("high_alarm_negative_pressure",high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
-					pd4.put("low_alarm_negative_pressure",low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+//					pd4.put("set_lux",set_lux2+set_lux*((i-day_age)*24+j));
+//					pd4.put("high_lux",high_lux2+high_lux*((i-day_age)*24+j));
+//					pd4.put("low_lux",low_lux2+low_lux*((i-day_age)*24+j));
+					pd4.put("set_lux",set_lux2+set_lux*((Integer.valueOf(pd.get("day_age").toString()).intValue()-1-day_age)*24+24));
+					pd4.put("high_lux",high_lux2+high_lux*((Integer.valueOf(pd.get("day_age").toString()).intValue()-1-day_age)*24+24));
+					pd4.put("low_lux",low_lux2+low_lux*((Integer.valueOf(pd.get("day_age").toString()).intValue()-1-day_age)*24+24));
 					pd4.put("set_co2",null);
 					pd4.put("high_alarm_co2",null);
 					pd4.put("set_water_deprivation", null);
@@ -1094,8 +1152,9 @@ public class AlarmAction extends BaseAction{
 					pd4.put("set_temp", null);
 					pd4.put("high_alarm_temp",null);
 					pd4.put("low_alarm_temp",null);
-					pd4.put("high_alarm_negative_pressure",null);
-					pd4.put("low_alarm_negative_pressure",null);
+					pd4.put("set_lux",null);
+					pd4.put("high_lux",null);
+					pd4.put("low_lux",null);
 					pd4.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 					pd4.put("high_alarm_co2",high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //					pd3.put("low_alarm_co2",low_alarm_co22+low_alarm_co2*(i+1));
@@ -1130,8 +1189,9 @@ public class AlarmAction extends BaseAction{
 					pd4.put("set_temp", null);
 					pd4.put("high_alarm_temp",null);
 					pd4.put("low_alarm_temp",null);
-					pd4.put("high_alarm_negative_pressure",null);
-					pd4.put("low_alarm_negative_pressure",null);
+					pd4.put("set_lux",null);
+					pd4.put("high_lux",null);
+					pd4.put("low_lux",null);
 					pd4.put("set_co2",null);
 					pd4.put("high_alarm_co2",null);
 					pd4.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
@@ -1143,7 +1203,7 @@ public class AlarmAction extends BaseAction{
 				alarmService.saveSBDayageTempSub(list);
 			}
 			
-			if(set_temp3 != 0 || high_alarm_negative_pressure3 != 0 || high_alarm_co23 != 0 || set_water_deprivation3 != 0){
+			if(set_temp3 != 0 || high_lux3 != 0 || high_alarm_co23 != 0 || set_water_deprivation3 != 0){
 				int day_age3 = Integer.valueOf(pd.get("day_age").toString()).intValue();
 				PageData pd5 = new PageData();
 				pd5.put("uid_num",uid_num);
@@ -1175,8 +1235,9 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("set_temp", set_temp3+set_temp1*((i-day_age3)*24+j));
 						   pd6.put("high_alarm_temp",high_alarm_temp3+high_alarm_temp1*((i-day_age3)*24+j));
 						   pd6.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age3)*24+j));
-						   pd6.put("high_alarm_negative_pressure",null);
-						   pd6.put("low_alarm_negative_pressure",null);
+						   pd6.put("set_lux",null);
+						   pd6.put("high_lux",null);
+						   pd6.put("low_lux",null);
 						   pd6.put("set_co2",null);
 						   pd6.put("high_alarm_co2",null);
 						   pd6.put("set_water_deprivation", null);
@@ -1211,8 +1272,12 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("high_alarm_temp",null);
 						   pd6.put("low_alarm_temp",null);
 //							pd4.put("set_negative_pressure", set_negative_pressure3+set_negative_pressure1*(i+1));
-						   pd6.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age3)*24+j));
-						   pd6.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age3)*24+j));
+//						   pd6.put("set_lux",set_lux3+set_lux1*((i-day_age3)*24+j));
+//						   pd6.put("high_lux",high_lux3+high_lux1*((i-day_age3)*24+j));
+//						   pd6.put("low_lux",low_lux3+low_lux1*((i-day_age3)*24+j));
+						   pd6.put("set_lux",set_lux3+set_lux1*((day_age2-1-day_age3)*24+24));
+						   pd6.put("high_lux",high_lux3+high_lux1*((day_age2-1-day_age3)*24+24));
+						   pd6.put("low_lux",low_lux3+low_lux1*((day_age2-1-day_age3)*24+24));
 						   pd6.put("set_co2",null);
 						   pd6.put("high_alarm_co2",null);
 						   pd6.put("set_water_deprivation", null);
@@ -1246,8 +1311,9 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("set_temp", null);
 						   pd6.put("high_alarm_temp",null);
 						   pd6.put("low_alarm_temp",null);
-						   pd6.put("high_alarm_negative_pressure",null);
-						   pd6.put("low_alarm_negative_pressure",null);
+						   pd6.put("set_lux",null);
+						   pd6.put("high_lux",null);
+						   pd6.put("low_lux",null);
 						   pd6.put("set_co2", set_co23+set_co21*((i-day_age3)*24+j));
 						   pd6.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age3)*24+j));
 //							pd4.put("low_alarm_co2",low_alarm_co23+low_alarm_co21*(i+1));
@@ -1282,8 +1348,9 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("set_temp", null);
 						   pd6.put("high_alarm_temp",null);
 						   pd6.put("low_alarm_temp",null);
-						   pd6.put("high_alarm_negative_pressure",null);
-						   pd6.put("low_alarm_negative_pressure",null);
+						   pd6.put("set_lux",null);
+						   pd6.put("high_lux",null);
+						   pd6.put("low_lux",null);
 						   pd6.put("set_co2",null);
 						   pd6.put("high_alarm_co2",null);
 						   pd6.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));
@@ -1315,6 +1382,9 @@ public class AlarmAction extends BaseAction{
 		Json j2=new Json();
 		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
 		PageData pd = this.getPageData();
+		if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2){
+			pd.put("day_age", Integer.valueOf(pd.get("day_age").toString()).intValue()*7);
+		}
 		List<PageData> pageData5 = alarmService.selectByCondition3(pd);//主要条件：农场、栋舍、日龄
 		int pdID =0;
 		if(pageData5.size()==0){
@@ -1337,8 +1407,8 @@ public class AlarmAction extends BaseAction{
 
 		float set_temp=0,high_alarm_temp=0,low_alarm_temp=0,set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp2=0,high_alarm_temp2=0,low_alarm_temp2=0,
 			  set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
-			  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
-			  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
+			  set_lux=0,high_lux=0,set_lux1=0,high_lux1=0,set_lux2=0,high_lux2=0,set_lux3=0,high_lux3=0,
+			  low_lux=0,low_lux1=0,low_lux2=0,low_lux3=0,
 			  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,
 			  set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
@@ -1462,15 +1532,18 @@ public class AlarmAction extends BaseAction{
 		}else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2){
 			//计算负压差、基值
 			for(int i=0;i<pageData1.size();i++){
+				int d =Integer.valueOf(pageData1.get(i).get("day_age").toString()).intValue()*7;
 				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+						d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i==0){
 					//目标负压1
 //					set_negative_pressure2 = Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue();
-					//高报负压1
-					high_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-					//低报负压1
-					low_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+					//光照参照值1
+					set_lux2 = Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue();
+					//光照上限制1
+					high_lux2 = Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue();
+					//光照下限制1
+					low_lux2 = Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue();
 					if(pageData1.size()!=1){	
 						//目标负压差2
 //						set_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
@@ -1478,92 +1551,116 @@ public class AlarmAction extends BaseAction{
 //						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标负压2
 //						set_negative_pressure3 = Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差2
-						high_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//高报负压2
-						high_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差2
-						low_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//低报负压2
-						low_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+						//光照参照值差2
+						set_lux1 = (Float.valueOf(pageData1.get(i+1).get("set_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照参照值2
+						set_lux3 = Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue();
+						//光照上限制差2
+						high_lux1 = (Float.valueOf(pageData1.get(i+1).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照上限制2
+						high_lux3 = Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue();
+						//光照下限制差2
+						low_lux1 = (Float.valueOf(pageData1.get(i+1).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照下限制2
+						low_lux3 = Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue();
 						//uid_num
 						uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
-						day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
+						day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
 					}					
 					break;
 				}else 
 				if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData1.size()-1){
+						d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i>0 && i<pageData1.size()-1){
 						//目标负压差1
 //						set_negative_pressure = (Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //								Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue())/
 //						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标负压1
 //						set_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差1
-						high_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//高报负压1
-						high_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差1
-						low_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//低报负压1
-						low_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
+					//光照参照值差1
+					set_lux = (Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue())/
+					((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+					//光照参照值1
+					set_lux2 = Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue();
+						//光照上限制差1
+						high_lux = (Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照上限制1
+						high_lux2 = Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue();
+						//光照下限制差1
+						low_lux = (Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照下限制1
+						low_lux2 = Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue();
 						//目标负压差2	
 //						set_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
 //								Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue())/
 //						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 						//目标负压2
 //						set_negative_pressure3 = Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差2
-						high_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//高报负压2
-						high_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差2
-						low_alarm_negative_pressure1 = (Float.valueOf(pageData1.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-						//低报负压2
-						low_alarm_negative_pressure3 = Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+						//光照参照值差2
+						set_lux1 = (Float.valueOf(pageData1.get(i+1).get("set_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照参照值2
+						set_lux3 = Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue();
+						//光照上限制差2
+						high_lux1 = (Float.valueOf(pageData1.get(i+1).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照上限制2
+						high_lux3 = Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue();
+						//光照下限制差2
+						low_lux1 = (Float.valueOf(pageData1.get(i+1).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pageData1.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+						//光照下限制2
+						low_lux3 = Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue();
 					//uid_num
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
-					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue();
+					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
 					//日龄
-					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
+					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
 					break;
 				}else if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-								pageData1.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData1.size()-1){
+						d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i==pageData1.size()-1){
 						//目标负压差
 //						set_negative_pressure = (Float.valueOf(pageData1.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //								Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue())/
 //						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
 						//目标负压
 //						set_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("set_negative_pressure").toString()).floatValue();
-						//高报负压差
-						high_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//高报负压
-						high_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-						//低报负压差
-						low_alarm_negative_pressure = (Float.valueOf(pageData1.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-								Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue())*24);
-						//低报负压
-						low_alarm_negative_pressure2 = Float.valueOf(pageData1.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
+					//光照参照值差
+					set_lux = (Float.valueOf(pageData1.get(i).get("set_lux").toString()).floatValue() - 
+							Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue())/
+					((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+					//光照参照值
+					set_lux2 = Float.valueOf(pageData1.get(i-1).get("set_lux").toString()).floatValue();
+						//光照上限制差
+						high_lux = (Float.valueOf(pageData1.get(i).get("high_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照上限制
+						high_lux2 = Float.valueOf(pageData1.get(i-1).get("high_lux").toString()).floatValue();
+						//光照下限制差
+						low_lux = (Float.valueOf(pageData1.get(i).get("low_lux").toString()).floatValue() - 
+								Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue())/
+						((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData1.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+						//光照下限制
+						low_lux2 = Float.valueOf(pageData1.get(i-1).get("low_lux").toString()).floatValue();
 					//日龄
-					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue();
+					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
 					break;
 				}
 			}
@@ -1816,8 +1913,9 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("set_temp", set_temp2+set_temp*((i-day_age)*24+j));
 				    	pd3.put("high_alarm_temp", high_alarm_temp2+high_alarm_temp*((i-day_age)*24+j));
 				    	pd3.put("low_alarm_temp", low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
-				    	pd3.put("high_alarm_negative_pressure", null);
-				    	pd3.put("low_alarm_negative_pressure", null);
+				    	pd3.put("set_lux", null);
+				    	pd3.put("high_lux", null);
+				    	pd3.put("low_lux", null);
 				    	pd3.put("set_co2", null);
 				    	pd3.put("high_alarm_co2", null);
 				    	pd3.put("set_water_deprivation", null);
@@ -1853,8 +1951,12 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("high_alarm_temp", null);
 				    	pd3.put("low_alarm_temp", null);
 //				    	pd2.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*((i+1-day_age)*j));
-				    	pd3.put("high_alarm_negative_pressure", high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
-				    	pd3.put("low_alarm_negative_pressure", low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+//				    	pd3.put("set_lux", set_lux2+set_lux*((i-day_age)*24+j));
+//				    	pd3.put("high_lux", high_lux2+high_lux*((i-day_age)*24+j));
+//				    	pd3.put("low_lux", low_lux2+low_lux*((i-day_age)*24+j));
+				    	pd3.put("set_lux", set_lux2+set_lux*((Integer.valueOf(pd.get("day_age").toString()).intValue()-1-day_age)*24+24));
+				    	pd3.put("high_lux", high_lux2+high_lux*((Integer.valueOf(pd.get("day_age").toString()).intValue()-1-day_age)*24+24));
+				    	pd3.put("low_lux", low_lux2+low_lux*((Integer.valueOf(pd.get("day_age").toString()).intValue()-1-day_age)*24+24));
 				    	pd3.put("set_co2", null);
 				    	pd3.put("high_alarm_co2", null);
 				    	pd3.put("set_water_deprivation", null);
@@ -1889,8 +1991,9 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("set_temp", null);
 				    	pd3.put("high_alarm_temp", null);
 				    	pd3.put("low_alarm_temp", null);
-				    	pd3.put("high_alarm_negative_pressure", null);
-				    	pd3.put("low_alarm_negative_pressure", null);
+				    	pd3.put("set_lux", null);
+				    	pd3.put("high_lux", null);
+				    	pd3.put("low_lux", null);
 				    	pd3.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 				    	pd3.put("high_alarm_co2", high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //				    	pd2.put("low_alarm_co2", low_alarm_co22+low_alarm_co2*((i+1-day_age)*j));
@@ -1926,8 +2029,9 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("set_temp", null);
 				    	pd3.put("high_alarm_temp", null);
 				    	pd3.put("low_alarm_temp", null);
-				    	pd3.put("high_alarm_negative_pressure", null);
-				    	pd3.put("low_alarm_negative_pressure", null);
+				    	pd3.put("set_lux", null);
+				    	pd3.put("high_lux", null);
+				    	pd3.put("low_lux", null);
 				    	pd3.put("set_co2", null);
 				    	pd3.put("high_alarm_co2", null);
 				    	pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
@@ -1940,7 +2044,7 @@ public class AlarmAction extends BaseAction{
 				alarmService.saveSBDayageTempSub(list);
 			}
 
-		if(set_temp3 != 0 || high_alarm_negative_pressure3 != 0 || high_alarm_co23 != 0 || set_water_deprivation3 != 0){
+		if(set_temp3 != 0 || high_lux3 != 0 || high_alarm_co23 != 0 || set_water_deprivation3 != 0){
 		   PageData pd4 = new PageData();
 		   pd4.put("uid_num",uid_num);
 		   pd4.put("alarm_type", pd.get("alarm_type"));
@@ -1972,8 +2076,9 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_temp", set_temp3+set_temp1*((i-day_age3)*24+j));
 					pd5.put("high_alarm_temp",high_alarm_temp3+high_alarm_temp1*((i-day_age3)*24+j));
 					pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age3)*24+j));
-					pd5.put("high_alarm_negative_pressure",null);
-					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_lux",null);
+					pd5.put("high_lux",null);
+					pd5.put("low_lux",null);
 					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", null);
@@ -2009,8 +2114,12 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_temp", null);
 					pd5.put("high_alarm_temp",null);
 					pd5.put("low_alarm_temp",null);
-					pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age3)*24+j));
-					pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age3)*24+j));
+//					pd5.put("set_lux",set_lux3+set_lux1*((i-day_age3)*24+j));
+//					pd5.put("high_lux",high_lux3+high_lux1*((i-day_age3)*24+j));
+//					pd5.put("low_lux",low_lux3+low_lux1*((i-day_age3)*24+j));
+					pd5.put("set_lux",set_lux3+set_lux1*((day_age2-1-day_age3)*24+24));
+					pd5.put("high_lux",high_lux3+high_lux1*((day_age2-1-day_age3)*24+24));
+					pd5.put("low_lux",low_lux3+low_lux1*((day_age2-1-day_age3)*24+24));
 					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", null);
@@ -2046,8 +2155,9 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_temp", null);
 					pd5.put("high_alarm_temp",null);
 					pd5.put("low_alarm_temp",null);
-					pd5.put("high_alarm_negative_pressure",null);
-					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_lux",null);
+					pd5.put("high_lux",null);
+					pd5.put("low_lux",null);
 					pd5.put("set_co2",set_co23+set_co21*((i-day_age3)*24+j));
 					pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age3)*24+j));
 					pd5.put("set_water_deprivation", null);
@@ -2083,8 +2193,9 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_temp", null);
 					pd5.put("high_alarm_temp",null);
 					pd5.put("low_alarm_temp",null);
-					pd5.put("high_alarm_negative_pressure",null);
-					pd5.put("low_alarm_negative_pressure",null);
+					pd5.put("set_lux",null);
+					pd5.put("high_lux",null);
+					pd5.put("low_lux",null);
 					pd5.put("set_co2",null);
 					pd5.put("high_alarm_co2",null);
 					pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));
@@ -2432,13 +2543,16 @@ public class AlarmAction extends BaseAction{
 			int g=0;
 			int pdID=0;
 			pd.put("houseId", pd.get("houseId2"));
-			pd.put("day_age", pageData1.get("day_age"));
+			pd.put("day_age", Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7);
 			pd.put("set_temp", pageData1.get("set_temp"));
 			pd.put("high_alarm_temp", pageData1.get("high_alarm_temp"));
 			pd.put("low_alarm_temp", pageData1.get("low_alarm_temp"));
 //			pd.put("set_negative_pressure", pageData1.get("set_negative_pressure"));
-			pd.put("high_alarm_negative_pressure", pageData1.get("high_alarm_negative_pressure"));
-			pd.put("low_alarm_negative_pressure", pageData1.get("low_alarm_negative_pressure"));
+			pd.put("set_lux", pageData1.get("set_lux"));
+			pd.put("high_lux", pageData1.get("high_lux"));
+			pd.put("low_lux", pageData1.get("low_lux"));
+			pd.put("start_time", pageData1.get("start_time"));
+			pd.put("end_time", pageData1.get("end_time"));
 			pd.put("set_co2", pageData1.get("set_co2"));
 			pd.put("high_alarm_co2", pageData1.get("high_alarm_co2"));
 //			pd.put("low_alarm_co2", pageData1.get("low_alarm_co2"));
@@ -2453,7 +2567,7 @@ public class AlarmAction extends BaseAction{
 			pd.put("modify_time", new Date());	
 			
 			for(PageData pageData3 : pageData2){			
-				if(pageData1.get("day_age").toString().equals(pageData3.get("day_age").toString())){
+				if(Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7 == Integer.valueOf(pageData3.get("day_age").toString()).intValue()){
 					g++;					
 				    pdID = Integer.valueOf(pageData3.get("uid_num").toString()).intValue();
 					pd.put("uid_num", pdID);
@@ -2462,8 +2576,8 @@ public class AlarmAction extends BaseAction{
 			        
 					float set_temp=0,high_alarm_temp=0,low_alarm_temp=0,set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp2=0,high_alarm_temp2=0,low_alarm_temp2=0,
 							set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
-						  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
-						  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
+						  set_lux=0,high_lux=0,set_lux1=0,high_lux1=0,set_lux2=0,high_lux2=0,set_lux3=0,high_lux3=0,
+						  low_lux=0,low_lux1=0,low_lux2=0,low_lux3=0,
 						  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,
 						  set_co23=0,high_alarm_co23=0,
 						  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
@@ -2582,15 +2696,18 @@ public class AlarmAction extends BaseAction{
 					}else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2){
 						//计算负压差、基值
 						for(int i=0;i<pageData5.size();i++){
+							int d =Integer.valueOf(pageData5.get(i).get("day_age").toString()).intValue()*7;
 							if(pageData5.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 									pageData5.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-											pageData5.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+									d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i==0){
 								//目标负压1
 //								set_negative_pressure2 = Float.valueOf(pageData5.get(i).get("set_negative_pressure").toString()).floatValue();
-								//高报负压1
-								high_alarm_negative_pressure2 = Float.valueOf(pageData5.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-								//低报负压
-								low_alarm_negative_pressure2 = Float.valueOf(pageData5.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+								//光照参照值1
+								set_lux2 = Float.valueOf(pageData5.get(i).get("set_lux").toString()).floatValue();
+								//光照上限制1
+								high_lux2 = Float.valueOf(pageData5.get(i).get("high_lux").toString()).floatValue();
+								//光照下限制
+								low_lux2 = Float.valueOf(pageData5.get(i).get("low_lux").toString()).floatValue();
 								if(pageData5.size()!=1){	
 									//目标负压差2
 //									set_negative_pressure1 = (Float.valueOf(pageData5.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
@@ -2598,90 +2715,114 @@ public class AlarmAction extends BaseAction{
 //									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 									//目标负压2
 //									set_negative_pressure3 = Float.valueOf(pageData5.get(i).get("set_negative_pressure").toString()).floatValue();
-									//高报负压差2
-									high_alarm_negative_pressure1 = (Float.valueOf(pageData5.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-									//高报负压2
-									high_alarm_negative_pressure3 = Float.valueOf(pageData5.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-									//低报负压差2
-									low_alarm_negative_pressure1 = (Float.valueOf(pageData5.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-									//低报负压
-									low_alarm_negative_pressure3 = Float.valueOf(pageData5.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+									//光照参照值差2
+									set_lux1 = (Float.valueOf(pageData5.get(i+1).get("set_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("set_lux").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									//光照参照值2
+									set_lux3 = Float.valueOf(pageData5.get(i).get("set_lux").toString()).floatValue();
+									//光照上限制差2
+									high_lux1 = (Float.valueOf(pageData5.get(i+1).get("high_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("high_lux").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									//光照上限制2
+									high_lux3 = Float.valueOf(pageData5.get(i).get("high_lux").toString()).floatValue();
+									//光照下限制差2
+									low_lux1 = (Float.valueOf(pageData5.get(i+1).get("low_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("low_lux").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									//光照下限制
+									low_lux3 = Float.valueOf(pageData5.get(i).get("low_lux").toString()).floatValue();
 									//uid_num
 									uid_num = Integer.valueOf(pageData5.get(i+1).get("uid_num").toString()).intValue();
-									day_age2 = Integer.valueOf(pageData5.get(i+1).get("day_age").toString()).intValue();
+									day_age2 = Integer.valueOf(pageData5.get(i+1).get("day_age").toString()).intValue()*7;
 								}					
 								break;
 							}else 
 							if(pageData5.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 									pageData5.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-											pageData5.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData5.size()-1){
+									d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i>0 && i<pageData5.size()-1){
 									//目标负压差1
 //									set_negative_pressure = (Float.valueOf(pageData5.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //											Float.valueOf(pageData5.get(i-1).get("set_negative_pressure").toString()).floatValue())/
 //									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
 									//目标负压1
 //									set_negative_pressure2 = Float.valueOf(pageData5.get(i-1).get("set_negative_pressure").toString()).floatValue();
-									//高报负压差1
-									high_alarm_negative_pressure = (Float.valueOf(pageData5.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
-									//高报负压1
-									high_alarm_negative_pressure2 = Float.valueOf(pageData5.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-									//低报负压差1
-									low_alarm_negative_pressure = (Float.valueOf(pageData5.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
-									//低报负压1
-									low_alarm_negative_pressure2 = Float.valueOf(pageData5.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
+								//光照参照值差1
+								set_lux = (Float.valueOf(pageData5.get(i).get("set_lux").toString()).floatValue() - 
+										Float.valueOf(pageData5.get(i-1).get("set_lux").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+								//光照参照值1
+								set_lux2 = Float.valueOf(pageData5.get(i-1).get("set_lux").toString()).floatValue();
+									//光照上限制差1
+									high_lux = (Float.valueOf(pageData5.get(i).get("high_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i-1).get("high_lux").toString()).floatValue())/
+									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+									//光照上限制1
+									high_lux2 = Float.valueOf(pageData5.get(i-1).get("high_lux").toString()).floatValue();
+									//光照下限制差1
+									low_lux = (Float.valueOf(pageData5.get(i).get("low_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i-1).get("low_lux").toString()).floatValue())/
+									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+									//光照下限制1
+									low_lux2 = Float.valueOf(pageData5.get(i-1).get("low_lux").toString()).floatValue();
 									//目标负压差2	
 //									set_negative_pressure1 = (Float.valueOf(pageData5.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
 //											Float.valueOf(pageData5.get(i).get("set_negative_pressure").toString()).floatValue())/
 //									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 									//目标负压2
 //									set_negative_pressure3 = Float.valueOf(pageData5.get(i).get("set_negative_pressure").toString()).floatValue();
-									//高报负压差2
-									high_alarm_negative_pressure1 = (Float.valueOf(pageData5.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-									//高报负压2
-									high_alarm_negative_pressure3 = Float.valueOf(pageData5.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-									//低报负压差2
-									low_alarm_negative_pressure1 = (Float.valueOf(pageData5.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-									//低报负压2
-									low_alarm_negative_pressure3 = Float.valueOf(pageData5.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+									//光照参照值差2
+									set_lux1 = (Float.valueOf(pageData5.get(i+1).get("set_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("set_lux").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									//光照参照值2
+									set_lux3 = Float.valueOf(pageData5.get(i).get("set_lux").toString()).floatValue();
+									//光照上限制差2
+									high_lux1 = (Float.valueOf(pageData5.get(i+1).get("high_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("high_lux").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									//光照上限制2
+									high_lux3 = Float.valueOf(pageData5.get(i).get("high_lux").toString()).floatValue();
+									//光照下限制差2
+									low_lux1 = (Float.valueOf(pageData5.get(i+1).get("low_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i).get("low_lux").toString()).floatValue())/
+									((Float.valueOf(pageData5.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+									//光照下限制2
+									low_lux3 = Float.valueOf(pageData5.get(i).get("low_lux").toString()).floatValue();
 								//uid_num
 								uid_num = Integer.valueOf(pageData5.get(i+1).get("uid_num").toString()).intValue();
-								day_age2 = Integer.valueOf(pageData5.get(i+1).get("day_age").toString()).intValue();
-								day_age = Integer.valueOf(pageData5.get(i-1).get("day_age").toString()).intValue();
+								day_age2 = Integer.valueOf(pageData5.get(i+1).get("day_age").toString()).intValue()*7;
+								day_age = Integer.valueOf(pageData5.get(i-1).get("day_age").toString()).intValue()*7;
 								break;
 							}else if(pageData5.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 									pageData5.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-											pageData5.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData5.size()-1){
+									d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i==pageData5.size()-1){
 									//目标负压差
 //									set_negative_pressure = (Float.valueOf(pageData5.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //											Float.valueOf(pageData5.get(i-1).get("set_negative_pressure").toString()).floatValue())/
 //									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
 									//目标负压
 //									set_negative_pressure2 = Float.valueOf(pageData5.get(i-1).get("set_negative_pressure").toString()).floatValue();
-									//高报负压差
-									high_alarm_negative_pressure = (Float.valueOf(pageData5.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
-									//高报负压
-									high_alarm_negative_pressure2 = Float.valueOf(pageData5.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-									//低报负压差
-									low_alarm_negative_pressure = (Float.valueOf(pageData5.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-											Float.valueOf(pageData5.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue())*24);
-									//低报负压
-									low_alarm_negative_pressure2 = Float.valueOf(pageData5.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
-									day_age = Integer.valueOf(pageData5.get(i-1).get("day_age").toString()).intValue();
+								//光照参照值差
+								set_lux = (Float.valueOf(pageData5.get(i).get("set_lux").toString()).floatValue() - 
+										Float.valueOf(pageData5.get(i-1).get("set_lux").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+								//光照参照值
+								set_lux2 = Float.valueOf(pageData5.get(i-1).get("set_lux").toString()).floatValue();
+									//光照上限制差
+									high_lux = (Float.valueOf(pageData5.get(i).get("high_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i-1).get("high_lux").toString()).floatValue())/
+									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+									//光照上限制
+									high_lux2 = Float.valueOf(pageData5.get(i-1).get("high_lux").toString()).floatValue();
+									//光照下限制差
+									low_lux = (Float.valueOf(pageData5.get(i).get("low_lux").toString()).floatValue() - 
+											Float.valueOf(pageData5.get(i-1).get("low_lux").toString()).floatValue())/
+									((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData5.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+									//光照下限制
+									low_lux2 = Float.valueOf(pageData5.get(i-1).get("low_lux").toString()).floatValue();
+									day_age = Integer.valueOf(pageData5.get(i-1).get("day_age").toString()).intValue()*7;
 								break;
 							}
 						}
@@ -2899,7 +3040,7 @@ public class AlarmAction extends BaseAction{
 						}
 					}
 					
-					int day_age3 = Integer.valueOf(pageData1.get("day_age").toString()).intValue();
+					int day_age3 = Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7;
 					
 			    	List<PageData> list = new ArrayList<PageData>();
 //					List<PageData> pageData6 = alarmService.selectSBDayageTempSubByCondition(pd3);
@@ -2927,8 +3068,9 @@ public class AlarmAction extends BaseAction{
 							pd3.put("set_temp", set_temp2+set_temp*((i-day_age)*24+j));
 							pd3.put("high_alarm_temp",high_alarm_temp2+high_alarm_temp*((i-day_age)*24+j));
 							pd3.put("low_alarm_temp",low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
-							pd3.put("high_alarm_negative_pressure",null);
-							pd3.put("low_alarm_negative_pressure",null);
+							pd3.put("set_lux",null);
+							pd3.put("high_lux",null);
+							pd3.put("low_lux",null);
 							pd3.put("set_co2",null);
 							pd3.put("high_alarm_co2",null);
 							pd3.put("set_water_deprivation", null);
@@ -2964,8 +3106,12 @@ public class AlarmAction extends BaseAction{
 								pd3.put("high_alarm_temp",null);
 								pd3.put("low_alarm_temp",null);
 //							pd3.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*(i+1));
-							pd3.put("high_alarm_negative_pressure",high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
-							pd3.put("low_alarm_negative_pressure",low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+//							pd3.put("set_lux",set_lux2+set_lux*((i-day_age)*24+j));	
+//							pd3.put("high_lux",high_lux2+high_lux*((i-day_age)*24+j));
+//							pd3.put("low_lux",low_lux2+low_lux*((i-day_age)*24+j));
+								pd3.put("set_lux",set_lux2+set_lux*((day_age3-1-day_age)*24+24));	
+								pd3.put("high_lux",high_lux2+high_lux*((day_age3-1-day_age)*24+24));
+								pd3.put("low_lux",low_lux2+low_lux*((day_age3-1-day_age)*24+24));
 							pd3.put("set_co2",null);
 							pd3.put("high_alarm_co2",null);
 							pd3.put("set_water_deprivation", null);
@@ -3000,8 +3146,9 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_temp", null);
 								pd3.put("high_alarm_temp",null);
 								pd3.put("low_alarm_temp",null);
-								pd3.put("high_alarm_negative_pressure",null);
-								pd3.put("low_alarm_negative_pressure",null);
+								pd3.put("set_lux",null);
+								pd3.put("high_lux",null);
+								pd3.put("low_lux",null);
 							pd3.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 							pd3.put("high_alarm_co2",high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //							pd3.put("low_alarm_co2",low_alarm_co22+low_alarm_co2*(i+1));
@@ -3037,8 +3184,9 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_temp", null);
 								pd3.put("high_alarm_temp",null);
 								pd3.put("low_alarm_temp",null);
-								pd3.put("high_alarm_negative_pressure",null);
-								pd3.put("low_alarm_negative_pressure",null);
+								pd3.put("set_lux",null);
+								pd3.put("high_lux",null);
+								pd3.put("low_lux",null);
 								pd3.put("set_co2",null);
 								pd3.put("high_alarm_co2",null);
 							pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
@@ -3081,8 +3229,9 @@ public class AlarmAction extends BaseAction{
 								pd5.put("set_temp", set_temp3+set_temp1*(i+1));
 								pd5.put("high_alarm_temp",high_alarm_temp3+high_alarm_temp1*(i+1));
 								pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*(i+1));
-								pd5.put("high_alarm_negative_pressure",null);
-								pd5.put("low_alarm_negative_pressure",null);
+								pd5.put("set_lux",null);
+								pd5.put("high_lux",null);
+								pd5.put("low_lux",null);
 								pd5.put("set_co2",null);
 								pd5.put("high_alarm_co2",null);
 								pd5.put("set_water_deprivation", null);
@@ -3093,7 +3242,7 @@ public class AlarmAction extends BaseAction{
 						    	}
 						   }
 						   alarmService.saveSBDayageTempSub(list2);
-					   }else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2 && high_alarm_negative_pressure1 != 0){
+					   }else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2 && high_lux1 != 0){
 						   //修改相邻记录的负压
 						   for(int i=day_age3;i<day_age2;i++){
 						    	for(int j=1;j<=24;j++){
@@ -3118,8 +3267,12 @@ public class AlarmAction extends BaseAction{
 									pd5.put("high_alarm_temp",null);
 									pd5.put("low_alarm_temp",null);
 //								pd4.put("set_negative_pressure", set_negative_pressure3+set_negative_pressure1*(i+1));
-								pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*(i+1));
-								pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*(i+1));
+//								pd5.put("set_lux",set_lux3+set_lux1*(i+1));
+//								pd5.put("high_lux",high_lux3+high_lux1*(i+1));
+//								pd5.put("low_lux",low_lux3+low_lux1*(i+1));
+								pd5.put("set_lux",set_lux3+set_lux1*day_age2);
+								pd5.put("high_lux",high_lux3+high_lux1*day_age2);
+								pd5.put("low_lux",low_lux3+low_lux1*day_age2);
 								pd5.put("set_co2",null);
 								pd5.put("high_alarm_co2",null);
 								pd5.put("set_water_deprivation", null);
@@ -3154,8 +3307,9 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_temp", null);
 									pd5.put("high_alarm_temp",null);
 									pd5.put("low_alarm_temp",null);
-									pd5.put("high_alarm_negative_pressure",null);
-									pd5.put("low_alarm_negative_pressure",null);
+									pd5.put("set_lux",null);
+									pd5.put("high_lux",null);
+									pd5.put("low_lux",null);
 								pd5.put("set_co2", set_co23+set_co21*(i+1));
 								pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*(i+1));
 //								pd4.put("low_alarm_co2",low_alarm_co23+low_alarm_co21*(i+1));
@@ -3191,8 +3345,9 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_temp", null);
 									pd5.put("high_alarm_temp",null);
 									pd5.put("low_alarm_temp",null);
-									pd5.put("high_alarm_negative_pressure",null);
-									pd5.put("low_alarm_negative_pressure",null);
+									pd5.put("set_lux",null);
+									pd5.put("high_lux",null);
+									pd5.put("low_lux",null);
 									pd5.put("set_co2",null);
 									pd5.put("high_alarm_co2",null);
 								pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*(i+1));
@@ -3214,8 +3369,8 @@ public class AlarmAction extends BaseAction{
 				
 				float set_temp=0,high_alarm_temp=0,low_alarm_temp=0,set_temp1=0,high_alarm_temp1=0,low_alarm_temp1=0,set_temp2=0,high_alarm_temp2=0,low_alarm_temp2=0,
 					  set_temp3=0,high_alarm_temp3=0,low_alarm_temp3=0,
-					  high_alarm_negative_pressure=0,high_alarm_negative_pressure1=0,high_alarm_negative_pressure2=0,high_alarm_negative_pressure3=0,
-					  low_alarm_negative_pressure=0,low_alarm_negative_pressure1=0,low_alarm_negative_pressure2=0,low_alarm_negative_pressure3=0,
+					  set_lux=0,high_lux=0,set_lux1=0,high_lux1=0,set_lux2=0,high_lux2=0,set_lux3=0,high_lux3=0,
+					  low_lux=0,low_lux1=0,low_lux2=0,low_lux3=0,
 					  set_co2=0,high_alarm_co2=0,set_co21=0,high_alarm_co21=0,set_co22=0,high_alarm_co22=0,
 					  set_co23=0,high_alarm_co23=0,
 					  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
@@ -3335,15 +3490,18 @@ public class AlarmAction extends BaseAction{
 				}else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2){
 					//计算负压差、基值
 					for(int i=0;i<pageData8.size();i++){
+						int d =Integer.valueOf(pageData8.get(i).get("day_age").toString()).intValue()*7;
 						if(pageData8.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 								pageData8.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-										pageData8.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==0){
+								d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i==0){
 							//目标负压1
 //							set_negative_pressure2 = Float.valueOf(pageData8.get(i).get("set_negative_pressure").toString()).floatValue();
-							//高报负压1
-							high_alarm_negative_pressure2 = Float.valueOf(pageData8.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-							//低报负压1
-							low_alarm_negative_pressure2 = Float.valueOf(pageData8.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+							//光照参照值1
+							set_lux2 = Float.valueOf(pageData8.get(i).get("set_lux").toString()).floatValue();
+							//光照上限制1
+							high_lux2 = Float.valueOf(pageData8.get(i).get("high_lux").toString()).floatValue();
+							//光照下限制1
+							low_lux2 = Float.valueOf(pageData8.get(i).get("low_lux").toString()).floatValue();
 							if(pageData8.size()!=1){	
 								//目标负压差2
 //								set_negative_pressure1 = (Float.valueOf(pageData8.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
@@ -3351,92 +3509,116 @@ public class AlarmAction extends BaseAction{
 //								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 								//目标负压2
 //								set_negative_pressure3 = Float.valueOf(pageData8.get(i).get("set_negative_pressure").toString()).floatValue();
-								//高报负压差2
-								high_alarm_negative_pressure1 = (Float.valueOf(pageData8.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-								//高报负压2
-								high_alarm_negative_pressure3 = Float.valueOf(pageData8.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-								//低报负压差2
-								low_alarm_negative_pressure1 = (Float.valueOf(pageData8.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-								//低报负压2
-								low_alarm_negative_pressure3 = Float.valueOf(pageData8.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+								//光照参照值差2
+								set_lux1 = (Float.valueOf(pageData8.get(i+1).get("set_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("set_lux").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								//光照参照值2
+								set_lux3 = Float.valueOf(pageData8.get(i).get("set_lux").toString()).floatValue();
+								//光照上限制差2
+								high_lux1 = (Float.valueOf(pageData8.get(i+1).get("high_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("high_lux").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								//光照上限制2
+								high_lux3 = Float.valueOf(pageData8.get(i).get("high_lux").toString()).floatValue();
+								//光照下限制差2
+								low_lux1 = (Float.valueOf(pageData8.get(i+1).get("low_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("low_lux").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								//光照下限制2
+								low_lux3 = Float.valueOf(pageData8.get(i).get("low_lux").toString()).floatValue();
 								//uid_num
 								uid_num = Integer.valueOf(pageData8.get(i+1).get("uid_num").toString()).intValue();
-								day_age2 = Integer.valueOf(pageData8.get(i+1).get("day_age").toString()).intValue();
+								day_age2 = Integer.valueOf(pageData8.get(i+1).get("day_age").toString()).intValue()*7;
 							}				
 							break;
 						}else 
 						if(pageData8.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 								pageData8.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-										pageData8.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i>0 && i<pageData8.size()-1){
+								d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i>0 && i<pageData8.size()-1){
 								//目标负压差1
 //								set_negative_pressure = (Float.valueOf(pageData8.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //										Float.valueOf(pageData8.get(i-1).get("set_negative_pressure").toString()).floatValue())/
 //								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
 								//目标负压1
 //								set_negative_pressure2 = Float.valueOf(pageData8.get(i-1).get("set_negative_pressure").toString()).floatValue();
-								//高报负压差1
-								high_alarm_negative_pressure = (Float.valueOf(pageData8.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
-								//高报负压1
-								high_alarm_negative_pressure2 = Float.valueOf(pageData8.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-								//低报负压差1
-								low_alarm_negative_pressure = (Float.valueOf(pageData8.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
-								//低报负压1
-								low_alarm_negative_pressure2 = Float.valueOf(pageData8.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
+							//光照参照值差1
+							set_lux = (Float.valueOf(pageData8.get(i).get("set_lux").toString()).floatValue() - 
+									Float.valueOf(pageData8.get(i-1).get("set_lux").toString()).floatValue())/
+							((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+							//光照参照值1
+							set_lux2 = Float.valueOf(pageData8.get(i-1).get("set_lux").toString()).floatValue();
+								//光照上限制差1
+								high_lux = (Float.valueOf(pageData8.get(i).get("high_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i-1).get("high_lux").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+								//光照上限制1
+								high_lux2 = Float.valueOf(pageData8.get(i-1).get("high_lux").toString()).floatValue();
+								//光照下限制差1
+								low_lux = (Float.valueOf(pageData8.get(i).get("low_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i-1).get("low_lux").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+								//光照下限制1
+								low_lux2 = Float.valueOf(pageData8.get(i-1).get("low_lux").toString()).floatValue();
 								//目标负压差2	
 //								set_negative_pressure1 = (Float.valueOf(pageData8.get(i+1).get("set_negative_pressure").toString()).floatValue() - 
 //										Float.valueOf(pageData8.get(i).get("set_negative_pressure").toString()).floatValue())/
 //								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
 								//目标负压2
 //								set_negative_pressure3 = Float.valueOf(pageData8.get(i).get("set_negative_pressure").toString()).floatValue();
-								//高报负压差2
-								high_alarm_negative_pressure1 = (Float.valueOf(pageData8.get(i+1).get("high_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i).get("high_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-								//高报负压2
-								high_alarm_negative_pressure3 = Float.valueOf(pageData8.get(i).get("high_alarm_negative_pressure").toString()).floatValue();
-								//低报负压差2
-								low_alarm_negative_pressure1 = (Float.valueOf(pageData8.get(i+1).get("low_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i).get("low_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
-								//低报负压2
-								low_alarm_negative_pressure3 = Float.valueOf(pageData8.get(i).get("low_alarm_negative_pressure").toString()).floatValue();
+								//光照参照值差2
+								set_lux1 = (Float.valueOf(pageData8.get(i+1).get("set_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("set_lux").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								//光照参照值2
+								set_lux3 = Float.valueOf(pageData8.get(i).get("set_lux").toString()).floatValue();
+								//光照上限制差2
+								high_lux1 = (Float.valueOf(pageData8.get(i+1).get("high_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("high_lux").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								//光照上限制2
+								high_lux3 = Float.valueOf(pageData8.get(i).get("high_lux").toString()).floatValue();
+								//光照下限制差2
+								low_lux1 = (Float.valueOf(pageData8.get(i+1).get("low_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i).get("low_lux").toString()).floatValue())/
+								((Float.valueOf(pageData8.get(i+1).get("day_age").toString()).floatValue()*7-Float.valueOf(pd.get("day_age").toString()).floatValue())*24);
+								//光照下限制2
+								low_lux3 = Float.valueOf(pageData8.get(i).get("low_lux").toString()).floatValue();
 							//uid_num
 							uid_num = Integer.valueOf(pageData8.get(i+1).get("uid_num").toString()).intValue();
-							day_age2 = Integer.valueOf(pageData8.get(i+1).get("day_age").toString()).intValue();
+							day_age2 = Integer.valueOf(pageData8.get(i+1).get("day_age").toString()).intValue()*7;
 							//日龄
-							day_age = Integer.valueOf(pageData8.get(i-1).get("day_age").toString()).intValue();
+							day_age = Integer.valueOf(pageData8.get(i-1).get("day_age").toString()).intValue()*7;
 							break;
 						}else if(pageData8.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 								pageData8.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
-										pageData8.get(i).get("day_age").toString().equals(pd.get("day_age").toString()) && i==pageData8.size()-1){
+								d==Integer.valueOf(pd.get("day_age").toString()).intValue() && i==pageData8.size()-1){
 								//目标负压差
 //								set_negative_pressure = (Float.valueOf(pageData8.get(i).get("set_negative_pressure").toString()).floatValue() - 
 //										Float.valueOf(pageData8.get(i-1).get("set_negative_pressure").toString()).floatValue())/
 //								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
 								//目标负压
 //								set_negative_pressure2 = Float.valueOf(pageData8.get(i-1).get("set_negative_pressure").toString()).floatValue();
-								//高报负压差
-								high_alarm_negative_pressure = (Float.valueOf(pageData8.get(i).get("high_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
-								//高报负压
-								high_alarm_negative_pressure2 = Float.valueOf(pageData8.get(i-1).get("high_alarm_negative_pressure").toString()).floatValue();
-								//低报负压差
-								low_alarm_negative_pressure = (Float.valueOf(pageData8.get(i).get("low_alarm_negative_pressure").toString()).floatValue() - 
-										Float.valueOf(pageData8.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue())/
-								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue())*24);
-								//低报负压
-								low_alarm_negative_pressure2 = Float.valueOf(pageData8.get(i-1).get("low_alarm_negative_pressure").toString()).floatValue();
+							//光照参照值差
+							set_lux = (Float.valueOf(pageData8.get(i).get("set_lux").toString()).floatValue() - 
+									Float.valueOf(pageData8.get(i-1).get("set_lux").toString()).floatValue())/
+							((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+							//光照参照值
+							set_lux2 = Float.valueOf(pageData8.get(i-1).get("set_lux").toString()).floatValue();
+								//光照上限制差
+								high_lux = (Float.valueOf(pageData8.get(i).get("high_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i-1).get("high_lux").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+								//光照上限制
+								high_lux2 = Float.valueOf(pageData8.get(i-1).get("high_lux").toString()).floatValue();
+								//光照下限制差
+								low_lux = (Float.valueOf(pageData8.get(i).get("low_lux").toString()).floatValue() - 
+										Float.valueOf(pageData8.get(i-1).get("low_lux").toString()).floatValue())/
+								((Float.valueOf(pd.get("day_age").toString()).floatValue()-Float.valueOf(pageData8.get(i-1).get("day_age").toString()).floatValue()*7)*24);
+								//光照下限制
+								low_lux2 = Float.valueOf(pageData8.get(i-1).get("low_lux").toString()).floatValue();
 							//日龄
-							day_age = Integer.valueOf(pageData8.get(i-1).get("day_age").toString()).intValue();
+							day_age = Integer.valueOf(pageData8.get(i-1).get("day_age").toString()).intValue()*7;
 							break;
 						}
 					}
@@ -3684,8 +3866,9 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_temp", set_temp2+set_temp*((i-day_age)*24+j));
 						    	pd3.put("high_alarm_temp", high_alarm_temp2+high_alarm_temp*((i-day_age)*24+j));
 						    	pd3.put("low_alarm_temp", low_alarm_temp2+low_alarm_temp*((i-day_age)*24+j));
-						    	pd3.put("high_alarm_negative_pressure", null);
-						    	pd3.put("low_alarm_negative_pressure", null);
+						    	pd3.put("set_lux", null);
+						    	pd3.put("high_lux", null);
+						    	pd3.put("low_lux", null);
 						    	pd3.put("set_co2", null);
 						    	pd3.put("high_alarm_co2", null);
 						    	pd3.put("set_water_deprivation", null);
@@ -3721,8 +3904,12 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("high_alarm_temp", null);
 						    	pd3.put("low_alarm_temp", null);
 //						    	pd3.put("set_negative_pressure", set_negative_pressure2+set_negative_pressure*((i+1-day_age)*j));
-						    	pd3.put("high_alarm_negative_pressure", high_alarm_negative_pressure2+high_alarm_negative_pressure*((i-day_age)*24+j));
-						    	pd3.put("low_alarm_negative_pressure", low_alarm_negative_pressure2+low_alarm_negative_pressure*((i-day_age)*24+j));
+//						    	pd3.put("set_lux", set_lux2+set_lux*((i-day_age)*24+j));
+//						    	pd3.put("high_lux", high_lux2+high_lux*((i-day_age)*24+j));
+//						    	pd3.put("low_lux", low_lux2+low_lux*((i-day_age)*24+j));
+						    	pd3.put("set_lux", set_lux2+set_lux*((day_age3-1-day_age)*24+24));
+						    	pd3.put("high_lux", high_lux2+high_lux*((day_age3-1-day_age)*24+24));
+						    	pd3.put("low_lux", low_lux2+low_lux*((day_age3-1-day_age)*24+24));
 						    	pd3.put("set_co2", null);
 						    	pd3.put("high_alarm_co2", null);
 						    	pd3.put("set_water_deprivation", null);
@@ -3757,8 +3944,9 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_temp", null);
 						    	pd3.put("high_alarm_temp", null);
 						    	pd3.put("low_alarm_temp", null);
-						    	pd3.put("high_alarm_negative_pressure", null);
-						    	pd3.put("low_alarm_negative_pressure", null);
+						    	pd3.put("set_lux", null);
+						    	pd3.put("high_lux", null);
+						    	pd3.put("low_lux", null);
 						    	pd3.put("set_co2", set_co22+set_co2*((i-day_age)*24+j));
 						    	pd3.put("high_alarm_co2", high_alarm_co22+high_alarm_co2*((i-day_age)*24+j));
 //						    	pd3.put("low_alarm_co2", low_alarm_co22+low_alarm_co2*((i+1-day_age)*j));
@@ -3794,8 +3982,9 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_temp", null);
 						    	pd3.put("high_alarm_temp", null);
 						    	pd3.put("low_alarm_temp", null);
-						    	pd3.put("high_alarm_negative_pressure", null);
-						    	pd3.put("low_alarm_negative_pressure", null);
+						    	pd3.put("set_lux", null);
+						    	pd3.put("high_lux", null);
+						    	pd3.put("low_lux", null);
 						    	pd3.put("set_co2", null);
 						    	pd3.put("high_alarm_co2", null);
 						    	pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
@@ -3836,8 +4025,9 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_temp", set_temp3+set_temp1*((i-day_age3)*24+j));
 							    	pd5.put("high_alarm_temp",high_alarm_temp3+high_alarm_temp1*((i-day_age3)*24+j));
 							    	pd5.put("low_alarm_temp",low_alarm_temp3+low_alarm_temp1*((i-day_age3)*24+j));
-							    	pd5.put("high_alarm_negative_pressure",null);
-							    	pd5.put("low_alarm_negative_pressure",null);
+							    	pd5.put("set_lux",null);
+							    	pd5.put("high_lux",null);
+							    	pd5.put("low_lux",null);
 							    	pd5.put("set_co2",null);
 							    	pd5.put("high_alarm_co2",null);
 							    	pd5.put("set_water_deprivation", null);
@@ -3848,7 +4038,7 @@ public class AlarmAction extends BaseAction{
 							   }
 						   }
 						   alarmService.saveSBDayageTempSub(list2);
-					   }else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2 && high_alarm_negative_pressure1 != 0){
+					   }else if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2 && high_lux1 != 0){
 						   //修改相邻记录的负压
 						   for(int i=day_age3;i<day_age2;i++){
 							   for(int j=1;j<=24;j++){
@@ -3870,8 +4060,12 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_temp", null);
 							    	pd5.put("high_alarm_temp",null);
 							    	pd5.put("low_alarm_temp",null);
-							    	pd5.put("high_alarm_negative_pressure",high_alarm_negative_pressure3+high_alarm_negative_pressure1*((i-day_age3)*24+j));
-							    	pd5.put("low_alarm_negative_pressure",low_alarm_negative_pressure3+low_alarm_negative_pressure1*((i-day_age3)*24+j));
+//							    	pd5.put("set_lux",set_lux3+set_lux1*((i-day_age3)*24+j));
+//							    	pd5.put("high_lux",high_lux3+high_lux1*((i-day_age3)*24+j));
+//							    	pd5.put("low_lux",low_lux3+low_lux1*((i-day_age3)*24+j));
+							    	pd5.put("set_lux",set_lux3+set_lux1*((day_age2-1-day_age3)*24+24));
+							    	pd5.put("high_lux",high_lux3+high_lux1*((day_age2-1-day_age3)*24+24));
+							    	pd5.put("low_lux",low_lux3+low_lux1*((day_age2-1-day_age3)*24+24));
 							    	pd5.put("set_co2",null);
 							    	pd5.put("high_alarm_co2",null);
 							    	pd5.put("set_water_deprivation", null);
@@ -3904,8 +4098,9 @@ public class AlarmAction extends BaseAction{
 								    	pd5.put("set_temp", null);
 								    	pd5.put("high_alarm_temp",null);
 								    	pd5.put("low_alarm_temp",null);
-								    	pd5.put("high_alarm_negative_pressure",null);
-								    	pd5.put("low_alarm_negative_pressure",null);
+								    	pd5.put("set_lux",null);
+								    	pd5.put("high_lux",null);
+								    	pd5.put("low_lux",null);
 								    	pd5.put("set_co2",set_co23+set_co21*((i-day_age3)*24+j));
 								    	pd5.put("high_alarm_co2",high_alarm_co23+high_alarm_co21*((i-day_age3)*24+j));
 								    	pd5.put("set_water_deprivation", null);
@@ -3938,8 +4133,9 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_temp", null);
 							    	pd5.put("high_alarm_temp",null);
 							    	pd5.put("low_alarm_temp",null);
-							    	pd5.put("high_alarm_negative_pressure",null);
-							    	pd5.put("low_alarm_negative_pressure",null);
+							    	pd5.put("set_lux",null);
+							    	pd5.put("high_lux",null);
+							    	pd5.put("low_lux",null);
 							    	pd5.put("set_co2",null);
 							    	pd5.put("high_alarm_co2",null);
 							    	pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));

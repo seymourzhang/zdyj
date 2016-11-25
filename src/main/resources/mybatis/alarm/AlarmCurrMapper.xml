@@ -33,7 +33,9 @@
 	</select>
 
 	<select id="selectByCondition" resultType="pd" useCache="false">
-		SELECT ac.farm_id
+		SELECT ac.id
+				, ac.alarm_code
+				, ac.farm_id
 				, ac.house_id
 				, ac.alarm_name
 				, round(ac.actual_value,0) as actual_value
@@ -47,6 +49,7 @@
 				, f.farm_name_chs farm_name
 				, h.house_name house_name
 				, u.user_real_name user_name
+				, (to_days(curdate()) - to_days(bc.operation_date) + bc.grow_age) day_age
 		FROM s_b_alarm_inco ac
 				LEFT JOIN s_d_code c
 				ON ac.deal_status= c.biz_code AND c.code_type = 'DEAL_STATUS'
@@ -56,6 +59,8 @@
 				ON ac.house_id= h.id
 				LEFT JOIN s_d_user u
 				ON ac.response_person = u.id
+				LEFT JOIN s_b_batch_curr bc
+				ON bc.house_code = ac.house_id
 		WHERE 1=1
 		<if test="farmId != null and farmId !=''">
 			and ac.farm_id = #{farmId}

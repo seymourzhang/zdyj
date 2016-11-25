@@ -27,84 +27,85 @@
 					<form action="<%=path%>/user/userManage" method="post" style="background-color: #ffffff;" id="userForm">
 						<%-- <input type="hidden" name="id" value="${pd.id}">
 						<input type="hidden" name="pid" value="${pd.pid}"> --%>
-							<div class="row-fluid">
-								<div class="span4" align="left">
-									<span_customer>用户名称</span_customer>
-									<input type="text" value="${pd.user_real_name }" placeholder="模糊查询中文名" name="user_real_name"">
+							<div class="container-fluid">
+								<div class="row-fluid">
+									<div class="span4" align="left">
+										<span_customer>用户名称</span_customer>
+										<input type="text" value="${pd.user_real_name }" placeholder="模糊查询中文名" name="user_real_name"">
+									</div>
+									<div class="span4" align="left">
+										<span_customer>手机号</span_customer>
+										<input type="text" value="${pd.user_mobile_1 }" placeholder="模糊查询手机号" name="user_mobile_1">
+									</div>
+									<div class="span4" align="left">
+										<a href="javascript:search();" class="btn green"><i class="icon-search"></i> 查询</a>
+									</div>
 								</div>
-								<div class="span4" align="left">
-									<span_customer>手机号</span_customer>
-									<input type="text" value="${pd.user_mobile_1 }" placeholder="模糊查询手机号" name="user_mobile_1">
+
+								<div class="row-fluid">
+									<div class="span12">
+										<hr style="height:10px;border:none;border-top:1px solid #555555;" />
+									</div>
 								</div>
-								<div class="span4" align="left">
-									<a href="javascript:search();" class="btn green"><i class="icon-search"></i> 查询</a>
+
+								<div class="row-fluid">
+									<div class="span12">
+										<a href="javascript:;" class="btn blue" onclick="add();"><i class="icon-plus"></i> 新增</a>
+									</div>
 								</div>
-							</div>
 
-							<div class="row-fluid">
-								<div class="span12">
-									<hr style="height:10px;border:none;border-top:1px solid #555555;" />
-								</div>
-							</div>
+								<div class="row-fluid">
+									<div class="span12">
+										<table class="table table-striped table-bordered table-hover" id="sample_1">
 
-							<div class="row-fluid">
-								<div class="span12">
-									<a href="javascript:;" class="btn blue" onclick="add();"><i class="icon-plus"></i> 新增</a>
-								</div>
-							</div>
+											<thead>
 
-							<div class="row-fluid">
-								<div class="span12">
-									<table class="table table-striped table-bordered table-hover" id="sample_1">
+											<tr style="background-color: #1288C0; color: white;" >
+												<th class="hidden-480" style="text-align: center;">编号</th>
+												<th>登录名称</th>
+												<th>中文名称</th>
+												<th>手机</th>
+												<!-- <th>所属农场</th>
+												<th>所属栋舍</th> -->
+												<th>状态</th>
+												<th>操作</th>
+											</tr>
+											</thead>
+											<tbody>
+											<c:if test="${!empty listUser}">
+												<c:forEach var="lu" items="${listUser}" varStatus="vs">
+													<tr class="odd gradeX">
+														<td class="hidden-480" style="text-align: center;">${lu.id}</td>
+														<td>${lu.user_code}</td>
+														<td>${lu.user_real_name}</td>
+														<td>${lu.user_mobile_1 != null ? lu.user_mobile_1 : 0}</td>
+															<%-- <td>${lu.farm_name_chs}</td>
+															<td>${lu.house_name}</td> --%>
+														<c:choose>
+															<c:when test="${lu.user_status=='1'}">
+																<td>正常</td>
+															</c:when>
+															<c:otherwise>
+																<td>冻结</td>
+															</c:otherwise>
+														</c:choose>
+														<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editUser(${lu.id},${lu.farm_id!=null? lu.farm_id :'0'},'${lu.house_code!=null?lu.house_code:'0'}')" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delUser(${lu.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
+													</tr>
+												</c:forEach>
+											</c:if>
 
-										<thead>
-
-										<tr style="background-color: #1288C0; color: white;" >
-											<th class="hidden-480" style="text-align: center;">编号</th>
-											<th>用户名</th>
-											<th>中文名</th>
-											<th>手机</th>
-											<!-- <th>所属农场</th>
-                                            <th>所属栋舍</th> -->
-											<th>状态</th>
-											<th>操作</th>
-										</tr>
-										</thead>
-										<tbody>
-										<c:if test="${!empty listUser}">
-											<c:forEach var="lu" items="${listUser}" varStatus="vs">
-												<tr class="odd gradeX">
-													<td class="hidden-480" style="text-align: center;">${lu.id}</td>
-													<td>${lu.user_code}</td>
-													<td>${lu.user_real_name}</td>
-													<td>${lu.user_mobile_1 != null ? lu.user_mobile_1 : 0}</td>
-														<%-- <td>${lu.farm_name_chs}</td>
-                                                        <td>${lu.house_name}</td> --%>
-													<c:choose>
-														<c:when test="${lu.user_status=='1'}">
-															<td>正常</td>
-														</c:when>
-														<c:otherwise>
-															<td>冻结</td>
-														</c:otherwise>
-													</c:choose>
-													<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editUser(${lu.id},${lu.farm_id!=null? lu.farm_id :'0'},'${lu.house_code!=null?lu.house_code:'0'}')" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delUser(${lu.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
-												</tr>
-											</c:forEach>
-										</c:if>
-
-										</tbody>
-									</table>
-									<div class="row-fluid" style="margin-top: -18px;">
-										<div class="span11" style="float: right;height: 40px;">
-											<div class="dataTables_paginate paging_bootstrap pagination" style="float: right;margin-top: 10px;">
-												${page.pageStr}
+											</tbody>
+										</table>
+										<div class="row-fluid" style="margin-top: -18px;">
+											<div class="span11" style="float: right;height: 40px;">
+												<div class="dataTables_paginate paging_bootstrap pagination" style="float: right;margin-top: 10px;">
+													${page.pageStr}
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-
+						</div>
 					</form>
 				</div> 
 		 </div> 

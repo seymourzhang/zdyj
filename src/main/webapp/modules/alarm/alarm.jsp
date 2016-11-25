@@ -93,7 +93,7 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 			<form action="" method="post" style="background-color: #ffffff;" id="alarmForm">
 				<%-- <input type="hidden" name="id" value="${pd.id}">--%>
 						<input type="hidden" name="alarm_type" value="1" id="alarmType"> 
-				<div class="span12">
+				<div class="span12" style="margin-left: 0px;">
 					<!-- BEGIN PORTLET-->
 <!-- 					<div class="portlet box blue1"> -->
 <!-- 								<div class="portlet-title"> -->
@@ -145,9 +145,9 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 								</div>
 
 <!-- 							</div> -->
-                            <div class="row-fluid">
-                                <div class="span12">
-                                    <hr style="height:10px;border:none;border-top:1px solid #555555;" />
+                            <div class="row-fluid" >
+                                <div class="span12" style="margin-top: -20px;">
+                                    <hr style="height:1px;border:none;border-top:1px solid #555555;" />
                                 </div>
                             </div>
 
@@ -163,20 +163,20 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 
 <!-- 						</div> -->
                         
-						<div class="portlet-body" style="overflow-x: auto; overflow-y: auto;" >
+						<div class="portlet-body" style="overflow-x: auto; overflow-y: auto;margin-top: -10px;" >
 <!-- 							<table class="table table-striped table-bordered table-hover" id="monitor_date_table"   -->
 <!-- 							style="margin-left: 30px;float: left;width: 500px;" data-options="singleSelect:true,collapsible:true,method:'POST'">                               -->
 <!-- 							</table> -->
                         <div id = "reflushText" style="display: none;  float:right;"><font color="#FF0000">刷新中,请稍后...</font></div>
-                            <div id="TemperatureCurveFrame" style="display: block;margin-left: 20px;float: left;width: 500px;margin-top: -20px;">
+                            <div id="TemperatureCurveFrame" style="display: block;margin-left: 20px;float: left;width: 503px;margin-top: -20px;">
                                 <table id="TemperatureCurveTable" style="margin-left: 0px;float: left;width: 500px;"></table>
                             </div>
 
-                            <div id="CarbonFrame" style="display: none;margin-left: 20px;float: left;width: 1200px;" >
+                            <div id="CarbonFrame" style="display: none;margin-left: 20px;float: left;width: 1203px;margin-top: -20px;" >
                                 <table id="CarbonTable" style="margin-left: 0px;float: left;width: 1200px;"></table>
                             </div>
                             
-                            <div id="NegativePressureFrame" style="display: none;margin-left: 20px;float: left;width: 1200px;" >
+                            <div id="NegativePressureFrame" style="display: none;margin-left: 20px;float: left;width: 1203px;margin-top: -20px;" >
                                 <table id="NegativePressureTable" style="margin-left: 0px;float: left;width: 1200px;"></table>
                             </div>
 
@@ -239,7 +239,7 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 						</div>
 
 						<div class="portlet-body" style="margin-left: 25px;float:left;margin-top: 50px;" id="anniu">
-						<button type="button" class="btn blue" onclick="openAdjustWin()">
+						<button type="button" class="btn blue" onclick="openAdjustWin('${hourList}')">
 <!-- 						<i class="icon-ok"></i> -->
 <!-- 						<a href="javascript:addAlarmUrl();"><i class="icon-edit"></i> -->
 						&nbsp;&nbsp;&nbsp;&nbsp;新增&nbsp;&nbsp;&nbsp;&nbsp;

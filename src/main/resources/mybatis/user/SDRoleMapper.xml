@@ -63,6 +63,20 @@
 			where 
 				user_id = #{user_id}
 	</update>
-	
+
+	<!-- 新增权限对象 -->
+	<insert id="insertRightsObj" parameterType="pd" flushCache="false">
+		INSERT INTO s_d_rights(obj_id
+								  ,obj_type
+								  ,create_person
+								  ,create_date
+								  ,create_time)
+						VALUES(#{obj_id}
+								  ,#{obj_type}
+								  ,#{create_person}
+								  ,CURRENT_DATE
+								  ,CURRENT_TIMESTAMP
+			)
+	</insert>
     
 </mapper>

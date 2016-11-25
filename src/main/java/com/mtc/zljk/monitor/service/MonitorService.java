@@ -31,6 +31,14 @@ public interface MonitorService {
 	List<PageData> selectByCondition(PageData pd) throws Exception;
 
 	/**
+	 * 查询报警数
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	PageData selectAlarmCounts(PageData pd) throws Exception;
+
+	/**
 	 * 运行定时任务
 	 * @throws Exception
      */

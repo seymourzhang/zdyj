@@ -30,6 +30,9 @@
 		 ROUND(s.low_alarm_negative_pressure,1) low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 ROUND(s.set_lux,1) set_lux ,
+		 ROUND(s.high_lux,1) high_lux ,
+		 ROUND(s.low_lux,1) low_lux ,
 		 ROUND(s.set_co2,1) set_co2 ,
 		 ROUND(s.high_alarm_co2,1) high_alarm_co2 ,
 		 ROUND(s.low_alarm_co2,1) low_alarm_co2 ,
@@ -87,6 +90,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -142,6 +151,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -166,7 +181,7 @@
         <if test="uid_num != null"> 
         and s.uid_num = #{uid_num}
         </if>
-        and s.high_alarm_negative_pressure is not null
+        and s.high_lux is not null
         ORDER BY s.farm_id,s.house_id,s.day_age 
         </if>
         
@@ -197,6 +212,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -252,6 +273,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time start_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -308,6 +335,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -363,6 +396,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -389,7 +428,7 @@
         SELECT  s.uid_num ,
 		 s.farm_id ,
 		 s.house_id ,
-		 s.day_age ,
+		 (s.day_age DIV 7) day_age,
 		 IFNULL(ROUND(s.set_temp,1),"") set_temp ,
 		 IFNULL(ROUND(s.high_alarm_temp,1),"") high_alarm_temp ,
 		 IFNULL(ROUND(s.low_alarm_temp,1),"") low_alarm_temp ,
@@ -412,6 +451,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 DATE_FORMAT(s.start_time,'%H:%i:%s') start_time,
+		 DATE_FORMAT(s.end_time,'%H:%i:%s') end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -430,7 +475,7 @@
         <if test="houseId != null">
         and s.house_id = #{houseId}
         </if>
-        and s.high_alarm_negative_pressure is not null
+        and s.high_lux is not null
         ORDER BY s.farm_id,s.house_id,s.day_age 
         </if>
         
@@ -461,6 +506,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -510,6 +561,12 @@
 		 IFNULL(ROUND(s.low_alarm_negative_pressure,1),"") low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 IFNULL(ROUND(s.set_lux,1),"") set_lux ,
+		 IFNULL(ROUND(s.high_lux,1),"") high_lux ,
+		 IFNULL(ROUND(s.low_lux,1),"") low_lux ,
+		 s.start_time start_time,
+		 s.end_time end_time,
+		 hour(timediff(s.end_time,s.start_time)) hours,
 		 IFNULL(ROUND(s.set_co2,1),"") set_co2 ,
 		 IFNULL(ROUND(s.high_alarm_co2,1),"") high_alarm_co2 ,
 		 IFNULL(ROUND(s.low_alarm_co2,1),"") low_alarm_co2 ,
@@ -575,8 +632,11 @@
 		 farm_id ,
 		 house_id ,
 		 day_age ,
-		 high_alarm_negative_pressure ,
-		 low_alarm_negative_pressure ,
+		 set_lux ,
+		 high_lux ,
+		 low_lux ,
+		 start_time ,
+		 end_time ,
 		 set_humidity ,
 		 memo ,
 		 create_person ,
@@ -589,8 +649,11 @@
 			#{farmId},
 			#{houseId},
 			#{day_age},
-			#{high_alarm_negative_pressure},
-			#{low_alarm_negative_pressure},
+			#{set_lux},
+			#{high_lux},
+			#{low_lux},
+			#{start_time},
+			#{end_time},
 			#{set_humidity},
 			#{memo},
 			#{create_person},
@@ -677,9 +740,11 @@
 		 set_temp ,
 		 high_alarm_temp ,
 		 low_alarm_temp ,
-		 set_negative_pressure ,
-		 high_alarm_negative_pressure ,
-		 low_alarm_negative_pressure ,
+		 set_lux ,
+		 high_lux ,
+		 low_lux ,
+		 start_time ,
+		 end_time ,
 		 set_co2 ,
 		 high_alarm_co2 ,
 		 low_alarm_co2 ,
@@ -701,9 +766,11 @@
 			#{set_temp},
 			#{high_alarm_temp},
 			#{low_alarm_temp},
-			#{set_negative_pressure},
-			#{high_alarm_negative_pressure},
-			#{low_alarm_negative_pressure},
+			#{set_lux},
+			#{high_lux},
+			#{low_lux},
+			#{start_time},
+			#{end_time},
 			#{set_co2},
 			#{high_alarm_co2},
 			#{low_alarm_co2},
@@ -732,7 +799,7 @@
 	   </if>
 	   <!-- 负压 -->
 	   <if test="alarm_type == 2"> 
-		UPDATE s_b_dayage_setting_sub SET set_negative_pressure = null , high_alarm_negative_pressure = null , low_alarm_negative_pressure = null 
+		UPDATE s_b_dayage_setting_sub SET set_lux = null , high_lux = null , low_lux = null , start_time =null , end_time = null
 		 , modify_person = #{modify_person}
 		  , modify_date = #{modify_date} , modify_time = #{modify_time}
 		WHERE uid_num = #{uid_num}
@@ -778,8 +845,8 @@
 	   </if>
 	   <!-- 负压 -->
 	   <if test="alarm_type == 2"> 
-		UPDATE s_b_dayage_setting_sub SET high_alarm_negative_pressure = #{high_alarm_negative_pressure}
-		,low_alarm_negative_pressure = #{low_alarm_negative_pressure}
+		UPDATE s_b_dayage_setting_sub SET set_lux = #{set_lux} , high_lux = #{high_lux}
+		,low_lux = #{low_lux} , start_time = #{start_time} , end_time = #{end_time}
 		 , modify_person = #{modify_person}
 		  , modify_date = #{modify_date} , modify_time = #{modify_time}
 		WHERE uid_num = #{uid_num}
@@ -828,6 +895,9 @@
 		 s.low_alarm_negative_pressure ,
 		 s.super_high_alarm_negative_pressure ,
 		 s.super_low_alarm_negative_pressure ,
+		 s.set_lux ,
+		 s.high_lux ,
+		 s.low_lux ,
 		 s.set_co2 ,
 		 s.high_alarm_co2 ,
 		 s.low_alarm_co2 ,
@@ -878,8 +948,9 @@
 			modify_person,
 			modify_date,
 			modify_time,
-			high_alarm_negative_pressure,
-			low_alarm_negative_pressure,
+			set_lux,
+			high_lux,
+			low_lux,
 			high_alarm_co2,
 			set_co2,
 			set_water_deprivation,
@@ -902,8 +973,9 @@
 				#{item.modify_person},
 				#{item.modify_date},
 				#{item.modify_time},
-				#{item.high_alarm_negative_pressure},
-				#{item.low_alarm_negative_pressure},
+				#{item.set_lux},
+				#{item.high_lux},
+				#{item.low_lux},
 				#{item.high_alarm_co2},
 				#{item.set_co2},
 				#{item.set_water_deprivation},
@@ -930,7 +1002,7 @@
 	   <!-- 负压 -->
 	   <if test="alarm_type == 2"> 
 	   <foreach collection="list" index="index" item="item"  open="" separator=";" close="" > 
-		UPDATE s_b_dayage_temp_sub SET high_alarm_negative_pressure = #{item.high_alarm_negative_pressure} ,low_alarm_negative_pressure = #{item.low_alarm_negative_pressure} 
+		UPDATE s_b_dayage_temp_sub SET set_lux = #{item.set_lux} ,high_lux = #{item.high_lux} ,low_lux = #{item.low_lux} 
 		 , modify_person = #{item.modify_person}
 		  , modify_date = #{item.modify_date} , modify_time = #{item.modify_time}
 		WHERE uid_num = #{item.uid_num} AND farm_id = #{item.farmId} AND house_id = #{item.houseId} 

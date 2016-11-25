@@ -28,4 +28,18 @@ public interface OrganService {
 	List<PageData> getOrgListById(PageData pd) throws Exception;
 
 	List<PageData> getHouseType(PageData pd) throws Exception;
+
+	List<PageData> getOrganizationList(PageData pd) throws Exception;
+
+	List<PageData> getMaxOrgLevelId(PageData pd) throws Exception;
+
+	int insertOrg(PageData pd) throws Exception;
+
+	int updateOrg(PageData pd) throws Exception;
+
+	int deleteOrg(PageData pd) throws Exception;
+
+	int setFarmMapping(PageData pd) throws Exception;
+
+	List<PageData> getFarmForMapping(PageData pd) throws Exception;
 }

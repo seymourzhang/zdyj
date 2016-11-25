@@ -37,7 +37,7 @@
 											  <div class="span3" align="left">
 												  <span_customer>类型</span_customer>
 												  <select id="good_type" tabindex="1"  name="good_type">
-													  <option value="">全部</option>
+<!-- 													  <option value="">全部</option> -->
 													  <c:if test="${!empty goodTypeList}">
 														  <c:forEach var="goodType" items="${goodTypeList}">
 															  <option value="${goodType.biz_code }">${goodType.code_name}</option>
@@ -48,7 +48,7 @@
 											  <div class="span3" align="left">
 												  <span_customer>名称</span_customer>
 												  <select id="drug_id"  tabindex="1"  name="drug_id" >
-													  <option value="">全部</option>
+<!-- 													  <option value="">全部</option> -->
 													  <c:if test="${!empty goodsList}">
 														  <c:forEach var="goods" items="${goodsList}">
 															  <option value="${goods.good_id }">${goods.good_name}</option>
@@ -59,7 +59,7 @@
 											  <div class="span3" align="left">
 												  <span_customer>使用方法</span_customer>
 												  <select id="instruction" tabindex="1"  name="instruction" >
-													  <option value="">全部</option>
+<!-- 													  <option value="">全部</option> -->
 													  <c:if test="${!empty useTypeList}">
 														  <c:forEach var="useType" items="${useTypeList}">
 															  <option value="${useType.biz_code }">${useType.code_name}</option>
@@ -109,13 +109,13 @@
 										  <div class="span3" align="left">
 											  <span_customer>日期</span_customer>
 											  <div class="input-append date date-picker" data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
-												  <input class="m-wrap  span11 m-ctrl-medium date-picker " readonly type="text" name="use_date" id="use_date"/><span class="add-on"><i class="icon-calendar"></i></span>
+												  <input class="m-wrap  span11 m-ctrl-medium date-picker " readonly type="text" name="use_date" value="${systemDate }" id="use_date"/><span class="add-on"><i class="icon-calendar"></i></span>
 											  </div>
 										  </div>
 										  <div class="span3" align="left">
 											<span_customer>使用方法</span_customer>
 											  <select id="instruction1" tabindex="1"  name="instruction1">
-												  <option value="">全部</option>
+<!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty useTypeList}">
 													  <c:forEach var="useType" items="${useTypeList}">
 														  <option value="${useType.biz_code }">${useType.code_name}</option>
@@ -126,7 +126,7 @@
 										  <div class="span3" align="left">
 											  <span_customer>名称</span_customer>
 											  <select id="drug_id1" tabindex="1"  name="drug_id1" onchange="setFactory();">
-												  <option value="">全部</option>
+<!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty goodsList}">
 													  <c:forEach var="goods" items="${goodsList}">
 														  <option value="${goods.good_id }">${goods.good_name}</option>
@@ -144,7 +144,7 @@
 										  <div class="span3" align="left">
 											  <span_customer>类型</span_customer>
 											  <select id="good_type1" tabindex="1"  name="good_type"  onchange="setDrugId1();">
-												  <option value="">全部</option>
+<!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty goodTypeList}">
 													  <c:forEach var="goodType" items="${goodTypeList}">
 														  <option value="${goodType.biz_code }">${goodType.code_name}</option>
@@ -163,7 +163,7 @@
 										  <div class="span3" align="left">
 											  <span_customer>负责人</span_customer>
 											  <select id="use_user_id" tabindex="1"  name="use_user_id" >
-												  <option value="">全部</option>
+<!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty userList}">
 													  <c:forEach var="user" items="${userList}">
 														  <option value="${user.id }">${user.user_real_name}</option>
@@ -177,7 +177,7 @@
 										  <div class="span3" align="left">
 											  <span_customer>栋舍</span_customer>
 											  <select id="houseId" tabindex="1"  name="houseId" >
-												  <option value="">全部</option>
+<!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty houseList}">
 													  <c:forEach var="house" items="${houseList}">
 														  <option value="${house.org_id }">${house.org_name}</option>

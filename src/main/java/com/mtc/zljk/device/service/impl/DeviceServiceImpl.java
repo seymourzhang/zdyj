@@ -147,7 +147,7 @@ public abstract class DeviceServiceImpl implements DeviceService {
     
     
     /**
-     * 获取设备数据
+     * 获取指标数据
      * @return 设备数据
      */
     public List<PageData> findDeviceCur(PageData pd) {
@@ -163,7 +163,7 @@ public abstract class DeviceServiceImpl implements DeviceService {
     }
 
     /**
-     * 插入数据
+     * 插入指标数据
      * @param pd 数据对象
      */
     public boolean insert(PageData pd) {
@@ -185,7 +185,7 @@ public abstract class DeviceServiceImpl implements DeviceService {
         return true;
     }
     /**
-     * 修改数据
+     * 修改指标数据
      */
     public void updateYT(PageData pd){
     	 try{
@@ -244,6 +244,45 @@ public abstract class DeviceServiceImpl implements DeviceService {
         if(min==0 && max==1)
             return (ra.nextInt(max+1)+min+1)-1;
         return ra.nextInt(max)+min;
+    }
+
+    /**
+     * 获取设备主数据
+     * @return 设备数据
+     */
+    public List<PageData> findDeviceByMainId(PageData pd) {
+        List<PageData> pdList = new ArrayList<>();
+        try{
+            pdList = (List<PageData>) dao.findForList("SDDeviceMapper.findDeviceByMainId",pd);
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+        return pdList;
+    }
+
+    /**
+     * 插入设备主数据
+     * @param pd 数据对象
+     */
+    public boolean insertDevice(PageData pd) {
+        try{
+            dao.save("SDDeviceMapper.insert",pd);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    /**
+     * 修改设备主数据
+     */
+    public void updateDeviceData(PageData pd){
+        try{
+            dao.save("SDDeviceMapper.updateDeviceData",pd);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
 }

@@ -13,4 +13,6 @@ public interface RoleService {
 	public List<PageData> getRoleByUserId(PageData pd) throws Exception;
 
 	public void editUserRole(PageData pd) throws Exception;
+
+	void insertRightsObj(PageData pd) throws Exception;
 }

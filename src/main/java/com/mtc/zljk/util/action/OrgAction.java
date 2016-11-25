@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.mtc.zljk.user.service.RoleService;
+import com.mtc.zljk.util.service.ModuleService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
@@ -28,6 +30,9 @@ public class OrgAction extends BaseAction{
 	@Autowired
 	private OrganService  organService;
 
+	@Autowired
+	private ModuleService moduleService;
+
 	/**
 	 * 跳转到批次管理页面
 	 * raymon 2016-10-18
@@ -41,6 +46,230 @@ public class OrgAction extends BaseAction{
 		mv.addObject("pd",pd);
 		return mv;
 	}
+
+	@RequestMapping("/getOrganizationList")
+	public void getOrganizationList(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		List<PageData> organizationList = organService.getOrganizationList(null);
+		j.setSuccess(true);
+		j.setObj(organizationList);
+		super.writeJson(j, response);
+	}
+
+	@RequestMapping("/getFarmWithHouseName")
+	public void getFarmWithHouseName(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		int level_id = Integer.valueOf((String)pd.get("level_id"));
+		int pId = Integer.valueOf((String)pd.get("id"));
+
+		List<PageData> tmpPdList = organService.getMaxOrgLevelId(null);
+		PageData tmpPd = tmpPdList.get(0);
+		int max_level_id = tmpPd.getInteger("max_level_id");
+
+		List<PageData> organizationList = new ArrayList<>();
+		List<Integer> parentOrgIdList = new ArrayList<>();
+		tmpPd = new PageData();
+
+		List<PageData> tmpRtList = new ArrayList<>();
+		//获取农场清单
+		for(int i=(level_id+1); i < max_level_id; i++){
+
+			tmpPd.clear();
+			if(i == (level_id+1)){
+				tmpPd.put("level_id",i);
+				tmpPd.put("parent_id",pId);
+			} else{
+				tmpPd.put("parentOrgIdList",parentOrgIdList);
+			}
+			organizationList = organService.getOrgListById(tmpPd);
+
+			for(PageData tmpOrg : organizationList){
+				parentOrgIdList.add(tmpOrg.getInteger("id"));
+				PageData org = new PageData();
+				org.put("id",-1);
+				org.put("name_cn","");
+				org.put("parent_id",tmpOrg.getInteger("id"));
+				org.put("parent_name",tmpOrg.getString("name_cn"));
+				org.put("level_id",level_id-2);
+				org.put("level_name","");
+				tmpRtList.add(org);
+			}
+
+			if( (max_level_id-1) == i){
+				break;
+			}
+		}
+
+		List<PageData> rtList = new ArrayList<>();
+		PageData rtPd = new PageData();
+		tmpPd.clear();
+		tmpPd.put("parentOrgIdList",parentOrgIdList);
+		organizationList = organService.getOrgListById(tmpPd);
+
+		//格式化返回结果集
+		for(PageData tmpOrg : organizationList){
+			int flag = -1;
+			int k =0;
+			for(PageData t : rtList){
+				if(t.getInteger("parent_id") == tmpOrg.getInteger("parent_id")){
+					flag = k;
+				}
+				k += 1;
+			}
+
+			if(flag == -1) {
+				rtList.add(tmpOrg);
+			} else{
+				String tmpName = rtList.get(flag).getString("name_cn");
+				rtList.get(flag).put("name_cn", tmpName + "," + tmpOrg.getString("name_cn"));
+			}
+
+		}
+
+		if(rtList.size() == 0){
+			rtList.addAll(tmpRtList);
+		}
+
+		j.setSuccess(true);
+		j.setObj(rtList);
+		super.writeJson(j, response);
+	}
+
+	@RequestMapping("/deleteOrg")
+	public void deleteOrg(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		String orgStr = pd.getString("org");
+		List<Integer> orgList = new ArrayList<>();
+
+		if(orgStr.length()>1){
+			String[] tmpOrgs = orgStr.substring(0,orgStr.length()-1).split(",");
+			for(String tmp : tmpOrgs){
+				orgList.add(Integer.valueOf(tmp));
+			}
+
+			pd.put("org",orgList);
+			pd.put("freeze_status",1); //删除标志位
+			int i = organService.deleteOrg(pd);
+			if(i==1){
+				j.setSuccess(true);
+			} else{
+				j.setSuccess(false);
+			}
+		} else{
+			j.setSuccess(false);
+			j.setMsg("没有选中需要被删除的机构");
+		}
+		super.writeJson(j, response);
+	}
+
+	@RequestMapping("/updateOrg")
+	public void updateOrg(HttpServletResponse response) throws Exception{
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		int i = organService.updateOrg(pd);
+		if(i==1){
+			j.setSuccess(true);
+		} else{
+			j.setSuccess(false);
+		}
+		super.writeJson(j, response);
+	}
+
+	@RequestMapping("/addOrg")
+	public void addOrg(HttpServletResponse response) throws Exception{
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
+
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		String orgName = pd.getString("org_name");
+		String orgLevelName = pd.getString("org_level_name");
+		Integer orgLevelId = Integer.valueOf((String)pd.get("org_level_id"));
+		String parentOrgName = pd.getString("parent_org_name");
+		Integer parentOrgId = Integer.valueOf((String)pd.get("parent_org_id"));
+		Integer parentOrgLevelId = Integer.valueOf((String)pd.get("parent_org_level_id"));
+		PageData paramPd = new PageData();
+		boolean flag = true;
+		String msg ="";
+
+		List<PageData> maxPdList = organService.getMaxOrgLevelId(null);
+		PageData maxPd = maxPdList.get(0);
+
+		List<PageData> organizationList = organService.getOrganizationList(null);
+		if(organizationList.size()==0){
+			paramPd.put("organization_id","101");
+			paramPd.put("name_cn",orgName);
+			paramPd.put("parent_id",0);
+			paramPd.put("level_id",1);
+			paramPd.put("level_name",orgLevelName);
+			paramPd.put("freeze_status",0);
+			paramPd.put("create_person", user.getId());
+		} else{
+			int maxOrgLevel = maxPd.getInteger("max_level_id");
+			int maxOrganizationId = 0;
+			for(PageData tmpPd : organizationList){
+				if(maxOrgLevel < tmpPd.getInteger("org_level") ){
+					maxOrgLevel = tmpPd.getInteger("org_level");
+				}
+
+				if(orgLevelId == tmpPd.getInteger("org_level") ){
+					if(orgName.equals(tmpPd.getString("name_cn"))){
+						flag = false;
+						msg = "机构名称重复";
+						break;
+					}
+					if(maxOrganizationId < tmpPd.getInteger("org_code") ){
+						maxOrganizationId = tmpPd.getInteger("org_code");
+					}
+					if(parentOrgId == tmpPd.getInteger("parent_id") ){
+						orgLevelName = tmpPd.getString("level_name");
+					}
+				}
+			}
+			if(orgLevelId >= (maxOrgLevel-1) && maxOrgLevel != 0 ){
+				flag = false;
+				msg = "不能新建机构层级为" + orgLevelId.toString() + "的机构";
+			} else{
+				paramPd.put("organization_id",maxOrganizationId+1);
+				paramPd.put("name_cn",orgName);
+				paramPd.put("parent_id",parentOrgId);
+				paramPd.put("level_id",orgLevelId);
+				paramPd.put("level_name",orgLevelName);
+				paramPd.put("freeze_status",0);
+				paramPd.put("create_person", user.getId());
+			}
+		}
+
+
+		if(flag){
+			int i = organService.insertOrg(paramPd);
+			Long objId = (Long)paramPd.get("id");
+			paramPd.clear();
+			paramPd.put("obj_id",objId);
+			paramPd.put("obj_type",2);
+			paramPd.put("create_person",user.getId());
+
+			moduleService.service("roleServiceImpl","insertRightsObj",new Object[]{paramPd});
+			if(i==1){
+				j.setSuccess(true);
+			} else{
+				j.setSuccess(false);
+			}
+		} else{
+			j.setSuccess(false);
+			j.setMsg(msg);
+		}
+
+		super.writeJson(j, response);
+	}
+
 
 	@RequestMapping("/getOrg")
 	public void getOrg(HttpServletResponse response) throws Exception{
@@ -104,6 +333,79 @@ public class OrgAction extends BaseAction{
 		List<PageData> orglist = organService.selectOrgByUser(pd);
 		j.setSuccess(true);
 		j.setObj(orglist);
+		super.writeJson(j, response);
+	}
+
+	@RequestMapping("/getFarmForMapping")
+	public void getFarmForMapping(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = this.getPageData();
+		pd.put("user_id", user.getId());
+		List<PageData> orgList = organService.getFarmForMapping(null);
+		if(orgList.size()>0){
+			j.setSuccess(true);
+			j.setObj(orgList);
+		} else{
+			j.setSuccess(false);
+		}
+		super.writeJson(j, response);
+	}
+
+	@RequestMapping("/setFarmMapping")
+	public void setFarmMapping(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = this.getPageData();
+		pd.put("user_id", user.getId());
+
+		int orgLevelId = Integer.valueOf(pd.getString("level_id"));
+
+		List<PageData> maxLevelList = organService.getMaxOrgLevelId(null);
+		int maxOrgLevelId = maxLevelList.get(0).getInteger("max_level_id");
+
+		if((maxOrgLevelId-2) == orgLevelId){
+			String orgStr = pd.getString("org");
+			List<Integer> orgList = new ArrayList<>();
+
+			if(orgStr.length()>1) {
+				String[] tmpOrgs = orgStr.substring(0, orgStr.length() - 1).split(",");
+				for (String tmp : tmpOrgs) {
+					orgList.add(Integer.valueOf(tmp));
+				}
+				pd.put("orgList",orgList);
+				int i = organService.setFarmMapping(pd);
+
+				if(i > 0){
+					for(int k=0; k<i; k++){
+						PageData paramPd = new PageData();
+						Long objId = (Long)pd.get("id");
+						paramPd.put("obj_id",objId+k);
+						paramPd.put("obj_type",2);
+						paramPd.put("create_person",user.getId());
+						moduleService.service("roleServiceImpl","insertRightsObj",new Object[]{paramPd});
+					}
+
+					j.setSuccess(true);
+				} else{
+					j.setSuccess(false);
+					j.setMsg("系统内部错误");
+				}
+			} else{
+				j.setSuccess(false);
+				j.setMsg("没有选择需要绑定的农场");
+			}
+		} else{
+			j.setSuccess(false);
+			j.setMsg("该机构下不能直接绑定农场");
+		}
+
+
+
 		super.writeJson(j, response);
 	}
 

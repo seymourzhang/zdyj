@@ -1,5 +1,7 @@
 package com.mtc.zljk.drug.action;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class DrugAction extends BaseAction {
 		pd.put("farm_id", farm.get(0).get("org_id"));
 		pd.put("farm_name", farm.get(0).get("org_name"));
 		mv.addObject("houseList",moduleService.service("organServiceImpl", "getHouseListByUserId", new Object[]{pd}));
-		mv.addObject("userList",drugService.selectUser());
+		mv.addObject("userList",drugService.selectUser(pd));
 		pd.put("good_type", null);
 		mv.addObject("goodsList",drugService.selectGoods(pd));	
 		pd.put("code_desc", "使用方法");
@@ -61,7 +63,9 @@ public class DrugAction extends BaseAction {
 		mv.addObject("goodTypeList",drugService.selectCode(pd));
 //		List<PageData> drug = drugService.selectDrugPlan(pd);
 		mv.setViewName("/modules/drug/drugView");
-		mv.addObject("pd",pd);		
+		mv.addObject("pd",pd);	
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+		mv.addObject("systemDate",df.format(new Date()).toString());	
 		return mv;
 	}
 	

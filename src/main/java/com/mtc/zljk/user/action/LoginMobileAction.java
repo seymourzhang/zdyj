@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -154,7 +155,7 @@ public class LoginMobileAction extends BaseAction{
     }
 
     @RequestMapping("/queryDetail")
-    public void queryDetail(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void queryDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //shiro管理的session
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
@@ -183,32 +184,34 @@ public class LoginMobileAction extends BaseAction{
 //        JSONObject userInfo = getUserInfo(user);
         resJson.put("Result", "Success");
         resJson.put("UserInfo", userInfo);
+        List houses = new ArrayList();
+        pd.put("user_id", userId);
+        pd.put("parent_id", farmId);
+        List<PageData> ll = organService.getOrgList(pd);
         pd.put("farm_id", farmId);
-        List<PageData> lpd = batchManageService.getCreateBatchData(pd);
-        if (lpd.size() != 0){
-            JSONArray ja = new JSONArray();
-            for (PageData pageData : lpd) {
-                JSONObject o = new JSONObject();
-                o.put("id", pageData.get("houseId"));
-                o.put("name", pageData.get("house"));
-                o.put("type", pageData.get("house_type"));
-                o.put("deviceCode", pageData.get("device_code") == null ? "" : pageData.get("device_code"));
-                o.put("BreedBatchId", pageData.get("batchId"));
-                o.put("BreedBatchStatus", "1");
-                ja.put(o);
-            }
-            resJson.put("HouseInfos", ja);
-        }else{
-            resJson.put("Error", "尚不存在批次信息！");
-            dealRes = Constants.RESULT_SUCCESS;
+        JSONArray ja = new JSONArray();
+        for (PageData pageData : ll) {
+            houses.add(pageData.get("id"));
+            pd.put("house_id", houses);
+            List<PageData> lpd = batchManageService.getCreateBatchData(pd);
+            JSONObject o = new JSONObject();
+            o.put("id", pageData.get("id"));
+            o.put("name", pageData.get("name_cn"));
+            o.put("type", lpd.get(0).get("house_type"));
+            o.put("deviceCode", lpd.get(0).get("device_code") == null ? "" : pageData.get("device_code"));
+            o.put("BreedBatchId", lpd.size() == 0 ? "0" : lpd.get(0).get("batchId"));
+            o.put("BreedBatchStatus", lpd.size() == 0 ? "0" : "1");
+            ja.put(o);
         }
-        pd.put("id", farmId);
-        List<PageData> llpd = organService.getOrgListById(pd);
+        resJson.put("HouseInfos", ja);
+        PageData pa = new PageData();
+        pa.put("id", farmId);
+        List<PageData> llpd = organService.getOrgListById(pa);
         JSONObject farmInfo = new JSONObject();
         farmInfo.put("id", llpd.get(0).get("id"));
         farmInfo.put("name", llpd.get(0).get("name_cn"));
-        pd.put("id", llpd.get(0).get("parent_id"));
-        List<PageData> llpd_parent = organService.getOrgListById(pd);
+        pa.put("id", llpd.get(0).get("parent_id"));
+        List<PageData> llpd_parent = organService.getOrgListById(pa);
         farmInfo.put("CompanyName", llpd_parent.get(0).get("name_cn"));
         farmInfo.put("address1", llpd.get(0).get("farm_add1"));
         farmInfo.put("address2", llpd.get(0).get("farm_add2"));
@@ -219,15 +222,15 @@ public class LoginMobileAction extends BaseAction{
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }
 
-    private JSONObject getUserInfo(SDUser tSDUser) throws JSONException {
+    private JSONObject getUserInfo(SDUser user) throws JSONException {
         JSONObject userInfo = null;
-        if (tSDUser != null) {
+        if (user != null) {
             userInfo = new JSONObject();
             try {
-                userInfo.put("id", tSDUser.getId());
-                userInfo.put("name", tSDUser.getUser_code());
-                userInfo.put("tele", tSDUser.getUser_mobile_1());
-            } catch (org.json.JSONException e) {
+                userInfo.put("id", user.getId());
+                userInfo.put("name", user.getUser_code());
+                userInfo.put("tele", user.getUser_mobile_1());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

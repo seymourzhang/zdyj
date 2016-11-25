@@ -32,7 +32,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				dataType: "json",
 				success: function(result) {
 					if(result.msg=='1'){
-						parent.location.reload();   
+// 						parent.location.reload();   
 						parent.layer.closeAll();
 					}else{
 						alert("应用失败！");

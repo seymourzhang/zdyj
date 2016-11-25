@@ -137,9 +137,9 @@ function  querySBDayageSettingSub(){
 			var setTemp = new Array();//清空目标温度
 			var highAlarmTemp = new Array();//清空高报温度
 			var lowAlarmTemp = new Array();//清空低报温度
-//			var setNegativePressure = new Array();
-			var highAlarmNegativePressure = new Array();
-			var lowAlarmNegativePressure = new Array();
+			var highLux = new Array();
+			var setLux = new Array();
+			var lowLux = new Array();
 			var setCo2 = new Array();
 			var highAlarmCo2 = new Array();
 //			var lowAlarmCo2 = new Array();
@@ -174,22 +174,25 @@ function  querySBDayageSettingSub(){
 				suffixName = '°C';
 			}else if(alarmtype1=="2"){
 				for (var i = 0; i < list.length; i++) {
-					if(list[i].high_alarm_negative_pressure!=undefined){
+					if(list[i].high_lux!=undefined){
 						xNames.push(list[i].day_age+'日龄');
-//						setNegativePressure.push(list[i].set_negative_pressure);
-						highAlarmNegativePressure.push(list[i].high_alarm_negative_pressure );
-						lowAlarmNegativePressure.push(list[i].low_alarm_negative_pressure );
+						highLux.push(list[i].high_lux );
+						lowLux.push(list[i].low_lux );
+						setLux.push(list[i].set_lux );
 					}					
 				}
 				alarmType5 = [{
-		            name: '高报负压',
-		            data: highAlarmNegativePressure
+		            name: '光照上限制',
+		            data: highLux
 		        } ,{
-		            name: '低报负压',
-		            data: lowAlarmNegativePressure
+		            name: '光照下限制',
+		            data: lowLux
+		        },{
+		            name: '光照参考值',
+		            data: setLux
 		        }];
 				yName='光照(Lux)';
-				suffixName = 'Pa';
+				suffixName = 'Lux';
 			}else if(alarmtype1=="3"){
 				for (var i = 0; i < list.length; i++) {
 					if(list[i].high_alarm_co2!=undefined){
@@ -434,7 +437,8 @@ function update(){
         }
     }else if($("#alarmType").val()==2){
     	for(var i = 0; i < updateRow.length; i++){
-        	updateRow2 = updateRow2+updateRow[i].uid_num+","+updateRow[i].farm_id+","+updateRow[i].house_id+","+updateRow[i].day_age+";";
+        	updateRow2 = updateRow2+updateRow[i].uid_num+","+updateRow[i].farm_id+","+updateRow[i].house_id+","+updateRow[i].day_age+","+
+        	updateRow[i].set_lux+","+updateRow[i].high_lux+","+updateRow[i].low_lux+","+updateRow[i].start_time+","+updateRow[i].end_time+";";
         }
     }else if($("#alarmType").val()==3){
     	for(var i = 0; i < updateRow.length; i++){
@@ -739,14 +743,14 @@ function getNegaTableDataColumns(){
         visible: false
     }, {
         field: "day_age",
-        title: "日龄",
+        title: "周龄",
         editable: {
             type: 'text',
-            title: '日龄',
+            title: '周龄',
             mode: 'inline',
             setValue: null,
             validate: function (v) {
-                if (!v) return '日龄不能为空';
+                if (!v) return '周龄不能为空';
             }
         },
         width: '5%'
@@ -809,6 +813,10 @@ function getNegaTableDataColumns(){
                 if (!v) return '关闭时间不能为空';
             }
         },
+        width: '18%'
+    }, {
+        field: "hours",
+        title: "开启时长",
         width: '18%'
     }];
     return dataColumns;
@@ -926,30 +934,60 @@ function getWaterTableDataColumns(){
 
 
 /****弹出新增窗口*****/
-function openAdjustWin(){
+function openAdjustWin(hourList){
+	var p;
 	var str = '<div style="padding-left: 10px;">&nbsp;</div>';
-	    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;"><span style="display:block;width: 110px;float:left;margin-left:0px;">农场:</span><span style="display:block;width: 210px;float:left;margin-left:-70px;">'+$("#orgId" + (count0rg - 1)).val().split(",")[2]+'</span> ';
-	    str+='<span style="display:block;width: 110px;float:left;margin-left:0px;">栋舍:</span><span style="display:block;width: 110px;float:left;margin-left:-70px;">'+$("#orgId" + count0rg).val().split(",")[2]+'</span>';
-	    str+='<span style="display:block;width: 110px;float:left;margin-left:0px;">日龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age"/></span></div>';
+	    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;"><span style="display:block;width: 110px;float:left;margin-left:30px;">农场:</span><span style="display:block;width: 110px;float:left;margin-left:-70px;">'+$("#orgId" + (count0rg - 1)).val().split(",")[2]+'</span> ';
+	    str+='<span style="display:block;width: 110px;float:left;margin-left:70px;">栋舍:</span><span style="display:block;width: 110px;float:left;margin-left:-70px;">'+$("#orgId" + count0rg).val().split(",")[2]+'</span>';
+	    if($("#alarmType").val() == "2"){
+	    	str+='<span style="display:block;width: 50px;float:left;margin-left:60px;">周龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age"/></span></div>';
+	    }else {
+	    	str+='<span style="display:block;width: 50px;float:left;margin-left:60px;">日龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age"/></span></div>';
+	    }
 //	    str+='<span style="display:block;width:60px;float:left;text-align: right;">报警类别:&nbsp;&nbsp; <select style="width: 100px;margin-top: 5px;" name="alarm_type" id="alarmType" value=""/></select></span>';
-	    str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;margin-top: 20px;">';
+	    str+='<div style="padding-left: 15px;font-size:14px; width: 680px;padding-top: 20px;margin-top: 30px;">';
 	    if($("#alarmType").val() == "1") {
-	    	 str+='<span style="display:block;width: 110px;float:left;">目标温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="set_temp" id="set_temp"/></span> ';   
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:70px;">高报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="high_alarm_temp" id="high_alarm_temp"/></span> ';   
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:70px;">低报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="low_alarm_temp" id="low_alarm_temp"/></span></div> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:7px;">目标温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="set_temp" id="set_temp"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">高报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="high_alarm_temp" id="high_alarm_temp"/></span> ';   
+	    	 str+='<span style="display:block;width: 70px;float:left;margin-left:100px;">低报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="low_alarm_temp" id="low_alarm_temp"/></span></div> ';   
+	         p=['730px', '210px'];
 	    }else if($("#alarmType").val() == "2"){
-	    	 str+='<span style="display:block;width: 110px;float:left;">光照上限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_lux" id="high_lux"/></span> ';   
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:90px;">光照下限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="low_lux" id="low_lux"/></span> ';   
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:90px;">光照参照值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_lux" id="set_lux"/></span></div> ';
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:-6px;">光照上限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_lux" id="high_lux"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">光照下限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="low_lux" id="low_lux"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:100px;">光照参照值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_lux" id="set_lux"/></span></div> ';
+	         str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;margin-top: 20px;">';
+	         str+='<span style="display:block;width: 110px;float:left;margin-left:7px;">开始时间:&nbsp;&nbsp; ';
+	         str += "<select id='start_time' style='width: 115px;margin-top: -30px;margin-left:60px;' class='m-wrap span12' tabindex='1' name='start_time'>";
+//	         hourList = hourList.replace(/=/g,':');
+	         var myobj=hourList.split("=");;
+				for (var j = 0; j < myobj.length; j++) {
+					if(myobj[j].indexOf("code_name") > 0 ){
+						 str +="<option value=" + myobj[j+1].split(",")[0] +">" + myobj[j+1].split(",")[0] + "</option>";
+					}
+						
+				}
+	         str+='</select></span> ';
+	         str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">结束时间:&nbsp;&nbsp;'; 
+	         str += "<select id='end_time' style='width: 115px;margin-top: -30px;margin-left:60px;' class='m-wrap span12' tabindex='1' name='end_time'>";
+	         var myobj=hourList.split("=");;
+				for (var j = 0; j < myobj.length; j++) {
+					if(myobj[j].indexOf("code_name") > 0 ){
+						 str +="<option value=" + myobj[j+1].split(",")[0] +">" + myobj[j+1].split(",")[0] + "</option>";
+					}
+						
+				}
+	         str+='</select></span></div> ';
+	         p=['730px', '260px'];
 	    }else if($("#alarmType").val() == "3"){
-	    	str+='<span style="display:block;width: 110px;float:left;">CO2报警值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_alarm_co2" id="high_alarm_co2"/></span> ';     
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:90px;">CO2参考值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_co2" id="set_co2"/></span></div> ';
+	    	str+='<span style="display:block;width: 110px;float:left;margin-left:-7px;">CO2报警值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_alarm_co2" id="high_alarm_co2"/></span> ';     
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">CO2参考值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_co2" id="set_co2"/></span></div> ';
+	    	 p=['730px', '210px'];
 	    }
 	    str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;"><label style="padding-left: 110px;color: red; width:500px; text-align: center;margin-top: 25px;" id="addAlarm_msg"></label></div>';
 	layer.open({
 		  type: 1,
-		  skin: 'layui-layer-green', //加上边框
-		  area: ['630px', '240px'], //宽高
+		  skin: 'layui-layer-lan', //加上边框
+		  area: p, //宽高
 		  title:"新增",
 		  content: str,
 		  btn: ['确定','取消'],
@@ -974,7 +1012,9 @@ function openAdjustWin(){
 						alarm_type: $("#alarmType").val(),
 						high_lux: $("#high_lux").val(),
 						low_lux: $("#low_lux").val(),
-						set_lux: $("#set_lux").val()
+						set_lux: $("#set_lux").val(),
+						start_time:$("#start_time").val(),
+						end_time:$("#end_time").val()
 		        };
 			}else {
 				param = {
@@ -1071,6 +1111,9 @@ function submitForm(){
 	//showdiv('加载中，请稍候');
 return true;
 }
+
+
+
 
 
 

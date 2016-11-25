@@ -64,10 +64,10 @@ public interface DrugService {
 	
 	/**
 	 * 查询负责人集合
-	 * @return
+	 * @return pd
 	 * @throws Exception
 	 */
-	List<PageData> selectUser() throws Exception;
+	List<PageData> selectUser(PageData pd) throws Exception;
 	
 	/**
 	 * 查询物资

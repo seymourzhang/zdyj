@@ -2,6 +2,7 @@ package com.mtc.zljk.device.job;
 
 import com.mtc.zljk.device.dmr.service.DmrService;
 import com.mtc.zljk.device.rotem.service.RotemService;
+import com.mtc.zljk.device.wirelessyt.WirelessYTService;
 import com.mtc.zljk.device.yingtong.service.YingtongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,6 +21,8 @@ public class AutoRun {
     RotemService rotemService;
     @Autowired
     YingtongService yingtongService;
+    @Autowired
+    WirelessYTService tWirelessYTService;
 
     @Scheduled(cron="0/60 * * * * ? ") //每60秒执行一次
     public void run() {
@@ -34,5 +37,9 @@ public class AutoRun {
 //        System.out.println("更新引通数据至数据库...");
 //        yingtongService.start();
 //        System.out.println("更新引通数据完毕！");
+
+//        System.out.println("更新引通无线数据开始！");
+//        tWirelessYTService.start();
+//        System.out.println("更新引通无线数据完毕！");
     }
 }

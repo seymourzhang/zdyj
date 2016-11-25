@@ -41,8 +41,6 @@
 
 					</div>
 
-
-
 					<div class="tab-content" style="border:none">
 						<div class="tab-pane active" id="tab_1">
 							<%--<iframe id="inStockForm" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="<%=urlPre%>/inStockForm.cpt<%=urlParamUserId%>${pd.user_id} ">--%>

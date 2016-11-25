@@ -182,7 +182,11 @@
 	</select>
 	<!-- 查询负责人 -->
 	<select id="selectUser" resultType="pd" useCache="false">
-	 select * from s_d_user
+	 select * from s_d_user u
+	 left join 
+	 s_b_user_farm f
+	 on f.user_id = u.id
+	 where f.farm_id in(select farm_id from s_b_user_farm where user_id = #{userId})
 	</select>
 	<!-- 查询物资 -->
 	<select id="selectGoods" resultType="pd" useCache="false">
