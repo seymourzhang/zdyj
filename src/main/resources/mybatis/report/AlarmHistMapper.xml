@@ -303,7 +303,8 @@
              AND A.batch_no is not null
     </select>
    <select id="alarmHistDetail" resultType="pd" useCache="false">
-   select a.farm_id,
+   select a.id,
+             a.farm_id,
              a.house_id,
              DATE_FORMAT(a.alarm_time,'%Y-%m-%d %H:%i:%s') as alarm_time,
              DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr as date_age,
@@ -311,6 +312,7 @@
             a.alarm_Name,
             IFNULL(CONCAT(round(a.set_value,0),a.value_unit),'-') as set_value,
             IFNULL(CONCAT(round(a.actual_value,0),a.value_unit),'-') as actual_value,
+            a.deal_status,
             a.remove_time,
             round((unix_timestamp(a.remove_time)-unix_timestamp(a.alarm_time))/60,2) as continue_time,
             IFNULL((select u.id from s_d_user u where u.id=a.response_person),'-') as response_person,
@@ -351,8 +353,38 @@
                      <if test="endTime != null and endTime !=''"> 
                       and DATEDIFF(str_to_date(#{endTime},'%Y-%m-%d'),DATE_FORMAT(a.alarm_time,'%Y-%m-%d'))>=0
                      </if>
-                     <if test="bizCode != null and bizCode !=''"> 
-                      and a.alarm_code = #{bizCode}
+                     <if test="beginAge != null and beginAge !='' and endAge != null and endAge != ''">
+                      and ${beginAge} * 7 &lt; DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr
+                      and DATEDIFF(c.end_date, DATE_FORMAT(a.alarm_time,'%Y-%m-%d'))+ c.day_age_curr &lt; ${endAge} * 7
                      </if>
+                     <if test="bizCode != null and bizCode !=''"> 
+                      and a.alarm_code LIKE #{bizCode}
+                     </if>
+                    <if test="codeName != null and codeName != ''">
+                        and a.alarm_name LIKE #{codeName}
+                    </if>
+       ORDER BY a.alarm_time DESC
+    </select>
+    <select id="selectAlarmForMobile" resultType="pd" parameterType="pd" useCache="false">
+        SELECT ad.house_id
+          , h.house_name
+          , max(ad.date_age) as dayAge
+          , ad.batch_no
+          , sum(IFNULL(CASE WHEN ad.alarm_code like 'QH%' THEN ad.alarm_num ELSE NULL END ,0)) AS temp_in1_H_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code like 'QL%' THEN ad.alarm_num ELSE NULL END ,0)) AS temp_in1_L_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code like 'ZH%' THEN ad.alarm_num ELSE NULL END ,0)) AS temp_in2_H_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code like 'ZL%' THEN ad.alarm_num ELSE NULL END ,0)) AS temp_in2_L_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code like 'HH%' THEN ad.alarm_num ELSE NULL END ,0)) AS temp_in3_H_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code like 'HL%' THEN ad.alarm_num ELSE NULL END ,0)) AS temp_in3_L_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code like '%H' THEN ad.alarm_num ELSE NULL END ,0)) AS temp_avg_H_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code like '%L%' THEN ad.alarm_num ELSE NULL END  ,0)) AS temp_avg_L_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code = 'C0001' THEN ad.alarm_num ELSE NULL END , 0)) AS point_temp_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code = 'C0002' THEN ad.alarm_num ELSE NULL END , 0)) AS power_status_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code = 'C0003' THEN ad.alarm_num ELSE NULL END , 0)) AS co2_alarm
+          , sum(IFNULL(CASE WHEN ad.alarm_code = 'C0004' THEN ad.alarm_num ELSE NULL END , 0)) AS lux_alarm
+      FROM rpt_alarm_daily ad
+        LEFT JOIN s_d_house h ON h.id = ad.house_id
+      WHERE ad.farm_id = ${farmId} AND ad.house_id = ${houseId} AND ad.batch_no = #{batchNo}
+      GROUP BY ad.batch_no
     </select>
 </mapper>

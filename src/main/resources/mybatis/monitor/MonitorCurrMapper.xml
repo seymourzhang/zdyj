@@ -113,10 +113,10 @@
                 , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarm_code
                 , mc.date_age
                 , mc.week_age
-                , truncate(format(mc.inside_temp1,1),1) inside_temp1
-                , truncate(format(mc.inside_temp2,1),1) inside_temp2
-                , truncate(format(mc.inside_temp3,1),1) inside_temp3
-                , truncate(format(mc.inside_temp4,1),1) inside_temp4
+                , truncate(mc.inside_temp1,1) inside_temp1
+                , truncate(mc.inside_temp2,1) inside_temp2
+                , truncate(mc.inside_temp3,1) inside_temp3
+                , truncate(mc.inside_temp4,1) inside_temp4
                 , truncate(mc.inside_temp5,1) inside_temp5
                 , truncate(mc.inside_temp6,1) inside_temp6
                 , truncate(mc.inside_temp7,1) inside_temp7

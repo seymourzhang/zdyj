@@ -93,6 +93,9 @@
 			</if>
 			where 
 				house_id = #{house_id}
+			<if test="id != null and id != ''">
+				AND id = ${id}
+			</if>
 	</update>
 	<select id="SP_ALARM" useCache="false">
         CALL SP_ALARM()

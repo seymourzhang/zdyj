@@ -959,7 +959,7 @@ function openAdjustWin(hourList){
 	         str+='<span style="display:block;width: 110px;float:left;margin-left:7px;">开始时间:&nbsp;&nbsp; ';
 	         str += "<select id='start_time' style='width: 115px;margin-top: -30px;margin-left:60px;' class='m-wrap span12' tabindex='1' name='start_time'>";
 //	         hourList = hourList.replace(/=/g,':');
-	         var myobj=hourList.split("=");;
+	         var myobj=hourList.split("=");
 				for (var j = 0; j < myobj.length; j++) {
 					if(myobj[j].indexOf("code_name") > 0 ){
 						 str +="<option value=" + myobj[j+1].split(",")[0] +">" + myobj[j+1].split(",")[0] + "</option>";
@@ -969,7 +969,6 @@ function openAdjustWin(hourList){
 	         str+='</select></span> ';
 	         str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">结束时间:&nbsp;&nbsp;'; 
 	         str += "<select id='end_time' style='width: 115px;margin-top: -30px;margin-left:60px;' class='m-wrap span12' tabindex='1' name='end_time'>";
-	         var myobj=hourList.split("=");;
 				for (var j = 0; j < myobj.length; j++) {
 					if(myobj[j].indexOf("code_name") > 0 ){
 						 str +="<option value=" + myobj[j+1].split(",")[0] +">" + myobj[j+1].split(",")[0] + "</option>";

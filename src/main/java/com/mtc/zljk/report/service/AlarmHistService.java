@@ -30,4 +30,12 @@ public interface AlarmHistService {
 	 * @throws Exception
 	 */
 	List<PageData> selectSBCode() throws Exception;
+
+	/***
+	 * 查询报警次数
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	PageData selectAlarmForMobile(PageData pd) throws Exception;
 }

@@ -32,4 +32,8 @@ public class AlarmHistServiceImpl implements AlarmHistService {
 		return (List<PageData>) dao.findForList("AlarmHistMapper.selectSBCode", null);
 	}
 
+	public PageData selectAlarmForMobile(PageData pd) throws Exception{
+		return (PageData) dao.findForObject("AlarmHistMapper.selectAlarmForMobile", pd);
+	}
+
 }

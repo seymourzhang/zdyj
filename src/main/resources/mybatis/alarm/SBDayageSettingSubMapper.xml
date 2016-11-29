@@ -956,7 +956,8 @@
 			set_water_deprivation,
 			high_water_deprivation,
 			low_water_deprivation,
-			alarm_type
+			alarm_type,
+			is_start
 		) values 
 		<foreach collection="list" index="index" item="item"  open="" separator="," close="" >  
 	        (#{item.uid_num},
@@ -981,7 +982,8 @@
 				#{item.set_water_deprivation},
 				#{item.high_water_deprivation},
 				#{item.low_water_deprivation},
-				#{item.alarm_type})  
+				#{item.alarm_type},
+				#{item.is_start})  
          </foreach>
 		</insert>
 	
@@ -1002,7 +1004,7 @@
 	   <!-- 负压 -->
 	   <if test="alarm_type == 2"> 
 	   <foreach collection="list" index="index" item="item"  open="" separator=";" close="" > 
-		UPDATE s_b_dayage_temp_sub SET set_lux = #{item.set_lux} ,high_lux = #{item.high_lux} ,low_lux = #{item.low_lux} 
+		UPDATE s_b_dayage_temp_sub SET set_lux = #{item.set_lux} ,high_lux = #{item.high_lux} ,low_lux = #{item.low_lux} ,is_start = #{is_start}
 		 , modify_person = #{item.modify_person}
 		  , modify_date = #{item.modify_date} , modify_time = #{item.modify_time}
 		WHERE uid_num = #{item.uid_num} AND farm_id = #{item.farmId} AND house_id = #{item.houseId} 

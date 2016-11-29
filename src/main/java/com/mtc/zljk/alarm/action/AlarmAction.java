@@ -503,7 +503,7 @@ public class AlarmAction extends BaseAction{
 		PageData pd = new PageData();
 		pd1.put("modify_person",user.getId());
 		pd1.put("modify_date", new Date());	
-		pd1.put("modify_time", new Date());
+		pd1.put("modify_time", new Date());		
 		String tr = (String) pd1.get("updateRow");
         String[] alarmSet = tr.split(";");
         for(String as:alarmSet){
@@ -516,6 +516,7 @@ public class AlarmAction extends BaseAction{
     	pd1.put("houseId", houseId);
     	int dayage = Integer.parseInt(alarmSet2[3]);
     	pd1.put("day_age", dayage);
+    	int startTime=0,endTime=0;
     	if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==1){
     	 	float set_temp = Float.parseFloat(alarmSet2[4]);
     	 	pd1.put("set_temp", set_temp);
@@ -535,6 +536,10 @@ public class AlarmAction extends BaseAction{
     	 	pd1.put("start_time", start_time);
     	 	String end_time = alarmSet2[8];
     	 	pd1.put("end_time", end_time);
+    	 	String[] st = start_time.split(":");
+    	 	startTime = Integer.valueOf(st[0]).intValue();
+    	 	String[] et = end_time.split(":");
+    	 	endTime = Integer.valueOf(et[0]).intValue();
     	}else if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==3){
     		float set_co2 = Float.parseFloat(alarmSet2[4]);
     	 	pd1.put("set_co2", set_co2);
@@ -560,7 +565,7 @@ public class AlarmAction extends BaseAction{
 			  set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 			  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
-		int uid_num=0,day_age=0,day_age2=0;
+		int uid_num=0,day_age=0,day_age2=0,startTime2=0,endTime2=0;
 		if(Integer.valueOf(pd1.get("alarm_type").toString()).intValue()==1){
 			//计算温度差、基值
 			for(int i=0;i<pageData1.size();i++){
@@ -731,6 +736,10 @@ public class AlarmAction extends BaseAction{
 					//uid_num
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
+					String[] st2 = pageData1.get(i+1).get("start_time").toString().split(":");
+					startTime2 = Integer.valueOf(st2[0]).intValue();
+					String[] et2 = pageData1.get(i+1).get("end_time").toString().split(":");
+					endTime2 = Integer.valueOf(et2[0]).intValue();
 					 }
 					break;
 				}else 
@@ -788,6 +797,10 @@ public class AlarmAction extends BaseAction{
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
 					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
+					String[] st2 = pageData1.get(i+1).get("start_time").toString().split(":");
+					startTime2 = Integer.valueOf(st2[0]).intValue();
+					String[] et2 = pageData1.get(i+1).get("end_time").toString().split(":");
+					endTime2 = Integer.valueOf(et2[0]).intValue();
 					break;
 				}else if(pageData1.get(i).get("uid_num").toString().equals(pd1.get("uid_num").toString()) && i==pageData1.size()-1){
 						//目标负压差
@@ -1124,6 +1137,11 @@ public class AlarmAction extends BaseAction{
 					pd4.put("set_water_deprivation", null);
 					pd4.put("high_water_deprivation",null);
 					pd4.put("low_water_deprivation",null);
+					if(startTime<=j && j<=endTime){
+						pd4.put("is_start","0");
+					}else{
+						pd4.put("is_start","1");
+					}
 					list.add(pd4);
 //					alarmService.updateSBDayageTempSub(pd3);
 				}}
@@ -1283,6 +1301,11 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("set_water_deprivation", null);
 						   pd6.put("high_water_deprivation",null);
 						   pd6.put("low_water_deprivation",null);
+						   if(startTime2<=j && j<=endTime2){
+							   pd6.put("is_start","0"); 
+						   }else{
+							   pd6.put("is_start","1"); 
+						   }
 						   list2.add(pd6);
 //							alarmService.updateSBDayageTempSub(pd4);
 					   } }
@@ -1386,7 +1409,11 @@ public class AlarmAction extends BaseAction{
 			pd.put("day_age", Integer.valueOf(pd.get("day_age").toString()).intValue()*7);
 		}
 		List<PageData> pageData5 = alarmService.selectByCondition3(pd);//主要条件：农场、栋舍、日龄
-		int pdID =0;
+		int pdID =0,startTime=0,endTime=0;
+		String[] st = pd.get("start_time").toString().split(":");
+		startTime = Integer.valueOf(st[0]).intValue();
+		String[] et = pd.get("end_time").toString().split(":");
+		endTime = Integer.valueOf(et[0]).intValue();
 		if(pageData5.size()==0){
 			pd.put("create_person",user.getId());
 			pd.put("create_date", new Date());	
@@ -1415,7 +1442,7 @@ public class AlarmAction extends BaseAction{
 			  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 		int uid_num=0;
 		int day_age=0;
-		int day_age2=0;
+		int day_age2=0,startTime2=0,endTime2=0;
 		try {
 		List<PageData> pageData1 = alarmService.selectByCondition(pd);//查询一个栋舍的全部记录
 		if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==1){
@@ -1572,6 +1599,10 @@ public class AlarmAction extends BaseAction{
 						//uid_num
 						uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
 						day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
+						String[] st2 = pageData1.get(i+1).get("start_time").toString().split(":");
+						startTime2 = Integer.valueOf(st2[0]).intValue();
+						String[] et2 = pageData1.get(i+1).get("end_time").toString().split(":");
+						endTime2 = Integer.valueOf(et2[0]).intValue();
 					}					
 					break;
 				}else 
@@ -1631,6 +1662,10 @@ public class AlarmAction extends BaseAction{
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
 					//日龄
 					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
+					String[] st2 = pageData1.get(i+1).get("start_time").toString().split(":");
+					startTime2 = Integer.valueOf(st2[0]).intValue();
+					String[] et2 = pageData1.get(i+1).get("end_time").toString().split(":");
+					endTime2 = Integer.valueOf(et2[0]).intValue();
 					break;
 				}else if(pageData1.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 						pageData1.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
@@ -1962,6 +1997,11 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("set_water_deprivation", null);
 				    	pd3.put("high_water_deprivation", null);
 				    	pd3.put("low_water_deprivation", null);
+				    	if(startTime<=j && j<=endTime){
+				    		pd3.put("is_start", "0");
+				    	}else{
+				    		pd3.put("is_start", "1");
+				    	}
 				    	list.add(pd3);
 //						alarmService.saveSBDayageTempSub(pd2);
 			    	}
@@ -2125,6 +2165,11 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
 					pd5.put("low_water_deprivation",null);
+					if(startTime2<=j && j<=endTime2){
+			    		pd5.put("is_start", "0");
+			    	}else{
+			    		pd5.put("is_start", "1");
+			    	}
 					list2.add(pd5);
 //					alarmService.saveSBDayageTempSub(pd4);
 				   }
@@ -2541,7 +2586,11 @@ public class AlarmAction extends BaseAction{
 			
 		for(PageData pageData1 : pageData){
 			int g=0;
-			int pdID=0;
+			int pdID=0,startTime=0,endTime=0;
+			String[] st = pageData1.get("start_time").toString().split(":");
+			startTime = Integer.valueOf(st[0]).intValue();
+			String[] et = pageData1.get("end_time").toString().split(":");
+			endTime = Integer.valueOf(et[0]).intValue();
 			pd.put("houseId", pd.get("houseId2"));
 			pd.put("day_age", Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7);
 			pd.put("set_temp", pageData1.get("set_temp"));
@@ -2583,7 +2632,7 @@ public class AlarmAction extends BaseAction{
 						  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 						  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 					int uid_num=0;
-					int day_age=0,day_age2=0;
+					int day_age=0,day_age2=0,startTime2=0,endTime2=0;
 //					try {
 					List<PageData> pageData5 = alarmService.selectByCondition(pd2);//查询一个栋舍的全部记录
 					if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==1){
@@ -2736,6 +2785,10 @@ public class AlarmAction extends BaseAction{
 									//uid_num
 									uid_num = Integer.valueOf(pageData5.get(i+1).get("uid_num").toString()).intValue();
 									day_age2 = Integer.valueOf(pageData5.get(i+1).get("day_age").toString()).intValue()*7;
+									String[] st2 = pageData5.get(i+1).get("start_time").toString().split(":");
+									startTime2 = Integer.valueOf(st2[0]).intValue();
+									String[] et2 = pageData5.get(i+1).get("end_time").toString().split(":");
+									endTime2 = Integer.valueOf(et2[0]).intValue();
 								}					
 								break;
 							}else 
@@ -2794,6 +2847,10 @@ public class AlarmAction extends BaseAction{
 								uid_num = Integer.valueOf(pageData5.get(i+1).get("uid_num").toString()).intValue();
 								day_age2 = Integer.valueOf(pageData5.get(i+1).get("day_age").toString()).intValue()*7;
 								day_age = Integer.valueOf(pageData5.get(i-1).get("day_age").toString()).intValue()*7;
+								String[] st2 = pageData5.get(i+1).get("start_time").toString().split(":");
+								startTime2 = Integer.valueOf(st2[0]).intValue();
+								String[] et2 = pageData5.get(i+1).get("end_time").toString().split(":");
+								endTime2 = Integer.valueOf(et2[0]).intValue();
 								break;
 							}else if(pageData5.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 									pageData5.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
@@ -3117,6 +3174,11 @@ public class AlarmAction extends BaseAction{
 							pd3.put("set_water_deprivation", null);
 							pd3.put("high_water_deprivation",null);
 							pd3.put("low_water_deprivation",null);
+							if(startTime<=j && j<=endTime){
+								pd3.put("is_start","0");
+							}else{
+								pd3.put("is_start","1");
+							}
 							list.add(pd3);
 //							alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -3278,6 +3340,11 @@ public class AlarmAction extends BaseAction{
 								pd5.put("set_water_deprivation", null);
 								pd5.put("high_water_deprivation",null);
 								pd5.put("low_water_deprivation",null);
+								if(startTime2<=j && j<=endTime2){
+									pd5.put("is_start","0");
+								}else{
+									pd5.put("is_start","1");
+								}
 								list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd5);
 						    	}
@@ -3376,7 +3443,7 @@ public class AlarmAction extends BaseAction{
 					  set_water_deprivation=0,high_water_deprivation=0,low_water_deprivation=0,set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 					  set_water_deprivation2=0,high_water_deprivation2=0,low_water_deprivation2=0,set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
 				int uid_num=0;
-				int day_age=0,day_age2=0;
+				int day_age=0,day_age2=0,startTime2=0,endTime2=0;
 //				try {
 				List<PageData> pageData8 = alarmService.selectByCondition(pd);//查询一个栋舍的全部记录
 				if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==1){
@@ -3530,6 +3597,10 @@ public class AlarmAction extends BaseAction{
 								//uid_num
 								uid_num = Integer.valueOf(pageData8.get(i+1).get("uid_num").toString()).intValue();
 								day_age2 = Integer.valueOf(pageData8.get(i+1).get("day_age").toString()).intValue()*7;
+								String[] st2 = pageData8.get(i+1).get("start_time").toString().split(":");
+								startTime2 = Integer.valueOf(st2[0]).intValue();
+								String[] et2 = pageData8.get(i+1).get("end_time").toString().split(":");
+								endTime2 = Integer.valueOf(et2[0]).intValue();
 							}				
 							break;
 						}else 
@@ -3589,6 +3660,10 @@ public class AlarmAction extends BaseAction{
 							day_age2 = Integer.valueOf(pageData8.get(i+1).get("day_age").toString()).intValue()*7;
 							//日龄
 							day_age = Integer.valueOf(pageData8.get(i-1).get("day_age").toString()).intValue()*7;
+							String[] st2 = pageData8.get(i+1).get("start_time").toString().split(":");
+							startTime2 = Integer.valueOf(st2[0]).intValue();
+							String[] et2 = pageData8.get(i+1).get("end_time").toString().split(":");
+							endTime2 = Integer.valueOf(et2[0]).intValue();
 							break;
 						}else if(pageData8.get(i).get("farm_id").toString().equals(pd.get("farmId").toString()) && 
 								pageData8.get(i).get("house_id").toString().equals(pd.get("houseId").toString()) &&
@@ -3915,6 +3990,11 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_water_deprivation", null);
 						    	pd3.put("high_water_deprivation", null);
 						    	pd3.put("low_water_deprivation", null);
+						    	if(startTime<=j && j<=endTime){
+						    		pd3.put("is_start", "0");
+						    	}else{
+						    		pd3.put("is_start", "1");
+						    	}
 						    	list.add(pd3);
 //								alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -4071,6 +4151,11 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_water_deprivation", null);
 							    	pd5.put("high_water_deprivation",null);
 							    	pd5.put("low_water_deprivation",null);
+							    	if(startTime2<=j && j<=endTime2){
+							    		pd5.put("is_start", "0");
+							    	}else{
+							    		pd5.put("is_start", "1");
+							    	}
 								list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd4);
 							   }
