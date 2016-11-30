@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DailyMapper">
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+    <update id="dailySave" parameterType="pd">
+        update s_b_breed_detail
+        set
+            male_death_pm       = ${death_num_male}
+            , female_death_pm     = ${death_num_female}
+            , male_culling_pm     = ${culling_num_male}
+            , female_culling_pm   = ${culling_num_female}
+            , male_cur_weight     = ${body_weight_male}
+            , female_cur_weight   = ${body_weight_female}
+            , male_mistake        = ${gender_error_male}
+            , female_mistake      = ${gender_error_female}
+            , feed_name           = ${feed_code_female}
+            , female_cur_feed     = ${feed_weight_female}
+            , female_cur_water    = ${water_capacity_female}
+            , laying_cur_amount   = ${layer_amount}
+            , female_cur_evenness = ${uniformity}
+
+        where age = ${DayAge} and house_code = ${HouseId} and batch_id = #{BreedBatchId}
+    </update>
+
+    <select id="selectDailyByHouse" parameterType="pd" useCache="false">
+        select batch_id
+              , house_code
+              , growth_date
+              , age
+              , growth_week_age
+              , laying_week_age
+              , male_death_pm
+              , female_death_pm
+              , male_culling_pm
+              , female_culling_pm
+              , male_cur_weight
+              , female_cur_weight
+              , male_mistake
+              , female_mistake
+              , feed_name
+              , female_cur_feed
+              , female_cur_water
+              , laying_cur_amount
+              , female_cur_evenness
+          from s_b_breed_detail
+          where batch_id = #{BreedBatchId}
+              and house_code = ${houseId}
+              and growth_date = #{SpecialDate}
+    </select>
+</mapper>
