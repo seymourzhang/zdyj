@@ -63,7 +63,26 @@ public class FarmServiceImpl implements FarmService {
 	public List<PageData> findDevice(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDFarmMapper.findDevice", pd);
 	}
-	
+
+	public List<PageData> findSensor(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDFarmMapper.findSensor", pd);
+	}
+
+	public int mappingDevice(PageData pd) throws Exception {
+		return (int)dao.save("SDFarmMapper.mappingDevice", pd);
+	}
+
+	public int delDevice(PageData pd) throws Exception {
+		return (int)dao.delete("SDFarmMapper.delDevice", pd);
+	}
+
+	public int delSensor(PageData pd) throws Exception {
+		return (int)dao.delete("SDFarmMapper.delSensor", pd);
+	}
+
+	public int insertSensor(PageData pd) throws Exception {
+		return (int)dao.delete("SDFarmMapper.insertSensor", pd);
+	}
 
 	public List<PageData> findHouseDevice(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDFarmMapper.findHouseDevice", pd);

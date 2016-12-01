@@ -69,12 +69,19 @@
 				a.create_time,
                 farm.farm_add1,
                 farm.farm_add2,
-                farm.farm_add3
+                farm.farm_add3,
+				house.house_type,
+				code.code_name house_type_name
 	     FROM  s_d_organization a
 		 LEFT JOIN s_d_organization b
 			ON a.parent_id = b.id
          LEFT JOIN s_d_farm farm
             ON farm.id = a.id
+		LEFT JOIN s_d_house house
+			ON house.id = a.id
+		LEFT JOIN (SELECT * FROM s_d_code
+						WHERE code_type='HOUSE_TYPE') code
+			ON code.biz_code = house.house_type
 	     WHERE 1=1
 				AND a.freeze_status=0
 		<if test="id != null">

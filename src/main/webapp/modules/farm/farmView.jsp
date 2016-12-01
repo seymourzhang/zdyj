@@ -17,7 +17,7 @@
 	<div id="page-content" class="clearfix" style="padding-top: 10px;">
 		<div class="row-fluid">
 			<div class="span12">
-
+				<form id="farmViewForm">
 				<div class="row-fluid">
 					<div class="span12" align="right">
 						<a href="javascript:;" class="btn green" onclick="addFarm();"><i class="icon-plus"></i> 新增</a>
@@ -48,10 +48,22 @@
 									<tr class="odd gradeX">
 										<td class="hidden-480" style="text-align: center;">${fl.id}</td>
 										<td>${fl.farm_name_chs}</td>
-										<td>${fl.province}${fl.city}${fl.area}</td>
+										<td>
+											<c:if test="${fl.province!='' && fl.province!=null}">
+												${fl.province}
+											</c:if>
+											<c:if test="${fl.city!='' && fl.city!=null}">
+												&nbsp;&nbsp;>>&nbsp;&nbsp;
+												${fl.city}
+											</c:if>
+											<c:if test="${fl.area!='' && fl.area!=null}">
+												&nbsp;&nbsp;>>&nbsp;&nbsp;
+												${fl.area}
+											</c:if>
+										</td>
 										<td>${fl.code_name1}</td>
 										<td>${fl.code_name}</td>
-										<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editFarm(${fl.id})" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delFarm(${fl.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
+										<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editFarm(${fl.id})" class="btn mini blue"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delFarm(${fl.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
 									</tr>
 								</c:forEach>
 							</c:if>
@@ -59,9 +71,8 @@
 						</table>
 					</div>
 				</div>
-
-
-
+				</form>
+			</div>
 			</div>
 
 		</div>
@@ -139,8 +150,11 @@
 				return;
 			}
 			//询问框
-			layer.confirm('你确定要删除此记录吗？', {
-				btn : [ '确定', '取消' ]
+			layer.confirm('确定要删除该农场吗？', {
+                skin: 'layui-layer-lan'
+                , closeBtn: 0
+				, shift: 4 //动画类型
+			    , btn : [ '确定', '取消' ]
 			//按钮
 			}, function() {
 				$.ajax({

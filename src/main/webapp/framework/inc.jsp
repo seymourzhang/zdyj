@@ -27,8 +27,6 @@
 <script type="text/javascript" src="<%=path %>/framework/layer/layer.js"></script>
 <!--引入弹窗组件end-->
 
-
-
 <script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
 <link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
 <script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>

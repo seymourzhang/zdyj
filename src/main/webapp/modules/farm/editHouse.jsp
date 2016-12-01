@@ -42,14 +42,28 @@ function  editHouse(){
 	  var ht=$("select[name='house_type']").val();
 	/*   var dk=$("#deviceKey").val(); */
 		if(hn==""){
-			$('#editHouse_msg').html("栋舍名称不能为空！");
+            layer.msg("栋舍名称不能为空", {
+                skin: 'layui-layer-lan'
+                , closeBtn: 0
+                , shift: 4 //动画类型
+            });
 		}else if(ht==""||ht==null){
-			$('#editHouse_msg').html("请选择栋舍类型！");
+//			$('#editHouse_msg').html("请选择栋舍类型！");
+            layer.msg("请选择栋舍类型", {
+                skin: 'layui-layer-lan'
+                , closeBtn: 0
+                , shift: 4 //动画类型
+            });
 		/* }else if(dk==""){
 			$('#editHouse_msg').html("请选择对应设备！"); */
 		}else if(hn!=hoNname){
 			if(restHouseName(hn,fid)){
-				$('#editHouse_msg').html("栋舍名称已经存在！");
+//				$('#editHouse_msg').html("栋舍名称已经存在！");
+                layer.msg("栋舍名称已经存在", {
+                    skin: 'layui-layer-lan'
+                    , closeBtn: 0
+                    , shift: 4 //动画类型
+                });
 			}
 		}else{
 			var param =$.serializeObject($('#editHouse_form'));
@@ -136,25 +150,32 @@ function closeB(){
 				  	</select>
 				</div>
 			</div>
-			<div class="control-group" style="clear:both;">
-				<label class="control-label" style="width: 100px;">对应设备:</label>
-				<div  class="controls" style="margin-left: 130px; margin-right: 10px; " >
-					<c:if test="${!empty device}">
-	                    <c:forEach var="de" items="${device}">
-	                    	<label class="checkbox"  style="width: 250px;">
-									<div><span><input type="checkbox" value="${de.main_id }" name="deviceKey1" onclick="houseClick()">${de.device_factory}（设备号:${de.device_code}端口号:${de.port_id}）</span></div> 
-						   </label>
-	                    </c:forEach>
-	                    </c:if>
+			<%--<div class="control-group" style="clear:both;">--%>
+				<%--<label class="control-label" style="width: 100px;">对应设备:</label>--%>
+				<%--<div  class="controls" style="margin-left: 130px; margin-right: 10px; " >--%>
+					<%--<c:if test="${!empty device}">--%>
+	                    <%--<c:forEach var="de" items="${device}">--%>
+	                    	<%--<label class="checkbox"  style="width: 250px;">--%>
+									<%--<div><span><input type="checkbox" value="${de.main_id }" name="deviceKey1" onclick="houseClick()">${de.device_factory}（设备号:${de.device_code}端口号:${de.port_id}）</span></div> --%>
+						   <%--</label>--%>
+	                    <%--</c:forEach>--%>
+	                    <%--</c:if>--%>
+				<%--</div>--%>
+			<%--</div>--%>
+			<%--<div class="control-group" style="clear:both;height: 30px;text-align: center;">--%>
+				<%--<label class="control-label" style="padding-left: 140px;color: red; width:500px; text-align: center;" id="editHouse_msg"></label>--%>
+			<%--</div>--%>
+			<div class="row-fluid">
+				<div class="span3" align="center">
 				</div>
-			</div>
-			<div class="control-group" style="clear:both;height: 30px;text-align: center;">
-				<label class="control-label" style="padding-left: 140px;color: red; width:500px; text-align: center;" id="editHouse_msg"></label>
-			</div>
-			<div class="form-actions" style="padding-left: 290px;" >
-				<button type="button" class="btn blue" onclick="editHouse()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				<button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
+				<div class="span3" align="center">
+					<button type="button" class="btn blue" onclick="editHouse()">确定</button>
+				</div>
+				<div class="span3" align="center">
+					<button type="button" class="btn" onclick="closeB()">取消</button>
+				</div>
+				<div class="span3" align="center">
+				</div>
 			</div>
 		</form>
 		<!-- END FORM-->  

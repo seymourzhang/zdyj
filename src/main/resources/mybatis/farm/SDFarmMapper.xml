@@ -127,8 +127,12 @@
 		 create_time ,
 		 modify_person ,
 		 modify_date ,
-		 modify_time 
-		from s_d_house 
+		 modify_time,
+		 code.code_name house_type_name
+		from s_d_house
+		LEFT JOIN (SELECT * FROM s_d_code
+					WHERE code_type='HOUSE_TYPE') code
+		ON code.biz_code = house_type
 		where 1=1
         <if test="houseId != null and houseId != 0">
 			and id = #{houseId}
@@ -353,19 +357,96 @@
 	<!-- 查询设备表 -->
 	<select id="findDevice" parameterType="pd" resultType="pd" useCache="false">
 		select * from s_d_device t
-		where not exists (
-		   select 1 from (select main_id from s_b_devi_house a 
+		where exists (
+		   select 1 from (select device_code from s_b_devi_house a
 		   INNER JOIN s_d_house b on a.house_id = b.house_code and b.freeze_status = '0'
 		   <if test="house_id != null and house_id !='' "> 
-         		and a.house_id != #{house_id} 
+         		and a.house_id = #{house_id}
            </if> 
 		   ) t1
-		where t.main_id = t1.main_id)
-		<if test="main_id != null and main_id !='' "> 
-         	and t.main_id = #{main_id} 
+		where t.device_code = t1.device_code)
+		<if test="device_code != null and device_code !='' ">
+         	and t.device_code = #{device_code}
         </if> 
 	</select>
-	
+
+	<!-- 查询传感器表 -->
+	<select id="findSensor" parameterType="pd" resultType="pd" useCache="false">
+		SELECT
+			c.biz_code location_code
+			,c.code_name location_name
+			,IFNULL(dds.sensor_no,'') sensor_no
+			,IFNULL(dds.main_id,'') main_id
+			,IFNULL(dds.sensor_code,'') sensor_type
+		FROM s_d_code c
+			LEFT JOIN s_d_device_sub dds
+			ON c.biz_code = dds.show_column
+				<if test="sensor_code != null and sensor_code !='' ">
+					AND dds.sensor_code = #{sensor_code}
+				</if>
+				<if test="main_id != null and main_id !='' ">
+					AND dds.main_id = #{main_id}
+				</if>
+			WHERE c.code_type='SENSOR_LOCATION'
+			ORDER BY c.bak1, dds.main_id, dds.sensor_code
+	</select>
+
+	<!-- 绑定栋舍与设备 -->
+	<insert id="mappingDevice" parameterType="pd"  flushCache="false" keyProperty="id">
+		INSERT INTO s_b_devi_house(device_code
+									,device_type
+									,farm_id
+									,house_id
+									,create_person
+									,create_date
+									,create_time)
+			SELECT
+			  device_code
+			  ,device_type
+			  ,#{farm_id}
+			  ,#{house_id}
+			  ,#{create_person}
+			  ,current_date
+			  ,current_time
+			FROM s_d_device
+			WHERE device_code = #{device_code}
+	</insert>
+
+	<!-- 解绑栋舍与设备 -->
+	<delete id="delDevice" parameterType="pd"  flushCache="false">
+		DELETE FROM s_b_devi_house
+			WHERE device_code = #{device_code}
+				AND house_id = #{house_id}
+	</delete>
+
+	<!-- 解绑设备与传感器 -->
+	<delete id="delSensor" parameterType="pd"  flushCache="false">
+		DELETE FROM s_d_device_sub
+			WHERE main_id = #{main_id}
+					<if test="sensor_code != null and sensor_code !='' ">
+						AND sensor_code = #{sensor_code}
+					</if>
+					<if test="show_column != null and show_column !='' ">
+						AND show_column = #{show_column}
+					</if>
+	</delete>
+
+	<!-- 绑定设备与传感器 -->
+	<insert id="insertSensor" parameterType="pd"  flushCache="false">
+		INSERT INTO s_d_device_sub(main_id
+									,sensor_code
+									,sensor_no
+									,show_column
+									,create_person
+									,make_date)
+			VALUES(#{main_id}
+					,#{sensor_code}
+					,#{sensor_no}
+					,#{show_column}
+					,#{create_person}
+					,CURRENT_DATE )
+	</insert>
+
 	<!-- 新增栋舍 Varro -->
 	<insert id="saveHouse" parameterType="pd"  flushCache="false" keyProperty="id">
 		insert into s_d_house (
@@ -447,7 +528,6 @@
 	<!-- 新增栋舍和设备关系 Varro -->
 	<insert id="saveDeviHouse" parameterType="pd"  flushCache="false" keyProperty="id">
 		insert into s_b_devi_house (
-			main_id,
 			device_code,
 			device_type,
 			port_id,
@@ -460,7 +540,6 @@
 			modify_date,
 			modify_time
 		) values (
-			#{main_id},
 			#{device_code},
 			#{device_type},
 			#{port_id},
@@ -492,7 +571,7 @@
 		SELECT s_d_device.* ,
 		 s_b_devi_house.house_id
 		FROM s_d_device
-		left join s_b_devi_house on s_b_devi_house.main_id=s_d_device.main_id
+		left join s_b_devi_house on s_b_devi_house.device_code = s_d_device.device_code
 		where 1=1
 		<if test="house_id != null and house_id !='' "> 
          	and s_b_devi_house.house_id = #{house_id} 

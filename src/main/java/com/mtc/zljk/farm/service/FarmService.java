@@ -84,15 +84,16 @@ public interface FarmService {
 	public int saveDeviHouse(PageData pd)throws Exception;
 	
 	public void delDeviHouse(PageData pd) throws Exception;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	public List<PageData> findSensor(PageData pd) throws Exception;
+
+	public int mappingDevice(PageData pd) throws Exception;
+
+	public int delDevice(PageData pd) throws Exception;
+
+	public int delSensor(PageData pd) throws Exception;
+
+	public int insertSensor(PageData pd) throws Exception;
+
 
 }

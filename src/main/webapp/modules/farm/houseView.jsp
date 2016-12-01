@@ -33,12 +33,12 @@
 							<thead>
 
 							<tr style="background-color: #1288C0; color: white;" >
-								<th class="hidden-480" style="text-align: center;">编号</th>
-								<th>舍号</th>
-								<th>所属农场</th>
-								<th>栋舍类别</th>
-								<th>数据采集器编号</th>
-								<th>操作</th>
+								<th class="hidden-480" style="width:5%;text-align: center;">编号</th>
+								<th style="width:5%;">舍号</th>
+								<th style="width:15%;">所属农场</th>
+								<th style="width:8%;">栋舍类别</th>
+								<th style="width:42%;">数据采集设备</th>
+								<th style="width:25%;">操作</th>
 							</tr>
 
 							</thead>
@@ -52,8 +52,9 @@
 										<td>${hl.code_name}</td>
 										<td>${hl.deviceName}</td>
 										<td class="center hidden-480" style="width: 145px;">
-											<a href="javascript:void(0);" onclick="editHouse('${hl.id}','${hl.deviceID}')" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp;
-											<a href="javascript:void(0);" onclick="delHouse(${hl.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
+											<a href="javascript:void(0);" onclick="editHouse('${hl.id}','${hl.deviceID}')" class="btn mini blue"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp;
+											<a href="javascript:void(0);" onclick="delHouse(${hl.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a>&nbsp;&nbsp;&nbsp;
+											<a href="javascript:void(0);" onclick="setDevice('${hl.id}','${hl.deviceID}')" class="btn mini purple"><i class="icon-list-alt"></i> 绑定设备</a></td>
 									</tr>
 								</c:forEach>
 							</c:if>
@@ -233,10 +234,12 @@
 				type: 2, 
 				title: "新增栋舍",
 				skin: 'layui-layer-lan',
-				area: ['670px', '430px'],
+				area: ['670px', '240px'],
 			    content: '<%=path%>/farm/addHouseUrl'
 		    });
 		}
+
+
 		//编辑栋舍
 		function editHouse(id,deviceID){
 			if(isRead==0){
@@ -251,7 +254,7 @@
 				type: 2, 
 				title: "修改",
 				skin: 'layui-layer-lan',
-				area: ['670px', '430px'],
+				area: ['670px', '240px'],
 			    content: "<%=path%>/farm/editHouseUrl?id=" + id+"&deviceID="+deviceID
 			});
 		}
@@ -267,8 +270,11 @@
 				return;
 			}
 			//询问框
-			layer.confirm('你确定要删除此记录吗？', {
-				btn : [ '确定', '取消' ]
+			layer.confirm('确定要删除该栋舍吗？', {
+                skin: 'layui-layer-lan'
+                , closeBtn: 0
+                , shift: 4 //动画类型
+                , btn : [ '确定', '取消' ]
 			//按钮
 			}, function() {
 				$.ajax({
@@ -291,9 +297,27 @@
 				});
 			});
 		}
-		
-		
+
+        //绑定设备
+        function setDevice(id,deviceID){
+            if(isRead==0){
+                layer.alert('无权限，请联系管理员!', {
+                    skin: 'layui-layer-lan'
+                    ,closeBtn: 0
+                    ,shift: 4 //动画类型
+                });
+                return;
+            }
+            layer.open({
+                type: 2,
+                title: "绑定",
+                skin: 'layui-layer-lan',
+                area: ['1000px', '450px'],
+                content: "<%=path%>/farm/setDeviceHouseRelation?id=" + id
+            });
+        }
 		
 	</script>
+
 </body>
 </html>

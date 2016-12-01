@@ -12,19 +12,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Seymour on 2016/11/30.
  */
 @Controller
 @RequestMapping("/dailyMobile")
-public class DailyQueryMobileAction extends BaseAction{
+public class DailyQueryMobileAction extends BaseAction {
 
     @Autowired
     private DailyService dailyService;
 
     @RequestMapping("/dailySave")
-    public void dailySave(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void dailySave(HttpServletRequest request, HttpServletResponse response) throws Exception {
         JSONObject resJson = new JSONObject();
         String dealRes = null;
         PageData pd = new PageData();
@@ -70,7 +72,7 @@ public class DailyQueryMobileAction extends BaseAction{
         pd.put("uniformity", uniformity);
 
         int flag = dailyService.dailySave(pd);
-        if (flag < 0){
+        if (flag < 0) {
             resJson.put("Result", "Fail");
             resJson.put("Error", "更新失败！");
         } else {
@@ -78,11 +80,11 @@ public class DailyQueryMobileAction extends BaseAction{
             resJson.put("Error", "");
         }
         dealRes = Constants.RESULT_SUCCESS;
-        DealSuccOrFail.dealApp(request, response, dealRes,resJson);
+        DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }
 
     @RequestMapping("/dailyQuery")
-    public void dailyQuery(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void dailyQuery(HttpServletRequest request, HttpServletResponse response) throws Exception {
         JSONObject resJson = new JSONObject();
         String dealRes = null;
         PageData pd = new PageData();
@@ -93,12 +95,69 @@ public class DailyQueryMobileAction extends BaseAction{
         int userId = jsonObject.optInt("id_spa");
         JSONObject tUserJson = jsonObject.getJSONObject("params");
 
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+
         int HouseId = tUserJson.optInt("HouseId");
-        int BreedBatchId = tUserJson.optInt("BreedBatchId");
+        String BreedBatchId = tUserJson.optString("BreedBatchId");
         String SpecialFlag = tUserJson.optString("SpecialFlag");
-        String SpecialDate = tUserJson.optString("SpecialFlag");
+        String SpecialDate = tUserJson.optString("SpecialDate");
+        pd.put("HouseId", HouseId);
+        pd.put("BreedBatchId", BreedBatchId);
 
-
+        PageData date = dailyService.selectDate(pd);
+        Date lairage = sdf1.parse(date.get("lairage").toString());
+        Date marketedDate = sdf1.parse(date.get("marketed_date").toString());
+        Date specialDate = sdf1.parse(SpecialDate);
+        pd.put("SpecialDate", SpecialDate);
+        PageData data = dailyService.selectBySpecialDate(pd);
+        if ("Y".equals(SpecialFlag)) {
+            if (data == null) {
+                resJson.put("Result", "Fail");
+                resJson.put("Error", "暂无数据！");
+            }
+        } else if ("N".equals(SpecialFlag)) {
+            Date curDate = new Date();
+            pd.put("SpecialDate", curDate);
+            data = dailyService.selectBySpecialDate(pd);
+            if (data == null) {
+                if (curDate.before(lairage)) {
+                    pd.put("SpecialDate", sdf1.format(lairage));
+                    data = dailyService.selectBySpecialDate(pd);
+                } else if (curDate.after(marketedDate)) {
+                    pd.put("SpecialDate", sdf1.format(marketedDate));
+                    data = dailyService.selectBySpecialDate(pd);
+                }
+            }
+        }
+        if (data != null) {
+            JSONObject dataInfo = new JSONObject();
+            dataInfo.put("BreedBatchId", data.get("batch_id"));
+            dataInfo.put("HouseId", data.get("house_code"));
+            dataInfo.put("GrowthDate", data.get("growth_date"));
+            dataInfo.put("DayAge", data.get("age"));
+            dataInfo.put("GrowthWeekAge", data.get("growth_week_age"));
+            dataInfo.put("LayerWeekAge", data.get("laying_week_age"));
+            dataInfo.put("death_num_male", data.get("male_death_pm"));
+            dataInfo.put("death_num_female", data.get("female_death_pm"));
+            dataInfo.put("culling_num_male", data.get("male_culling_pm"));
+            dataInfo.put("culling_num_female", data.get("female_culling_pm"));
+            dataInfo.put("body_weight_male", data.get("male_cur_weight"));
+            dataInfo.put("body_weight_female", data.get("female_cur_weight"));
+            dataInfo.put("gender_error_male", data.get("male_mistake"));
+            dataInfo.put("gender_error_female", data.get("female_mistake"));
+            dataInfo.put("feed_code_female", data.get("feed_name"));
+            dataInfo.put("feed_weight_female", data.get("female_cur_feed"));
+            dataInfo.put("water_capacity_female", data.get("female_cur_water"));
+            dataInfo.put("layer_amount", data.get("laying_cur_amount"));
+            dataInfo.put("uniformity", data.get("female_cur_evenness"));
+            resJson.put("DataInfo", dataInfo);
+            resJson.put("Error", "");
+            resJson.put("Result", "Success");
+        }else{
+            resJson.put("Result", "Fail");
+            resJson.put("Error", "暂无数据！");
+        }
+        dealRes = Constants.RESULT_SUCCESS;
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }
 }

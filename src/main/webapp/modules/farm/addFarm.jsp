@@ -169,7 +169,7 @@ function closeB(){
 				</div>
 			</div>
 			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 100px;">所在县:</label>
+				<label class="control-label" style="width: 100px;">所在区/县:</label>
 				<div class="controls" style="margin-left: 110px;">
 					<select id="area_id" class="medium m-wrap"  name="farm_add3" style="width: 350px;">
 					 <option value="">请选择</option>

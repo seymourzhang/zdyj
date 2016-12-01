@@ -113,7 +113,7 @@ function  editFarm(){
 				if(result.msg=='1'){
 					$("#tab_fag",window.parent.document).val(2);
 					$("#farmViewForm",window.parent.document).submit();
-					parent.layer.closeAll();   
+					parent.layer.closeAll();
 				}else{
 					alert("修改失败！");
 				}

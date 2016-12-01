@@ -191,8 +191,7 @@ public class LoginMobileAction extends BaseAction{
         pd.put("farm_id", farmId);
         JSONArray ja = new JSONArray();
         for (PageData pageData : ll) {
-            houses.add(pageData.get("id"));
-            pd.put("house_id", houses);
+            pd.put("house_code", pageData.get("id"));
             List<PageData> lpd = batchManageService.getCreateBatchData(pd);
             JSONObject o = new JSONObject();
             o.put("id", pageData.get("id"));

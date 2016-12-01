@@ -147,7 +147,7 @@ public class WirelessYTTask implements Runnable {
         boolean needreturn = messageStr1.substring(0, 1).equals("1");   // 是否需要应答帧
         String versionNo = messageStr1.substring(3, 6);
         String aesType = messageStr1.substring(6, 8);   //0-无加密  1-AES_128  2-AES_196   3-AES_256
-        int messageType = datas[datas_index++]; // 1-主动上报数据   2-设备信息查询   3-时间同步
+        byte messageType = datas[datas_index++]; // 1-主动上报数据   2-设备信息查询   3-时间同步
 
         // 数据长度(2字节)
         byte [] temp1 = {(byte)0,(byte)0,datas[datas_index++],datas[datas_index++]};
@@ -476,7 +476,7 @@ public class WirelessYTTask implements Runnable {
         return returnData;
     }
 
-    private byte[] genResponseByte(int messageType,byte[] frameSN){
+    private byte[] genResponseByte(byte messageType,byte[] frameSN){
         byte [] ResponseByte ;
         if(messageType == 3){
             ResponseByte = new byte[24];
@@ -491,14 +491,8 @@ public class WirelessYTTask implements Runnable {
         ResponseByte[3] = WirelessYTConstants.HEADBYTE[3];
 
         // 帧类型，2字节
-        if(messageType == 3){
-            // 时间同步
-            ResponseByte[4] = 0x44; // 0100 0100
-            ResponseByte[5] = WirelessYTConstants.TYPE_ACK;
-        }else{
-            ResponseByte[4] = 0x44; // 0100 0100
-            ResponseByte[5] = WirelessYTConstants.TYPE_DATA;
-        }
+        ResponseByte[4] = 0x44; // 0100 0100
+        ResponseByte[5] = messageType;
 
         // 帧长度，2字节
         byte[] len = ByteNumUtil.intToBytes(ResponseByte.length);

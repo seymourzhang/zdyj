@@ -28,7 +28,9 @@ function initTableWithToolBar(tableName,toolBar,dataColumns,dataJosn) {
 };
 
 function table(tableName,toolBar,dataColumns,dataJosn) {
+
     var oTableInit = new Object();
+
     //初始化Table
     oTableInit.Init = function () {
         $('#'+tableName+'Table').bootstrapTable({
@@ -58,7 +60,8 @@ function table(tableName,toolBar,dataColumns,dataJosn) {
             detailView: false,                   //是否显示父子表
             columns: dataColumns,
             data: dataJosn,
-            onEditableSave: function (field, row, oldValue, $el) {
+            // onEditableSave: editableSave,
+                // function (field, row, oldValue, $el) {
                 // $.ajax({
                 //     type: "post",
                 //     url: "/Editable/Edit",
@@ -76,7 +79,7 @@ function table(tableName,toolBar,dataColumns,dataJosn) {
                 //     }
                 //
                 // });
-            },
+            // },
         });
     };
 

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created by Seymour on 2016/11/30.
@@ -20,5 +21,17 @@ public class DailyServiceImpl implements DailyService{
 
     public int dailySave(PageData pd) throws Exception{
         return (Integer) dao.save("DailyMapper.dailySave", pd);
+    }
+
+    public List<PageData> dailyQuery(PageData pd) throws Exception{
+        return (List<PageData>) dao.findForList("DailyMapper.selectDailyByHouse", pd);
+    }
+
+    public PageData selectBySpecialDate(PageData pd) throws Exception{
+        return (PageData) dao.findForObject("DailyMapper.selectBySpecialDate", pd);
+    }
+
+    public PageData selectDate(PageData pd) throws Exception{
+        return (PageData) dao.findForObject("DailyMapper.selectDate", pd);
     }
 }

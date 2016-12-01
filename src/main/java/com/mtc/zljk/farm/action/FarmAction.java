@@ -9,6 +9,8 @@ import com.mtc.zljk.util.common.Page;
 import com.mtc.zljk.util.common.PageData;
 import com.mtc.zljk.util.service.ModuleService;
 
+import com.mtc.zljk.util.service.OrganService;
+import com.mtc.zljk.util.service.impl.OrganServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,9 @@ import javax.servlet.http.HttpSession;
 public class FarmAction extends BaseAction{
     @Autowired 
 	private FarmService farmService;
+
+	@Autowired
+	private OrganService organService;
     
     @Autowired
 	private ModuleService moduleService;
@@ -55,11 +60,11 @@ public class FarmAction extends BaseAction{
 			String deviceName ="";
 			for (int i = 0; i < houseDev.size(); i++) {
 				if((i+1)==houseDev.size()){
-					deviceID+=houseDev.get(i).getString("main_id");
-					deviceName+=houseDev.get(i).getString("device_factory")+"（设备号:"+houseDev.get(i).getString("device_code")+"端口号:"+houseDev.get(i).getString("port_id")+"）";
+					deviceID+=houseDev.get(i).getString("device_code");
+					deviceName+=houseDev.get(i).getString("device_factory")+"（设备号:"+houseDev.get(i).getString("device_code")+", 端口号:"+houseDev.get(i).getString("port_id")+"）";
 				}else{
-					deviceID+=houseDev.get(i).getString("main_id")+",";
-					deviceName+=houseDev.get(i).getString("device_factory")+"（设备号:"+houseDev.get(i).getString("device_code")+"端口号:"+houseDev.get(i).getString("port_id")+"）,";
+					deviceID+=houseDev.get(i).getString("device_code")+",";
+					deviceName+=houseDev.get(i).getString("device_factory")+"（设备号:"+houseDev.get(i).getString("device_code")+", 端口号:"+houseDev.get(i).getString("port_id")+"）,";
 				}
 			}
 			pageData.put("deviceID", deviceID);
@@ -68,6 +73,11 @@ public class FarmAction extends BaseAction{
 
 		}
 		mv.addObject("SDHouseList",houseList);
+		if(!StringUtils.isBlank(pd.getString("write_read"))){
+			session.setAttribute("write_read", pd.getString("write_read"));
+		}else{
+			pd.put("write_read", session.getAttribute("write_read"));
+		}
 		mv.addObject("pd",pd);
 		mv.setViewName("/modules/farm/houseView");
 		return mv;
@@ -103,6 +113,11 @@ public class FarmAction extends BaseAction{
 //			}
 //			batchList.add(pageData);
 //		}
+		if(!StringUtils.isBlank(pd.getString("write_read"))){
+			session.setAttribute("write_read", pd.getString("write_read"));
+		}else{
+			pd.put("write_read", session.getAttribute("write_read"));
+		}
 		mv.addObject("pd",pd);
 //		mv.addObject("SDBatchList",batchList);
 		
@@ -227,35 +242,35 @@ public class FarmAction extends BaseAction{
 	
 	
 	
-	
-	/**
-	 * 保存批次
-	 * @return
-	 */
-	@RequestMapping("/addBatch")
-	public void addBatch(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
-		Json j=new Json();
-		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		pd.put("operation_type","2");
-		pd.put("create_person",user.getId());
-		pd.put("create_date", new Date());	
-		pd.put("create_time", new Date());
-		try {
-			if(pd.get("count").equals("")){
-				pd.put("count", null);
-			}
-			farmService.saveBatch(pd);
-			j.setMsg("1");
-			j.setSuccess(true);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			j.setMsg("2");
-		}
-		super.writeJson(j, response);
-	}
+//
+//	/**
+//	 * 保存批次
+//	 * @return
+//	 */
+//	@RequestMapping("/addBatch")
+//	public void addBatch(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+//		Json j=new Json();
+//		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		pd.put("operation_type","2");
+//		pd.put("create_person",user.getId());
+//		pd.put("create_date", new Date());
+//		pd.put("create_time", new Date());
+//		try {
+//			if(pd.get("count").equals("")){
+//				pd.put("count", null);
+//			}
+//			farmService.saveBatch(pd);
+//			j.setMsg("1");
+//			j.setSuccess(true);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			j.setMsg("2");
+//		}
+//		super.writeJson(j, response);
+//	}
 	
 	/**
 	 * 保存
@@ -300,10 +315,10 @@ public class FarmAction extends BaseAction{
 		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		
+
 		pd.put("freeze_status",0);
 		pd.put("modify_person",user.getId());
-		pd.put("modify_date", new Date());	
+		pd.put("modify_date", new Date());
 		pd.put("modify_time", new Date());
 		try {
 			farmService.editFarm(pd);
@@ -356,10 +371,10 @@ public class FarmAction extends BaseAction{
 		/***栋舍类型***/
 		pd.put("code_type", "HOUSE_TYPE");
 		List<PageData> houseType= farmService.findCode(pd);
-		List<PageData> device= farmService.findDevice(pd);
+//		List<PageData> device= farmService.findDevice(pd);
 		mv.addObject("pd",pd);
 		mv.addObject("houseType",houseType);
-		mv.addObject("device",device);
+//		mv.addObject("device",device);
 		mv.addObject("farmList",getFarmList());
 		mv.setViewName("modules/farm/addHouse");
 		return mv;
@@ -392,8 +407,118 @@ public class FarmAction extends BaseAction{
 		mv.setViewName("modules/farm/editHouse");
 		return mv;
 	}
-	
-	
+
+
+	/**
+	 * 跳转到绑定栋舍与设备页面
+	 * raymon 2016-11-28
+	 * @return
+	 */
+	@RequestMapping(value="/setDeviceHouseRelation")
+	public ModelAndView setDeviceHouseRelation()throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = this.getPageData();
+		List<PageData> houselist=organService.getOrgListById(pd);
+		PageData houseData=houselist.get(0);
+		mv.addObject("houseData",houseData);
+		mv.addObject("pd",pd);
+		mv.setViewName("modules/farm/setDeviceHouseRelation");
+		return mv;
+	}
+
+	/**
+	 * 获取设备清单
+	 * @return
+	 */
+	@RequestMapping("/getDeviceList")
+	public void getDeviceList(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		List<PageData> deviceList = farmService.findDevice(pd);
+		j.setSuccess(true);
+		j.setObj(deviceList);
+		super.writeJson(j, response);
+	}
+
+	/**
+	 * 获取传感器清单
+	 * @return
+	 */
+	@RequestMapping("/getSensorList")
+	public void getSensorList(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		pd.put("sensor_code","1000");
+		List<PageData> deviceList = farmService.findSensor(pd);
+		j.setSuccess(true);
+		j.setObj(deviceList);
+		super.writeJson(j, response);
+	}
+
+	/**
+	 * 获取传感器清单
+	 * @return
+	 */
+	@RequestMapping("/delDevice")
+	public void delDevice(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		int i = farmService.delDevice(pd);
+		i =  farmService.delSensor(pd);
+		j.setSuccess(true);
+		super.writeJson(j, response);
+	}
+
+	/**
+	 * 设定传感器
+	 * @return
+	 */
+	@RequestMapping("/setSensorLocation")
+	public void setSensorLocation(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+		Json j=new Json();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = this.getPageData();
+		pd.put("sensor_code","1000");
+		pd.put("create_person",user.getId());
+		int i = farmService.delSensor(pd);
+		i = farmService.insertSensor(pd);
+		j.setSuccess(true);
+		super.writeJson(j, response);
+	}
+
+
+	/**
+	 * 绑定栋舍与设备
+	 * @return
+	 */
+	@RequestMapping("/mappingDevice")
+	public void mappingDevice(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+		Json j=new Json();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = this.getPageData();
+		pd.put("sensor_code","1000");
+		pd.put("create_person",user.getId());
+		PageData paramPd = new PageData();
+		paramPd.put("device_code",pd.get("device_code"));
+		String msg ="";
+		List<PageData> deviceList = farmService.findDevice(paramPd);
+		if(deviceList.size()>0){
+			j.setSuccess(false);
+			msg="该设备已绑定栋舍";
+		} else{
+			int i = farmService.mappingDevice(pd);
+			if(i ==1){
+				j.setSuccess(true);
+			} else{
+				j.setSuccess(false);
+				msg="无该编号的设备";
+			}
+
+		}
+		j.setMsg(msg);
+		super.writeJson(j, response);
+	}
+
 	/**
 	 * 保存
 	 * @return
@@ -428,22 +553,22 @@ public class FarmAction extends BaseAction{
 				pd.put("alarm_type",i+1);
 				farmService.saveHouseAlarm(pd);
 			}
-			/**
-			 * 新增栋舍和设备关系
-			 */
-			if(!StringUtils.isBlank(pd.getString("deviceKey"))){
-				String [] arr=pd.getString("deviceKey").split(",");
-				for (int k = 0; k < arr.length; k++) {
-					pd.put("main_id", arr[k]);	
-					List<PageData> device= farmService.findDevice(pd);
-					PageData da=device.get(0);
-					pd.put("device_code", da.getString("device_code"));	
-					pd.put("device_type", da.getString("device_type"));	
-					pd.put("port_id", da.getString("port_id"));	
-					pd.put("house_id", house_id);	
-					farmService.saveDeviHouse(pd);
-				}
-			}
+//			/**
+//			 * 新增栋舍和设备关系
+//			 */
+//			if(!StringUtils.isBlank(pd.getString("deviceKey"))){
+//				String [] arr=pd.getString("deviceKey").split(",");
+//				for (int k = 0; k < arr.length; k++) {
+//					pd.put("device_code", arr[k]);
+//					List<PageData> device= farmService.findDevice(pd);
+//					PageData da=device.get(0);
+//					pd.put("device_code", da.getString("device_code"));
+//					pd.put("device_type", da.getString("device_type"));
+//					pd.put("port_id", da.getString("port_id"));
+//					pd.put("house_id", house_id);
+//					farmService.saveDeviHouse(pd);
+//				}
+//			}
 			j.setMsg("1");
 			j.setSuccess(true);
 			
@@ -481,7 +606,7 @@ public class FarmAction extends BaseAction{
 			if(!StringUtils.isBlank(pd.getString("deviceKey"))){
 				String [] arr=pd.getString("deviceKey").split(",");
 				for (int k = 0; k < arr.length; k++) {
-					pd.put("main_id", arr[k]);	
+					pd.put("device_code", arr[k]);
 					List<PageData> device= farmService.findDevice(pd);
 					PageData da=device.get(0);
 					pd.put("create_person",user.getId());

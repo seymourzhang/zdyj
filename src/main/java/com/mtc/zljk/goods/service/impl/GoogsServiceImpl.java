@@ -17,64 +17,106 @@ public class GoogsServiceImpl implements GoogsService {
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
 	
-	@Override
 	public List<PageData> getGoodsList(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getGoodsList", pd);
 	}
 	
-	@Override
+	public List<PageData> getGoodsList2(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getGoodsList2", pd);
+	}
+	
+	public List<PageData> getCorporationGood(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getCorporationGood", pd);
+	}
+	
 	public List<PageData> getCorporation(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getCorporation", pd);
 	}
 	
-	@Override
+	public List<PageData> getCorporation2(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getCorporation2", pd);
+	}
+	
+	public List<PageData> getCorporation3(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getCorporation3", pd);
+	}
+	
 	public List<PageData> getFactory(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getFactory", pd);
 	}
-	@Override
+	public List<PageData> getFactory2(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getFactory2", pd);
+	}
+	public List<PageData> getFactory3(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getFactory3", pd);
+	}
 	public int saveStock(PageData pd) throws Exception {
 		return (Integer) dao.save("SDGoodsMapper.saveStock", pd);
 	}
-	@Override
 	public int saveStockcChange(PageData pd) throws Exception {
 		return (Integer) dao.save("SDGoodsMapper.saveStockcChange", pd);
 	}
 	
-	@Override
 	public List<PageData> getStockChange(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockChange", pd);
 	}
-	@Override
 	public List<PageData> getStock(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getStock", pd);
 	}
-	@Override
 	public BigDecimal getSumCount(PageData pd) throws Exception {
 		return (BigDecimal)dao.findForObject("SDGoodsMapper.getSumCount", pd);
 	}
 	
-	@Override
 	public int editStock(PageData pd) throws Exception {
 		return (Integer)dao.update("SDGoodsMapper.editStock", pd);
 	}
 	
-	@Override
 	public List<PageData> getStockSum(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockSum", pd);
 	}
 
-	@Override
 	public List<PageData> getStockApproval(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockApproval", pd);
 	}
 
-	@Override
 	public int approvalStockChange(PageData pd) throws Exception{
 		return (Integer)dao.update("SDGoodsMapper.approvalStockChange", pd);
 	}
 
-	@Override
 	public int updateRemindData(PageData pd) throws Exception{
-		return (int) dao.save("SDGoodsMapper.exec_SP_STOCK_REMIND", pd);
+		return (Integer) dao.save("SDGoodsMapper.exec_SP_STOCK_REMIND", pd);
 	}
+	
+	public int saveCorporation(PageData pd) throws Exception {
+		return (Integer) dao.save("SDGoodsMapper.saveCorporation", pd);
+	}
+	
+	public int saveFactory(PageData pd) throws Exception {
+		return (Integer) dao.save("SDGoodsMapper.saveFactory", pd);
+	}
+	
+	public int saveGoods(PageData pd) throws Exception {
+		return (Integer) dao.save("SDGoodsMapper.saveGoods", pd);
+	}
+	
+	public int saveCorporationGoods(PageData pd) throws Exception {
+		return (Integer) dao.save("SDGoodsMapper.saveCorporationGoods", pd);
+	}
+	
+	public int editCorporation(PageData pd) throws Exception {
+		return (Integer)dao.update("SDGoodsMapper.editCorporation", pd);
+	}
+	
+	public int editFactory(PageData pd) throws Exception {
+		return (Integer)dao.update("SDGoodsMapper.editFactory", pd);
+	}
+	
+	public int editGoods(PageData pd) throws Exception {
+		return (Integer)dao.update("SDGoodsMapper.editGoods", pd);
+	}
+	
+	public int editCorporationGood(PageData pd) throws Exception {
+		return (Integer)dao.update("SDGoodsMapper.editCorporationGood", pd);
+	}
+	
 }

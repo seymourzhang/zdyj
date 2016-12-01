@@ -48,4 +48,39 @@
               and house_code = ${houseId}
               and growth_date = #{SpecialDate}
     </select>
+
+    <select id="selectDate" parameterType="pd" resultType="pd">
+        SELECT
+              DATE_FORMAT(min(ac.operation_date), "%Y-%m-%d") AS lairage,
+              DATE_FORMAT(max(bd.growth_date), "%Y-%m-%d") AS marketed_date
+        FROM s_b_breed_detail bd
+          LEFT JOIN s_b_batch_change ac
+            ON ac.batch_id = bd.batch_id and ac.house_code = bd.house_code
+        WHERE bd.batch_id = #{BreedBatchId} and bd.house_code = ${HouseId}
+    </select>
+
+    <select id="selectBySpecialDate" parameterType="pd" resultType="pd">
+        SELECT
+          sbbc.operation_date AS lairage,
+          CASE sb.status
+              WHEN 0
+                THEN sb.operation_date
+              WHEN 1
+                THEN sb.market_date
+              ELSE NULL END       AS marketed_date,
+          sbbd.*
+        FROM s_b_breed_detail sbbd
+          LEFT JOIN (SELECT
+               min(ac.operation_date) AS operation_date,
+               ac.batch_id
+             FROM s_b_batch_change ac
+             WHERE ac.house_code = ${HouseId} AND ac.batch_id = #{BreedBatchId}) sbbc
+          ON sbbc.batch_id = sbbd.batch_id
+          LEFT JOIN (SELECT *
+             FROM s_b_batch_curr bc
+             WHERE bc.house_code = ${HouseId} AND bc.batch_id = #{BreedBatchId}) sb
+          ON sb.batch_id = sbbd.batch_id
+        WHERE sbbd.house_code = ${HouseId} AND sbbd.batch_id = #{BreedBatchId} AND
+             sbbd.growth_date = #{SpecialDate};
+    </select>
 </mapper>

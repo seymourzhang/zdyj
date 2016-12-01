@@ -31,6 +31,92 @@
 		order by good_id
     </select> 
     
+    <select id="getGoodsList2" resultType="pd" useCache="false">  
+	   (SELECT  good_id,
+		       good_code, 
+		       good_name, 
+		       good_type, 
+		       bak, 
+		       create_person, 
+		       create_date, 
+		       create_time, 
+		       modify_person, 
+		       modify_date, 
+		       modify_time 
+		FROM   s_d_goods
+		where 1=1
+		<if test="good_name != null and good_name != ''"> 
+			and good_name LIKE CONCAT(CONCAT('%', #{good_name}),'%')
+		</if>
+		order by good_id)
+		<if test="good_name != null and good_name != ''"> 
+		union all
+		(SELECT  good_id,
+		       good_code, 
+		       good_name, 
+		       good_type, 
+		       bak, 
+		       create_person, 
+		       create_date, 
+		       create_time, 
+		       modify_person, 
+		       modify_date, 
+		       modify_time 
+		FROM   s_d_goods
+		where 1=1
+			and good_code LIKE CONCAT(CONCAT('%', #{good_name}),'%')			
+		order by good_id)
+        </if>	
+    </select> 
+    
+    <select id="getCorporationGood" resultType="pd" useCache="false">  
+	   SELECT  g.id,
+	           g.corporation_id,
+	           g.corporation,
+	           (select code_name from s_d_code c where c.biz_code = g.spec and code_type = 'spec') as spec,
+	           (select code_name from s_d_code c where c.biz_code = g.unit and code_type = 'unit') as unit,
+	           g.price,
+	           g.good_id,
+		       g.good_name, 
+		       g.good_type,
+		       g.factory_id,
+		       g.factory_name, 
+		       g.bak, 
+		       g.create_person, 
+		       g.create_date, 
+		       g.create_time, 
+		       g.modify_person, 
+		       g.modify_date, 
+		       g.modify_time 
+		FROM   s_b_corporation_good g
+		where 1=1
+		<if test="good_name != null and good_name != ''"> 
+			and g.good_name LIKE CONCAT(CONCAT('%', #{good_name}),'%')
+		</if>
+		<if test="good_id != null and good_id != ''"> 
+			and g.good_id = #{good_id}
+		</if>
+		<if test="corporation != null and corporation != ''"> 
+			and g.corporation LIKE CONCAT(CONCAT('%', #{corporation}),'%')
+		</if>
+		<if test="corporation_id != null and corporation_id != ''"> 
+			and g.corporation_id = #{corporation_id}
+		</if>
+		<if test="factory_name != null and factory_name != ''"> 
+			and g.factory_name LIKE CONCAT(CONCAT('%', #{factory_name}),'%')
+		</if>
+		<if test="factory_id != null and factory_id != ''"> 
+			and g.factory_id = #{factory_id}
+		</if>
+		<if test="spec != null and spec != ''"> 
+			and g.spec = #{spec}
+		</if>
+		<if test="unit != null and unit != ''"> 
+			and g.unit = #{unit}
+		</if>
+		order by g.id
+    </select> 
+    
     
     <!-- 查询库存信息 -->
     <select id="getStock" resultType="pd" useCache="false">  
@@ -104,8 +190,79 @@
 			where 
 				id = #{id}
 	</update>
+	
+	<!-- 修改供应商 -->
+	<update id="editCorporation" parameterType="pd" flushCache="false">
+		update  s_d_corporation
+			set corporation     = #{corporation},
+			    corporation_person=#{corporation_person},
+			    corporation_address=#{corporation_address},
+			    telphone        =#{telphone},
+			    bak=#{bak},
+			    modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			where 
+				corporation_id = #{corporation_id}
+	</update>
     
-    
+    <!-- 修改厂家 -->
+	<update id="editFactory" parameterType="pd" flushCache="false">
+		update  s_d_factory
+			set factory_name     = #{factory_name},
+			    factory_person=#{factory_person},
+			    factory_address=#{factory_address},
+			    telphone        =#{telphone},
+			    bak=#{bak},
+			    modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			where 
+				factory_id = #{factory_id}
+	</update>
+	
+	<!-- 修改物资 -->
+	<update id="editGoods" parameterType="pd" flushCache="false">
+		update  s_d_goods
+			set good_code     = #{good_code},
+			    good_name     = #{good_name},
+			    bak=#{bak},
+			    modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			where 
+				good_id = #{good_id}
+	</update>
+	
+	<!-- 修改供应商物资关系 -->
+	<update id="editCorporationGood" parameterType="pd" flushCache="false">
+		update  s_b_corporation_good
+			set <if test="corporation_id != null and corporation_id != ''">
+			    corporation     = #{corporation},
+			    </if>
+			    <if test="good_id != null and good_id != ''">
+                good_name     = #{good_name},
+                </if>
+                <if test="factory_id != null and factory_id != ''">
+                factory_name     = #{factory_name},
+                </if>
+			    modify_person	= #{modify_person},
+				modify_date 	= #{modify_date},
+				modify_time 	= #{modify_time}
+			where 1=1
+			    <if test="id != null and id != ''">
+				and id = #{id}
+				</if>
+				<if test="corporation_id != null and corporation_id != ''">
+				and corporation_id = #{corporation_id}
+				</if>
+				<if test="good_id != null and good_id != ''">
+				and good_id = #{good_id}
+				</if>
+				<if test="factory_id != null and factory_id != ''">
+				and factory_id = #{factory_id}
+				</if>
+	</update>
     
     <!-- 查询供应商 -->
     <select id="getCorporation" resultType="pd" useCache="false">  
@@ -136,6 +293,39 @@
 		order by c.corporation_id
     </select> 
     
+    <!-- 查询供应商主数据 -->
+    <select id="getCorporation2" resultType="pd" useCache="false">  
+		SELECT  c.corporation_id, 
+		        c.corporation, 
+		        c.corporation_person, 
+		        c.corporation_address, 
+		        c.telphone, 
+		        c.bak, 
+		        c.create_person, 
+		        c.create_date, 
+		        c.create_time, 
+		        c.modify_person, 
+		        c.modify_date, 
+		        c.modify_time 
+		FROM  s_d_corporation c
+		where 1=1
+		<if test="corporation_id != null and corporation_id != ''">
+			and c.corporation_id = #{corporation_id}
+		</if>
+		<if test="corporation != null and corporation != ''">
+			and c.corporation LIKE CONCAT(CONCAT('%', #{corporation}),'%')
+		</if>
+		order by c.corporation_id
+    </select>
+    
+    <select id="getCorporation3" resultType="pd" useCache="false">  
+		SELECT  c.corporation_id, 
+		        c.corporation,
+		        c.create_date
+		FROM  s_d_corporation c
+		order by c.corporation_id
+    </select>
+    
      <!-- 查询厂家 -->
     <select id="getFactory" resultType="pd" useCache="false">  
 		SELECT  f.factory_id, 
@@ -164,6 +354,153 @@
 		</if>
 		order by f.factory_id
     </select> 
+    
+    <!-- 查询供应商主数据 -->
+    <select id="getFactory2" resultType="pd" useCache="false">  
+		SELECT  f.factory_id, 
+			    f.factory_name, 
+				f.factory_person, 
+				f.factory_address, 
+				f.telphone, 
+				f.bak, 
+				f.create_person, 
+				f.create_date, 
+				f.create_time, 
+				f.modify_person, 
+				f.modify_date, 
+				f.modify_time 
+		FROM s_d_factory f
+		where 1=1
+		<if test="factory_name != null and factory_name != ''">
+			and f.factory_name LIKE CONCAT(CONCAT('%', #{factory_name}),'%')
+		</if>
+		order by f.factory_id
+    </select>
+    
+    <select id="getFactory3" resultType="pd" useCache="false">  
+		SELECT  f.factory_id, 
+			    f.factory_name,
+			    f.create_date
+		FROM s_d_factory f
+		order by f.factory_id
+    </select>
+    
+     <!-- 保存供应商 -->
+    <insert id="saveCorporation" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_d_corporation (corporation,corporation_person,
+			corporation_address,
+			telphone,
+			bak,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (#{corporation},
+		    #{corporation_person},
+			#{corporation_address},
+			#{telphone},
+			#{bak},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	
+	<!-- 保存厂家 -->
+    <insert id="saveFactory" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_d_factory (factory_name,
+		    factory_person,
+			factory_address,
+			telphone,
+			bak,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (#{factory_name},
+		    #{factory_person},
+			#{factory_address},
+			#{telphone},
+			#{bak},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	
+	<!-- 保存物资 -->
+    <insert id="saveGoods" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_d_goods (good_code,
+		    good_name,
+			good_type,
+			bak,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (#{good_code},
+		    #{good_name},
+			#{good_type},
+			#{bak},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
+	
+	<!-- 保存供应商物资关系 -->
+    <insert id="saveCorporationGoods" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_b_corporation_good (corporation_id,
+		    corporation,
+			good_id,
+			good_name,
+			factory_id,
+			factory_name,
+			good_type,
+			price,
+			spec,
+			unit,
+			bak,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
+		) values (#{corporation_id},
+		    #{corporation_name},
+			#{good_id},
+			#{good_name},
+			#{factory_id},
+			#{factory_name},
+			#{good_type},
+			#{price},
+			#{spec},
+			#{unit},
+			#{bak},
+			#{create_person},
+			#{create_date},
+			#{create_time},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	</insert>
     
     <!-- 保存库存 -->
     <insert id="saveStock" parameterType="pd"  flushCache="false" keyProperty="id">
@@ -451,4 +788,5 @@
 			call SP_STOCK_REMIND (#{id,mode=IN,jdbcType=VARCHAR})
 		}
 	</select>
+
 </mapper>
