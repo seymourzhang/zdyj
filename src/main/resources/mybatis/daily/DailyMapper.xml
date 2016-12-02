@@ -14,7 +14,7 @@
             , female_cur_weight   = ${body_weight_female}
             , male_mistake        = ${gender_error_male}
             , female_mistake      = ${gender_error_female}
-            , feed_name           = ${feed_code_female}
+            , feed_name           = #{feed_code_female}
             , female_cur_feed     = ${feed_weight_female}
             , female_cur_water    = ${water_capacity_female}
             , laying_cur_amount   = ${layer_amount}

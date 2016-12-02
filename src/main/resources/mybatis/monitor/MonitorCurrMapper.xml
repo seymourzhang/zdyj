@@ -113,25 +113,25 @@
                 , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarm_code
                 , mc.date_age
                 , mc.week_age
-                , truncate(mc.inside_temp1,1) inside_temp1
-                , truncate(mc.inside_temp2,1) inside_temp2
-                , truncate(mc.inside_temp3,1) inside_temp3
-                , truncate(mc.inside_temp4,1) inside_temp4
-                , truncate(mc.inside_temp5,1) inside_temp5
-                , truncate(mc.inside_temp6,1) inside_temp6
-                , truncate(mc.inside_temp7,1) inside_temp7
-                , truncate(mc.inside_temp8,1) inside_temp8
-                , truncate(mc.inside_temp9,1) inside_temp9
-                , truncate(format(mc.inside_avg_temp,1),1) inside_avg_temp
-                , truncate(format(mc.inside_set_temp,1),1) inside_set_temp
-                , truncate(mc.high_alarm_temp,1) high_alarm_temp
-                , truncate(mc.low_alarm_temp,1) low_alarm_temp
-                , truncate(format(mc.outside_temp,1),1) outside_temp
-                , format(mc.inside_humidity,0) inside_humidity
-                , format((mc.inside_avg_temp-mc.inside_set_temp),1) point_temp_diff
-                , format(mc.target_humidity,0) target_humidity
-                , format(mc.co2,1) co2
-                , mc.power_status
+                , ifnull(truncate(mc.inside_temp1,1),0) inside_temp1
+                , ifnull(truncate(mc.inside_temp2,1),0) inside_temp2
+                , ifnull(truncate(mc.inside_temp3,1),0) inside_temp3
+                , ifnull(truncate(mc.inside_temp4,1),0) inside_temp4
+                , ifnull(truncate(mc.inside_temp5,1),0) inside_temp5
+                , ifnull(truncate(mc.inside_temp6,1),0) inside_temp6
+                , ifnull(truncate(mc.inside_temp7,1),0) inside_temp7
+                , ifnull(truncate(mc.inside_temp8,1),0) inside_temp8
+                , ifnull(truncate(mc.inside_temp9,1),0) inside_temp9
+                , ifnull(truncate(format(mc.inside_avg_temp,1),1),0) inside_avg_temp
+                , ifnull(truncate(format(mc.inside_set_temp,1),1),0) inside_set_temp
+                , ifnull(truncate(mc.high_alarm_temp,1),0) high_alarm_temp
+                , ifnull(truncate(mc.low_alarm_temp,1),0) low_alarm_temp
+                , ifnull(truncate(format(mc.outside_temp,1),1),0) outside_temp
+                , ifnull(format(mc.inside_humidity,0),0) inside_humidity
+                , ifnull(format((mc.inside_avg_temp-mc.inside_set_temp),1),0) point_temp_diff
+                , ifnull(format(mc.target_humidity,0),0) target_humidity
+                , ifnull(format(mc.co2,1),0) co2
+                , ifnull(mc.power_status, 0) power_status
                 , mc.update_datetime
                 , mc.small_fan
                 , mc.larger_fan

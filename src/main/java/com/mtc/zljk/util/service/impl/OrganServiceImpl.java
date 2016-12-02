@@ -23,10 +23,13 @@ public class OrganServiceImpl implements OrganService {
 		return (List<PageData>) dao.findForList("SDOrganizationMapper.getOrgListByRoleId", pd);
 	}
 	
-	@Override
 	public List<PageData> getOrgListById(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDOrganizationMapper.getOrgListById", pd);
 	}
+	
+	public List<PageData> getCompanyByUserId(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDOrganizationMapper.getCompanyByUserId", pd);
+	};
 
 	public List<PageData> getFarmByUserId(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDOrganizationMapper.getFarmByUserId", pd);

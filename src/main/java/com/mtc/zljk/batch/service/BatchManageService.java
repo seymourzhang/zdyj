@@ -54,4 +54,13 @@ public interface BatchManageService {
      * @throws Exception
      */
     PageData saveOverBatchData(PageData pd) throws Exception;
+
+    /***
+     *
+     * 查询批次信息for mobile
+     * @param pd
+     * @return
+     * @throws Exception
+     */
+    PageData selectBatchDataForMobile(PageData pd) throws Exception;
 }

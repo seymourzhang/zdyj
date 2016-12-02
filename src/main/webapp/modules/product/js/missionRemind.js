@@ -41,7 +41,10 @@ function getStockTableColumns(){
         title: "时间单位"
     },{
         field: "date_values",
-        title: "循环周期"
+        title: "提醒周龄"
+    },{
+        field: "week_group",
+        title: "提醒日"
     }];
     return dataColumns;
 }
@@ -69,6 +72,15 @@ function addMissionRemind() {
             var bb = aa.indexOf(temp[i] + ",");
             if (bb > -1) {
                 msg = "您输入的时间间隔有相同值！";
+                flag = true;
+                break;
+            }
+        }
+    }
+    if (!flag) {
+        for (var i = 0; i < temp.length; i++) {
+            if (parseInt(temp[i]) > 90) {
+                msg = "您输入的时间不允许大于90！";
                 flag = true;
                 break;
             }

@@ -26,8 +26,8 @@
 			<div id="page-content" class="clearfix"  style="padding-top: 10px;"> 
 				<div class="row-fluid" style="background-color: #ffffff;">
 					  <div class="span12">
-						  <input type="hidden" name="farmId" id="farmId" value="${pd.farm_id }">
-						  <input type="hidden" name="farm_name" id="farm_name" value="${pd.farm_name }">
+<!-- 						  <input type="hidden" name="farmId" id="farmId" value="${pd.farm_id }"> -->
+<!-- 						  <input type="hidden" name="farm_name" id="farm_name" value=""> -->
 						  <div class="container-fluid">
 							  <div class="row-fluid">
 								  <div class="span3" align="left">
@@ -44,33 +44,43 @@
 										  </c:if>
 									  </select>
 								  </div>
-								  <div class="span3" align="left">
-									  <span_customer>使用方法</span_customer>
-									  <select id="instruction" tabindex="1"  name="instruction">
-										  <c:if test="${!empty useTypeList}">
-											  <c:forEach var="useType" items="${useTypeList}">
-												  <option value="${useType.biz_code }">${useType.code_name}</option>
-											  </c:forEach>
-										  </c:if>
-									  </select>
-								  </div>
-								  <div class="span3" align="left">
-									  <span_customer></span_customer>
-
-								  </div>
-							 </div>
-
-							  <div class="row-fluid">
+<!-- 								  <div class="span3" align="left"> -->
+<!-- 									  <span_customer>使用方法</span_customer> -->
+<!-- 									  <select id="instruction" tabindex="1"  name="instruction"> -->
+<!-- 										  <c:if test="${!empty useTypeList}"> -->
+<!-- 											  <c:forEach var="useType" items="${useTypeList}"> -->
+<!-- 												  <option value="${useType.biz_code }">${useType.code_name}</option> -->
+<!-- 											  </c:forEach> -->
+<!-- 										  </c:if> -->
+<!-- 									  </select> -->
+<!-- 								  </div> -->
 								  <div class="span3" align="left">
 									  <span_customer>用途</span_customer>
 									  <input type="text" id="use_type" name="use_type">
+
+								  </div>
+								  <div class="span3" align="left">
+									  <button type="button" class="btn green" onclick="addDrug();" id="add">新增</button>
+								  </div>
+							 </div>
+    
+							  <div class="row-fluid">
+							      <div class="span3" align="left">
+									  <span_customer>农场</span_customer>
+									  <select id="farmId" tabindex="1"  name="farmId">
+										  <c:if test="${!empty farmList}">
+											  <c:forEach var="farm" items="${farmList}">
+												  <option value="${farm.org_id }">${farm.org_name}</option>
+											  </c:forEach>
+										  </c:if>
+									  </select>
 								  </div>
 								  <div class="span3" align="left">
 									  <span_customer>使用数量</span_customer>
 									  <input type="text" id="use_unit" name="use_unit">
 								  </div>
 								  <div class="span3" align="left">
-									  <span_customer>名称</span_customer>
+									  <span_customer>品名</span_customer>
 									  <select id="drug_id" tabindex="1"  name="drug_id">
 										  <c:if test="${!empty goodsList}">
 											  <c:forEach var="goods" items="${goodsList}">
@@ -79,9 +89,7 @@
 										  </c:if>
 									  </select>
 								  </div>
-								  <div class="span3" align="left">
-									  <button type="button" class="btn green" onclick="addDrug();" id="add">新增</button>
-								  </div>
+								  
 							  </div>
 
 							  <div class="row-fluid">
@@ -100,7 +108,7 @@
 								  </div>
 								  <div class="span4" align="left">
 									  <p id = "planFarmTitle" align="center">
-										  <font size='4' ><B>${pd.farm_name}</B></font>
+										  <font size='4' ><B>${pd.company}</B></font>
 									  </p>
 
 								  </div>

@@ -9,7 +9,7 @@
              d.farm_name,
              d.grow_week_age,
              d.drug_name,
-             (select c.code_name from s_d_code c where c.code_type = 'use_type' and d.Instruction = c.biz_code) as Instruction,
+<!--              (select c.code_name from s_d_code c where c.code_type = 'use_type' and d.Instruction = c.biz_code) as Instruction, -->
              concat(round(d.use_unit,0),'(',(select c.code_name from s_d_code c where c.code_type = 'unit' and c.biz_code = s.unit),')') as use_unit,
              s.unit,
              d.use_type
@@ -33,8 +33,14 @@
         <if test="drug_id != null and drug_id !=''"> 
            and d.drug_id = #{drug_id} 
         </if>
-        <if test="instruction != null and instruction !=''"> 
-           and d.Instruction = #{instruction} 
+<!--         <if test="instruction != null and instruction !=''">  -->
+<!--            and d.Instruction = #{instruction}  -->
+<!--         </if>  -->
+        <if test="start_grow_week_age != null and start_grow_week_age !=''"> 
+           and d.grow_week_age >= #{start_grow_week_age} 
+        </if> 
+        <if test="end_grow_week_age != null and end_grow_week_age !=''"> 
+           and #{end_grow_week_age} >=d.grow_week_age  
         </if> 
     </select>
     <!-- 查询药品疫苗使用表 -->
@@ -48,7 +54,7 @@
           u.good_batch_no,
           f.factory_name,
           concat(round(u.use_unit,0),'(',(select c.code_name from s_d_code c where c.code_type = 'unit' and c.biz_code = s.unit),')') as use_unit,
-          (select c.code_name from s_d_code c where c.code_type = 'use_type' and u.Instruction = c.biz_code) Instruction,
+<!--           (select c.code_name from s_d_code c where c.code_type = 'use_type' and u.Instruction = c.biz_code) Instruction, -->
           u.use_type,
           u.main_constitute,
           d.user_real_name
@@ -78,7 +84,7 @@
 							   lay_eggs_week_age,
 							   use_unit,
 							   use_type,
-							   Instruction,
+<!-- 							   Instruction, -->
 							   status,
 							   create_person,
 							   create_date,
@@ -99,7 +105,7 @@
 										null,
 										#{use_unit},
 										#{use_type},
-										#{instruction},
+<!-- 										#{instruction}, -->
 										#{status},
 										#{create_person},
 										#{create_date},
@@ -133,7 +139,7 @@
 							   use_unit,
 							   main_constitute,
 							   use_type,
-							   Instruction,
+<!-- 							   Instruction, -->
 							   good_type,
 							   status,
 							   create_person,
@@ -158,7 +164,7 @@
 										#{use_unit},
 										#{main_constitute},
 										#{use_type},
-										#{instruction},
+<!-- 										#{instruction}, -->
 										#{good_type},
 										#{status},
 										#{create_person},

@@ -107,7 +107,6 @@ public class DailyQueryMobileAction extends BaseAction {
         PageData date = dailyService.selectDate(pd);
         Date lairage = sdf1.parse(date.get("lairage").toString());
         Date marketedDate = sdf1.parse(date.get("marketed_date").toString());
-        Date specialDate = sdf1.parse(SpecialDate);
         pd.put("SpecialDate", SpecialDate);
         PageData data = dailyService.selectBySpecialDate(pd);
         if ("Y".equals(SpecialFlag)) {
@@ -117,7 +116,7 @@ public class DailyQueryMobileAction extends BaseAction {
             }
         } else if ("N".equals(SpecialFlag)) {
             Date curDate = new Date();
-            pd.put("SpecialDate", curDate);
+            pd.put("SpecialDate", sdf1.format(curDate));
             data = dailyService.selectBySpecialDate(pd);
             if (data == null) {
                 if (curDate.before(lairage)) {
@@ -145,7 +144,7 @@ public class DailyQueryMobileAction extends BaseAction {
             dataInfo.put("body_weight_female", data.get("female_cur_weight"));
             dataInfo.put("gender_error_male", data.get("male_mistake"));
             dataInfo.put("gender_error_female", data.get("female_mistake"));
-            dataInfo.put("feed_code_female", data.get("feed_name"));
+            dataInfo.put("feed_code_female", data.get("feed_name") == null ? "" : data.get("feed_name"));
             dataInfo.put("feed_weight_female", data.get("female_cur_feed"));
             dataInfo.put("water_capacity_female", data.get("female_cur_water"));
             dataInfo.put("layer_amount", data.get("laying_cur_amount"));

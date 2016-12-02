@@ -192,14 +192,21 @@ public class LoginMobileAction extends BaseAction{
         JSONArray ja = new JSONArray();
         for (PageData pageData : ll) {
             pd.put("house_code", pageData.get("id"));
-            List<PageData> lpd = batchManageService.getCreateBatchData(pd);
+            PageData lpd = batchManageService.selectBatchDataForMobile(pd);
             JSONObject o = new JSONObject();
             o.put("id", pageData.get("id"));
             o.put("name", pageData.get("name_cn"));
-            o.put("type", lpd.get(0).get("house_type"));
-            o.put("deviceCode", lpd.get(0).get("device_code") == null ? "" : pageData.get("device_code"));
-            o.put("BreedBatchId", lpd.size() == 0 ? "0" : lpd.get(0).get("batchId"));
-            o.put("BreedBatchStatus", lpd.size() == 0 ? "0" : "1");
+            if (lpd == null) {
+                o.put("deviceCode", "");
+                o.put("BreedBatchId", 0);
+                o.put("BreedBatchStatus", 0);
+                o.put("type", "");
+            } else {
+                o.put("deviceCode", pageData.get("device_code") == null ? "" : pageData.get("device_code"));
+                o.put("BreedBatchId", lpd.get("batch_id") == null ? 0 : lpd.get("batch_id"));
+                o.put("BreedBatchStatus", lpd.get("status").equals(0) ? 2 : 1);
+                o.put("type", lpd.get("house_type"));
+            }
             ja.put(o);
         }
         resJson.put("HouseInfos", ja);

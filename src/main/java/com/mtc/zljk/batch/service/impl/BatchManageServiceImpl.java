@@ -216,4 +216,8 @@ public class BatchManageServiceImpl implements BatchManageService {
         return pd.getString("farm_id") + "-" + pd.getString("house_code") + "-" + pd.getString("batch_no");
     }
 
+    public PageData selectBatchDataForMobile(PageData pd) throws Exception{
+        return (PageData) dao.findForObject("BatchManageMapper.selectBatchDataForMobile", pd);
+    }
+
 }

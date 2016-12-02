@@ -66,6 +66,23 @@
         LEFT JOIN s_b_devi_house devi
         on devi.house_id = house.id
     </select>
+
+    <select id="selectBatchDataForMobile" parameterType="pd" resultType="pd">
+        SELECT
+              bc.status
+              , CASE WHEN bc.status = 0
+                THEN (SELECT batch_id
+                  FROM s_b_batch_change
+                  WHERE farm_id = ${farm_id} AND house_code = ${house_code})
+                  ELSE batch_id END                               AS batch_id
+              , dh.device_code
+              , h.house_type
+        FROM s_b_batch_curr bc
+        LEFT JOIN s_d_house h ON h.id = bc.house_code
+        LEFT JOIN s_b_devi_house dh ON dh.house_id = bc.house_code
+        WHERE bc.farm_id = ${farm_id} AND bc.house_code = ${house_code};
+    </select>
+
     <!-- 查询重复批次号 -->
     <select id="selectBatchId" parameterType="pd" resultType="pd" useCache="false">
         SELECT COUNT(1) num FROM s_b_batch_change WHERE batch_id = #{batch_id}

@@ -7,6 +7,7 @@ import com.mtc.zljk.util.common.PageData;
 public interface OrganService {
 	List<PageData> getOrgList(PageData pd) throws Exception;
 	List<PageData> getOrgListByRoleId(PageData pd) throws Exception;
+	List<PageData> getCompanyByUserId(PageData pd) throws Exception;
 	List<PageData> getFarmByUserId(PageData pd) throws Exception;
 	List<PageData> getHouseListByUserId(PageData pd) throws Exception;
 

@@ -11,7 +11,8 @@
 	    	   d.level_name,
 	    	   d.create_person,
 	    	   d.create_date,
-	    	   d.create_time
+	    	   d.create_time,
+	  		   devi.device_code
 	    from s_d_organization d
 		LEFT JOIN s_d_rights c
 		on d.id = c.obj_id
@@ -19,6 +20,8 @@
 		on c.rights_id = a.rights_id
 		LEFT JOIN s_d_user_role b
 		on a.role_id = b.role_id
+	  	LEFT JOIN s_b_devi_house devi
+	  	on devi.house_id = d.id and devi.farm_id = d.parent_id
 		where c.obj_type = 2
 	  		AND d.freeze_status=0
 		<if test="user_id != null"> 
@@ -104,6 +107,35 @@
 		</if>
 		ORDER BY id
     </select>
+    
+    <select id="getCompanyByUserId" parameterType="pd" resultType="pd" useCache="false">
+		select u.id user_id
+				,u.user_code
+				,u.user_real_name_en
+				,u.user_real_name
+				,ur.role_id
+				,rr.rights_id
+				,rr.write_read
+				,org.id org_id
+				,org.organization_id org_code
+				,org.name_cn org_name
+				,org.parent_id org_parent_id
+				,org.level_id org_level_id
+		from s_d_user u
+		left join s_d_user_role ur
+		on u.id = ur.user_id
+		left join s_d_role_rights rr
+		on ur.role_id = rr.role_id
+		left join s_d_rights r
+		on rr.rights_id = r.rights_id
+		left join s_d_organization org
+		on r.obj_id = org.id
+		where r.obj_type = 2
+			and org.level_id = (select max(level_id)-2 from s_d_organization)
+			and u.id = #{user_id}
+			AND org.freeze_status=0
+		limit 1
+	</select>
 
 	<select id="getFarmByUserId" parameterType="pd" resultType="pd" useCache="false">
 		select u.id user_id
@@ -130,6 +162,9 @@
 		where r.obj_type = 2
 			and org.level_id = (select max(level_id)-1 from s_d_organization)
 			and u.id = #{user_id}
+			<if test="parent_id != null and parent_id !=''"> 
+           and org.parent_id = #{parent_id} 
+        </if> 
 			AND org.freeze_status=0
 		limit 1
 	</select>
@@ -159,6 +194,9 @@
         where r.obj_type = 2
         and org.level_id = (select max(level_id)-1 from s_d_organization)
         and u.id = #{user_id}
+        <if test="parent_id != null and parent_id !=''"> 
+           and org.parent_id = #{parent_id} 
+        </if> 
         AND org.freeze_status=0
     </select>
 

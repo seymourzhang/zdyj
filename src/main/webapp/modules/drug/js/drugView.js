@@ -177,16 +177,16 @@ function addDrug(){
 		});
 		return;
 	}
-	var instruction1 = $("#instruction1").val();
-	if (instruction1 == "") {
-		layer.alert('使用方法不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
-		return;
-	}
+//	var instruction1 = $("#instruction1").val();
+//	if (instruction1 == "") {
+//		layer.alert('使用方法不能为空!', {
+//			skin : 'layui-layer-lan',
+//			closeBtn : 0,
+//			shift : 4
+//		// 动画类型
+//		});
+//		return;
+//	}
 	var p = {
 			"farmId": $("#farmId").val(),
 			"farm_name": $("#farm_name").val(),
@@ -200,30 +200,42 @@ function addDrug(){
 			"good_type":good_type1,
 			"use_user_id":use_user_id,
 			"main_constitute": main_constitute,
-			"use_type": use_type,
-			"instruction": instruction1
+			"use_type": use_type
+//			"instruction": instruction1
 	    };
 	// document.getElementById("reflushText2").style.display="inline";
-	$.ajax({
-        // async: true,
-        url: path+"/drug/saveData",
-        data: p,
-        type : "POST",
-        dataType: "json",
-        cache: false,
-        // timeout:50000,
-        success: function(result) {     
-                var obj = result.obj;
-                initTable("fact", getTableDataColumns("fact"), []);
-                if(null != obj) {
-                    var dataJosn = $.parseJSON(JSON.stringify(obj));
-                    $("#factTable").bootstrapTable('load',dataJosn);
-                } else{
-                    initTableRow("fact", getTableEmptyRow("fact"));
-                }
-           
-        }
+	layer.confirm('是否确认？', {
+        skin: 'layui-layer-lan'
+        , closeBtn: 0
+        , shift: 4 //动画类型
+    }, function ok() {
+    	$.ajax({
+            // async: true,
+            url: path+"/drug/saveData",
+            data: p,
+            type : "POST",
+            dataType: "json",
+            cache: false,
+            // timeout:50000,
+            success: function(result) {     
+                    var obj = result.obj;
+                    initTable("fact", getTableDataColumns("fact"), []);
+                    if(null != obj) {
+                        var dataJosn = $.parseJSON(JSON.stringify(obj));
+                        $("#factTable").bootstrapTable('load',dataJosn);
+                    } else{
+                        initTableRow("fact", getTableEmptyRow("fact"));
+                    }
+               
+            }
+        });
+        layer.msg(false, {
+            skin: 'layui-layer-lan'
+            , closeBtn: 0
+            , shift: 4 //动画类型
+        });
     });
+	
 	// document.getElementById("reflushText2").style.display="none";
 }
 
@@ -244,25 +256,35 @@ function deleteDrug(){
     	deleteRow2 = deleteRow2+deleteRow[i].id+";";
     }
     // document.getElementById("reflushText2").style.display="inline";
-	$.ajax({
-        // async: true,
-        url: path+"/drug/deleteData",
-        data: {"deleteRow":deleteRow2},
-        type : "POST",
-        dataType: "json",
-        cache: false,
-        // timeout:50000,
-        success: function(result) {     
-                var obj = result.obj;
-				initTableWithToolBar("fact", "factToolbar", getTableDataColumns("fact"), []);
-                if(null != obj) {
-                    var dataJosn = $.parseJSON(JSON.stringify(obj));
-                    $("#factTable").bootstrapTable('load',dataJosn);
-                } else{
-                    initTableRow("fact", getTableEmptyRow("fact"));
-                }
-           
-        }
+    layer.confirm('是否确认删除？', {
+        skin: 'layui-layer-lan'
+        , closeBtn: 0
+        , shift: 4 //动画类型
+    }, function ok() {
+    	$.ajax({
+            // async: true,
+            url: path+"/drug/deleteData",
+            data: {"deleteRow":deleteRow2},
+            type : "POST",
+            dataType: "json",
+            cache: false,
+            // timeout:50000,
+            success: function(result) {     
+                    var obj = result.obj;
+    				initTableWithToolBar("fact", "factToolbar", getTableDataColumns("fact"), []);
+                    if(null != obj) {
+                        var dataJosn = $.parseJSON(JSON.stringify(obj));
+                        $("#factTable").bootstrapTable('load',dataJosn);
+                    } else{
+                        initTableRow("fact", getTableEmptyRow("fact"));
+                    }
+                    layer.msg(false, {
+                        skin: 'layui-layer-lan'
+                        , closeBtn: 0
+                        , shift: 4 //动画类型
+                    });
+            }
+        });
     });
 	// document.getElementById("reflushText2").style.display="none";
 }
@@ -273,9 +295,11 @@ function searchData(paramTypeSelectValue){
     if(paramTypeSelectValue=="plan"){
     	p = {
     	    	"grow_week_age": $("#grow_week_age").val(),
+    	    	"start_grow_week_age": $("#start_grow_week_age").val(),
+    	    	"end_grow_week_age": $("#end_grow_week_age").val(),
     	    	"good_type": $("#good_type").val(),
     	    	"drug_id": $("#drug_id").val(),
-    	    	"instruction": $("#instruction").val(),
+//    	    	"instruction": $("#instruction").val(),
     	    	"paramTypeSelectValue" : "plan"
     	    };  
     	// document.getElementById("reflushText").style.display="inline";
@@ -319,7 +343,7 @@ function getTableEmptyRow(tableName){
         emptyRow = {drug_id: count,
         		    grow_week_age: defaultValue,
         		    drug_name: defaultValue,
-        		    Instruction: defaultValue,
+//        		    Instruction: defaultValue,
         		    use_unit: defaultValue,
         		    use_type: defaultValue
                     };
@@ -332,7 +356,7 @@ function getTableEmptyRow(tableName){
         		    good_batch_no: defaultValue,
         		    factory_name: defaultValue,
         		    use_unit: defaultValue,
-        		    Instruction: defaultValue,
+//        		    Instruction: defaultValue,
         		    use_type: defaultValue,
         		    main_constitute: defaultValue,
         		    user_real_name: defaultValue
@@ -363,10 +387,12 @@ function getPlanTableDataColumns(){
     }, {
         field: "drug_name",
         title: "疫苗名称"
-    }, {
-        field: "Instruction",
-        title: "使用方法"
-    }, {
+    }, 
+//    {
+//        field: "Instruction",
+//        title: "使用方法"
+//    }, 
+    {
         field: "use_unit",
         title: "使用数量"
     }, {
@@ -405,10 +431,12 @@ function getFactTableDataColumns(){
     }, {
         field: "use_unit",
         title: "使用数量"
-    }, {
-        field: "Instruction",
-        title: "使用方法"
-    }, {
+    }, 
+//    {
+//        field: "Instruction",
+//        title: "使用方法"
+//    }, 
+    {
         field: "use_type",
         title: "用途"
     }, {

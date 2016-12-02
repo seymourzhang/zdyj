@@ -35,7 +35,7 @@
                 </select>
             </div>
             <div class="span4" align="left">
-                <select id="wd" onchange="checkDate(this);" style="width: 80px; height: 30px">
+                <select id="wd" onchange="checkDate(this);" style="width: 80px; height: 30px;" disabled="false">
                     <c:if test="${!empty date_type}">
                         <c:forEach var="type" items="${date_type}">
                             <option value="${type.biz_code}">${type.code_name}</option>

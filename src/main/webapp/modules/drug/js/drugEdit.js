@@ -17,7 +17,7 @@ $(document).ready(function(){
 	  $("#good_type").change(function() {
 		  setDrugId();
 		 });
-      
+
       searchData();
 	});
 
@@ -82,25 +82,25 @@ function addDrug(){
 		});
 		return;
 	}
-	var instruction = $("#instruction").val();
-	if (instruction == "") {
-		layer.alert('使用方法不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
-		return;
-	}
+//	var instruction = $("#instruction").val();
+//	if (instruction == "") {
+//		layer.alert('使用方法不能为空!', {
+//			skin : 'layui-layer-lan',
+//			closeBtn : 0,
+//			shift : 4
+//		// 动画类型
+//		});
+//		return;
+//	}
 	var p = {
 			"farmId": $("#farmId").val(),
-			"farm_name": $("#farm_name").val(),
+			"farm_name": document.getElementById("farmId").options[document.getElementById("farmId").selectedIndex].text,
 			"drug_id": drug_id,
 			"drug_name": document.getElementById("drug_id").options[document.getElementById("drug_id").selectedIndex].text,
 			"use_unit": use_unit,
 			"good_type":good_type,
 			"use_type": use_type,
-			"instruction": instruction,
+//			"instruction": instruction,
 			"grow_week_age":$("#grow_week_age").val()
 	    };
 	// document.getElementById("reflushText").style.display="inline";
@@ -202,7 +202,7 @@ function getTableEmptyRow(tableName){
         emptyRow = {drug_id: count,
         		    grow_week_age: defaultValue,
         		    drug_name: defaultValue,
-        		    Instruction: defaultValue,
+//        		    Instruction: defaultValue,
         		    use_unit: defaultValue,
         		    use_type: defaultValue
                     };
@@ -228,10 +228,12 @@ function getPlanTableDataColumns(){
     }, {
         field: "drug_name",
         title: "疫苗名称"
-    }, {
-        field: "Instruction",
-        title: "使用方法"
-    }, {
+    }, 
+//    {
+//        field: "Instruction",
+//        title: "使用方法"
+//    }, 
+    {
         field: "use_unit",
         title: "使用数量"
     }, {

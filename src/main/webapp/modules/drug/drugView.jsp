@@ -20,8 +20,8 @@
 					  <div class="span12">
 						  <div class="tabbable tabbable-custom boxless tabs-left" >
 							  <ul class="nav nav-pills">
-								  <li  class="active" id="stateTab" style="text-align: center;width:50%;background-color: #BFBFBF;" ><a href="#state2" onclick="forward3();"  data-toggle="tab" id="stateTab1">计划</a></li>
-								  <li  id="detailTab" style="text-align: center;width:50%;background-color: #BFBFBF;" ><a href="#detail2" onclick="forward2();"  data-toggle="tab" id="detailTab1">实际</a></li>
+								  <li  class="active" id="stateTab" style="text-align: center;width:50%;background-color: #BFBFBF;" ><a href="#state2" onclick="forward3();"  data-toggle="tab" id="stateTab1">计划查询</a></li>
+								  <li  id="detailTab" style="text-align: center;width:50%;background-color: #BFBFBF;" ><a href="#detail2" onclick="forward2();"  data-toggle="tab" id="detailTab1">实际执行</a></li>
 							  </ul>
 						  </div>
 
@@ -46,7 +46,7 @@
 												  </select>
 											  </div>
 											  <div class="span3" align="left">
-												  <span_customer>名称</span_customer>
+												  <span_customer>品名</span_customer>
 												  <select id="drug_id"  tabindex="1"  name="drug_id" >
 <!-- 													  <option value="">全部</option> -->
 													  <c:if test="${!empty goodsList}">
@@ -56,24 +56,31 @@
 													  </c:if>
 												  </select>
 											  </div>
+<!-- 											  <div class="span3" align="left"> -->
+<!-- 												  <span_customer>使用方法</span_customer> -->
+<!-- 												  <select id="instruction" tabindex="1"  name="instruction" > -->
+<!-- 													  <c:if test="${!empty useTypeList}"> -->
+<!-- 														  <c:forEach var="useType" items="${useTypeList}"> -->
+<!-- 															  <option value="${useType.biz_code }">${useType.code_name}</option> -->
+<!-- 														  </c:forEach> -->
+<!-- 													  </c:if> -->
+<!-- 												  </select> -->
+<!-- 											  </div> -->
+                                           
 											  <div class="span3" align="left">
-												  <span_customer>使用方法</span_customer>
-												  <select id="instruction" tabindex="1"  name="instruction" >
-<!-- 													  <option value="">全部</option> -->
-													  <c:if test="${!empty useTypeList}">
-														  <c:forEach var="useType" items="${useTypeList}">
-															  <option value="${useType.biz_code }">${useType.code_name}</option>
-														  </c:forEach>
-													  </c:if>
-												  </select>
+												  <button type="button" class="btn blue" onclick="searchData('plan');" id="qued">查询</button>
 											  </div>
+										  </div>
 										  </div>
 
 										  <div class="row-fluid">
-											  <div class="span9" align="left">
+											  <div class="span3" align="left" style="margin-left: 20px;">
+											  <span_customer>起始周龄</span_customer>
+												  <input type="text" id="start_grow_week_age" name="start_grow_week_age">
 											  </div>
-											  <div class="span3" align="left">
-												  <button type="button" class="btn green" onclick="searchData('plan');" id="qued">查询</button>
+											  <div class="span3" align="left" style="margin-left: 17px;">
+											  <span_customer>结束周龄</span_customer>
+												  <input type="text" id="end_grow_week_age" name="end_grow_week_age">
 											  </div>
 										  </div>
 
@@ -87,7 +94,7 @@
 										  <div class="row-fluid">
 											  <div class="span12">
 												  <p id = "planFarmTitle" align="center">
-													  <font size='4' ><B>${pd.farm_name}</B></font>
+													  <font size='4' ><B>${pd.company}</B></font>
 												  </p>
 											  </div>
 										  </div>
@@ -112,19 +119,18 @@
 												  <input class="m-wrap  span11 m-ctrl-medium date-picker " readonly type="text" name="use_date" value="${systemDate }" id="use_date"/><span class="add-on"><i class="icon-calendar"></i></span>
 											  </div>
 										  </div>
+<!-- 										  <div class="span3" align="left"> -->
+<!-- 											<span_customer>使用方法</span_customer> -->
+<!-- 											  <select id="instruction1" tabindex="1"  name="instruction1"> -->
+<!-- 												  <c:if test="${!empty useTypeList}"> -->
+<!-- 													  <c:forEach var="useType" items="${useTypeList}"> -->
+<!-- 														  <option value="${useType.biz_code }">${useType.code_name}</option> -->
+<!-- 													  </c:forEach> -->
+<!-- 												  </c:if> -->
+<!-- 											  </select> -->
+<!-- 										  </div> -->
 										  <div class="span3" align="left">
-											<span_customer>使用方法</span_customer>
-											  <select id="instruction1" tabindex="1"  name="instruction1">
-<!-- 												  <option value="">全部</option> -->
-												  <c:if test="${!empty useTypeList}">
-													  <c:forEach var="useType" items="${useTypeList}">
-														  <option value="${useType.biz_code }">${useType.code_name}</option>
-													  </c:forEach>
-												  </c:if>
-											  </select>
-										  </div>
-										  <div class="span3" align="left">
-											  <span_customer>名称</span_customer>
+											  <span_customer>品名</span_customer>
 											  <select id="drug_id1" tabindex="1"  name="drug_id1" onchange="setFactory();">
 <!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty goodsList}">
@@ -137,6 +143,17 @@
 										  <div class="span3" align="left">
 											  <span_customer>用途</span_customer>
 											  <input type="text" id="use_type" name="use_type">
+										  </div>
+										  <div class="span3" align="left">
+											  <span_customer>负责人</span_customer>
+											  <select id="use_user_id" tabindex="1"  name="use_user_id" >
+<!-- 												  <option value="">全部</option> -->
+												  <c:if test="${!empty userList}">
+													  <c:forEach var="user" items="${userList}">
+														  <option value="${user.id }">${user.user_real_name}</option>
+													  </c:forEach>
+												  </c:if>
+											  </select>
 										  </div>
 									  </div>
 
@@ -161,15 +178,7 @@
 											  <input type="text" id="good_batch_no" name="good_batch_no">
 										  </div>
 										  <div class="span3" align="left">
-											  <span_customer>负责人</span_customer>
-											  <select id="use_user_id" tabindex="1"  name="use_user_id" >
-<!-- 												  <option value="">全部</option> -->
-												  <c:if test="${!empty userList}">
-													  <c:forEach var="user" items="${userList}">
-														  <option value="${user.id }">${user.user_real_name}</option>
-													  </c:forEach>
-												  </c:if>
-											  </select>
+											  <button type="button" class="btn green" onclick="addDrug();" id="add">确认</button>
 										  </div>
 									  </div>
 
@@ -194,9 +203,7 @@
 											  <select id="factory_id" tabindex="1"  name="factory_id">
 											  </select>
 										  </div>
-										  <div class="span3" align="left">
-											  <button type="button" class="btn green" onclick="addDrug();" id="add">新增</button>
-										  </div>
+										  
 									  </div>
 
 									  <div class="row-fluid">

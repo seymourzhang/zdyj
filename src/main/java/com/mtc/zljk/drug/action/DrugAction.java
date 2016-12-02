@@ -49,6 +49,9 @@ public class DrugAction extends BaseAction {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("user_id", user.getId());
+		List<PageData> company = moduleService.service("organServiceImpl", "getCompanyByUserId", new Object[]{pd});
+		pd.put("parent_id", company.get(0).get("org_id"));
+		pd.put("company", company.get(0).get("org_name"));
 		List<PageData> farm = moduleService.service("organServiceImpl", "getFarmByUserId", new Object[]{pd});
 		pd.put("farm_id", farm.get(0).get("org_id"));
 		pd.put("farm_name", farm.get(0).get("org_name"));
@@ -76,9 +79,11 @@ public class DrugAction extends BaseAction {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("user_id", user.getId());
-		List<PageData> farm = moduleService.service("organServiceImpl", "getFarmByUserId", new Object[]{pd});
-		pd.put("farm_id", farm.get(0).get("org_id"));
-		pd.put("farm_name", farm.get(0).get("org_name"));
+		List<PageData> company = moduleService.service("organServiceImpl", "getCompanyByUserId", new Object[]{pd});
+		pd.put("parent_id", company.get(0).get("org_id"));
+		pd.put("company", company.get(0).get("org_name"));
+		List<PageData> farmList = moduleService.service("organServiceImpl", "getFarmListByUserId", new Object[]{pd});
+		mv.addObject("farmList", farmList);
 		pd.put("good_type", null);
 		mv.addObject("goodsList",drugService.selectGoods(pd));	
 		pd.put("code_desc", "使用方法");

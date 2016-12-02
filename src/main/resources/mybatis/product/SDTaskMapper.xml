@@ -31,5 +31,6 @@
 
     <select id="getDateTypeName" resultType="pd" useCache="false">
         SELECT biz_code, code_name FROM s_d_code WHERE code_type = 'date_type'
+        and biz_code = 2
     </select>
 </mapper>
