@@ -73,7 +73,7 @@
               , CASE WHEN bc.status = 0
                 THEN (SELECT batch_id
                   FROM s_b_batch_change
-                  WHERE farm_id = ${farm_id} AND house_code = ${house_code})
+                  WHERE farm_id = ${farm_id} AND house_code = ${house_code} ORDER BY operation_date DESC LIMIT 1)
                   ELSE batch_id END                               AS batch_id
               , dh.device_code
               , h.house_type

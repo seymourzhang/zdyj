@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/alarmMobile")
-public class AlarmMobileAction extends BaseAction{
+public class AlarmMobileAction extends BaseAction {
 
     @Autowired
     private OrganService organService;
@@ -106,7 +106,7 @@ public class AlarmMobileAction extends BaseAction{
         JSONObject tUserJson = jsonObject.getJSONObject("params");
         JSONArray curAlarmData = tUserJson.getJSONArray("CurAlarmData");
 
-        for (int i = 0; i < curAlarmData.length(); ++i){
+        for (int i = 0; i < curAlarmData.length(); ++i) {
             JSONObject data = curAlarmData.optJSONObject(i);
             pd.put("id", data.get("alarmID"));
             pd.put("house_id", data.get("houseId"));
@@ -176,7 +176,7 @@ public class AlarmMobileAction extends BaseAction{
                 alarm.put("lux_alarm", lpd.get("lux_alarm"));
                 alarmData.put(alarm);
                 resJson.put("Result", "Success");
-            }else{
+            } else {
                 alarm.put("houseID", house.get("id"));
                 alarm.put("houseName", house.get("name_cn"));
                 alarm.put("dayAge", 0);
@@ -207,7 +207,7 @@ public class AlarmMobileAction extends BaseAction{
     }
 
     @RequestMapping("/queryAlarmLog")
-    public void queryAlarmLog(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public void queryAlarmLog(HttpServletRequest request, HttpServletResponse response) throws Exception {
         JSONObject resJson = new JSONObject();
         PageData pd = new PageData();
         pd = this.getPageData();
@@ -237,36 +237,38 @@ public class AlarmMobileAction extends BaseAction{
         PageData pp = new PageData();
         pp.put("farm_id", FarmId);
         pp.put("house_code", HouseId);
-        List<PageData> lpd = batchManageService.getCreateBatchData(pp);
-        String batchNo = lpd.get(0).get("batchId").toString();
-        pd.put("batchNo2", batchNo);
         List<PageData> histHist = new ArrayList<>();
-        if ("All".equals(AlarmCategory)){
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("frontTemp".equals(AlarmCategory)){
-            pd.put("bizCode", "Q%");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("middleTemp".equals(AlarmCategory)) {
-            pd.put("bizCode", "Z%");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("backTemp".equals(AlarmCategory)) {
-            pd.put("bizCode", "H%");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("pointTemp".equals(AlarmCategory)) {
-            pd.put("codeName", "点温差%");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("avgTemp".equals(AlarmCategory)) {
-            pd.put("bizCode", "P%");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("powerStatus".equals(AlarmCategory)) {
-            pd.put("bizCode", "%point%");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("lux".equals(AlarmCategory)){
-            pd.put("codeName", "%光照");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
-        } else if ("co2".equals(AlarmCategory)) {
-            pd.put("codeName", "二氧化碳%");
-            histHist = alarmHistService.getAlarmHistDetail(pd);
+        PageData lpd = batchManageService.selectBatchDataForMobile(pp);
+        if (lpd != null) {
+            String batchNo = lpd.get("batch_id").toString();
+            pd.put("batchNo2", batchNo);
+            if ("All".equals(AlarmCategory)) {
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("frontTemp".equals(AlarmCategory)) {
+                pd.put("bizCode", "Q%");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("middleTemp".equals(AlarmCategory)) {
+                pd.put("bizCode", "Z%");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("backTemp".equals(AlarmCategory)) {
+                pd.put("bizCode", "H%");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("pointTemp".equals(AlarmCategory)) {
+                pd.put("codeName", "点温差%");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("avgTemp".equals(AlarmCategory)) {
+                pd.put("bizCode", "P%");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("powerStatus".equals(AlarmCategory)) {
+                pd.put("bizCode", "%point%");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("lux".equals(AlarmCategory)) {
+                pd.put("codeName", "%光照");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            } else if ("co2".equals(AlarmCategory)) {
+                pd.put("codeName", "二氧化碳%");
+                histHist = alarmHistService.getAlarmHistDetail(pd);
+            }
         }
         if (!histHist.isEmpty()) {
             for (PageData pageData : histHist) {
@@ -286,13 +288,15 @@ public class AlarmMobileAction extends BaseAction{
                 temp.put("last_time", pageData.get("continue_time"));
                 alarmLog.put(temp);
             }
+            resJson.put("Result", "Success");
+        } else {
+            resJson.put("Error", "暂无数据！");
+            resJson.put("Result", "Fail");
         }
         resJson.put("AlarmLog", alarmLog);
         resJson.put("HouseId", HouseId);
-        resJson.put("Result", "Success");
         resJson.put("Error", "");
         dealRes = Constants.RESULT_SUCCESS;
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }
-
 }
