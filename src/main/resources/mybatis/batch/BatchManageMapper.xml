@@ -70,11 +70,15 @@
     <select id="selectBatchDataForMobile" parameterType="pd" resultType="pd">
         SELECT
               bc.status
+              , bc.batch_id
               , CASE WHEN bc.status = 0
-                THEN (SELECT batch_id
+                THEN (SELECT operation_date
                   FROM s_b_batch_change
-                  WHERE farm_id = ${farm_id} AND house_code = ${house_code} ORDER BY operation_date DESC LIMIT 1)
-                  ELSE batch_id END                               AS batch_id
+                  WHERE farm_id = ${farm_id} AND house_code = ${house_code}
+                        AND batch_id = bc.batch_id
+                        AND operation_type = '2'
+                  ORDER BY operation_date DESC LIMIT 1)
+                  ELSE bc.operation_date END                               AS operation_date
               , dh.device_code
               , h.house_type
         FROM s_b_batch_curr bc

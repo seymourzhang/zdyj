@@ -2,6 +2,7 @@ package com.mtc.zljk.product.service;
 
 import com.mtc.zljk.util.common.PageData;
 import jdk.nashorn.internal.runtime.ECMAException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface FarmTaskService {
     List<PageData> selectByUserIdOrStatus(PageData pd) throws Exception;
 
     /***
-     * 物理删除任务
+     * 逻辑删除任务
      * @Param pd
      * @throws Exception
      */
@@ -39,4 +40,12 @@ public interface FarmTaskService {
      * @throws Exception
      */
     List<PageData> selectByTashId(PageData pd) throws Exception;
+
+    /***
+     * 查询提醒任务
+     * @param pd
+     * @return
+     * @throws Exception
+     */
+    JSONObject selectForMobile(PageData pd) throws Exception;
 }

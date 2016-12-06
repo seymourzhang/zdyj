@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/product")
-public class MissionRemindAction extends BaseAction {
+public class TaskAction extends BaseAction {
     @Autowired
     private OrganService organService;
 

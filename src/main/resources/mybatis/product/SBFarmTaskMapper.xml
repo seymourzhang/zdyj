@@ -63,4 +63,29 @@
     <update id="updateTaskStatus" parameterType="pd">
         UPDATE s_b_farm_task SET task_status = 'N' WHERE id IN (${id});
     </update>
+
+    <select id="selectCountForMobile" parameterType="pd" resultType="pd">
+        SELECT
+          sum(CASE WHEN deal_status = 1
+            THEN 1
+          ELSE 0 END) AS unCompletes,
+          sum(CASE WHEN deal_status = 3
+            THEN 1
+          ELSE 0 END) AS delays
+        FROM s_b_task_list_his
+        WHERE farm_id = ${farm_id} AND house_id = ${house_code}
+        GROUP BY farm_id, house_id
+    </select>
+
+    <select id="selectCurrForMobile" parameterType="pd" resultType="pd">
+          select id, task_id, task_type, task_name, deal_status
+          from s_b_task_list_curr
+          where house_id = ${house_code} and farm_id = ${farm_id}
+    </select>
+
+    <select id="selectHistForMobile" parameterType="pd" resultType="pd">
+          select id, task_id, task_type, task_name, deal_status
+          from s_b_task_list_his
+          where house_id = ${house_code} and farm_id = ${farm_id}
+    </select>
 </mapper>
