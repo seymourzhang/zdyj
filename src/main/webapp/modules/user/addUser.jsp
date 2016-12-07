@@ -8,6 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
+	  <%@ include file="../../framework/inc.jsp"%>
     <base href="<%=basePath%>">
     <link rel="stylesheet" href="<%=path %>/framework/css/bootstrap.min.css" />
     <link rel="stylesheet" href="<%=path %>/framework/css/style-metro.css" />
@@ -35,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			{ id:222, pId:22, name:"随意勾选 2-2-2"},
 			{ id:23, pId:2, name:"随意勾选 2-3"}
 		]; */
-	
+
 	 $(document).ready(function(){
 		 $("input[name='user_code']").blur(function(){
 				var ac=$("input[name='user_code']").val();
@@ -72,39 +73,69 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#addUser_msg').html("");
 				}
 			  });
-		 
-		$("#role_id").change(function() {
-			changeOrg();
-		});
-		changeOrg();
+         initTreeOrg();
+//		$("#role_id").change(function() {
+//			changeOrg();
+//		});
+//		changeOrg();
 	})
 
-	function changeOrg(){
-			$.ajax({
-				type : "post",
-				url : "<%=path%>/role/getOrgByRoleId",
-				data : {
-					"role_id" : $("#role_id").val()
+        function initTreeOrg(){
+            $.ajax({
+                type : "post",
+                url : "<%=path%>/role/getOrgByRoleId",
+                data : {
+                    checkedFlag: 0
 				},
-				dataType: "json",
-				success : function(result) {
-					var setting = {
-							check: {
-								enable: true,
-								chkDisabledInherit: true
-							},
-							data: {
-								simpleData: {
-									enable: true
-								}
-							}
-						};
-					var zNodes =result.obj;
-					$.fn.zTree.init($("#treeDemo"), setting, zNodes);
-					
-				}
-			})
-		}
+                dataType: "json",
+                success : function(result) {
+                    var zNodes =result.obj;
+                    var orgListTreeSetting = {
+                        view: {
+                            selectedMulti: false,
+                            fontCss: { 'color': 'blue', 'font-family': '微软雅黑', 'font-size': '12px' }
+                        },
+                        check: {
+                            enable: true,
+                            chkDisabledInherit: true
+                        },
+                        data: {
+                            simpleData: {
+                                enable: true
+                            }
+                        }
+                    };
+                    $.fn.zTree.init($("#treeDemo"), orgListTreeSetting, zNodes);
+                }
+            })
+        }
+
+	<%--function changeOrg(){--%>
+			<%--$.ajax({--%>
+				<%--type : "post",--%>
+				<%--url : "<%=path%>/role/getOrgByRoleId",--%>
+				<%--data : {--%>
+					<%--"role_id" : $("#role_id").val()--%>
+				<%--},--%>
+				<%--dataType: "json",--%>
+				<%--success : function(result) {--%>
+					<%--var setting = {--%>
+							<%--check: {--%>
+								<%--enable: true,--%>
+								<%--chkDisabledInherit: true--%>
+							<%--},--%>
+							<%--data: {--%>
+								<%--simpleData: {--%>
+									<%--enable: true--%>
+								<%--}--%>
+							<%--}--%>
+						<%--};--%>
+					<%--var zNodes =result.obj;--%>
+					<%--$.fn.zTree.init($("#treeDemo"), setting, zNodes);--%>
+					<%----%>
+				<%--}--%>
+			<%--})--%>
+		<%--}--%>
 	
 	
 	/* function houseClick(){
@@ -156,7 +187,20 @@ function  addUser(){
 	  	 chk_value.push($(this).val());    
 	  });  
 	  $("#house_code").val(chk_value); */
-	var param =$.serializeObject($('#adduser_form'));
+    var param =$.serializeObject($('#adduser_form'));
+
+    var treeObj=$.fn.zTree.getZTreeObj("treeDemo");
+    var nodes = treeObj.getCheckedNodes(true);
+	var orgStr = "";
+
+    if(nodes.length > 0){
+        for(var key in nodes){
+            orgStr += nodes[key].id + ",";
+        }
+    }
+
+    param["org_str"] = orgStr;
+
 	if(submitForm()){
 		$.ajax({
 			url: "<%=path%>/user/addUser",
@@ -164,7 +208,7 @@ function  addUser(){
 			type : "POST",
 			dataType: "json",
 			success: function(result) {
-				if(result.msg=='1'){
+				if(result.success==true){
 					parent.location.reload();   
 					parent.layer.closeAll();
 				}else{
@@ -207,73 +251,123 @@ function closeB(){
   <body>
    <div class="portlet-body form" style="padding-top: 15px;margin-left: -30px;">
 	<!-- BEGIN FORM-->
-  <%--   <form action="<%=path %>/user/addUser" class="form-horizontal"  onsubmit="return submitForm()" > --%>
-    <form id="adduser_form" class="form-horizontal"   >
-    		<div style="float: left;">
-	    		<div class="control-group">
-					<label class="control-label" style="width: 100px;">用户名:</label>
-					<div class="controls" style="margin-left: 110px;">
-						<input type="text" class="span6 m-wrap" style="width: 230px;" name="user_code">
+	  <%--   <form action="<%=path %>/user/addUser" class="form-horizontal"  onsubmit="return submitForm()" > --%>
+		<form id="adduser_form" class="form-horizontal"   >
+			<div class="container-fluid">
+				<div class="row-fluid">
+						<div class="span6" align="left">
+							<div class="row-fluid">
+								<div class="span1" align="right">
+								</div>
+								<div class="span3" align="right">
+									用户名
+								</div>
+								<div class="span8" align="left">
+									<input type="text" name="user_code" placeholder="请输入用户登录名称">
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span1" align="right">
+								</div>
+								<div class="span3" align="right">
+									密码
+								</div>
+								<div class="span8" align="left">
+									<input type="password" name="user_password" placeholder="请输入用户登录密码">
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span1" align="right">
+								</div>
+								<div class="span3" align="right">
+									确认密码
+								</div>
+								<div class="span8" align="left">
+									<input type="password" name="confirmation" placeholder="请重复输入用户登录密码">
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span1" align="right">
+								</div>
+								<div class="span3" align="right">
+									中文名
+								</div>
+								<div class="span8" align="left">
+									<input type="text" name="user_real_name" placeholder="请输入用户中文名称">
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span1" align="right">
+								</div>
+								<div class="span3" align="right">
+									英文名
+								</div>
+								<div class="span8" align="left">
+									<input type="text" name="user_real_name_en" placeholder="请输入用户英文名称">
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span1" align="right">
+								</div>
+								<div class="span3" align="right">
+									手机号
+								</div>
+								<div class="span8" align="left">
+									<input type="text" name="user_mobile_1" placeholder="请输入用户的手机号码">
+								</div>
+							</div>
+						</div>
+						<div class="span6" align="left">
+							<div class="row-fluid">
+								<div class="span3" align="right">
+									所属角色
+								</div>
+								<div class="span9" align="left">
+										<select id="role_id"  name="role_id" >
+											<c:if test="${!empty roleList}">
+												<c:forEach var="role" items="${roleList}">
+													<option value="${role.role_id }">${role.role_name }</option>
+												</c:forEach>
+											</c:if>
+										</select>
+								</div>
+								<div class="row-fluid">
+									<div class="span3" align="right">
+										所属机构
+									</div>
+									<div class="span9" align="left">
+										<div class="zTreeDemoBackground left" style="border:1px solid #e5e5e5;height: 140px;overflow:auto;">
+											<ul id="treeDemo" class="ztree"></ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				<div class="row-fluid">
+					<div class="span4" align="center">
+					</div>
+					<div class="span4" align="center">
+						<label style="color: red;text-align: center;" id="addUser_msg"></label>
+					</div>
+					<div class="span4" align="center">
 					</div>
 				</div>
-				<div class="control-group" >
-					<label class="control-label" style="width: 100px;">密码:</label>
-					<div class="controls" style="margin-left: 110px;">
-						<input type="password" class="span6 m-wrap" style="width: 230px;" name="user_password">
+
+				<div class="row-fluid">
+					<div class="span3" align="center">
+					</div>
+					<div class="span3" align="center">
+						<button type="button" class="btn blue" onclick="addUser()">确定</button>
+					</div>
+					<div class="span3" align="center">
+						<button type="button" class="btn" onclick="closeB()">取消</button>
+					</div>
+					<div class="span3" align="center">
 					</div>
 				</div>
-				<div class="control-group" >
-					<label class="control-label" style="width: 100px;">确认密码:</label>
-					<div class="controls" style="margin-left: 110px;">
-						<input type="password" class="span6 m-wrap" style="width: 230px;" name="confirmation">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" style="width: 100px;">中文名:</label>
-					<div class="controls" style="margin-left: 110px;">
-						<input type="text" class="span6 m-wrap" style="width: 230px;" name="user_real_name">
-					</div>
-				</div>
-				<div class="control-group">
-					<label class="control-label" style="width: 100px;">英文名:</label>
-					<div class="controls" style="margin-left: 110px;">
-						<input type="text" class="span6 m-wrap" style="width: 230px;" name="user_real_name_en">
-					</div>
-				</div>
-				<div class="control-group" >
-					<label class="control-label" style="width: 100px;">手机号:</label>
-					<div class="controls" style="margin-left: 110px;">
-						<input type="text" class="span6 m-wrap" style="width: 230px;" name="user_mobile_1">
-					</div>
-				</div>
-    		</div>
-    		<div style="float: left;padding-left: 20px;">
-    		  <div class="control-group" >
-					<label class="control-label" style="width: 60px;">所属角色:</label>
-					<div class="controls" style="margin-left: 70px;">
-						<select id="role_id" class="medium m-wrap"  name="role_id" style="width: 350px;">
-	                      <c:if test="${!empty roleList}">
-	                      <c:forEach var="role" items="${roleList}">
-	                      <option value="${role.role_id }">${role.role_name }</option>
-	                      </c:forEach>
-	                     </c:if>
-					  	</select>
-					</div>
-				</div>
-				<div class="control-group" >
-					<label class="control-label" style="width: 60px;">所属机构:</label>
-					<div class="zTreeDemoBackground left" style="border:1px solid #e5e5e5; height: 250px;overflow:auto; margin-left: 70px;">
-						<ul id="treeDemo" class="ztree"></ul>
-					</div>
-				</div>
-    		</div>
-    		<div class="control-group" style="clear:both;height: 20px;text-align: center;">
-				<label class="control-label" style="padding-left: 140px;color: red; width:500px; text-align: center;" id="addUser_msg"></label>
-			</div>
-			<div class="form-actions" style="padding-left: 290px;float:left;" >
-				<button type="button" class="btn blue" onclick="addUser()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				<button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
+
 			</div>
 		</form>
 		<!-- END FORM-->  

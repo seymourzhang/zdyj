@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mtc.zljk.user.entity.SDUser;
+import com.mtc.zljk.util.common.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,31 +38,45 @@ public class RoleAction extends BaseAction {
 	public void getOrgByRoleId(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
 		Json j=new Json();
 		PageData pd = new PageData();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
 		pd = this.getPageData();
+		if(null == pd.get("user_id"))
+			pd.put("user_id", user.getId());
 		List<PageData> orglist= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pd});
-		PageData pdate = new PageData();
-		List<PageData> orgAll= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pdate});
+
+//		PageData pdate = new PageData();
+//		List<PageData> orgAll= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pdate});
+		boolean isSuperUser = false;
+		for (PageData pageData : orglist) {
+			if(null != pageData.get("role_level") && 1 == pageData.getInteger("role_level"))
+				isSuperUser = true;
+		}
+
 		List<PageData> list=new ArrayList<PageData>();
-		for (PageData pageData : orgAll) {
+		for (PageData pageData : orglist) {
 			PageData data=new PageData();
 			data.put("id", pageData.getInteger("id") + "");
 			data.put("pId", pageData.getInteger("parent_id")+ "");
 			data.put("name", pageData.getString("name_cn") + "");
 			data.put("open", "true");
-			data.put("chkDisabled", "true");
-			int tmp = 0;
-			for (PageData p2 : orglist) {
-				if(p2.getInteger("id")==pageData.getInteger("id")){
-					tmp = 1;
-					break;
+			data.put("chkDisabled", "false");
+
+			String flag = pd.getString("checkedFlag");
+			if(null != flag && "1".equals(flag)){
+				if (null != pageData.get("role_level")) {
+					data.put("checked", "true");
+				} else {
+					data.put("checked", "false");
 				}
-			}
-			if (tmp == 1) {
-				data.put("checked", "true");
-			} else {
+			} else{
 				data.put("checked", "false");
 			}
-			list.add(data);
+			if(isSuperUser){
+				list.add(data);
+			} else {
+				if(null != pageData.get("role_level"))
+					list.add(data);
+			}
 		}
 		j.setSuccess(true);
 		j.setObj(list);

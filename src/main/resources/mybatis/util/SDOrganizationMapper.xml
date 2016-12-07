@@ -33,30 +33,43 @@
 		<if test="role_id != null"> 
 			and a.role_id = #{role_id}
 		</if>
-		order by d.id
+	  order by d.id
     </select> 
     
-    <select id="getOrgListByRoleId" resultType="pd" useCache="false">  
-	    select d.id,
-	    	   d.organization_id,
-	    	   d.name_cn,
-	    	   d.parent_id,
-	    	   d.level_id,
-	    	   d.level_name,
-	    	   d.create_person,
-	    	   d.create_date,
-	    	   d.create_time
-	    from s_d_organization d
-		LEFT JOIN s_d_rights c
-		on d.id = c.obj_id
-		LEFT JOIN s_d_role_rights a
-		on c.rights_id = a.rights_id
-		where c.obj_type = 2
-			AND d.freeze_status=0
-		<if test="role_id != null"> 
-			and a.role_id = #{role_id}
-		</if>
-		order by d.id
+    <select id="getOrgListByRoleId" resultType="pd" useCache="false">
+		select d.id,
+				d.organization_id,
+				d.name_cn,
+				d.parent_id,
+				d.level_id,
+				d.level_name,
+				d.create_person,
+				d.create_date,
+				d.create_time,
+				tmp.role_level
+		FROM s_d_organization d
+		LEFT JOIN(SELECT
+						sdr.rights_id
+						,sdr.obj_id
+						,sdur.user_id
+						,sdur.role_id
+						,sdrt.role_level
+					FROM s_d_user_role sdur
+					JOIN s_d_role_rights sdrr
+						ON sdur.role_id = sdrr.role_id
+					JOIN s_d_rights sdr
+						ON sdr.rights_id = sdrr.rights_id
+					AND sdr.obj_type =2
+					JOIN s_d_user_role_temp sdurt
+						ON sdurt.user_id = sdur.user_id
+					JOIN s_d_role_temp sdrt
+						ON sdrt.role_temp_id = sdurt.role_temp_id
+					WHERE sdur.user_id = #{user_id}
+					) tmp
+						ON tmp.obj_id = d.id
+		WHERE 1=1
+		AND d.freeze_status=0
+		ORDER BY d.id
     </select>
 
     <select id="getOrgListById" resultType="pd" useCache="false">

@@ -29,16 +29,18 @@
 						<input type="hidden" name="pid" value="${pd.pid}"> --%>
 							<div class="container-fluid">
 								<div class="row-fluid">
-									<div class="span4" align="left">
+									<div class="span3" align="left">
 										<span_customer>用户名称</span_customer>
-										<input type="text" value="${pd.user_real_name }" placeholder="模糊查询中文名" name="user_real_name"">
+										<input type="text" value="${pd.user_real_name }" placeholder="模糊查询中文名" name="user_real_name">
 									</div>
-									<div class="span4" align="left">
+									<div class="span3" align="left">
 										<span_customer>手机号</span_customer>
 										<input type="text" value="${pd.user_mobile_1 }" placeholder="模糊查询手机号" name="user_mobile_1">
 									</div>
-									<div class="span4" align="left">
+									<div class="span3" align="left">
 										<a href="javascript:search();" class="btn green"><i class="icon-search"></i> 查询</a>
+									</div>
+									<div class="span3" align="left">
 									</div>
 								</div>
 
@@ -56,55 +58,35 @@
 
 								<div class="row-fluid">
 									<div class="span12">
-										<table class="table table-striped table-bordered table-hover" id="sample_1">
-
-											<thead>
-
-											<tr style="background-color: #1288C0; color: white;" >
-												<th class="hidden-480" style="text-align: center;">编号</th>
-												<th>登录名称</th>
-												<th>中文名称</th>
-												<th>手机</th>
-												<!-- <th>所属农场</th>
-												<th>所属栋舍</th> -->
-												<th>状态</th>
-												<th>操作</th>
-											</tr>
-											</thead>
-											<tbody>
-											<c:if test="${!empty listUser}">
-												<c:forEach var="lu" items="${listUser}" varStatus="vs">
-													<tr class="odd gradeX">
-														<td class="hidden-480" style="text-align: center;">${lu.id}</td>
-														<td>${lu.user_code}</td>
-														<td>${lu.user_real_name}</td>
-														<td>${lu.user_mobile_1 != null ? lu.user_mobile_1 : 0}</td>
-															<%-- <td>${lu.farm_name_chs}</td>
-															<td>${lu.house_name}</td> --%>
-														<c:choose>
-															<c:when test="${lu.user_status=='1'}">
-																<td>正常</td>
-															</c:when>
-															<c:otherwise>
-																<td>冻结</td>
-															</c:otherwise>
-														</c:choose>
-														<td class="center hidden-480" style="width: 145px;"><a href="javascript:void(0);" onclick="editUser(${lu.id},${lu.farm_id!=null? lu.farm_id :'0'},'${lu.house_code!=null?lu.house_code:'0'}')" class="btn mini purple"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="javascript:void(0);" onclick="delUser(${lu.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a></td>
-													</tr>
-												</c:forEach>
-											</c:if>
-
-											</tbody>
-										</table>
-										<div class="row-fluid" style="margin-top: -18px;">
-											<div class="span11" style="float: right;height: 40px;">
-												<div class="dataTables_paginate paging_bootstrap pagination" style="float: right;margin-top: 10px;">
-													${page.pageStr}
-												</div>
-											</div>
-										</div>
+										<table id="userListTable"></table>
+										<script type="text/javascript">
+                                            var userList = [];
+										</script>
+										<c:if test="${!empty listUser}">
+											<c:forEach var="lu" items="${listUser}" varStatus="vs">
+												<script type="text/javascript">
+													var tmpObj = new Object();
+													tmpObj.id = "${lu.id}";
+													tmpObj.user_code = "${lu.user_code}";
+													tmpObj.user_real_name = "${lu.user_real_name}";
+                                                    tmpObj.user_mobile_1 = "${lu.user_mobile_1}";
+                                                    tmpObj.farm_name_chs = "${lu.farm_name_chs}";
+                                                    tmpObj.house_name = "${lu.house_name}";
+                                                    tmpObj.user_status = "${lu.user_status}";
+                                                    tmpObj.user_status_desc = "${lu.user_status == 1 ? '正常' : '停用'}";
+                                                    tmpObj.farm_id = "${lu.farm_id}";
+                                                    tmpObj.house_code = "${lu.house_code}";
+                                                    tmpObj.operate = '<a href="javascript:void(0);" onclick="editUser(' + "${lu.id}" + ')" class="btn mini blue">';
+                                                    tmpObj.operate += '<i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp;&nbsp;';
+                                                    tmpObj.operate += '<a href="javascript:void(0);" onclick="delUser(' + "${lu.id}" + ')" class="btn mini black">';
+                                                    tmpObj.operate += '<i class="icon-trash"></i> 删除</a>';
+                                                    userList.push(tmpObj);
+												</script>
+											</c:forEach>
+                                        </c:if>
 									</div>
 								</div>
+
 						</div>
 					</form>
 				</div> 
@@ -112,6 +94,7 @@
 		<!-- #main-content -->
 	<!-- </div>  -->
 	<script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>
+	<script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
 	<!-- 确认窗口 -->
 	<script type="text/javascript">
 	var isRead="${pd.write_read}";//菜单是否只读
@@ -138,12 +121,12 @@
 				type: 2, 
 				title: "新增",
 				skin: 'layui-layer-lan',
-				area: ['670px', '520px'],
+				area: ['670px', '320px'],
 			    content: '<%=path%>/user/addUserUrl'
 		    });
 		}
 		//编辑
-		function editUser(id,farm_id,house_code){
+		function editUser(id){
 			if(isRead==0){
 				layer.alert('无权限，请联系管理员!', {
 				    skin: 'layui-layer-lan'
@@ -156,8 +139,8 @@
 				type: 2, 
 				title: "修改",
 				skin: 'layui-layer-lan',
-				area: ['670px', '520px'],
-			    content: "<%=path%>/user/editUserUrl?id=" + id+"&farm_id="+farm_id+"&house_code="+house_code
+				area: ['670px', '500px'],
+			    content: "<%=path%>/user/editUserUrl?id=" + id
 			});
 		}
 		//删除
@@ -171,10 +154,13 @@
 				return;
 			}
 			//询问框
-			layer.confirm('你确定要删除此记录吗？', {
-				btn : [ '确定', '取消' ]
-			//按钮
-			}, function() {
+			layer.confirm('确定删除该用户吗？', {
+                skin: 'layui-layer-lan'
+                , closeBtn: 0
+                , shift: 4 //动画类型
+                , btn : [ '确定', '取消' ]
+                //按钮
+            }, function() {
 				$.ajax({
 					url : "<%=path%>/user/delUser",
 					data : {
@@ -183,16 +169,13 @@
 					type : "POST",
 					success : function(result) {
 						result = $.parseJSON(result);
+                        layer.msg(result.msg, {
+                            skin: 'layui-layer-lan'
+                            , closeBtn: 0
+                            , shift: 4 //动画类型
+                        });
 						if (result.success) {
-							layer.alert(result.msg, function(index) {
-								layer.load(1, {
-									  shade: [0.3,'#fff'], //0.1透明度的白色背景
-									  time: 1000
-									});
-								location.reload();
-							});
-						} else {
-							layer.alert(result.msg);
+                            location.reload();
 						}
 					}
 				});
@@ -207,5 +190,6 @@
 				}); */
 		});
 	</script>
+	<script type="text/javascript" src="<%=path%>/modules/user/js/UserManage.js"></script>
 </body>
 </html>

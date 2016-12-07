@@ -132,7 +132,7 @@ public class LoginMobileAction extends BaseAction{
                 resJson.put("LoginResult", 2);
                 resJson.put("Error", "账户异常！");
                 dealRes = Constants.RESULT_SUCCESS;
-            } else if (!pd.getString("freeze_status").equals("1")) {
+            } else if (!pd.getString("freeze_status").equals("0")) {
                 resJson.put("Result", "Fail");
                 resJson.put("LoginResult", 2);
                 resJson.put("Error", "账户已被删除！");

@@ -56,41 +56,76 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#addUser_msg').html("");
 				}
 			  });
-		 
-		$("#role_id").change(function() {
-			changeOrg();
-		});
-		changeOrg();
+
+//		$("#role_id").change(function() {
+//			changeOrg();
+//		});
+//		changeOrg();
+         initTreeOrg();
 	})
 
-	function changeOrg(){
-			$.ajax({
-				type : "post",
-				url : "<%=path%>/role/getOrgByRoleId",
-				data : {
-					"role_id" : $("#role_id").val()
-				},
-				dataType: "json",
-				success : function(result) {
-					$("#treeDemo").empty();
-					var setting = {
-							check: {
-								enable: true,
-								chkDisabledInherit: true
-							},
-							data: {
-								simpleData: {
-									enable: true
-								}
-							}
-						};
-					var zNodes =result.obj;
-					$.fn.zTree.init($("#treeDemo"), setting, zNodes);
-					
-				}
-			})
-		}
-	
+
+     function initTreeOrg(){
+	     var userId = $("#userId").val();
+         $.ajax({
+             type : "post",
+             url : "<%=path%>/role/getOrgByRoleId",
+             data : {
+                 checkedFlag: 1,
+				 user_id: userId
+             },
+             dataType: "json",
+             success : function(result) {
+                 var zNodes =result.obj;
+                 var orgListTreeSetting = {
+                     view: {
+                         selectedMulti: false,
+                         fontCss: { 'color': 'blue', 'font-family': '微软雅黑', 'font-size': '12px' }
+                     },
+                     check: {
+                         enable: true,
+                         chkDisabledInherit: true
+                     },
+                     data: {
+                         simpleData: {
+                             enable: true
+                         }
+                     }
+                 };
+                 $.fn.zTree.init($("#treeDemo"), orgListTreeSetting, zNodes);
+             }
+         })
+     }
+
+
+	<%--function changeOrg(){--%>
+			<%--$.ajax({--%>
+				<%--type : "post",--%>
+				<%--url : "<%=path%>/role/getOrgByRoleId",--%>
+				<%--data : {--%>
+					<%--"role_id" : $("#role_id").val()--%>
+				<%--},--%>
+				<%--dataType: "json",--%>
+				<%--success : function(result) {--%>
+					<%--$("#treeDemo").empty();--%>
+					<%--var setting = {--%>
+							<%--check: {--%>
+								<%--enable: true,--%>
+								<%--chkDisabledInherit: true--%>
+							<%--},--%>
+							<%--data: {--%>
+								<%--simpleData: {--%>
+									<%--enable: true--%>
+								<%--}--%>
+							<%--}--%>
+						<%--};--%>
+					<%--var zNodes =result.obj;--%>
+					<%--$.fn.zTree.init($("#treeDemo"), setting, zNodes);--%>
+					<%----%>
+				<%--}--%>
+			<%--})--%>
+		<%--}--%>
+	<%----%>
 	 
 	
 	function submitForm(){
@@ -116,18 +151,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 function  editUser(){
 	var param =$.serializeObject($('#edituser_form'));
 	if(submitForm()){
+        var treeObj=$.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getCheckedNodes(true);
+        var orgStr = "";
+
+        if(nodes.length > 0){
+            for(var key in nodes){
+                orgStr += nodes[key].id + ",";
+            }
+        }
+
+        param["org_str"] = orgStr;
+
 		$.ajax({
 			url: "<%=path%>/user/editUser",
 			data: param,
 			type : "POST",
 			dataType: "json",
 			success: function(result) {
-				if(result.msg=='1'){
-					parent.location.reload();   
-					parent.layer.closeAll();
-				}else{
-					alert("添加失败！");
-				}
+                if(result.success==true){
+                    parent.location.reload();
+                    parent.layer.closeAll();
+                }else{
+                    alert("修改失败！");
+                }
 			}
 		});
 	}
@@ -146,40 +193,40 @@ function closeB(){
    <div class="portlet-body form" style="padding-top: 15px;margin-left: -30px;">
 	<!-- BEGIN FORM-->
      <form id="edituser_form" class="form-horizontal"   >
-         <input type="hidden" name="id"   value="${userList.id}"/>
+         <input type="hidden" id="userId" name="id"   value="${userList.id}"/>
     		<div style="float: left;">
 	    		<div class="control-group">
-					<label class="control-label" style="width: 100px;">用户名:</label>
+					<label class="control-label" style="width: 100px;">用户名</label>
 					<div class="controls" style="margin-left: 110px;">
 						<input type="text" class="span6 m-wrap" style="width: 230px;" readonly="readonly" name="user_code" value="${userList.user_code}">
 					</div>
 				</div>
 				<div class="control-group" >
-					<label class="control-label" style="width: 100px;">密码:</label>
+					<label class="control-label" style="width: 100px;">密码</label>
 					<div class="controls" style="margin-left: 110px;">
-						<input type="password" class="span6 m-wrap" style="width: 230px;" name="user_password">
+						<input type="password" class="span6 m-wrap" style="width: 230px;" name="user_password" placeholder="******">
 					</div>
 				</div>
 				<div class="control-group" >
-					<label class="control-label" style="width: 100px;">确认密码:</label>
+					<label class="control-label" style="width: 100px;">确认密码</label>
 					<div class="controls" style="margin-left: 110px;">
-						<input type="password" class="span6 m-wrap" style="width: 230px;" name="confirmation">
+						<input type="password" class="span6 m-wrap" style="width: 230px;" name="confirmation" placeholder="******">
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" style="width: 100px;">中文名:</label>
+					<label class="control-label" style="width: 100px;">中文名</label>
 					<div class="controls" style="margin-left: 110px;">
 						<input type="text" class="span6 m-wrap" style="width: 230px;" name="user_real_name" value="${userList.user_real_name}">
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" style="width: 100px;">英文名:</label>
+					<label class="control-label" style="width: 100px;">英文名</label>
 					<div class="controls" style="margin-left: 110px;">
 						<input type="text" class="span6 m-wrap" style="width: 230px;" name="user_real_name_en" value="${userList.user_real_name_en}">
 					</div>
 				</div>
 				<div class="control-group" >
-					<label class="control-label" style="width: 100px;">手机号:</label>
+					<label class="control-label" style="width: 100px;">手机号</label>
 					<div class="controls" style="margin-left: 110px;">
 						<input type="text" class="span6 m-wrap" style="width: 230px;" name="user_mobile_1" value="${userList.user_mobile_1}">
 					</div>
@@ -187,7 +234,7 @@ function closeB(){
     		</div>
     		<div style="float: left;padding-left: 20px;">
     		  <div class="control-group" >
-					<label class="control-label" style="width: 60px;">所属角色:</label>
+					<label class="control-label" style="width: 60px;">所属角色</label>
 					<div class="controls" style="margin-left: 70px;">
 						<select id="role_id" class="medium m-wrap"  name="role_id" style="width: 350px;">
 	                      <c:if test="${!empty roleList}">
@@ -208,11 +255,19 @@ function closeB(){
     		<div class="control-group" style="clear:both;height: 20px;text-align: center;">
 				<label class="control-label" style="padding-left: 140px;color: red; width:500px; text-align: center;" id="addUser_msg"></label>
 			</div>
-			<div class="form-actions" style="padding-left: 290px;float:left;" >
-				<button type="button" class="btn blue" onclick="editUser()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				<button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
-			</div>
+
+		 <div class="row-fluid">
+			 <div class="span3" align="center">
+			 </div>
+			 <div class="span3" align="center">
+				 <button type="button" class="btn blue" onclick="editUser()">确定</button>
+			 </div>
+			 <div class="span3" align="center">
+				 <button type="button" class="btn" onclick="closeB()">取消</button>
+			 </div>
+			 <div class="span3" align="center">
+			 </div>
+		 </div>
 		</form>
 		<!-- END FORM-->  
 	</div>

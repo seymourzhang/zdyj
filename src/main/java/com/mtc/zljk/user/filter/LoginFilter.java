@@ -27,7 +27,8 @@ public class LoginFilter extends  OncePerRequestFilter {
 	        // 不拦截的url  
 	        String[] notFilter = new String[] {"/zdyj/index.jsp","/zdyj/modules/user/login.jsp","/zdyj/monitor/responseall","/zdyj/alarmCurr/mobileAlarm",
 					"/zdyj/alarmCurr/mobileAlarmCurr","/zdyj/alarmCurr/mobilesSolveAlarmCurr","/zdyj/login/login",
-					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/*","/zdyj/monitorMobile/*", "/zdyj/alarmMobile/*",
+					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/*","/zdyj/monitorMobile/*",
+					"/zdyj/alarmMobile/*", "/zdyj/dailyMobile/*", "/zdyj/taskMobile/*",
 					"/zdyj/checkVersion"};
 	  
 	        // 请求的url  

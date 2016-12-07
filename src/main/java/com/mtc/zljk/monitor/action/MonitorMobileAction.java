@@ -120,9 +120,9 @@ public class MonitorMobileAction extends BaseAction {
         pd.put("houseId", MonitorAction.listToString(house));
         PageData mcl = monitorService.selectAlarmCounts(pd);
         if ("0".equals(mcl.get("num").toString())){
-            resJson.put("AlarmStatus", "0");
+            resJson.put("AlarmStatus", "N");
         }else{
-            resJson.put("AlarmStatus", "1");
+            resJson.put("AlarmStatus", "Y");
         }
         resJson.put("Result", "Success");
         resJson.put("Error", "");

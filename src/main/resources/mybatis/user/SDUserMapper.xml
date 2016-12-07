@@ -21,6 +21,9 @@
 	<select id="findUserInfo" parameterType="pd" resultType="pd" useCache="false">
 		select * from s_d_user 
 		where 1=1
+		<if test="user_status != null and user_status != ''">
+			AND user_status = #{user_status}
+		</if>
 		<if test="user_code != null and user_code != ''">
 			and user_code=#{user_code}
 		</if>
@@ -75,7 +78,7 @@
 	
 	
 	<!-- 新增用户 -->
-	<insert id="saveUser" parameterType="pd"  flushCache="false" keyProperty="id">
+	<insert id="saveUser" parameterType="pd"  flushCache="false" useGeneratedKeys="true" keyProperty="id">
 		insert into s_d_user (
 			user_code,
 			user_real_name,

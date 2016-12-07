@@ -104,7 +104,7 @@ public class UserManageAction extends BaseAction {
 	 * @return
 	 */
 	@RequestMapping(value="/userManage")
-	public ModelAndView userManage(Page page)throws Exception{
+	public ModelAndView userManage(Page page,HttpSession session)throws Exception{
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -167,10 +167,12 @@ public class UserManageAction extends BaseAction {
 	 * @return
 	 */
 	@RequestMapping(value="/addUserUrl")
-	public ModelAndView addUserUrl()throws Exception{
+	public ModelAndView addUserUrl(HttpServletResponse response,HttpServletRequest request,HttpSession session)throws Exception{
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		pd = this.getPageData();
+		pd.put("user_id",user.getId());
 //		pd.put("farmId", 1);
 		mv.setViewName("modules/user/addUser");
 		mv.addObject("pd",pd);
@@ -191,6 +193,7 @@ public class UserManageAction extends BaseAction {
 		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
+
 		String userName= pd.getString("user_code");
 		String password= pd.getString("user_password");
 		String passwd = new SimpleHash("SHA-1", userName, password).toString();	//密码加密
@@ -206,31 +209,23 @@ public class UserManageAction extends BaseAction {
 		pd.put("modify_time", new Date());
 		try {
 			userService.saveUser(pd);
-			if(!StringUtils.isBlank(pd.getString("role_id"))){
-				pd.put("user_id",pd.getInteger("id"));
+			int userId = pd.getInteger("id");
+			String userRoleId = pd.getString("role_id");
+
+			if(userId>0){
+				pd.put("user_id",userId);
+				pd.put("role_temp_id",userRoleId);
+				pd.put("is_main_rela","1");
 				moduleService.service("roleServiceImpl", "saveUserRole", new Object[]{pd});
+				j.setSuccess(true);
+			} else{
+				j.setMsg("未知错误");
+				j.setSuccess(false);
 			}
-			
-			
-//			if(!StringUtils.isBlank(pd.getString("farm_id"))){
-//				pd.put("user_id",pd.getInteger("id"));
-//				userService.saveUserFarm(pd);
-//				if(!StringUtils.isBlank(pd.getString("house_code"))){
-//					String [] arr=pd.getString("house_code").split(",");
-//					for (int i = 0; i < arr.length; i++) {
-//						pd.put("house_id", arr[i]);	
-//						userService.saveUserHouse(pd);
-//						
-//					}
-//				
-//				}
-//			}
-			j.setMsg("1");
-			j.setSuccess(true);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
-			j.setMsg("2");
+			j.setMsg(e.getMessage());
+			j.setSuccess(false);
 		}
 		super.writeJson(j, response);
 	}
@@ -253,6 +248,7 @@ public class UserManageAction extends BaseAction {
 			String passwd = new SimpleHash("SHA-1", userName, password).toString();	//密码加密
 			pd.put("user_password",passwd);
 		}
+		pd.put("create_person",user.getId());
 		pd.put("modify_person",user.getId());
 		pd.put("modify_date", new Date());	
 		pd.put("modify_time", new Date());
@@ -260,32 +256,16 @@ public class UserManageAction extends BaseAction {
 			userService.editUser(pd);
 			if(!StringUtils.isBlank(pd.getString("role_id"))){
 				pd.put("user_id",pd.getString("id"));
+				pd.put("is_main_rela",1);
+
 				moduleService.service("roleServiceImpl", "editUserRole", new Object[]{pd});
 			}
-			
-//			userService.delUserFarm(pd);
-//			if(!StringUtils.isBlank(pd.getString("farm_id"))){
-//				pd.put("create_person",user.getId());
-//				pd.put("create_date", new Date());	
-//				pd.put("create_time", new Date());
-//				userService.saveUserFarm(pd);
-//				userService.delUserHouse(pd);
-//				if(!StringUtils.isBlank(pd.getString("house_code"))){
-//					String [] arr=pd.getString("house_code").split(",");
-//					for (int i = 0; i < arr.length; i++) {
-//						pd.put("house_id", arr[i]);	
-//						userService.saveUserHouse(pd);
-//						
-//					}
-//				
-//				}
-//			}
-			j.setMsg("1");
 			j.setSuccess(true);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			j.setMsg("2");
+			j.setMsg(e.getMessage());
+			j.setSuccess(false);
 		}
 		super.writeJson(j, response);
 	}
@@ -310,7 +290,8 @@ public class UserManageAction extends BaseAction {
 			j.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
-			j.setMsg("2");
+			j.setMsg(e.getMessage());
+			j.setSuccess(false);
 		}
 		super.writeJson(j, response);
 	}
@@ -319,6 +300,7 @@ public class UserManageAction extends BaseAction {
 	public void isUserCodeNull(HttpServletResponse response) throws Exception{
 		Json j=new Json();
 		PageData pd = this.getPageData();
+		pd.put("user_status",1);
 		PageData mcl = userService.findUserInfo(pd);
 		if(mcl!=null){
 			j.setMsg("1");//用户名已经存在
@@ -331,7 +313,6 @@ public class UserManageAction extends BaseAction {
 	
 	/**
 	 * 获取警报提醒信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	@RequestMapping("/getAlarmIncoMsg")
@@ -362,23 +343,13 @@ public class UserManageAction extends BaseAction {
 	 * @return
 	 */
 	@RequestMapping(value="/editUserUrl")
-	public ModelAndView editUserUrl()throws Exception{
+	public ModelAndView editUserUrl(HttpServletResponse response,HttpServletRequest request,HttpSession session)throws Exception{
 		ModelAndView mv = this.getModelAndView();
+		SDUser userSession = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
-//		if(pd.getString("farm_id").equals("0")){
-//			pd.put("farm_id", null);
-//		}
-//		if(pd.getString("house_code").equals("0")){
-//			pd.put("house_code", null);
-//		}
 		PageData user=userService.findUserInfo(pd);
-//		pd.put("farmId", pd.getString("farm_id"));
 		mv.setViewName("modules/user/editUser");
-		
-//		pd.put("user_id", pd.getString("id"));
-		
-//		pd.put("farmId", 1);
 		pd.put("user_id", pd.getString("id"));
 		List<PageData> roleIdByUserId= moduleService.service("roleServiceImpl", "getRoleByUserId", new Object[]{pd});
 		if(roleIdByUserId!=null && roleIdByUserId.size()>0){
@@ -386,10 +357,11 @@ public class UserManageAction extends BaseAction {
 			pd.put("role_id", pageData.getInteger("role_id"));
 		}
 		mv.addObject("pd",pd);
-		List<PageData> roleList= moduleService.service("roleServiceImpl", "getRoleList", new Object[]{pd});
+		PageData param = new PageData();
+		param.put("user_id",userSession.getId());
+		List<PageData> roleList= moduleService.service("roleServiceImpl", "getRoleList", new Object[]{param});
 		mv.addObject("roleList",roleList);
-		
-		
+
 		mv.addObject("pd",pd);
 		mv.addObject("userList",user);
 //		mv.addObject("farmList",getFarmList());
@@ -410,7 +382,6 @@ public class UserManageAction extends BaseAction {
 	
 	/**
 	 * 获取农场信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	List<PageData> getFarmList() throws Exception {

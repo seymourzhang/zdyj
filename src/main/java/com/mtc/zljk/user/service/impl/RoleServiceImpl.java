@@ -23,7 +23,18 @@ public class RoleServiceImpl implements RoleService {
 
 	@Override
 	public void saveUserRole(PageData pd) throws Exception {
+		String orgStr = pd.getString("org_str");
+		if(orgStr.length()>0){
+			orgStr = orgStr.substring(0, orgStr.length()-1);
+		}
+		pd.put("write_read",1);
+		pd.put("orgIdList",orgStr.split(","));
+		dao.save("SDRoleMapper.saveUserRoleTemp", pd);
 		dao.save("SDRoleMapper.saveUserRole", pd);
+		dao.save("SDRoleMapper.saveUserRoleRela", pd);
+		dao.save("SDRoleMapper.saveUserRoleRightsForOrg", pd);
+		dao.save("SDRoleMapper.saveUserRoleRightsForFunction", pd);
+
 	}
 	@Override
 	public List<PageData> getRoleByUserId(PageData pd) throws Exception {
@@ -32,8 +43,25 @@ public class RoleServiceImpl implements RoleService {
 	
 	@Override
 	public void editUserRole(PageData pd) throws Exception {
-		dao.update("SDRoleMapper.editUserRole", pd);
-		
+		String orgStr = pd.getString("org_str");
+		if(orgStr.length()>0){
+			orgStr = orgStr.substring(0, orgStr.length()-1);
+		}
+		pd.put("write_read",1);
+		pd.put("role_temp_id",pd.get("role_id"));
+		pd.put("orgIdList",orgStr.split(","));
+
+//		dao.delete("SDRoleMapper.delUserRoleTemp", pd);
+//		dao.delete("SDRoleMapper.delUserRole", pd);
+//		dao.delete("SDRoleMapper.delUserRoleRights", pd);
+//		dao.delete("SDRoleMapper.delUserRoleRela", pd);
+
+//		dao.save("SDRoleMapper.saveUserRoleTemp", pd);
+//		dao.save("SDRoleMapper.saveUserRole", pd);
+//		dao.save("SDRoleMapper.saveUserRoleRela", pd);
+//		dao.save("SDRoleMapper.saveUserRoleRightsForOrg", pd);
+//		dao.save("SDRoleMapper.saveUserRoleRightsForFunction", pd);
+
 	}
 
 	@Override

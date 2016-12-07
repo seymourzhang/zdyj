@@ -2,6 +2,7 @@ package com.mtc.zljk.product.service.impl;
 
 import com.mtc.zljk.batch.service.BatchManageService;
 import com.mtc.zljk.product.service.FarmTaskService;
+import com.mtc.zljk.util.common.Constants;
 import com.mtc.zljk.util.common.PageData;
 import com.mtc.zljk.util.dao.impl.DaoSupport;
 import org.json.JSONArray;
@@ -44,26 +45,29 @@ public class FarmTaskServiceImpl implements FarmTaskService {
     }
 
     public JSONObject selectForMobile(PageData pd) throws Exception{
+        PageData putData = new PageData();
         JSONObject resJson = new JSONObject();
         Date curDate = new Date();
-        Date remindDate = pd.getDate("RemindDate");
+        String dealRes = null;
         int FarmId = pd.getInteger("FarmId");
         int HouseId = pd.getInteger("HouseId");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+        String rdate = pd.get("RemindDate").toString();
+        Date remindDate = sdf.parse(rdate);
         pd.put("farm_id", FarmId);
         pd.put("house_code", HouseId);
         PageData batch = batchManageService.selectBatchDataForMobile(pd);
 
-        Date batchStartDate = sdf.parse(batch.getString("operation_date"));
-        pd.put("remindDate", batchStartDate);
-        List<PageData> temp = new ArrayList<PageData>();
+        Date batchStartDate = sdf.parse(batch.get("operation_date").toString());
+        pd.put("remindDate", sdf.format(remindDate));
+        List<PageData> temp = new ArrayList<>();
         PageData counts = new PageData();
-        if (remindDate.equals(curDate)){
-            temp = (List<PageData>) dao.findForObject("SBFarmTaskMapper.selectCurrForMobile", pd);
+        if (rdate.equals(sdf.format(curDate))){
+            temp = (List<PageData>) dao.findForList("SBFarmTaskMapper.selectCurrForMobile", pd);
         } else {
-            temp = (List<PageData>) dao.findForObject("SBFarmTaskMapper.selectHistForMobile", pd);
+            temp = (List<PageData>) dao.findForList("SBFarmTaskMapper.selectHistForMobile", pd);
         }
         JSONArray taskInfos = new JSONArray();
         if (temp.size() != 0) {
@@ -85,12 +89,23 @@ public class FarmTaskServiceImpl implements FarmTaskService {
             resJson.put("Result", "Fail");
         }
 
+        pd.put("operationDate", sdf.format(batchStartDate));
         counts = (PageData) dao.findForObject("SBFarmTaskMapper.selectCountForMobile", pd);
 
         resJson.put("HouseId", HouseId);
-        resJson.put("UnCompleteTaskNum", counts.get("unCompletes"));
-        resJson.put("delayCount", counts.get("delays"));
-//        resJson.put("RemindDate", )
+        resJson.put("UnCompleteTaskNum", counts == null ? 0 : counts.get("unCompletes"));
+        resJson.put("delayCount", counts == null ? 0 : counts.get("delays"));
+        resJson.put("RemindDate", rdate);
+        dealRes = Constants.RESULT_SUCCESS;
+        resJson.put("dealRes", dealRes);
         return resJson;
+    }
+
+    public int updateCurStatusForMobile(PageData pd) throws Exception{
+        return (Integer) dao.update("SBFarmTaskMapper.updateCurStatusForMobile", pd);
+    }
+
+    public int updateHisStatusForMobile(PageData pd) throws Exception{
+        return (Integer) dao.update("SBFarmTaskMapper.updateHisStatusForMobile", pd);
     }
 }

@@ -48,4 +48,8 @@ public interface FarmTaskService {
      * @throws Exception
      */
     JSONObject selectForMobile(PageData pd) throws Exception;
+
+    int updateCurStatusForMobile(PageData pd) throws Exception;
+
+    int updateHisStatusForMobile(PageData pd) throws Exception;
 }
