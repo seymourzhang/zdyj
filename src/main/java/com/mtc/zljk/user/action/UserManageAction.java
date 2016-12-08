@@ -108,31 +108,21 @@ public class UserManageAction extends BaseAction {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		
-		String farm_id = pd.getString("farm_id");
-		
-		if(null != farm_id && !"".equals(farm_id)){
-			farm_id = farm_id.trim();
-			pd.put("farm_id", farm_id);
-		}
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+
 		String user_real_name = pd.getString("user_real_name");
 		String user_mobile_1 = pd.getString("user_mobile_1");
-		
-		if(user_real_name != null && !"".equals(user_real_name)){
-			user_real_name = user_real_name.trim();
-			pd.put("user_real_name", user_real_name);
-		}
-		if(user_mobile_1 != null && !"".equals(user_mobile_1)){
-			user_mobile_1 = user_mobile_1.trim();
-			pd.put("user_mobile_1", user_mobile_1);
-		} 
-		
-		String id = pd.getString("id");
-		String pid = pd.getString("pid");
-		pd.put("id", id);
-		pd.put("pid", pid);
-		page.setPd(pd);
-		List<PageData> list=userService.getUserInfo(page);
+
+		pd.put("user_real_name", (null != user_real_name)?user_real_name.trim():user_real_name);
+		pd.put("user_mobile_1", (null != user_mobile_1)?user_mobile_1.trim():user_mobile_1 );
+
+		pd.put("id",user.getId());
+		pd.put("obj_type",2);
+		pd.put("user_status",1);
+		pd.put("freeze_status",0);
+		pd.put("listFlag",1);
+
+		List<PageData> list=userService.getUserInfo(pd);
 		List<PageData> userlist=new ArrayList<PageData>();
 		for (PageData pageData : list) {
 			PageData paDate = new PageData();
@@ -155,7 +145,6 @@ public class UserManageAction extends BaseAction {
 			userlist.add(pageData);
 		}
 		mv.addObject("listUser",userlist);
-		mv.addObject("farmList",getFarmList());
 		mv.setViewName("modules/user/userManage");
 		mv.addObject("pd",pd);
 		return mv;
@@ -280,17 +269,23 @@ public class UserManageAction extends BaseAction {
 		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("user_status","0");
-		pd.put("modify_person",user.getId());
-		pd.put("modify_date", new Date());	
-		pd.put("modify_time", new Date());
-		try {
-			userService.editUser(pd);
-			j.setMsg("删除成功！");
-			j.setSuccess(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			j.setMsg(e.getMessage());
+		if(null != pd.get("id") && !String.valueOf( user.getId()).equals(pd.getString("id"))){
+			pd.put("user_status","0");
+			pd.put("freeze_status","1");
+			pd.put("modify_person",user.getId());
+			pd.put("modify_date", new Date());
+			pd.put("modify_time", new Date());
+			try {
+				userService.editUser(pd);
+				j.setMsg("删除成功");
+				j.setSuccess(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				j.setMsg(e.getMessage());
+				j.setSuccess(false);
+			}
+		} else{
+			j.setMsg("不能删除当前已登录的账号");
 			j.setSuccess(false);
 		}
 		super.writeJson(j, response);

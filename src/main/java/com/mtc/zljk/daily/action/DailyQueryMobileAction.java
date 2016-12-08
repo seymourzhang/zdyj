@@ -133,7 +133,7 @@ public class DailyQueryMobileAction extends BaseAction {
                 JSONObject dataInfo = new JSONObject();
                 dataInfo.put("BreedBatchId", data.get("batch_id"));
                 dataInfo.put("HouseId", data.get("house_code"));
-                dataInfo.put("GrowthDate", data.get("growth_date"));
+                dataInfo.put("GrowthDate", sdf1.format(sdf1.parse(data.get("growth_date").toString())));
                 dataInfo.put("DayAge", data.get("age"));
                 dataInfo.put("GrowthWeekAge", data.get("growth_week_age"));
                 dataInfo.put("LayerWeekAge", data.get("laying_week_age"));

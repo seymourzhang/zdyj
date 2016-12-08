@@ -4,6 +4,7 @@ package com.mtc.zljk.user.action;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.serializer.IntegerCodec;
 import com.mtc.zljk.batch.service.BatchManageService;
+import com.mtc.zljk.farm.service.FarmService;
 import com.mtc.zljk.user.entity.SDUser;
 import com.mtc.zljk.user.service.SBUserImeiService;
 import com.mtc.zljk.user.service.SDUserService;
@@ -54,6 +55,9 @@ public class LoginMobileAction extends BaseAction{
 
     @Autowired
     private BatchManageService batchManageService;
+
+    @Autowired
+    private FarmService farmService;
 
 
 	/**
@@ -200,12 +204,12 @@ public class LoginMobileAction extends BaseAction{
                 o.put("deviceCode", "");
                 o.put("BreedBatchId", 0);
                 o.put("BreedBatchStatus", 0);
-                o.put("type", "");
+                o.put("houseTypeName", "");
             } else {
                 o.put("deviceCode", pageData.get("device_code") == null ? "" : pageData.get("device_code"));
                 o.put("BreedBatchId", lpd.get("batch_id") == null ? 0 : lpd.get("batch_id"));
                 o.put("BreedBatchStatus", lpd.get("status").equals(0) ? 2 : 1);
-                o.put("type", lpd.get("house_type"));
+                o.put("houseTypeName", lpd.get("house_type"));
             }
             ja.put(o);
         }
@@ -213,18 +217,31 @@ public class LoginMobileAction extends BaseAction{
         PageData pa = new PageData();
         pa.put("id", farmId);
         List<PageData> llpd = organService.getOrgListById(pa);
+
         JSONObject farmInfo = new JSONObject();
         farmInfo.put("id", llpd.get(0).get("id"));
         farmInfo.put("name", llpd.get(0).get("name_cn"));
+        String feedMethod = llpd.get(0).getString("feed_method");
+        String feedType = llpd.get(0).getString("feed_type");
+        PageData temp = new PageData();
+        temp.put("code_type", "FEED_METHOD");
+        temp.put("biz_code", feedMethod);
+        List<PageData> temp1 = farmService.findCode(temp);
+        farmInfo.put("feedMethod", temp1.get(0).get("code_name"));
+        temp.put("code_type", "FEED_TYPE");
+        temp.put("biz_code", feedType);
+        List<PageData> temp2 = farmService.findCode(temp);
+        farmInfo.put("feedType", temp2.get(0).get("code_name"));
+
         pa.put("id", llpd.get(0).get("parent_id"));
         List<PageData> llpd_parent = organService.getOrgListById(pa);
         farmInfo.put("CompanyName", llpd_parent.get(0).get("name_cn"));
         farmInfo.put("address1", llpd.get(0).get("farm_add1"));
         farmInfo.put("address2", llpd.get(0).get("farm_add2"));
         farmInfo.put("address3", llpd.get(0).get("farm_add3"));
+
         resJson.put("FarmInfo", farmInfo);
         dealRes = Constants.RESULT_SUCCESS;
-
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }
 

@@ -71,8 +71,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
              type : "post",
              url : "<%=path%>/role/getOrgByRoleId",
              data : {
-                 checkedFlag: 1,
-				 user_id: userId
+                 checkedFlag: 1
+				 ,user_id: userId
              },
              dataType: "json",
              success : function(result) {

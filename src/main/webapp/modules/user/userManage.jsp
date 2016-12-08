@@ -30,12 +30,12 @@
 							<div class="container-fluid">
 								<div class="row-fluid">
 									<div class="span3" align="left">
-										<span_customer>用户名称</span_customer>
-										<input type="text" value="${pd.user_real_name }" placeholder="模糊查询中文名" name="user_real_name">
+										<span_customer>用户</span_customer>
+										<input type="text" value="${pd.user_real_name }" placeholder="请输入用户登录名或名称" name="user_real_name">
 									</div>
 									<div class="span3" align="left">
-										<span_customer>手机号</span_customer>
-										<input type="text" value="${pd.user_mobile_1 }" placeholder="模糊查询手机号" name="user_mobile_1">
+										<span_customer>手机号码</span_customer>
+										<input type="text" value="${pd.user_mobile_1 }" placeholder="请输入用户手机号码" name="user_mobile_1">
 									</div>
 									<div class="span3" align="left">
 										<a href="javascript:search();" class="btn green"><i class="icon-search"></i> 查询</a>
@@ -169,13 +169,14 @@
 					type : "POST",
 					success : function(result) {
 						result = $.parseJSON(result);
-                        layer.msg(result.msg, {
-                            skin: 'layui-layer-lan'
-                            , closeBtn: 0
-                            , shift: 4 //动画类型
-                        });
 						if (result.success) {
                             location.reload();
+						} else{
+                            layer.msg("删除用户失败！(" + result.msg + ")", {
+                                skin: 'layui-layer-lan'
+                                , closeBtn: 0
+                                , shift: 4 //动画类型
+                            });
 						}
 					}
 				});

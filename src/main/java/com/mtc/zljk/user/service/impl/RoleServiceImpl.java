@@ -51,16 +51,16 @@ public class RoleServiceImpl implements RoleService {
 		pd.put("role_temp_id",pd.get("role_id"));
 		pd.put("orgIdList",orgStr.split(","));
 
-//		dao.delete("SDRoleMapper.delUserRoleTemp", pd);
-//		dao.delete("SDRoleMapper.delUserRole", pd);
-//		dao.delete("SDRoleMapper.delUserRoleRights", pd);
-//		dao.delete("SDRoleMapper.delUserRoleRela", pd);
+		dao.delete("SDRoleMapper.delUserRoleTemp", pd);
+		dao.delete("SDRoleMapper.delUserRole", pd);
+		dao.delete("SDRoleMapper.delUserRoleRights", pd);
+		dao.delete("SDRoleMapper.delUserRoleRela", pd);
 
-//		dao.save("SDRoleMapper.saveUserRoleTemp", pd);
-//		dao.save("SDRoleMapper.saveUserRole", pd);
-//		dao.save("SDRoleMapper.saveUserRoleRela", pd);
-//		dao.save("SDRoleMapper.saveUserRoleRightsForOrg", pd);
-//		dao.save("SDRoleMapper.saveUserRoleRightsForFunction", pd);
+		dao.save("SDRoleMapper.saveUserRoleTemp", pd);
+		dao.save("SDRoleMapper.saveUserRole", pd);
+		dao.save("SDRoleMapper.saveUserRoleRela", pd);
+		dao.save("SDRoleMapper.saveUserRoleRightsForOrg", pd);
+		dao.save("SDRoleMapper.saveUserRoleRightsForFunction", pd);
 
 	}
 

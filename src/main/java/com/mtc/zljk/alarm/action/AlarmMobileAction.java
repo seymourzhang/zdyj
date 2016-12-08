@@ -59,12 +59,12 @@ public class AlarmMobileAction extends BaseAction {
         pd.put("parent_id", FarmId);
         List<PageData> lpd = organService.getOrgListById(pd);
         JSONArray alarmMessages = new JSONArray();
-        JSONArray alarmDatas = new JSONArray();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm:ss");
         SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
         for (PageData a : lpd) {
             JSONObject alarmMessage = new JSONObject();
+            JSONArray alarmDatas = new JSONArray();
             int houseId = Integer.parseInt(a.get("id").toString());
             pd.put("houseId", houseId);
             alarmMessage.put("HouseId", houseId);

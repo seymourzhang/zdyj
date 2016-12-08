@@ -23,8 +23,8 @@ public class SDUserServiceImpl implements SDUserService {
 	}
 	
 	@Override
-	public List<PageData> getUserInfo(Page page) throws Exception {
-		return (List<PageData>)dao.findForList("SDUserMapper.userlistPage", page);
+	public List<PageData> getUserInfo(PageData pd) throws Exception {
+		return (List<PageData>)dao.findForList("SDUserMapper.getUserList", pd);
 	}
 	@Override
 	public int saveUser(PageData pd) throws Exception {

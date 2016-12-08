@@ -39,21 +39,16 @@ public class RoleAction extends BaseAction {
 		Json j=new Json();
 		PageData pd = new PageData();
 		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
-		pd = this.getPageData();
-		if(null == pd.get("user_id"))
-			pd.put("user_id", user.getId());
-		List<PageData> orglist= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pd});
 
-//		PageData pdate = new PageData();
-//		List<PageData> orgAll= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pdate});
-		boolean isSuperUser = false;
-		for (PageData pageData : orglist) {
-			if(null != pageData.get("role_level") && 1 == pageData.getInteger("role_level"))
-				isSuperUser = true;
-		}
+		pd = this.getPageData();
+		List<PageData> orgList= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pd});
+
+		PageData pdate = new PageData();
+		pdate.put("user_id", user.getId());
+		List<PageData> orgListAll= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pdate});
 
 		List<PageData> list=new ArrayList<PageData>();
-		for (PageData pageData : orglist) {
+		for (PageData pageData : orgListAll) {
 			PageData data=new PageData();
 			data.put("id", pageData.getInteger("id") + "");
 			data.put("pId", pageData.getInteger("parent_id")+ "");
@@ -62,22 +57,18 @@ public class RoleAction extends BaseAction {
 			data.put("chkDisabled", "false");
 
 			String flag = pd.getString("checkedFlag");
-			if(null != flag && "1".equals(flag)){
-				if (null != pageData.get("role_level")) {
-					data.put("checked", "true");
-				} else {
-					data.put("checked", "false");
+			data.put("checked", "false");
+
+				for (PageData pageData2 : orgList) {
+					if(null != flag && "1".equals(flag)) {
+						if (null != pageData2.get("role_level") && pageData2.getInteger("id") == pageData.getInteger("id")) {
+							data.put("checked", "true");
+						}
+					}
 				}
-			} else{
-				data.put("checked", "false");
-			}
-			if(isSuperUser){
-				list.add(data);
-			} else {
-				if(null != pageData.get("role_level"))
-					list.add(data);
-			}
+			list.add(data);
 		}
+
 		j.setSuccess(true);
 		j.setObj(list);
 		super.writeJson(j, response);

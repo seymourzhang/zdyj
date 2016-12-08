@@ -23,7 +23,7 @@ public interface SDUserService {
 	 * 返回list
 	 * @throws Exception
 	 */
-	public List<PageData>  getUserInfo(Page page)throws Exception;
+	public List<PageData>  getUserInfo(PageData pd)throws Exception;
 	
 	
 	public int saveUser(PageData pd)throws Exception;

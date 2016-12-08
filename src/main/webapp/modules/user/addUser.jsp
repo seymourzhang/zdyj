@@ -73,6 +73,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#addUser_msg').html("");
 				}
 			  });
+
+
          initTreeOrg();
 //		$("#role_id").change(function() {
 //			changeOrg();

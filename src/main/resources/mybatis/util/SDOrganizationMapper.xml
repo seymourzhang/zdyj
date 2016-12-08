@@ -37,7 +37,8 @@
     </select> 
     
     <select id="getOrgListByRoleId" resultType="pd" useCache="false">
-		select d.id,
+		select DISTINCT
+				d.id,
 				d.organization_id,
 				d.name_cn,
 				d.parent_id,
@@ -46,29 +47,15 @@
 				d.create_person,
 				d.create_date,
 				d.create_time,
-				tmp.role_level
+				tmp.role_level,
+				tmp.id user_id
 		FROM s_d_organization d
-		LEFT JOIN(SELECT
-						sdr.rights_id
-						,sdr.obj_id
-						,sdur.user_id
-						,sdur.role_id
-						,sdrt.role_level
-					FROM s_d_user_role sdur
-					JOIN s_d_role_rights sdrr
-						ON sdur.role_id = sdrr.role_id
-					JOIN s_d_rights sdr
-						ON sdr.rights_id = sdrr.rights_id
-					AND sdr.obj_type =2
-					JOIN s_d_user_role_temp sdurt
-						ON sdurt.user_id = sdur.user_id
-					JOIN s_d_role_temp sdrt
-						ON sdrt.role_temp_id = sdurt.role_temp_id
-					WHERE sdur.user_id = #{user_id}
-					) tmp
+		LEFT JOIN(SELECT * FROM v_user WHERE id = #{user_id} AND obj_type=2) tmp
 						ON tmp.obj_id = d.id
+							OR tmp.obj_id = d.parent_id
 		WHERE 1=1
-		AND d.freeze_status=0
+				AND (d.freeze_status=0  AND tmp.role_level is not null)
+				AND (d.level_id > tmp.role_level or d.id = tmp.obj_id)
 		ORDER BY d.id
     </select>
 

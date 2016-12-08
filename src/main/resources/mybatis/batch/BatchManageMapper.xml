@@ -80,10 +80,11 @@
                   ORDER BY operation_date DESC LIMIT 1)
                   ELSE bc.operation_date END                               AS operation_date
               , dh.device_code
-              , h.house_type
+              , dc.code_name                                                AS house_type
         FROM s_b_batch_curr bc
         LEFT JOIN s_d_house h ON h.id = bc.house_code
         LEFT JOIN s_b_devi_house dh ON dh.house_id = bc.house_code
+        LEFT JOIN s_d_code dc ON dc.code_type = 'HOUSE_TYPE' AND dc.biz_code = h.house_type
         WHERE bc.farm_id = ${farm_id} AND bc.house_code = ${house_code};
     </select>
 
