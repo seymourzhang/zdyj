@@ -16,6 +16,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -151,5 +154,24 @@ public class BaseAction {
 		Session session = currentUser.getSession();
 		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
 		return user.getId();
+	}
+
+	/**
+	 * 将实体POJO转化为JSON
+	 * @param obj
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	public <T> JSONObject objectToJson(T obj) throws JSONException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		// Convert object to JSON string
+		String jsonStr = "";
+		try {
+			jsonStr = mapper.writeValueAsString(obj);
+		} catch (IOException e) {
+			throw e;
+		}
+		return new JSONObject(jsonStr);
 	}
 }

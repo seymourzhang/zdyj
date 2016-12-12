@@ -24,6 +24,12 @@ public interface TemProfileService {
      * @throws Exception
      */
 	public List<PageData> getTemProfileMonth(PageData pd) throws Exception ;
-	
+
+
+	public List<PageData> selectTemForMobileDay(PageData pd) throws Exception;
+
+	public List<PageData> selectTemForMobileHour(PageData pd) throws Exception;
+
+	public List<PageData> selectTemForMobileMinute(PageData pd) throws Exception;
 
 }

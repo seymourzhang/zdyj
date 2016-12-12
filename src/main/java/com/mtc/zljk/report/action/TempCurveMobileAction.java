@@ -1,0 +1,248 @@
+package com.mtc.zljk.report.action;
+
+import com.mtc.zljk.report.service.TemProfileService;
+import com.mtc.zljk.util.action.BaseAction;
+import com.mtc.zljk.util.common.Constants;
+import com.mtc.zljk.util.common.DealSuccOrFail;
+import com.mtc.zljk.util.common.PageData;
+import com.mtc.zljk.util.common.PubFun;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * Created by Seymour on 2016/12/12.
+ */
+@Controller
+@RequestMapping("/tempMobile")
+public class TempCurveMobileAction extends BaseAction {
+
+    @Autowired
+    private TemProfileService temProfileService;
+
+    @RequestMapping("/tempCurveReq")
+    public void tempCurveReq(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        JSONObject resJson = new JSONObject();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        String dealRes = null;
+        String aa = pd.toString();
+        aa = aa.substring(1, aa.length() - 2);
+        try {
+            JSONObject jsonObject = new JSONObject(aa);
+
+            int userId = jsonObject.optInt("id_spa");
+            JSONObject tUserJson = jsonObject.getJSONObject("params");
+            pd.put("BreedBatchId", tUserJson.get("FarmBreedId"));
+            pd.put("HouseId", tUserJson.get("HouseId"));
+            pd.put("DataType", tUserJson.get("DataType"));
+            pd.put("ReqFlag", tUserJson.get("ReqFlag"));
+            pd.put("DataRange", tUserJson.get("DataRange"));
+
+            int HouseId = tUserJson.getInt("HouseId");
+            String ReqFlag = tUserJson.getString("ReqFlag");
+            String DataType = tUserJson.getString("DataType");
+            String DataRange = tUserJson.getString("DataRange");
+            String BreedBatchId = tUserJson.getString("FarmBreedId");
+            String data_age = "";
+            String data_date = "";
+            List<PageData> lcp = new ArrayList<>();
+            if ("01".equals(DataType)) {
+                lcp = temProfileService.selectTemForMobileDay(pd);
+            } else if ("02".equals(DataType)) {
+                if (ReqFlag != null && ReqFlag.length() != 10) {
+                    resJson.put("Error", "请传入正确的日期参数（YYYY-MM-DD）");
+                    resJson.put("Result", "Fail");
+                } else {
+                    lcp = temProfileService.selectTemForMobileHour(pd);
+                }
+            } else if ("03".equals(DataType)) {
+                if (DataRange.length() != 16 && "Y".equals(ReqFlag)) {
+                    resJson.put("Error", "DataRange日期参数有误");
+                    resJson.put("Result", "Fail");
+                } else if (DataRange.length() != 10 && "N".equals(ReqFlag)) {
+                    resJson.put("Error", "DataRange日期参数有误");
+                    resJson.put("Result", "Fail");
+                }
+                lcp = temProfileService.selectTemForMobileMinute(pd);
+            }
+            if (lcp.size() == 0) {
+                resJson.put("Error", "暂无数据！");
+                resJson.put("Result", "Fail");
+                dealRes = Constants.RESULT_SUCCESS;
+            } else {
+                JSONArray TempDatas = new JSONArray();
+                JSONArray avgtempLeft1 = new JSONArray();
+                JSONArray avgtempLeft2 = new JSONArray();
+                JSONArray avgtempMiddle1 = new JSONArray();
+                JSONArray avgtempMiddle2 = new JSONArray();
+                JSONArray avgtempRight1 = new JSONArray();
+                JSONArray avgtempRight2 = new JSONArray();
+                JSONArray avgoutsideTemp = new JSONArray();
+                JSONArray highAlarmTempArray = new JSONArray();
+                JSONArray lowAlarmTempArray = new JSONArray();
+                JSONArray insideSetTempArray = new JSONArray();
+                JSONArray insideHumidityArray = new JSONArray();
+                JSONArray xAxis = new JSONArray();
+                for (PageData hashMap : lcp) {
+                    Object x_axis = hashMap.get("x_axis");
+                    if (x_axis == null) {
+                        x_axis = 0;
+                    }
+
+                    if (x_axis.toString().endsWith("60")) {
+                        int tHor = Integer.parseInt(x_axis.toString().substring(0, 2)) + 1;
+                        x_axis = PubFun.fillLeftChar(tHor, '0', 2) + ":00";
+                    }
+
+                    Object avgtempLeft11 = hashMap.get("avgtempLeft1");
+                    if (avgtempLeft11 == null) {
+                        avgtempLeft11 = 0;
+                    }
+                    Object avgtempLeft22 = hashMap.get("avgtempLeft2");
+                    if (avgtempLeft22 == null) {
+                        avgtempLeft22 = 0;
+                    }
+                    Object avgtempMiddle11 = hashMap.get("avgtempMiddle1");
+                    if (avgtempMiddle11 == null) {
+                        avgtempMiddle11 = 0;
+                    }
+                    Object avgtempMiddle22 = hashMap.get("avgtempMiddle2");
+                    if (avgtempMiddle22 == null) {
+                        avgtempMiddle22 = 0;
+                    }
+                    Object avgtempRight11 = hashMap.get("avgtempRight1");
+                    if (avgtempRight11 == null) {
+                        avgtempRight11 = 0;
+                    }
+                    Object avgtempRight22 = hashMap.get("avgtempRight2");
+                    if (avgtempRight22 == null) {
+                        avgtempRight22 = 0;
+                    }
+                    Object avgoutsideTemp1 = hashMap.get("avgoutsidetemp");
+                    if (avgoutsideTemp1 == null) {
+                        avgoutsideTemp1 = 0;
+                    }
+                    Object highAlarmTemp = hashMap.get("highAlarmTemp");
+                    if (highAlarmTemp == null) {
+                        highAlarmTemp = 0;
+                    }
+                    Object lowAlarmTemp = hashMap.get("lowAlarmTemp");
+                    if (lowAlarmTemp == null) {
+                        lowAlarmTemp = 0;
+                    }
+                    Object insideSetTemp = hashMap.get("insideSetTemp");
+                    if (insideSetTemp == null) {
+                        insideSetTemp = 0;
+                    }
+                    Object insideHumidity = hashMap.get("insideHumidity");
+                    if (insideHumidity == null) {
+                        insideHumidity = 0;
+                    }
+                    xAxis.put(x_axis);
+                    if (hashMap.get("dataflag").equals("N")) {
+                        continue;
+                    }
+                    avgtempLeft1.put(avgtempLeft11.toString());
+                    avgtempLeft2.put(avgtempLeft22.toString());
+                    avgtempMiddle1.put(avgtempMiddle11.toString());
+                    avgtempMiddle2.put(avgtempMiddle22.toString());
+                    avgtempRight1.put(avgtempRight11.toString());
+                    avgtempRight2.put(avgtempRight22.toString());
+                    avgoutsideTemp.put(avgoutsideTemp1.toString());
+                    highAlarmTempArray.put(highAlarmTemp.toString());
+                    lowAlarmTempArray.put(lowAlarmTemp.toString());
+                    insideSetTempArray.put(insideSetTemp.toString());
+                    insideHumidityArray.put(insideHumidity.toString());
+                    if (DataType.equals("02")) {
+                        data_date = hashMap.get("data_date") != null ? hashMap.get("data_date").toString() : "Null";
+                    }
+                    if (hashMap.get("data_age") != null) {
+                        data_age = hashMap.get("data_age").toString();
+                    }
+                }
+
+                resJson.put("xAxis", xAxis);
+                JSONObject tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "tempLeft1");
+                tJSONObject.put("TempAreaName", "前一");
+                tJSONObject.put("TempCurve", avgtempLeft1);
+                TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "tempLeft2");
+                tJSONObject.put("TempAreaName", "前二");
+                tJSONObject.put("TempCurve", avgtempLeft2);
+                TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "tempMiddle1");
+                tJSONObject.put("TempAreaName", "中区");
+                tJSONObject.put("TempCurve", avgtempMiddle1);
+                TempDatas.put(tJSONObject);
+                // tJSONObject = new JSONObject();
+                // tJSONObject.put("TempAreaCode", "tempMiddle2");
+                // tJSONObject.put("TempAreaName", "中区温度2");
+                // tJSONObject.put("TempCurve", avgtempMiddle2);
+                // TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "tempRight1");
+                tJSONObject.put("TempAreaName", "后一");
+                tJSONObject.put("TempCurve", avgtempRight1);
+                TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "tempRight2");
+                tJSONObject.put("TempAreaName", "后二");
+                tJSONObject.put("TempCurve", avgtempRight2);
+                TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "out_temp");
+                tJSONObject.put("TempAreaName", "室外");
+                tJSONObject.put("TempCurve", avgoutsideTemp);
+                TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "highAlarmTemp");
+                tJSONObject.put("TempAreaName", "高报");
+                tJSONObject.put("TempCurve", highAlarmTempArray);
+                TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "lowAlarmTemp");
+                tJSONObject.put("TempAreaName", "低报");
+                tJSONObject.put("TempCurve", lowAlarmTempArray);
+                TempDatas.put(tJSONObject);
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "insideSetTemp");
+                tJSONObject.put("TempAreaName", "目标");
+                tJSONObject.put("TempCurve", insideSetTempArray);
+                TempDatas.put(tJSONObject);
+                if ("03".equals(DataType)) {
+                    tJSONObject = new JSONObject();
+                    tJSONObject.put("TempAreaCode", "insideHumidity");
+                    tJSONObject.put("TempAreaName", "湿度");
+                    tJSONObject.put("TempCurve", insideHumidityArray);
+                    TempDatas.put(tJSONObject);
+                }
+                resJson.put("TempDatas", TempDatas);
+                resJson.put("HouseId", HouseId);
+                resJson.put("DataDate", data_date);
+                resJson.put("data_age", data_age);
+                resJson.put("FarmBreedId", BreedBatchId);
+                resJson.put("Result", "Success");
+                resJson.put("Error", "");
+                dealRes = Constants.RESULT_SUCCESS;
+            }
+        } catch (JSONException JSONe){
+            JSONe.printStackTrace();
+            dealRes = Constants.RESULT_FAIL;
+        }
+        DealSuccOrFail.dealApp(request, response, dealRes, resJson);
+    }
+}

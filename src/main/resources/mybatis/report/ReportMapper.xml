@@ -130,7 +130,7 @@
 			THEN 'N'
 		   ELSE 'Y' END)          				  AS dataflag,
 		  sc.biz_code             				  AS x_axis,
-		  5                       				  AS house_id,
+		  ${HouseId}               				  AS house_id,
 		  tData3.data_date        				  AS data_date,
 		  concat('(日龄：', tData2.date_age, ')') AS data_age,
 		  tData2.avgtempLeft1,
@@ -175,6 +175,67 @@
 					) AS tData2 ON tData2.timeId = sc.biz_code
 		  LEFT JOIN (SELECT #{DataRange} AS data_date) AS tData3 ON 1 = 1
 		WHERE sc.code_type = 'HalfHour';
+	</select>
+
+	<select id="selectTemForMobileMinute" resultType="pd" parameterType="pd" useCache="false">
+		SELECT
+		'Y'                                            AS dataflag,
+		CONCAT('17:', CASE WHEN tData.timeId = '00'
+		THEN '60'
+		ELSE tData.timeId END) AS x_axis,
+		'Null'                                         AS data_date,
+		concat('(日龄：', tData.date_age, ')')            AS data_age,
+		tData.house_id,
+		truncate(AVG(tData.inside_temp1), 1)           AS avgtempLeft1,
+		truncate(AVG(tData.inside_temp2), 1)           AS avgtempLeft2,
+		truncate(AVG(tData.inside_temp3), 1)           AS avgtempMiddle1,
+		truncate(AVG(tData.inside_temp4), 1)           AS avgtempMiddle2,
+		truncate(AVG(tData.inside_temp5), 1)           AS avgtempRight1,
+		truncate(AVG(tData.inside_temp6), 1)           AS avgtempRight2,
+		truncate(AVG(tData.outside_temp), 1)           AS avgoutsidetemp,
+		truncate(AVG(tData.high_alarm_temp), 1)        AS highAlarmTemp,
+		truncate(AVG(tData.low_alarm_temp), 1)         AS lowAlarmTemp,
+		truncate(AVG(tData.inside_set_temp), 1)        AS insideSetTemp,
+		truncate(AVG(tData.inside_humidity), 1)        AS insideHumidity
+		FROM (SELECT
+		DATE_FORMAT(adddate(a.collect_datetime, INTERVAL 1 MINUTE), '%i') AS timeId,
+		a.*
+		FROM s_b_monitor_hist a
+		WHERE 1 = 1
+		AND a.house_id = ${HouseId}
+		AND a.collect_datetime &gt;= STR_TO_DATE(#{DateRangeStart}, '%Y-%m-%d %H:%i')
+		AND a.collect_datetime &lt; STR_TO_DATE(#{DateRangeEnd}, '%Y-%m-%d %H:%i')
+		) tData
+		GROUP BY tData.timeId
+		UNION ALL
+		SELECT
+		'N'                              AS dataflag,
+		CONCAT(${Hour}, ':', sc.biz_code) AS x_axis,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		NULL
+		FROM s_d_code sc
+		WHERE 1 = 1
+		AND sc.code_type = #{DataType}
+		AND sc.biz_code > (SELECT right(concat('0', ifnull(DATE_FORMAT(MAX(sbh.collect_datetime), '%i') + 1, 0)), 2)
+		FROM s_b_monitor_hist sbh
+		WHERE 1 = 1
+		AND sbh.house_id = ${HouseId}
+		AND sbh.collect_datetime BETWEEN
+		STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i') AND
+		STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i'))
+		ORDER BY x_axis;
 	</select>
     
 </mapper>
