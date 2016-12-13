@@ -29,7 +29,7 @@ public class LoginFilter extends  OncePerRequestFilter {
 					"/zdyj/alarmCurr/mobileAlarmCurr","/zdyj/alarmCurr/mobilesSolveAlarmCurr","/zdyj/login/login",
 					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/*","/zdyj/monitorMobile/*",
 					"/zdyj/alarmMobile/*", "/zdyj/dailyMobile/*", "/zdyj/taskMobile/*",
-					"/zdyj/checkVersion"};
+					"/zdyj/checkVersion", "/zdyj/tempMobile/*"};
 	  
 	        // 请求的url  
 	        String url = request.getRequestURI();  

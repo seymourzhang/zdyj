@@ -76,7 +76,7 @@
                   FROM s_b_batch_change
                   WHERE farm_id = ${farm_id} AND house_code = ${house_code}
                         AND batch_id = bc.batch_id
-                        AND operation_type = '2'
+                        AND operation_type = '1'
                   ORDER BY operation_date DESC LIMIT 1)
                   ELSE bc.operation_date END                               AS operation_date
               , dh.device_code

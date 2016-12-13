@@ -186,7 +186,7 @@
     </select>
 
     <select id="selectAlarmCounts" resultType="pd" useCache="false">
-      select count(*) as num from s_b_monitor_curr where farm_id = #{farmId} and house_id in (${houseId})
+      select count(*) as num from s_b_monitor_curr where farm_id = ${farmId} and house_id in (${houseId})
     </select>
 
     <select id="SP_MONITOR" useCache="false">

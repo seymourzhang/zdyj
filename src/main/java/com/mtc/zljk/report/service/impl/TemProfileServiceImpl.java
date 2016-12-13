@@ -44,13 +44,17 @@ public class TemProfileServiceImpl implements TemProfileService {
 	@Override
 	public List<PageData> selectTemForMobileHour(PageData pd) throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String ReqFlag = pd.getString("ReqFlag");
-		String DataRange = pd.getString("DataRange");
+		String ReqFlag = pd.get("ReqFlag").toString();
+		String DataRange = pd.get("DataRange").toString();
 		PageData temp = new PageData();
-		if (ReqFlag == null) {
+		Date cur = new Date();
+		if (DataRange == null || "".equals(DataRange)) {
+			temp.put("farm_id", pd.get("FarmId"));
 			temp.put("house_code", pd.get("HouseId"));
-			temp = batchManageService.selectBatchDataForMobile(pd);
-			DataRange = sdf.format(sdf.parse(temp.getString("operation_date")));
+			temp = batchManageService.selectBatchDataForMobile(temp);
+			if (temp != null) {
+				DataRange = sdf.format("1".equals(temp.get("status").toString()) ? cur : sdf.parse(temp.get("operation_date").toString()));
+			}
 		}
 		pd.put("DataRange", DataRange);
 		return (List<PageData>) dao.findForList("ReportMapper.selectTemForMobileHour", pd);
@@ -60,8 +64,9 @@ public class TemProfileServiceImpl implements TemProfileService {
 	public List<PageData> selectTemForMobileMinute(PageData pd) throws Exception {
 		String DataRangeStart = "";
 		String DataRangeEnd = "";
-		String ReqFlag = pd.getString("ReqFlag");
-		String DataRange = pd.getString("DataRange");
+		String ReqFlag = pd.get("ReqFlag").toString();
+		String DataRange = pd.get("DataRange").toString();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		if (ReqFlag.equals("N")) {
 			String tarTime = "";
 			if (DataRange.equals(PubFun.getCurrentDate())) {
@@ -75,8 +80,6 @@ public class TemProfileServiceImpl implements TemProfileService {
 				tarTime = "00:00";
 			}
 			DataRangeStart = DataRange + " " + tarTime;
-
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			Date date = formatter.parse(DataRangeStart);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(date);
@@ -84,7 +87,6 @@ public class TemProfileServiceImpl implements TemProfileService {
 			DataRangeEnd = formatter.format(calendar.getTime());
 		} else {
 			DataRangeEnd = DataRange;
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			Date date = formatter.parse(DataRangeEnd);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(date);
@@ -94,7 +96,6 @@ public class TemProfileServiceImpl implements TemProfileService {
 			date = formatter.parse(DataRangeEnd);
 			DataRangeEnd = formatter.format(date);
 		}
-
 		String tHourValue = DataRangeStart.substring(11, 13);
 		String codeType = "";
 		if (DataRangeStart.endsWith("00")) {
@@ -107,5 +108,79 @@ public class TemProfileServiceImpl implements TemProfileService {
 		pd.put("DataRangeEnd", DataRangeEnd);
 		pd.put("Hour", tHourValue);
 		return (List<PageData>) dao.findForList("ReportMapper.selectTemForMobileMinute", pd);
+	}
+
+	@Override
+	public List<PageData> selectLCForMobileDay(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("ReportMapper.selectLCForMobileDay", pd);
+	}
+
+	@Override
+	public List<PageData> selectLCForMobileHour(PageData pd) throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String ReqFlag = pd.get("ReqFlag").toString();
+		String DataRange = pd.get("DataRange").toString();
+		PageData temp = new PageData();
+		Date cur = new Date();
+		if (DataRange == null || "".equals(DataRange)) {
+			temp.put("farm_id", pd.get("FarmId"));
+			temp.put("house_code", pd.get("HouseId"));
+			if (temp != null) {
+				temp = batchManageService.selectBatchDataForMobile(temp);
+			}
+			DataRange = sdf.format("1".equals(temp.get("status").toString()) ? cur : sdf.parse(temp.get("operation_date").toString()));
+		}
+		pd.put("DataRange", DataRange);
+		return (List<PageData>) dao.findForList("ReportMapper.selectLCForMobileHour", pd);
+	}
+
+	@Override
+	public List<PageData> selectLCForMobileMinute(PageData pd) throws Exception {
+		String DataRangeStart = "";
+		String DataRangeEnd = "";
+		String ReqFlag = pd.get("ReqFlag").toString();
+		String DataRange = pd.get("DataRange").toString();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		if (ReqFlag.equals("N")) {
+			String tarTime = "";
+			if (DataRange.equals(PubFun.getCurrentDate())) {
+				String tCurTime = PubFun.getCurrentTime();
+				if (tCurTime.substring(3, 5).compareTo("30") > 0) {
+					tarTime = tCurTime.substring(0, 2) + ":30";
+				} else {
+					tarTime = tCurTime.substring(0, 2) + ":00";
+				}
+			} else {
+				tarTime = "00:00";
+			}
+			DataRangeStart = DataRange + " " + tarTime;
+			Date date = formatter.parse(DataRangeStart);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			calendar.add(Calendar.MINUTE, 30);
+			DataRangeEnd = formatter.format(calendar.getTime());
+		} else {
+			DataRangeEnd = DataRange;
+			Date date = formatter.parse(DataRangeEnd);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(date);
+			calendar.add(Calendar.MINUTE, -30);
+			DataRangeStart = formatter.format(calendar.getTime());
+
+			date = formatter.parse(DataRangeEnd);
+			DataRangeEnd = formatter.format(date);
+		}
+		String tHourValue = DataRangeStart.substring(11, 13);
+		String codeType = "";
+		if (DataRangeStart.endsWith("00")) {
+			codeType = "PerMinute1";
+		} else {
+			codeType = "PerMinute2";
+		}
+		pd.put("DataType", codeType);
+		pd.put("DataRangeStart", DataRangeStart);
+		pd.put("DataRangeEnd", DataRangeEnd);
+		pd.put("Hour", tHourValue);
+		return (List<PageData>) dao.findForList("ReportMapper.selectLCForMobileMinute", pd);
 	}
 }

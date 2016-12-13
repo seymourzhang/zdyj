@@ -26,10 +26,16 @@ public interface TemProfileService {
 	public List<PageData> getTemProfileMonth(PageData pd) throws Exception ;
 
 
-	public List<PageData> selectTemForMobileDay(PageData pd) throws Exception;
+	List<PageData> selectTemForMobileDay(PageData pd) throws Exception;
 
-	public List<PageData> selectTemForMobileHour(PageData pd) throws Exception;
+	List<PageData> selectTemForMobileHour(PageData pd) throws Exception;
 
-	public List<PageData> selectTemForMobileMinute(PageData pd) throws Exception;
+	List<PageData> selectTemForMobileMinute(PageData pd) throws Exception;
+
+	List<PageData> selectLCForMobileDay(PageData pd) throws Exception;
+
+	List<PageData> selectLCForMobileHour(PageData pd) throws Exception;
+
+	List<PageData> selectLCForMobileMinute(PageData pd) throws Exception;
 
 }
