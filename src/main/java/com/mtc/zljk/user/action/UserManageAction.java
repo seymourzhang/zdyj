@@ -146,7 +146,7 @@ public class UserManageAction extends BaseAction {
 		}
 		mv.addObject("listUser",userlist);
 		mv.setViewName("modules/user/userManage");
-		mv.addObject("pd",pd);
+		mv.addObject("pd",getUserRights(pd, session));
 		return mv;
 	}	
 	

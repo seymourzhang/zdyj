@@ -49,6 +49,8 @@ public class FarmAction extends BaseAction{
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		pd.put("user_id",user.getId());
 		/**栋舍信息-Varro-2016-7-26-**/
 		List<PageData> hoList= farmService.findHouse(pd);
 		List<PageData> houseList=new ArrayList<PageData>();
@@ -86,8 +88,10 @@ public class FarmAction extends BaseAction{
 	@RequestMapping("/farmView")
 	public ModelAndView farmView(Page page,HttpSession session) throws Exception {
 		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("user_id",user.getId());
 		/**农场信息-Varro-2016-7-26-**/
 		List<PageData> farmList= farmService.findFarm(pd);
 		mv.addObject("SDFarmList",farmList);
@@ -342,16 +346,16 @@ public class FarmAction extends BaseAction{
 		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		
+		String id = pd.getString("id");
+
 		pd.put("freeze_status",1);
 		pd.put("modify_person",user.getId());
 		pd.put("modify_date", new Date());	
 		pd.put("modify_time", new Date());
 		try {
-			farmService.editFarm(pd);
-			j.setMsg("删除成功！");
-			j.setSuccess(true);
-			
+				farmService.editFarm(pd);
+				j.setMsg("删除成功！");
+				j.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 			j.setMsg("2");
@@ -364,10 +368,12 @@ public class FarmAction extends BaseAction{
 	 * @return
 	 */
 	@RequestMapping(value="/addHouseUrl")
-	public ModelAndView addHouseUrl()throws Exception{
+	public ModelAndView addHouseUrl(HttpServletResponse response,HttpServletRequest request,HttpSession session)throws Exception{
 		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		pd.put("user_id",user.getId());
 		/***栋舍类型***/
 		pd.put("code_type", "HOUSE_TYPE");
 		List<PageData> houseType= farmService.findCode(pd);
@@ -375,7 +381,7 @@ public class FarmAction extends BaseAction{
 		mv.addObject("pd",pd);
 		mv.addObject("houseType",houseType);
 //		mv.addObject("device",device);
-		mv.addObject("farmList",getFarmList());
+		mv.addObject("farmList",getFarmList(pd));
 		mv.setViewName("modules/farm/addHouse");
 		return mv;
 	}
@@ -386,11 +392,12 @@ public class FarmAction extends BaseAction{
 	 * @return
 	 */
 	@RequestMapping(value="/editHouseUrl")
-	public ModelAndView editHouseUrl()throws Exception{
+	public ModelAndView editHouseUrl(HttpServletResponse response,HttpServletRequest request,HttpSession session)throws Exception{
 		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		
+		pd.put("user_id",user.getId());
 		List<PageData> houselist=farmService.findHouse(pd);
 		PageData houselData=houselist.get(0);
 		
@@ -403,7 +410,7 @@ public class FarmAction extends BaseAction{
 		mv.addObject("houselData",houselData);
 		mv.addObject("houseType",houseType);
 		mv.addObject("device",device);
-		mv.addObject("farmList",getFarmList());
+		mv.addObject("farmList",getFarmList(pd));
 		mv.setViewName("modules/farm/editHouse");
 		return mv;
 	}
@@ -544,15 +551,41 @@ public class FarmAction extends BaseAction{
 			int house_id=pd.getInteger("id");
 			pd.put("id",house_id);
 			pd.put("house_code",house_id);
-			farmService.editHouse(pd);
-			/**
-			 * 新增栋舍警报
-			 */
-			for (int i = 0; i < 4; i++) {
-				pd.put("house_id",pd.getInteger("id"));
-				pd.put("alarm_type",i+1);
-				farmService.saveHouseAlarm(pd);
+			pd.put("user_id",user.getId());
+
+			List<PageData> maxLevelList = organService.getMaxOrgLevelId(null);
+			int maxOrgLevelId = maxLevelList.get(0).getInteger("max_level_id");
+			pd.put("level_id",maxOrgLevelId);
+
+			int k = organService.setHouseMapping(pd);
+			if(k > 0){
+					PageData paramPd = new PageData();
+					Integer objId = (Integer)pd.get("id");
+					paramPd.put("obj_id",objId);
+					paramPd.put("obj_type",2);
+					paramPd.put("create_person",user.getId());
+					moduleService.service("roleServiceImpl","insertRightsObj",new Object[]{paramPd});
+
+					pd.put("id",pd.get("house_code"));
+					farmService.editHouse(pd);
+					/**
+					 * 新增栋舍警报
+					 */
+					for (int i = 0; i < 4; i++) {
+						pd.put("house_id",pd.getInteger("id"));
+						pd.put("alarm_type",i+1);
+						farmService.saveHouseAlarm(pd);
+					}
+
+					j.setMsg("1");
+					j.setSuccess(true);
+			} else{
+				j.setSuccess(false);
+				j.setMsg("系统内部错误");
 			}
+
+
+
 //			/**
 //			 * 新增栋舍和设备关系
 //			 */
@@ -569,8 +602,7 @@ public class FarmAction extends BaseAction{
 //					farmService.saveDeviHouse(pd);
 //				}
 //			}
-			j.setMsg("1");
-			j.setSuccess(true);
+
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -669,135 +701,137 @@ public class FarmAction extends BaseAction{
 		super.writeJson(j, response);
 	}
 	
+//
+//	/**
+//	 * 跳转到新增批次信息页面
+//	 * varro 2016-7-9
+//	 * @return
+//	 */
+//	@RequestMapping(value="/addBatchUrl")
+//	public ModelAndView addBatchUrl(HttpServletResponse response,HttpServletRequest request,HttpSession session)throws Exception{
+//		ModelAndView mv = this.getModelAndView();
+//		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		pd.put("user_id",user.getId());
+//		/***出入拦方式方式***/
+////		pd.put("code_type", "OPERATION_TYPE");
+////		List<PageData> operationType= farmService.findCode(pd);
+//
+//		mv.addObject("pd",pd);
+////		mv.addObject("operationType",operationType);
+//		mv.addObject("farmList",getFarmList(pd));
+//		mv.addObject("houseList",getHouseList(pd));
+//		mv.setViewName("modules/farm/addBatch");
+//		return mv;
+//	}
 	
-	/**
-	 * 跳转到新增批次信息页面
-	 * varro 2016-7-9
-	 * @return
-	 */
-	@RequestMapping(value="/addBatchUrl")
-	public ModelAndView addBatchUrl()throws Exception{
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		/***出入拦方式方式***/
-//		pd.put("code_type", "OPERATION_TYPE");
-//		List<PageData> operationType= farmService.findCode(pd);
-		
-		mv.addObject("pd",pd);
-//		mv.addObject("operationType",operationType);
-		mv.addObject("farmList",getFarmList());
-		mv.addObject("houseList",getHouseList(pd));
-		mv.setViewName("modules/farm/addBatch");
-		return mv;
-	}
-	
-	
-	
-	/**
-	 * 跳转到修改批次信息页面
-	 * varro 2016-7-9
-	 * @return
-	 */
-	@RequestMapping(value="/editBatchUrl")
-	public ModelAndView editBatchUrl()throws Exception{
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		Page page=new Page();
-		page.setPd(pd);
-		List<PageData> balist = farmService.findBatchlistPage(page);
-		PageData batch=balist.get(0);
-		/***出入拦方式方式***/
-//		pd.put("code_type", "OPERATION_TYPE");
-//		List<PageData> operationType= farmService.findCode(pd);
-		
-		mv.addObject("pd",pd);
-		mv.addObject("batchData",batch);
-		mv.addObject("farmList",getFarmList());
-		mv.addObject("houseList",getHouseList(pd));
-		mv.setViewName("modules/farm/editBatch");
-		return mv;
-	}
-	/**
-	 * 修改批次
-	 * @return
-	 */
-	@RequestMapping("/editBatch")
-	public void editBatch(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
-		Json j=new Json();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		try {
-			farmService.editBatch(pd);
-			j.setMsg("1");
-			j.setSuccess(true);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			j.setMsg("2");
-		}
-		super.writeJson(j, response);
-	}
-	
-	/**
-	 * 跳转到出栏信息页面
-	 * varro 2016-7-9
-	 * @return
-	 */
-	@RequestMapping(value="/laiBatchUrl")
-	public ModelAndView laiBatchUrl()throws Exception{
-		ModelAndView mv = this.getModelAndView();
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		Page page=new Page();
-		page.setPd(pd);
-		List<PageData> balist = farmService.findBatchlistPage(page);
-		PageData batch=balist.get(0);
-		mv.addObject("pd",pd);
-		mv.addObject("batchData",batch);
-		mv.addObject("farmList",getFarmList());
-		mv.addObject("houseList",getHouseList(pd));
-		mv.setViewName("modules/farm/laiBatch");
-		return mv;
-	}
-	
-	/**
-	 * 批次出栏
-	 * @return
-	 */
-	@RequestMapping("/laiBatch")
-	public void laiBatch(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
-		Json j=new Json();
-		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
-		PageData pd = new PageData();
-		pd = this.getPageData();
-		Page page=new Page();
-		page.setPd(pd);
-		List<PageData> balist = farmService.findBatchlistPage(page);
-		PageData batch=balist.get(0);
-		pd.put("house_code",batch.getString("house_code"));
-		pd.put("house_name",batch.getString("house_name"));
-		pd.put("farm_id",batch.getInteger("farm_id"));
-		pd.put("batch_no",batch.getString("batch_no"));
-		pd.put("operation_type","1");
-		pd.put("create_person",user.getId());
-		pd.put("create_date", new Date());	
-		pd.put("create_time", new Date());
-		try {
-			if(pd.get("count").equals("")){
-				pd.put("count", null);
-			}
-			farmService.saveBatch(pd);
-			j.setMsg("1");
-			j.setSuccess(true);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			j.setMsg("2");
-		}
-		super.writeJson(j, response);
-	}
+//
+//
+//	/**
+//	 * 跳转到修改批次信息页面
+//	 * varro 2016-7-9
+//	 * @return
+//	 */
+//	@RequestMapping(value="/editBatchUrl")
+//	public ModelAndView editBatchUrl()throws Exception{
+//		ModelAndView mv = this.getModelAndView();
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		Page page=new Page();
+//		page.setPd(pd);
+//		List<PageData> balist = farmService.findBatchlistPage(page);
+//		PageData batch=balist.get(0);
+//		/***出入拦方式方式***/
+////		pd.put("code_type", "OPERATION_TYPE");
+////		List<PageData> operationType= farmService.findCode(pd);
+//
+//		mv.addObject("pd",pd);
+//		mv.addObject("batchData",batch);
+//		mv.addObject("farmList",getFarmList());
+//		mv.addObject("houseList",getHouseList(pd));
+//		mv.setViewName("modules/farm/editBatch");
+//		return mv;
+//	}
+//	/**
+//	 * 修改批次
+//	 * @return
+//	 */
+//	@RequestMapping("/editBatch")
+//	public void editBatch(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+//		Json j=new Json();
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		try {
+//			farmService.editBatch(pd);
+//			j.setMsg("1");
+//			j.setSuccess(true);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			j.setMsg("2");
+//		}
+//		super.writeJson(j, response);
+//	}
+//
+//	/**
+//	 * 跳转到出栏信息页面
+//	 * varro 2016-7-9
+//	 * @return
+//	 */
+//	@RequestMapping(value="/laiBatchUrl")
+//	public ModelAndView laiBatchUrl()throws Exception{
+//		ModelAndView mv = this.getModelAndView();
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		Page page=new Page();
+//		page.setPd(pd);
+//		List<PageData> balist = farmService.findBatchlistPage(page);
+//		PageData batch=balist.get(0);
+//		mv.addObject("pd",pd);
+//		mv.addObject("batchData",batch);
+//		mv.addObject("farmList",getFarmList());
+//		mv.addObject("houseList",getHouseList(pd));
+//		mv.setViewName("modules/farm/laiBatch");
+//		return mv;
+//	}
+//
+//	/**
+//	 * 批次出栏
+//	 * @return
+//	 */
+//	@RequestMapping("/laiBatch")
+//	public void laiBatch(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+//		Json j=new Json();
+//		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		Page page=new Page();
+//		page.setPd(pd);
+//		List<PageData> balist = farmService.findBatchlistPage(page);
+//		PageData batch=balist.get(0);
+//		pd.put("house_code",batch.getString("house_code"));
+//		pd.put("house_name",batch.getString("house_name"));
+//		pd.put("farm_id",batch.getInteger("farm_id"));
+//		pd.put("batch_no",batch.getString("batch_no"));
+//		pd.put("operation_type","1");
+//		pd.put("create_person",user.getId());
+//		pd.put("create_date", new Date());
+//		pd.put("create_time", new Date());
+//		try {
+//			if(pd.get("count").equals("")){
+//				pd.put("count", null);
+//			}
+//			farmService.saveBatch(pd);
+//			j.setMsg("1");
+//			j.setSuccess(true);
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			j.setMsg("2");
+//		}
+//		super.writeJson(j, response);
+//	}
 	
 	
 	
@@ -816,9 +850,9 @@ public class FarmAction extends BaseAction{
 	 * 获取农场信息
 	 * @return 数据列表
      */
-	List<PageData> getFarmList() throws Exception {
+	List<PageData> getFarmList(PageData pd) throws Exception {
 		List<PageData> mcl;
-			mcl = moduleService.service("farmServiceImpl", "selectAll", null);//farmService.selectAll();
+		mcl = moduleService.service("farmServiceImpl", "selectByCondition", new Object[]{pd});//farmService.selectAll();
 		return mcl;
 	}
 	

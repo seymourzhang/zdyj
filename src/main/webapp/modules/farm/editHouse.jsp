@@ -76,9 +76,10 @@ function  editHouse(){
 					if(result.msg=='1'){
 						$("#tab_fag",window.parent.document).val(3);
 						$("#farmViewForm",window.parent.document).submit();
-						parent.layer.closeAll();   
+                        parent.location.reload();
+                        parent.layer.closeAll();
 					}else{
-						alert("修改失败！");
+                        layer.msg("修改栋舍失败！", {});
 					}
 				}
 			});  

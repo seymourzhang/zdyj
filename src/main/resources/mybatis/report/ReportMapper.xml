@@ -76,7 +76,7 @@
 	ELSE 'Y' END)                                               AS dataflag,
 	a.age                                                        AS data_age,
 	a.growth_date                                                AS data_date,
-	concat(date_format(a.growth_date, '%m-%d'), '(', a.age, ')') AS x_axis,
+	concat(date_format(a.growth_date, '%Y-%m-%d'), '(', a.age, ')') AS x_axis,
 	tData2.avgtempLeft1,
 	tData2.avgtempLeft2,
 	tData2.avgtempMiddle1,
@@ -93,10 +93,10 @@
 	tData.timeId,
 	truncate(avg(tData.inside_temp1), 1)    AS avgtempLeft1,
 	truncate(avg(tData.inside_temp2), 1)    AS avgtempLeft2,
-	round(avg(tData.inside_temp3), 1)       AS avgtempMiddle1,
-	truncate(avg(tData.inside_temp4), 1)    AS avgtempMiddle2,
-	truncate(avg(tData.inside_temp5), 1)    AS avgtempRight1,
-	truncate(avg(tData.inside_temp6), 1)    AS avgtempRight2,
+	round(avg(tData.inside_temp10), 1)       AS avgtempMiddle1,
+	truncate(avg(tData.inside_temp11), 1)    AS avgtempMiddle2,
+	truncate(avg(tData.inside_temp19), 1)    AS avgtempRight1,
+	truncate(avg(tData.inside_temp20), 1)    AS avgtempRight2,
 	truncate(AVG(tData.outside_temp), 1)    AS avgoutsidetemp,
 	truncate(AVG(tData.high_alarm_temp), 1) AS highAlarmTemp,
 	truncate(AVG(tData.low_alarm_temp), 1)  AS lowAlarmTemp,
@@ -111,7 +111,6 @@
 	FROM s_b_batch_curr sbb
 	WHERE sbb.batch_id = #{BreedBatchId}
 	AND sbb.house_code = a.house_id
-	AND a.collect_datetime BETWEEN date_sub(curdate(), INTERVAL 60 DAY) AND curdate()
 	)
 	) tData
 	GROUP BY tData.timeId
@@ -153,10 +152,10 @@
 		tData.date_age,
 		TRUNCATE(AVG(tData.inside_temp1), 1)    AS avgtempLeft1,
 		TRUNCATE(AVG(tData.inside_temp2), 1)    AS avgtempLeft2,
-		TRUNCATE(AVG(tData.inside_temp3), 1)    AS avgtempMiddle1,
-		TRUNCATE(AVG(tData.inside_temp4), 1)    AS avgtempMiddle2,
-		TRUNCATE(AVG(tData.inside_temp5), 1)    AS avgtempRight1,
-		TRUNCATE(AVG(tData.inside_temp6), 1)    AS avgtempRight2,
+		TRUNCATE(AVG(tData.inside_temp9), 1)    AS avgtempMiddle1,
+		TRUNCATE(AVG(tData.inside_temp10), 1)    AS avgtempMiddle2,
+		TRUNCATE(AVG(tData.inside_temp19), 1)    AS avgtempRight1,
+		TRUNCATE(AVG(tData.inside_temp20), 1)    AS avgtempRight2,
 		TRUNCATE(AVG(tData.outside_temp), 1)    AS avgoutsidetemp,
 		TRUNCATE(AVG(tData.high_alarm_temp), 1) AS highAlarmTemp,
 		TRUNCATE(AVG(tData.low_alarm_temp), 1)  AS lowAlarmTemp,
@@ -185,14 +184,14 @@
 		THEN '60'
 		ELSE tData.timeId END) AS x_axis,
 		'Null'                                         AS data_date,
-		concat('(日龄：', tData.date_age, ')')            AS data_age,
+		concat('(日龄：', tData2.age, ')')            AS data_age,
 		tData.house_id,
 		truncate(AVG(tData.inside_temp1), 1)           AS avgtempLeft1,
 		truncate(AVG(tData.inside_temp2), 1)           AS avgtempLeft2,
-		truncate(AVG(tData.inside_temp3), 1)           AS avgtempMiddle1,
-		truncate(AVG(tData.inside_temp4), 1)           AS avgtempMiddle2,
-		truncate(AVG(tData.inside_temp5), 1)           AS avgtempRight1,
-		truncate(AVG(tData.inside_temp6), 1)           AS avgtempRight2,
+		truncate(AVG(tData.inside_temp9), 1)           AS avgtempMiddle1,
+		truncate(AVG(tData.inside_temp10), 1)           AS avgtempMiddle2,
+		truncate(AVG(tData.inside_temp19), 1)           AS avgtempRight1,
+		truncate(AVG(tData.inside_temp20), 1)           AS avgtempRight2,
 		truncate(AVG(tData.outside_temp), 1)           AS avgoutsidetemp,
 		truncate(AVG(tData.high_alarm_temp), 1)        AS highAlarmTemp,
 		truncate(AVG(tData.low_alarm_temp), 1)         AS lowAlarmTemp,
@@ -207,6 +206,7 @@
 		AND a.collect_datetime &gt;= STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i')
 		AND a.collect_datetime &lt; STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i')
 		) tData
+		LEFT JOIN s_b_breed_detail tData2 ON date_format(tData2.growth_date, '%Y-%m-%d') = date_format(tData.collect_datetime, '%Y-%m-%d') AND tData2.batch_id = #{BreedBatchId}
 		GROUP BY tData.timeId
 		UNION ALL
 		SELECT
@@ -247,7 +247,7 @@
 		ELSE 'Y' END)                                               AS dataflag,
 		a.age                                                        AS data_age,
 		a.growth_date                                                AS data_date,
-		concat(date_format(a.growth_date, '%m-%d'), '(', a.age, ')') AS x_axis,
+		concat(date_format(a.growth_date, '%Y-%m-%d'), '(', a.age, ')') AS x_axis,
 		tData2.co2,
 		tData2.lux
 		FROM s_b_breed_detail a
@@ -266,7 +266,6 @@
 		FROM s_b_batch_curr sbb
 		WHERE sbb.batch_id = #{BreedBatchId}
 		AND sbb.house_code = a.house_id
-		AND a.collect_datetime BETWEEN date_sub(curdate(), INTERVAL 60 DAY) AND curdate()
 		)
 		) tData
 		GROUP BY tData.timeId

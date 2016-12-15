@@ -173,7 +173,7 @@ function  editUser(){
                     parent.location.reload();
                     parent.layer.closeAll();
                 }else{
-                    alert("修改失败！");
+                    layer.msg('修改失败，请联系管理员!', {});
                 }
 			}
 		});

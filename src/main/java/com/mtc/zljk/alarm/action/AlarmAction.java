@@ -134,7 +134,7 @@ public class AlarmAction extends BaseAction{
 			  set_co21=0,high_alarm_co21=0,set_co23=0,high_alarm_co23=0,
 			  set_water_deprivation1=0,high_water_deprivation1=0,low_water_deprivation1=0,
 			  set_water_deprivation3=0,high_water_deprivation3=0,low_water_deprivation3=0;
-		int uid_num=0,day_age=0,day_age2=0;
+		int uid_num=0,day_age=0,day_age2=0,startTime2=0,endTime2=0;
 		if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==1){
 			//计算温度差、基值
 			for(int i=0;i<pageData1.size();i++){
@@ -192,6 +192,10 @@ public class AlarmAction extends BaseAction{
 					//uid_num
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
+					String[] st2 = pageData1.get(i+1).get("start_time").toString().split(":");
+					startTime2 = Integer.valueOf(st2[0]).intValue();
+					String[] et2 = pageData1.get(i+1).get("end_time").toString().split(":");
+					endTime2 = Integer.valueOf(et2[0]).intValue();
 					}
 					break;
 				}else 
@@ -212,6 +216,10 @@ public class AlarmAction extends BaseAction{
 					uid_num = Integer.valueOf(pageData1.get(i+1).get("uid_num").toString()).intValue();
 					day_age2 = Integer.valueOf(pageData1.get(i+1).get("day_age").toString()).intValue()*7;
 					day_age = Integer.valueOf(pageData1.get(i-1).get("day_age").toString()).intValue()*7;
+					String[] st2 = pageData1.get(i+1).get("start_time").toString().split(":");
+					startTime2 = Integer.valueOf(st2[0]).intValue();
+					String[] et2 = pageData1.get(i+1).get("end_time").toString().split(":");
+					endTime2 = Integer.valueOf(et2[0]).intValue();
 					break;
 				}
 			}
@@ -333,6 +341,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
 					pd5.put("low_water_deprivation",null);
+					pd5.put("is_start","0");
 					list.add(pd5);
 //					alarmService.saveSBDayageTempSub(pd4);
 				   }
@@ -410,6 +419,7 @@ public class AlarmAction extends BaseAction{
 						pd5.put("set_water_deprivation", null);
 						pd5.put("high_water_deprivation",null);
 						pd5.put("low_water_deprivation",null);
+						pd5.put("is_start","0");
 					list.add(pd5);
 //					alarmService.saveSBDayageTempSub(pd4);
 				   }
@@ -447,6 +457,7 @@ public class AlarmAction extends BaseAction{
 						pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age)*24+j));
 						pd5.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*((i-day_age)*24+j));
 						pd5.put("low_water_deprivation",low_water_deprivation3+low_water_deprivation1*((i-day_age)*24+j));
+						pd5.put("is_start","0");
 					list.add(pd5);
 //					alarmService.saveSBDayageTempSub(pd4);
 				   }
@@ -1097,6 +1108,7 @@ public class AlarmAction extends BaseAction{
 					pd4.put("set_water_deprivation", null);
 					pd4.put("high_water_deprivation",null);
 					pd4.put("low_water_deprivation",null);
+					pd4.put("is_start","0");
 					list.add(pd4);
 //					alarmService.updateSBDayageTempSub(pd3);
 				}}
@@ -1179,6 +1191,7 @@ public class AlarmAction extends BaseAction{
 					pd4.put("set_water_deprivation", null);
 					pd4.put("high_water_deprivation",null);
 					pd4.put("low_water_deprivation",null);
+					pd4.put("is_start","0");
 					list.add(pd4);
 //					alarmService.updateSBDayageTempSub(pd3);
 				}}
@@ -1215,6 +1228,7 @@ public class AlarmAction extends BaseAction{
 					pd4.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
 					pd4.put("high_water_deprivation",high_water_deprivation2+high_water_deprivation*((i-day_age)*24+j));
 					pd4.put("low_water_deprivation",low_water_deprivation2+low_water_deprivation*((i-day_age)*24+j));
+					pd4.put("is_start","0");
 					list.add(pd4);
 //					alarmService.updateSBDayageTempSub(pd3);
 				}}
@@ -1261,6 +1275,7 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("set_water_deprivation", null);
 						   pd6.put("high_water_deprivation",null);
 						   pd6.put("low_water_deprivation",null);
+						   pd6.put("is_start","0"); 
 						   list2.add(pd6);
 //							alarmService.updateSBDayageTempSub(pd4);
 					   } }
@@ -1343,6 +1358,7 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("set_water_deprivation", null);
 						   pd6.put("high_water_deprivation",null);
 						   pd6.put("low_water_deprivation",null);
+						   pd6.put("is_start","0"); 
 						   list2.add(pd6);
 //							alarmService.updateSBDayageTempSub(pd4);
 					   } }
@@ -1379,6 +1395,7 @@ public class AlarmAction extends BaseAction{
 						   pd6.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));
 						   pd6.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*((i-day_age3)*24+j));
 						   pd6.put("low_water_deprivation",low_water_deprivation3+low_water_deprivation1*((i-day_age3)*24+j));
+						   pd6.put("is_start","0"); 
 						   list2.add(pd6);
 //							alarmService.updateSBDayageTempSub(pd4);
 					   }}
@@ -1410,10 +1427,7 @@ public class AlarmAction extends BaseAction{
 		}
 		List<PageData> pageData5 = alarmService.selectByCondition3(pd);//主要条件：农场、栋舍、日龄
 		int pdID =0,startTime=0,endTime=0;
-		String[] st = pd.get("start_time").toString().split(":");
-		startTime = Integer.valueOf(st[0]).intValue();
-		String[] et = pd.get("end_time").toString().split(":");
-		endTime = Integer.valueOf(et[0]).intValue();
+		
 		if(pageData5.size()==0){
 			pd.put("create_person",user.getId());
 			pd.put("create_date", new Date());	
@@ -1956,6 +1970,7 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("set_water_deprivation", null);
 				    	pd3.put("high_water_deprivation", null);
 				    	pd3.put("low_water_deprivation", null);
+				    	pd3.put("is_start", "0");
 				    	list.add(pd3);
 //						alarmService.saveSBDayageTempSub(pd2);
 			    	}
@@ -1997,6 +2012,10 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("set_water_deprivation", null);
 				    	pd3.put("high_water_deprivation", null);
 				    	pd3.put("low_water_deprivation", null);
+				    	String[] st = pd.get("start_time").toString().split(":");
+						startTime = Integer.valueOf(st[0]).intValue();
+						String[] et = pd.get("end_time").toString().split(":");
+						endTime = Integer.valueOf(et[0]).intValue();
 				    	if(startTime<=j && j<=endTime){
 				    		pd3.put("is_start", "0");
 				    	}else{
@@ -2040,6 +2059,7 @@ public class AlarmAction extends BaseAction{
 				    	pd3.put("set_water_deprivation", null);
 				    	pd3.put("high_water_deprivation", null);
 				    	pd3.put("low_water_deprivation", null);
+				    	pd3.put("is_start", "0");
 				    	list.add(pd3);
 //						alarmService.saveSBDayageTempSub(pd2);
 			    	}
@@ -2124,6 +2144,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
 					pd5.put("low_water_deprivation",null);
+					pd5.put("is_start", "0");
 					list2.add(pd5);
 //					alarmService.saveSBDayageTempSub(pd4);
 				   }
@@ -2150,7 +2171,6 @@ public class AlarmAction extends BaseAction{
 						pd5.put("day_age",i+1);
 						date2.setHours(j);
 						pd5.put("record_datetime",date2);
-					pd5.put("record_datetime",date2);
 					pd5.put("set_temp", null);
 					pd5.put("high_alarm_temp",null);
 					pd5.put("low_alarm_temp",null);
@@ -2196,7 +2216,6 @@ public class AlarmAction extends BaseAction{
 						pd5.put("day_age",i+1);
 						date2.setHours(j);
 						pd5.put("record_datetime",date2);
-					pd5.put("record_datetime",date2);
 					pd5.put("set_temp", null);
 					pd5.put("high_alarm_temp",null);
 					pd5.put("low_alarm_temp",null);
@@ -2208,6 +2227,7 @@ public class AlarmAction extends BaseAction{
 					pd5.put("set_water_deprivation", null);
 					pd5.put("high_water_deprivation",null);
 					pd5.put("low_water_deprivation",null);
+					pd5.put("is_start", "0");
 					list2.add(pd5);
 //					alarmService.saveSBDayageTempSub(pd4);
 				   }
@@ -3133,6 +3153,7 @@ public class AlarmAction extends BaseAction{
 							pd3.put("set_water_deprivation", null);
 							pd3.put("high_water_deprivation",null);
 							pd3.put("low_water_deprivation",null);
+							pd3.put("is_start", "0");
 							list.add(pd3);
 //							alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -3217,6 +3238,7 @@ public class AlarmAction extends BaseAction{
 							pd3.put("set_water_deprivation", null);
 							pd3.put("high_water_deprivation",null);
 							pd3.put("low_water_deprivation",null);
+							pd3.put("is_start", "0");
 							list.add(pd3);
 //							alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -3254,6 +3276,7 @@ public class AlarmAction extends BaseAction{
 							pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
 							pd3.put("high_water_deprivation",high_water_deprivation2+high_water_deprivation*((i-day_age)*24+j));
 							pd3.put("low_water_deprivation",low_water_deprivation2+low_water_deprivation*((i-day_age)*24+j));
+							pd3.put("is_start", "0");
 							list.add(pd3);
 //							alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -3299,6 +3322,7 @@ public class AlarmAction extends BaseAction{
 								pd5.put("set_water_deprivation", null);
 								pd5.put("high_water_deprivation",null);
 								pd5.put("low_water_deprivation",null);
+								pd5.put("is_start", "0");
 								list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd4);
 						    	}
@@ -3383,6 +3407,7 @@ public class AlarmAction extends BaseAction{
 								pd5.put("set_water_deprivation", null);
 								pd5.put("high_water_deprivation",null);
 								pd5.put("low_water_deprivation",null);
+								pd5.put("is_start", "0");
 								list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd4);
 						    	}
@@ -3420,6 +3445,7 @@ public class AlarmAction extends BaseAction{
 								pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*(i+1));
 								pd5.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*(i+1));
 								pd5.put("low_water_deprivation",low_water_deprivation3+low_water_deprivation1*(i+1));
+								pd5.put("is_start", "0");
 								list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd4);
 						    	}
@@ -3949,6 +3975,7 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_water_deprivation", null);
 						    	pd3.put("high_water_deprivation", null);
 						    	pd3.put("low_water_deprivation", null);
+						    	pd3.put("is_start", "0");
 						    	list.add(pd3);
 //								alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -4033,6 +4060,7 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_water_deprivation", null);
 						    	pd3.put("high_water_deprivation", null);
 						    	pd3.put("low_water_deprivation", null);
+						    	pd3.put("is_start", "0");
 						    	list.add(pd3);
 //								alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -4070,6 +4098,7 @@ public class AlarmAction extends BaseAction{
 						    	pd3.put("set_water_deprivation", set_water_deprivation2+set_water_deprivation*((i-day_age)*24+j));
 						    	pd3.put("high_water_deprivation", high_water_deprivation2+high_water_deprivation*((i-day_age)*24+j));
 						    	pd3.put("low_water_deprivation", low_water_deprivation2+low_water_deprivation*((i-day_age)*24+j));
+						    	pd3.put("is_start", "0");
 						    	list.add(pd3);
 //								alarmService.saveSBDayageTempSub(pd3);
 					    	}
@@ -4113,6 +4142,7 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_water_deprivation", null);
 							    	pd5.put("high_water_deprivation",null);
 							    	pd5.put("low_water_deprivation",null);
+							    	pd5.put("is_start", "0");
 								list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd4);
 							   }
@@ -4191,6 +4221,7 @@ public class AlarmAction extends BaseAction{
 								    	pd5.put("set_water_deprivation", null);
 								    	pd5.put("high_water_deprivation",null);
 								    	pd5.put("low_water_deprivation",null);
+								    	pd5.put("is_start", "0");
 								list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd4);
 								   }
@@ -4226,7 +4257,8 @@ public class AlarmAction extends BaseAction{
 							    	pd5.put("set_water_deprivation", set_water_deprivation3+set_water_deprivation1*((i-day_age3)*24+j));
 							    	pd5.put("high_water_deprivation",high_water_deprivation3+high_water_deprivation1*((i-day_age3)*24+j));
 							    	pd5.put("low_water_deprivation",low_water_deprivation3+low_water_deprivation1*((i-day_age3)*24+j));
-								list2.add(pd5);
+							    	pd5.put("is_start", "0");
+							    	list2.add(pd5);
 //								alarmService.saveSBDayageTempSub(pd4);
 							   }
 						   }

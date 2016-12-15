@@ -17,6 +17,7 @@
 <body style="background-color: #ffffff;">
 <input type="text"  name="farmId"  id="farmId" style="display:none" value="${farmId}" />
 <input type="text"  name="farm"  id="farm" style="display:none" value="${farm}" />
+<!-- <input type="text"  name="good_id"  id="good_id" style="display:none" value="" /> -->
 	<div id="page-content" class="clearfix" style="padding-top: 10px;">
 		<div class="row-fluid">
 			<div class="span12">
@@ -71,11 +72,11 @@
 										</div>
 										<div class="span3" align="left">
 											<span_customer>入库数量</span_customer>
-											<input type="text"  name="count"  id="sssasd"  />
+											<input type="text"  name="count"  id="sssasd" value="0" />
 										</div>
 										<div class="span3" align="left">
 											<span_customer>单价</span_customer>
-											<input type="text"  name="price" id="sssasdPrice" />
+											<input type="text"  name="price" id="sssasdPrice" value="0"/>
 										</div>
 									</div>
 
@@ -94,8 +95,12 @@
 										</div>
 										<div class="span3" align="left">
 											<span_customer>品名</span_customer>
-											<select id="good_id" tabindex="1"  name="good_id" >
+											<select id="good_id" tabindex="1"  name="good_id">
+<!-- 											<option value="1">cow</option>   -->
+<!--                                             <option value="2">bull</option>   -->
+<!--                                             <option value="3">ox</option>   class="form-control selectpicker" data-live-search="true"  class="js-example-basic-single"-->
 											</select>
+<!-- 											<input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
 										</div>
 										<div class="span3" align="left">
 											<span_customer>规格</span_customer>
@@ -108,6 +113,7 @@
 											</select>
 										</div>
 									</div>
+				
 									<div class="row-fluid">
 										<div class="span3" align="left">
 											<span_customer>厂家</span_customer>
@@ -125,7 +131,7 @@
 
 										</div>
 										<div class="span3" align="left">
-											<button type="button" class="btn green" onclick="inStock()">确认</button>
+											<button type="button" class="btn blue" onclick="inStock()"><i class="icon-ok"></i>确认</button>
 										</div>
 									</div>
 								</div>
@@ -181,10 +187,11 @@
 											<span_customer>品名</span_customer>
 											<select id="good_id_out"  tabindex="1"  name="good_id" >
 											</select>
+<!--                                                 <input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
 										</div>
 										<div class="span3" align="left">
 											<span_customer>耗用数量</span_customer>
-											<input type="text" name="count" id="count_out" />
+											<input type="text" name="count" id="count_out" value="0"/>
 										</div>
 									</div>
 
@@ -203,7 +210,7 @@
 
 										</div>
 										<div class="span3" align="left">
-											<button type="button" class="btn green" onclick="outStock()" >确认</button>
+											<button type="button" class="btn blue" onclick="outStock()" ><i class="icon-ok"></i>确认</button>
 										</div>
 									</div>
 								</div>
@@ -287,7 +294,7 @@
 											</select>
 										</div>
 										<div class="span3" align="left">
-											<button type="button" class="btn green" onclick="queryStock()" >查 询</button>
+											<button type="button" class="btn blue" onclick="queryStock()" ><i class="icon-search"></i>查 询</button>
 										</div>
 									</div>
 								</div>
@@ -388,11 +395,37 @@
 	</div>
 	<script type="text/javascript">
 		var isRead="${pd.write_read}";//菜单是否只读
+// 		$(function(){
+// 			$(".selectpicker").selectpicker({
+// 			dropuAuto : false
+// 			});
+// 			});
+		
+// 		$(window).on('load', function () {  
+			  
+//             $('.selectpicker').selectpicker({  
+//                 'selectedText': 'cat'  
+//             });  
+  
+              
+//         });  
 	</script>
 	<!-- #main-content -->
 	<script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>
 	<script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.js"></script>
     <script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.zh-CN.js"></script>
+<!--     <script type="text/javascript" src="<%=path%>/framework/css/bootstrap-select.css"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/js/bootstrap-select.js"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/js/defaults-zh_CN.js"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/css/bootstrap.css"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/css/prettify.css"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/js/bootstrap-typeahead.js"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/js/mockjax.js"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/js/prettify.js"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/js/select2.js"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/js/select2.min.js"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/css/select2.css"></script> -->
+<!--     <script type="text/javascript" src="<%=path%>/framework/css/select2.min.css"></script> -->
     <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
     <script type="text/javascript" src="<%=path%>/modules/googs/js/googsView.js"></script> 
 	<!-- 确认窗口 -->

@@ -40,44 +40,61 @@
 	<!-- 根据条件查询 -->
 	<select id="selectByCondition" parameterType="pd" resultType="pd" useCache="false">
 		select  
-		id,
-		farm_code,
-		farm_name_chs,
-		farm_name_en,
-		feed_method,
-		layers,
-		rows,
-		feed_density,
-		h_length,
-		h_width,
-		h_height,
-		feed_purpose,
-		corporation,
-		farm_add1,
-		farm_add2,
-		farm_add3,
-		farm_add4,
-		farm_add5,
-		memo_1,
-		memo_2,
-		freeze_status,
-		create_person,
-		create_date,
-		create_time,
-		modify_person,
-		modify_date,
-		modify_time
+			id,
+			farm_code,
+			farm_name_chs,
+			farm_name_en,
+			feed_method,
+			layers,
+			rows,
+			feed_density,
+			h_length,
+			h_width,
+			h_height,
+			feed_purpose,
+			corporation,
+			farm_add1,
+			farm_add2,
+			farm_add3,
+			farm_add4,
+			farm_add5,
+			memo_1,
+			memo_2,
+			freeze_status,
+			create_person,
+			create_date,
+			create_time,
+			modify_person,
+			modify_date,
+			modify_time
 		from s_d_farm
 		where freeze_status=0
-		<if test="farmCode != null"> 
-		and farm_code = #{farmCode}
-		</if>
-		<if test="farmNameChs != null "> 
-		and farm_name_chs = #{farmNameChs}
-		</if>
-		<if test="farmId != null and farmId != 0">
-		and id = #{farmId}
-		</if>
+			<if test="farmCode != null">
+			and farm_code = #{farmCode}
+			</if>
+			<if test="farmNameChs != null ">
+			and farm_name_chs = #{farmNameChs}
+			</if>
+			<if test="farmId != null and farmId != 0">
+			and id = #{farmId}
+			</if>
+			<if test="user_id != null and user_id != 0">
+			and exists(select
+							usr.role_level,
+							org.id,
+							org.parent_id,
+							org2.max_level
+						from s_d_organization org
+							left join v_user usr
+								on usr.id= #{user_id}
+									and usr.obj_type=2
+									and usr.obj_id = org.id
+							join (select max(level_id) max_level from s_d_organization) org2
+								on 1=1
+						where usr.id is not null
+									and org.level_id=(org2.max_level-1)
+									and (s_d_farm.id = org.id or usr.role_level=1))
+			</if>
 	</select>
 	<!-- 查询栋舍全部 -->
 	<select id="selectHouseByCondition" resultType="pd" useCache="false">
@@ -133,7 +150,7 @@
 		LEFT JOIN (SELECT * FROM s_d_code
 					WHERE code_type='HOUSE_TYPE') code
 		ON code.biz_code = house_type
-		where 1=1
+		where freeze_status = 0
         <if test="houseId != null and houseId != 0">
 			and id = #{houseId}
 		</if>
@@ -185,20 +202,56 @@
 		<if test="id != null and id != ''">
 			and s_d_farm.id = #{id}
 		</if>
+		<if test="user_id != null and user_id != ''">
+			and (exists(select
+							usr.role_level,
+							org.id,
+							org.parent_id,
+							org2.max_level
+						from s_d_organization org
+							left join v_user usr
+							on usr.id= #{user_id}
+								and usr.obj_type=2
+								and usr.obj_id = org.id
+							join (select max(level_id) max_level from s_d_organization) org2
+							on 1=1
+						where usr.id is not null and org.level_id=(org2.max_level-1)
+								and s_d_farm.id = org.id)
+					or s_d_farm.create_person = #{user_id}
+						)
+		</if>
 	</select>
 	
 	<!-- 查询栋舍信息 -->
 	<select id="findHouse" parameterType="pd" resultType="pd" useCache="false">
 		SELECT s_d_house.* ,
-			   c1.code_name,
-		       s_d_farm.farm_name_chs
+		c1.code_name,
+		s_d_farm.farm_name_chs
 		FROM   s_d_house
 		left join s_d_farm on s_d_farm.id=s_d_house.farm_id
 		left join s_d_code as c1 on c1.biz_code=s_d_house.house_type and c1.code_type='HOUSE_TYPE'
 		where s_d_house.freeze_status='0'
-		<if test="id != null and id !='' "> 
-         and s_d_house.id = #{id} 
-        </if>
+		<if test="user_id != null and user_id != ''">
+			and exists(select
+			usr.role_level,
+			org.id,
+			org.parent_id,
+			org2.max_level
+			from s_d_organization org
+			left join v_user usr
+			on usr.id= #{user_id}
+			and usr.obj_type=2
+			and usr.obj_id = org.id
+			join (select max(level_id) max_level from s_d_organization) org2
+			on 1=1
+			where usr.id is not null
+			and org.level_id=org2.max_level
+			and (case when usr.role_level=org2.max_level then org.organization_id else (select distinct organization_id from s_d_organization where id = org.parent_id and level_id = (org2.max_level-1)) end)
+			= (case when usr.role_level=org2.max_level then s_d_house.id else s_d_house.farm_id end))
+		</if>
+		<if test="id != null and id !='' ">
+			and s_d_house.id = #{id}
+		</if>
 	</select>
 	
 	<!-- 查询批次信息 -->

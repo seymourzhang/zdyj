@@ -51,7 +51,11 @@ public class OrgAction extends BaseAction{
 	public void getOrganizationList(HttpServletResponse response) throws Exception{
 		Json j=new Json();
 		PageData pd = this.getPageData();
-		List<PageData> organizationList = organService.getOrganizationList(null);
+		Subject currentUser = SecurityUtils.getSubject();
+		Session session = currentUser.getSession();
+		SDUser user=(SDUser)session.getAttribute(Const.SESSION_USER);
+		pd.put("user_id",user.getId());
+		List<PageData> organizationList = organService.getOrganizationList(pd);
 		j.setSuccess(true);
 		j.setObj(organizationList);
 		super.writeJson(j, response);
@@ -106,7 +110,10 @@ public class OrgAction extends BaseAction{
 		PageData rtPd = new PageData();
 		tmpPd.clear();
 		tmpPd.put("parentOrgIdList",parentOrgIdList);
-		organizationList = organService.getOrgListById(tmpPd);
+		if(parentOrgIdList.size()>0)
+			organizationList = organService.getOrgListById(tmpPd);
+		else
+			organizationList = new ArrayList<>();
 
 		//格式化返回结果集
 		for(PageData tmpOrg : organizationList){
@@ -150,7 +157,7 @@ public class OrgAction extends BaseAction{
 				orgList.add(Integer.valueOf(tmp));
 			}
 
-			pd.put("org",orgList);
+			pd.put("orgList",orgList);
 			pd.put("freeze_status",1); //删除标志位
 			int i = organService.deleteOrg(pd);
 			if(i==1){

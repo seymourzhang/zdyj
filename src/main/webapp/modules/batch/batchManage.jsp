@@ -36,7 +36,7 @@
                         <div class="container-fluid">
                             <div class="row-fluid">
                                 <div class="span3" align="left">
-                                    <span_customer>批次号</span_customer><input id="createBatchNo" type="text">
+                                    <span_customer>批次号</span_customer><input id="createBatchNo" type="text" placeholder="请输入批次号">
                                 </div>
                                 <div class="span3" align="left">
                                         <span_customer>品种</span_customer>
@@ -50,7 +50,7 @@
                                 </div>
                                 <div class="span3" align="left">
                                         <span_customer>生长日龄</span_customer>
-                                        <input id="createBatchGrowDay" type="text">
+                                        <input id="createBatchGrowDay" type="text" value="0">
                                 </div>
                             </div>
                             <div class="row-fluid">
@@ -72,17 +72,17 @@
                                 </div>
                                 <div class="span3" align="left">
                                         <span_customer>母鸡数</span_customer>
-                                        <input id="createBatchFemaleNum" type="text">
+                                        <input id="createBatchFemaleNum" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
                                         <span_customer>公鸡数</span_customer>
-                                        <input id="createBatchMaleNum" type="text">
+                                        <input id="createBatchMaleNum" type="text" value="0">
                                 </div>
                             </div>
                             <div class="row-fluid">
                                 <div class="span9" align="left">
                                         <span_customer>备注</span_customer>
-                                        <input id="createBatchRemark" type="text" style="width: 82%">
+                                        <input id="createBatchRemark" type="text" style="width: 82%" maxlength="40" placeholder="请填写备注">
                                 </div>
                                 <div class="span3" align="left">
                                         <a id="createBatchBtnSave" href="javascript:;" class="btn green" onclick="saveData();"></i>确认</a>
@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>调出栋</span_customer>
-                                    <select id="editBatchHouseSelect">
+                                    <select id="editBatchHouseSelect" onchange="getCount();">
                                     </select>
                                 </div>
                                 <div class="span3" align="left">
@@ -137,19 +137,28 @@
                                 </div>
                             </div>
                             <div class="row-fluid">
-                                <div class="span3" align="left">
+                                <div class="span2" align="left" style="width:120px;">
                                     <span_customer>母鸡数</span_customer>
-                                    <input id="editBatchFemaleNum" type="text">
+                                    <input id="editBatchFemaleNum" type="text" style="width:40px;" value="0">
+                                    
                                 </div>
-                                <div class="span3" align="left">
+                                <div class="span2" align="left" style="width:150px;">
+                                    <label style="width:90px;margin-top: 2px;margin-left:-15px;" >当前库存量</label>
+                                    <input id="currStock1" type="text" style="width:40px;margin-top: -40px;margin-left: 60px;" disabled="disabled">
+                                </div>
+                                <div class="span2" align="left" style="width:120px;">
                                     <span_customer>公鸡数</span_customer>
-                                    <input id="editBatchMaleNum" type="text">
+                                    <input id="editBatchMaleNum" type="text" style="width:40px;" value="0"> 
+                                </div>
+                                <div class="span2" align="left" style="width:150px;">
+                                    <label style="width:90px;margin-top: 2px;" >当前库存量</label>
+                                    <input id="currStock2" type="text" style="width:40px;margin-top: -40px;margin-left: 75px;" disabled="disabled">
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>备注</span_customer>
-                                    <input id="editBatchRemark" type="text" >
+                                    <input id="editBatchRemark" type="text" maxlength="40" placeholder="请填写备注">
                                 </div>
-                                <div class="span3" align="left">
+                                <div class="span1" align="left">
                                     <a id="editBatchBtnSave" href="javascript:;" class="btn green" onclick="saveData();"></i>确认</a>
                                 </div>
                             </div>
@@ -190,15 +199,15 @@
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>母鸡数</span_customer>
-                                    <input id="overBatchFemaleNum" type="text">
+                                    <input id="overBatchFemaleNum" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>公鸡数</span_customer>
-                                    <input id="overBatchMaleNum" type="text">
+                                    <input id="overBatchMaleNum" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>备注</span_customer>
-                                    <input id="overBatchRemark" type="text" >
+                                    <input id="overBatchRemark" type="text" maxlength="40" placeholder="请填写备注">
                                 </div>
                             </div>
                             <div class="row-fluid">
@@ -209,11 +218,11 @@
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>母鸡均重</span_customer>
-                                    <input id="overBatchFemaleAvgWeight" type="text">
+                                    <input id="overBatchFemaleAvgWeight" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>公鸡均重</span_customer>
-                                    <input id="overBatchMaleAvgWeight" type="text">
+                                    <input id="overBatchMaleAvgWeight" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
 
@@ -230,15 +239,15 @@
                             <div class="row-fluid">
                                 <div class="span3" align="left">
                                     <span_customer>总重量</span_customer>
-                                    <input id="overBatchSumWeight" type="text">
+                                    <input id="overBatchSumWeight" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>只数</span_customer>
-                                    <input id="overBatchSumNum" type="text">
+                                    <input id="overBatchSumNum" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>均价价格</span_customer>
-                                    <input id="overBatchAvgPrice" type="text">
+                                    <input id="overBatchAvgPrice" type="text" value="0">
                                 </div>
                                 <div class="span3" align="left">
                                     <a id="overBatchBtnSave" href="javascript:;" class="btn green" onclick="saveData();"></i>确认</a>

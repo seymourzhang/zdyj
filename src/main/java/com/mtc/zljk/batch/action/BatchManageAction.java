@@ -208,4 +208,14 @@ public class BatchManageAction extends BaseAction {
         j.setMsg(result.getString("msg"));
         super.writeJson(j, response);
     }
+    
+    @RequestMapping(value="/getCount")
+    public void getCount(HttpServletResponse response) throws Exception{
+    	Json j=new Json();
+    	PageData pd = this.getPageData();
+        List<PageData> outList = batchManageService.getBatchDataCount(pd);
+        j.setObj(outList);
+        j.setSuccess(true);
+        super.writeJson(j, response);
+    }
 }

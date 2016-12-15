@@ -47,9 +47,19 @@ public class WirelessYTDevice {
 	private String power_status;
 	private String voltage;
 	private String run_time;
+	private String signalStrength;
 	private String hardware_version;
 	private String software_version;
+	private String device_attr;
 	private long makeTime;
+
+	public String getSignalStrength() {
+		return signalStrength;
+	}
+
+	public void setSignalStrength(String signalStrength) {
+		this.signalStrength = signalStrength;
+	}
 
 	public long getMakeTime() {
 		return makeTime;
@@ -66,8 +76,6 @@ public class WirelessYTDevice {
 	public void setDevice_attr(String device_attr) {
 		this.device_attr = device_attr;
 	}
-
-	private String device_attr;
 
 	public String getPower_status() {
 		return power_status;

@@ -78,6 +78,8 @@ public class WirelessYTConstants {
     public static int ID_SOFTWARE_VERSION_2007 = 2007 ;
     // MM属性
     public static int ID_MM_PROPERTY_2016 = 2016 ;
+    // 信号强度
+    public static int ID_SIGNAL_STRENGTH_2018 = 2018 ;
     // 硬件版本
     public static int ID_HARDWARE_VERSION_2008 = 2008 ;
     // 总有功电量

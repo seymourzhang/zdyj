@@ -30,4 +30,8 @@
                  curdate(),
                  curdate());
     </insert>
+
+    <delete id="delete" parameterType="pd">
+        DELETE FROM s_b_user_imei WHERE imei_no = #{imei_no};
+    </delete>
 </mapper>

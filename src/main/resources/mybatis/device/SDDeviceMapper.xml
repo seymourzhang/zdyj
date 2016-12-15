@@ -21,7 +21,7 @@
 
     <!-- 插入数据 -->
     <insert id="insert" parameterType="pd" flushCache="false">
-        INSERT INTO s_d_device(main_id, device_code, device_type, device_factory, port_id, key_id, tele_number, d_status, bak1, bak2, bak3, bak4, create_date, power_status, voltage, run_time, hardware_version, software_version, modify_date)
+        INSERT INTO s_d_device(main_id, device_code, device_type, device_factory, port_id, key_id, tele_number, d_status, bak1, bak2, bak3, bak4, create_date, power_status, voltage, run_time, hardware_version, software_version, device_property,signal_strength, modify_date)
         VALUES (#{main_id},
         #{device_code},
         #{device_type},
@@ -40,6 +40,8 @@
         #{run_time},
         #{hardware_version},
         #{software_version},
+        #{device_property},
+        #{signal_strength},
         current_timestamp())
     </insert>
 
@@ -81,6 +83,12 @@
         </if>
         <if test="software_version != null and software_version != ''">
             , software_version				= #{software_version}
+        </if>
+        <if test="device_property != null and device_property != ''">
+            , device_property  				= #{device_property}
+        </if>
+        <if test="signal_strength != null and signal_strength != ''">
+            , signal_strength 				= #{signal_strength }
         </if>
         where 1=1
         and main_id = #{main_id}

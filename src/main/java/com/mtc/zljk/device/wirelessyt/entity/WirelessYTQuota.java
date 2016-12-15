@@ -8,11 +8,20 @@ import com.mtc.zljk.device.entity.DeviceQuota;
  */
 public class WirelessYTQuota extends DeviceQuota {
     public long maketime ;
+    public String signalStrength ;
 
     public long getMaketime() {
         return maketime;
     }
     public void setMaketime(long maketime) {
         this.maketime = maketime;
+    }
+
+    public String getSignalStrength() {
+        return signalStrength;
+    }
+
+    public void setSignalStrength(String signalStrength) {
+        this.signalStrength = signalStrength;
     }
 }

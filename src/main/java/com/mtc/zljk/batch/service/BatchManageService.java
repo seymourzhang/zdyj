@@ -1,9 +1,11 @@
 package com.mtc.zljk.batch.service;
 
 import com.mtc.zljk.util.common.PageData;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.util.List;
 
 /**
@@ -17,6 +19,14 @@ public interface BatchManageService {
      * @throws Exception
      */
     List<PageData> getCreateBatchData(PageData pd) throws Exception;
+    
+    /**
+     * 获取调出数量
+     * @param pd
+     * @return
+     * @throws Exception
+     */
+    List<PageData> getBatchDataCount(PageData pd) throws Exception;
 
     /**
      * 保存创建批次数据
@@ -63,4 +73,6 @@ public interface BatchManageService {
      * @throws Exception
      */
     PageData selectBatchDataForMobile(PageData pd) throws Exception;
+
+
 }

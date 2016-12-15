@@ -693,7 +693,8 @@
 		       a.corporation, 
 		       s.factory_id,
 		       b.factory_name, 
-		       sum(s.count) stockCount
+		       sum(s.count) stockCount,
+		       (select sum(sc.count) from s_d_stock_change sc where sc.good_id = s.good_id and sc.good_type = s.good_type and sc.approve_status = 1 ) as waitCount		       
 		FROM s_d_stock s
 		left join s_d_corporation a   on a.corporation_id = s.corporation_id   
 		left join s_d_factory b   on s.factory_id = b.factory_id  
@@ -728,8 +729,6 @@
 			       s.factory_id
     </select>
 
-
-
 	<select id="getStockApproval" resultType="pd" useCache="false">
 		SELECT
 			  sc.id
@@ -756,6 +755,70 @@
 			  ,sc.farm_name
 			  ,sc.stock_batch_no
 			  ,sc.approve_status
+			  ,CASE sc.bak WHEN '【】 => 【】' THEN '-' ELSE sc.bak END as bak
+			  ,u.user_real_name create_person
+			  ,CASE sc.approve_status WHEN 2 THEN '通过' ELSE '未通过' END as state
+		FROM s_d_stock_change sc
+		LEFT JOIN s_d_corporation a   ON a.corporation_id = sc.corporation_id
+		LEFT JOIN s_d_factory b   ON sc.factory_id = b.factory_id
+		LEFT JOIN s_d_code c1 ON c1.biz_code=sc.spec AND c1.code_type='spec'
+		LEFT JOIN s_d_code c2 ON c2.biz_code=sc.unit AND c2.code_type='unit'
+		LEFT JOIN s_d_code c3 ON c3.biz_code=sc.good_type AND c3.code_type='good_type'
+		LEFT JOIN s_d_user u ON u.id = sc.create_person
+		WHERE sc.operation_kind = 3
+		<if test="currFlag == null or currFlag == ''">
+			AND sc.approve_status != 1
+		</if>
+		<if test="currFlag != null and currFlag != ''">
+			AND sc.approve_status = 1
+        </if>
+		<if test="good_type != null and good_type != ''">
+			and sc.good_type = #{good_type}
+		</if>
+		<if test="good_id != null and good_id != ''">
+			and sc.good_id = #{good_id}
+		</if>
+		<if test="spec != null and spec != ''">
+			and sc.spec = #{spec}
+		</if>
+		<if test="unit != null and unit != ''">
+			and sc.unit = #{unit}
+		</if>
+		<if test="corporation_id != null and corporation_id != ''">
+			and sc.corporation_id = #{corporation_id}
+		</if>
+		<if test="factory_id != null and factory_id != ''">
+			and sc.factory_id = #{factory_id}
+		</if>
+		        AND sc.farm_id = #{farm_id}
+	</select>
+	
+	<select id="getStockApproval2" resultType="pd" useCache="false">
+		SELECT
+			  sc.id
+			  ,sc.stock_id
+			  ,sc.good_id
+			  ,sc.good_code
+			  ,sc.good_name
+			  ,sc.good_type
+			  ,c3.code_name type_name
+			  ,sc.spec
+			  ,c1.code_name spec_name
+			  ,sc.unit
+			  ,c2.code_name unit_name
+			  ,sum(sc.count) as count
+			  ,sc.price
+			  ,date_format(sc.exp, '%Y-%m-%d') exp
+			  ,date_format(sc.operation_date, '%Y-%m-%d') operation_date
+			  ,sc.operation_kind
+			  ,sc.corporation_id
+			  ,a.corporation
+			  ,sc.factory_id
+		      ,b.factory_name
+			  ,sc.farm_id
+			  ,sc.farm_name
+			  ,sc.stock_batch_no
+			  ,sc.approve_status
 			  ,sc.bak
 			  ,u.user_real_name create_person
 		FROM s_d_stock_change sc
@@ -766,20 +829,46 @@
 		LEFT JOIN s_d_code c3 ON c3.biz_code=sc.good_type AND c3.code_type='good_type'
 		LEFT JOIN s_d_user u ON u.id = sc.create_person
 		WHERE sc.operation_kind = 3
-        <if test="currFlag != null and currFlag != ''">
+		<if test="currFlag != null and currFlag != ''">
 			AND sc.approve_status = 1
         </if>
-		<if test="currFlag == null or currFlag == ''">
-			AND sc.approve_status != 1
-		</if>
 		        AND sc.farm_id = #{farm_id}
+		group by   sc.good_id,
+			       sc.good_code,
+			       sc.good_type,
+			       sc.spec,
+			       sc.unit,
+			       sc.corporation_id,
+			       sc.factory_id
 	</select>
 
 	<!-- 审批 -->
-	<update id="approvalStockChange" parameterType="pd" flushCache="false">
-		UPDATE s_d_stock_change SET approve_status= #{approve_status}, bak = CONCAT("【", bak, "】 => ",#{remark})
+	<update id="approvalStockChange" parameterType="java.util.List" flushCache="false">
+		UPDATE s_d_stock_change SET approve_status= 3, 
+		bak = 
+		<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+        when #{item.id,jdbcType=DECIMAL} then CONCAT("【", bak, "】 => 【",#{item.remark,jdbcType=VARCHAR},"】")
+        </foreach>
 		WHERE operation_kind=3
-			AND id = #{id}
+			AND id in
+			<foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=DECIMAL}
+            </foreach>
+	</update>
+	
+	<update id="approvalStockChange2" parameterType="java.util.List" flushCache="false">
+	<foreach collection="list" index="index" item="item"  open="" separator=";" close="" > 
+		UPDATE s_d_stock_change SET approve_status= 2, 
+		bak = 
+		<foreach collection="list" item="item" index="index" separator=" " open="case ID" close="end">
+        when #{item.id,jdbcType=DECIMAL} then CONCAT("【", bak, "】 => 【",#{item.remark,jdbcType=VARCHAR},"】")
+        </foreach>
+		WHERE operation_kind=3
+			AND id in
+			<foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id,jdbcType=DECIMAL}
+            </foreach>
+	</foreach>
 	</update>
 
 	<!-- 更新提醒数据 -->
@@ -787,6 +876,40 @@
 		{
 			call SP_STOCK_REMIND (#{id,mode=IN,jdbcType=VARCHAR})
 		}
+	</select>
+	
+	<update id="updateStock" parameterType="java.util.List" flushCache="false">
+	
+	    UPDATE s_d_stock SET 
+	    modify_person	= 
+	    <foreach collection="list" index="index" item="item"  separator=" " open="case ID" close="end" > 
+	    when #{item.stock_id,jdbcType=DECIMAL} then #{item.modify_person}
+	    </foreach>
+	    ,modify_date 	= 
+	    <foreach collection="list" index="index" item="item"  separator=" " open="case ID" close="end" > 
+	    when #{item.stock_id,jdbcType=DECIMAL} then #{item.modify_date}
+	    </foreach>
+	    ,modify_time 	= 
+	    <foreach collection="list" index="index" item="item"  separator=" " open="case ID" close="end" > 
+	    when #{item.stock_id,jdbcType=DECIMAL} then #{item.modify_time}
+	    </foreach>
+	    ,count	= 
+	    <foreach collection="list" index="index" item="item"  separator=" " open="case ID" close="end" > 
+	    when #{item.stock_id,jdbcType=DECIMAL} then (count + #{item.count})
+	    </foreach>
+		,operation_date	= 
+		<foreach collection="list" index="index" item="item"  separator=" " open="case ID" close="end" > 
+	    when #{item.stock_id,jdbcType=DECIMAL} then #{item.operation_date}
+	    </foreach>
+			where  id in
+			<foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.stock_id,jdbcType=DECIMAL}
+            </foreach> 
+	
+	</update>
+
+	<select id="exec_SP_DELETE_STOCK_REMIND" useCache="false">
+		CALL SP_DELETE_STOCK_REMIND()
 	</select>
 
 </mapper>

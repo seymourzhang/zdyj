@@ -44,6 +44,7 @@
         ,sbbc.create_person
         ,sbbc.create_time
         ,devi.device_code
+        ,round((sbbc.female_count/sbbc.male_count),2) as rate
         FROM (SELECT id
         , name_cn
         , parent_id farm_id
@@ -242,6 +243,10 @@
             ,a.female_count_target
             ,a.male_count_target
             ,a.bak
+            ,(0-a.female_count_target) as female_count_target1
+            ,(a.female_count_target) as female_count_target2
+            ,(0-a.male_count_target) as male_count_target1
+            ,(a.male_count_target) as male_count_target2
         FROM (SELECT id
                         , name_cn
                         , parent_id farm_id
@@ -486,5 +491,7 @@
                 AND sbbc.status = 1
                 AND sbbc.is_enable = 1
     </update>
+
+
 
 </mapper>

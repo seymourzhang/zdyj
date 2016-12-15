@@ -115,7 +115,7 @@ function  editFarm(){
 					$("#farmViewForm",window.parent.document).submit();
 					parent.layer.closeAll();
 				}else{
-					alert("修改失败！");
+                    layer.msg("修改失败！(" + result.msg + ")", {});
 				}
 			}
 		});
@@ -170,9 +170,11 @@ function closeB(){
 					<select id="province_id" class="medium m-wrap"  name="farm_add1">
 					 <option value="">请选择</option>
                       <c:if test="${!empty prlist}">
-                      <c:forEach var="prl" items="${prlist}">
-                      	 <option value="${prl.id }" <c:if test="${prl.id==farmData.farm_add1}">selected</c:if>>${prl.short_name }</option>
-                      </c:forEach>
+						  <c:forEach var="prl" items="${prlist}">
+							 <option value="${prl.id }" <c:if test="${prl.short_name==farmData.farm_add1}">selected</c:if>>
+							 	${prl.short_name}
+							 </option>
+						  </c:forEach>
                      </c:if>
 				  	</select>
 				</div>

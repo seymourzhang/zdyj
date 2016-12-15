@@ -34,8 +34,22 @@ function initObjBatch(){
     objBatch.weed_out_avg_price = "";
 };
 
-$(document).ready(function(){
+$(document).ready(function(){ 
     reFlushData(currTabName);
+    
+    $("#createBatchGrowDay").focus(function(){ 
+        var createBatchGrowDay_txt = $(this).val(); 
+        if(createBatchGrowDay_txt == this.defaultValue){ 
+          $(this).val(""); 
+        } 
+      }); 
+      $("#createBatchGrowDay").blur(function(){ 
+        var createBatchGrowDay_txt = $(this).val(); 
+        if (createBatchGrowDay_txt == "") { 
+          $(this).val(this.defaultValue); 
+        } 
+      }); 
+      
 });
 
 //切换标签页事件处理
@@ -181,6 +195,7 @@ function showHouse(tabName, houseList){
     for(var key in houseList){
         document.getElementById(tabName + 'HouseSelect').add(new Option(houseList[key].house_name,houseList[key].house_code));
     }
+    getCount();
 };
 
 //获取栋舍id与名称
@@ -225,15 +240,15 @@ function reFlushData(tabName){
     var dataList = [];
     var url = "/batch/getCreateBatchData";
     if(tabName == tabs.进鸡){
-        clearCreateBatchUI(tabName);
+//        clearCreateBatchUI(tabName);
         url = "/batch/getCreateBatchData";
     }
     if(tabName == tabs.调鸡){
-        clearEditBatchUI(tabName);
+//        clearEditBatchUI(tabName);
         url = "/batch/getEditBatchData";
     }
     if(tabName == tabs.出栏){
-        clearOverBatchUI(tabName);
+//        clearOverBatchUI(tabName);
         url = "/batch/getOverBatchData";
     }
     $.ajax({
@@ -274,3 +289,23 @@ function checkConfirm(objBatch){
         });
     });
 };
+
+//获取指定栋舍的当前库存量
+function getCount(){	
+	$.ajax({
+        type: "post",
+        url: path + "/batch/getCount",
+        data: {house_code:document.getElementById(currTabName + "HouseSelect").value,farm_id:objBatch.farm_id},
+        dataType: "json",
+        success: function (result) {
+            dataList = eval(result.obj);
+            if(dataList.length==0){
+            	document.getElementById("currStock1").value = 0;
+                document.getElementById("currStock2").value = 0;
+            }else{
+            document.getElementById("currStock1").value = dataList[0].female_count;
+            document.getElementById("currStock2").value = dataList[0].male_count;
+            }
+        }
+    });
+}

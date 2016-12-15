@@ -27,4 +27,13 @@ public class TaskServiceImpl implements TaskService {
     public List<PageData> getDateTypeName() throws Exception{
         return (List<PageData>) dao.findForList("SDTaskMapper.getDateTypeName", null);
     }
+
+    /**
+     * 执行存储过程
+     * @param procName 存储过程名
+     * @throws Exception
+     */
+    public void execProc(String procName) throws Exception{
+        dao.findForObject("SDTaskMapper." + procName, null);
+    }
 }

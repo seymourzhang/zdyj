@@ -42,7 +42,7 @@
                         </c:forEach>
                     </c:if>
                 </select>
-                <input id="dateValues" style="width: 320px; height: 30px"/>
+                <input id="dateValues" style="width: 320px; height: 30px" placeholder="请按周龄或日龄输入"/>
             </div>
             <div class="span4" align="left">
 

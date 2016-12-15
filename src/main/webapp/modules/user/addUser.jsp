@@ -199,7 +199,10 @@ function  addUser(){
         for(var key in nodes){
             orgStr += nodes[key].id + ",";
         }
-    }
+    } else{
+        layer.msg('请为新建用户选择至少一个机构!', {});
+        return;
+	}
 
     param["org_str"] = orgStr;
 
@@ -214,7 +217,7 @@ function  addUser(){
 					parent.location.reload();   
 					parent.layer.closeAll();
 				}else{
-					alert("添加失败！");
+                    layer.msg('添加失败，请联系管理员!', {});
 				}
 			}
 		});

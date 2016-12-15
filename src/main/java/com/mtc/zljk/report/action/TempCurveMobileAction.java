@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -153,17 +151,17 @@ public class TempCurveMobileAction extends BaseAction {
                     if (hashMap.get("dataflag").equals("N")) {
                         continue;
                     }
-                    avgtempLeft1.put(avgtempLeft11.toString());
-                    avgtempLeft2.put(avgtempLeft22.toString());
-                    avgtempMiddle1.put(avgtempMiddle11.toString());
-                    avgtempMiddle2.put(avgtempMiddle22.toString());
-                    avgtempRight1.put(avgtempRight11.toString());
-                    avgtempRight2.put(avgtempRight22.toString());
-                    avgoutsideTemp.put(avgoutsideTemp1.toString());
-                    highAlarmTempArray.put(highAlarmTemp.toString());
-                    lowAlarmTempArray.put(lowAlarmTemp.toString());
-                    insideSetTempArray.put(insideSetTemp.toString());
-                    insideHumidityArray.put(insideHumidity.toString());
+                    avgtempLeft1.put("-99.0".equals(avgtempLeft11.toString()) ? "0" : avgtempLeft11.toString());
+                    avgtempLeft2.put("-99.0".equals(avgtempLeft22.toString()) ? "0" : avgtempLeft22.toString());
+                    avgtempMiddle1.put("-99.0".equals(avgtempMiddle11.toString()) ? "0" : avgtempMiddle11.toString());
+                    avgtempMiddle2.put("-99.0".equals(avgtempMiddle22.toString()) ? "0" : avgtempMiddle22.toString());
+                    avgtempRight1.put("-99.0".equals(avgtempRight11.toString()) ? "0" : avgtempRight11.toString());
+                    avgtempRight2.put("-99.0".equals(avgtempRight22.toString()) ? "0" : avgtempRight22.toString());
+                    avgoutsideTemp.put("-99.0".equals(avgoutsideTemp1.toString()) ? "0" : avgoutsideTemp1.toString());
+                    highAlarmTempArray.put("-99.0".equals(highAlarmTemp.toString()) ? "0" : highAlarmTemp.toString());
+                    lowAlarmTempArray.put("-99.0".equals(lowAlarmTemp.toString()) ? "0" : lowAlarmTemp.toString());
+                    insideSetTempArray.put("-99.0".equals(insideSetTemp.toString()) ? "0" : insideSetTemp.toString());
+                    insideHumidityArray.put("-99.0".equals(insideHumidity.toString()) ? "0" : insideHumidity.toString());
                     if (DataType.equals("02")) {
                         data_date = hashMap.get("data_date") != null ? hashMap.get("data_date").toString() : "Null";
                     }
@@ -312,20 +310,20 @@ public class TempCurveMobileAction extends BaseAction {
                         x_axis = PubFun.fillLeftChar(tHor, '0', 2) + ":00";
                     }
 
-                    Object avgtempLeft11 = hashMap.get("co2");
-                    if (avgtempLeft11 == null) {
-                        avgtempLeft11 = 0;
+                    Object co2Obj = hashMap.get("co2");
+                    if (co2Obj == null) {
+                        co2Obj = 0;
                     }
-                    Object avgtempLeft22 = hashMap.get("lux");
-                    if (avgtempLeft22 == null) {
-                        avgtempLeft22 = 0;
+                    Object luxObj = hashMap.get("lux");
+                    if (luxObj == null) {
+                        luxObj = 0;
                     }
                     xAxis.put(x_axis);
                     if (hashMap.get("dataflag").equals("N")) {
                         continue;
                     }
-                    co2.put(avgtempLeft11.toString());
-                    lux.put(avgtempLeft22.toString());
+                    co2.put("-99.0".equals(co2Obj.toString()) ? "0" : co2Obj.toString());
+                    lux.put("-99.0".equals(luxObj.toString()) ? "0" : luxObj.toString());
                     if (DataType.equals("02")) {
                         data_date = hashMap.get("data_date") != null ? hashMap.get("data_date").toString() : "Null";
                     }

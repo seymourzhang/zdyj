@@ -38,8 +38,8 @@ public class AutoRun {
 //        yingtongService.start();
 //        System.out.println("更新引通数据完毕！");
 
-//        System.out.println("更新引通无线数据开始！");
-//        tWirelessYTService.start();
-//        System.out.println("更新引通无线数据完毕！");
+        System.out.println("更新引通无线数据开始！");
+        tWirelessYTService.start();
+        System.out.println("更新引通无线数据完毕！");
     }
 }

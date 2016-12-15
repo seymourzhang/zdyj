@@ -41,6 +41,8 @@ public interface OrganService {
 	int deleteOrg(PageData pd) throws Exception;
 
 	int setFarmMapping(PageData pd) throws Exception;
+	int setHouseMapping(PageData pd) throws Exception;
 
 	List<PageData> getFarmForMapping(PageData pd) throws Exception;
+
 }

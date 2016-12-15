@@ -78,9 +78,17 @@ public class GoogsServiceImpl implements GoogsService {
 	public List<PageData> getStockApproval(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockApproval", pd);
 	}
+	
+	public List<PageData> getStockApproval2(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getStockApproval2", pd);
+	}
 
-	public int approvalStockChange(PageData pd) throws Exception{
-		return (Integer)dao.update("SDGoodsMapper.approvalStockChange", pd);
+	public void approvalStockChange(List<PageData> list) throws Exception{
+		dao.batchSave("SDGoodsMapper.approvalStockChange", list);
+	}
+	
+	public void approvalStockChange2(List<PageData> list) throws Exception{
+		dao.batchSave("SDGoodsMapper.approvalStockChange2", list);
 	}
 
 	public int updateRemindData(PageData pd) throws Exception{
@@ -117,6 +125,19 @@ public class GoogsServiceImpl implements GoogsService {
 	
 	public int editCorporationGood(PageData pd) throws Exception {
 		return (Integer)dao.update("SDGoodsMapper.editCorporationGood", pd);
+	}
+	
+	public void updateStock(List<PageData> list) throws Exception{
+		   dao.batchSave("SDGoodsMapper.updateStock", list);
+	}
+
+	/**
+	 * 执行存储过程
+	 * @param procName 存储过程名
+	 * @throws Exception
+	 */
+	public void execProc(String procName) throws Exception{
+		dao.findForObject("SDGoodsMapper." + procName, null);
 	}
 	
 }

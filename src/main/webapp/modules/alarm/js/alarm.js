@@ -940,21 +940,21 @@ function openAdjustWin(hourList){
 	    str+='<div style="padding-left: 20px;font-size:14px; width: 510px;"><span style="display:block;width: 110px;float:left;margin-left:30px;">农场:</span><span style="display:block;width: 110px;float:left;margin-left:-70px;">'+$("#orgId" + (count0rg - 1)).val().split(",")[2]+'</span> ';
 	    str+='<span style="display:block;width: 110px;float:left;margin-left:70px;">栋舍:</span><span style="display:block;width: 110px;float:left;margin-left:-70px;">'+$("#orgId" + count0rg).val().split(",")[2]+'</span>';
 	    if($("#alarmType").val() == "2"){
-	    	str+='<span style="display:block;width: 50px;float:left;margin-left:60px;">周龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age"/></span></div>';
+	    	str+='<span style="display:block;width: 50px;float:left;margin-left:60px;">周龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age" value="0"/></span></div>';
 	    }else {
-	    	str+='<span style="display:block;width: 50px;float:left;margin-left:60px;">日龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age"/></span></div>';
+	    	str+='<span style="display:block;width: 50px;float:left;margin-left:60px;">日龄:<input type="text" style="width: 100px;margin-top: -30px;margin-left:33px;" name="day_age" id="day_age" value="0"/></span></div>';
 	    }
 //	    str+='<span style="display:block;width:60px;float:left;text-align: right;">报警类别:&nbsp;&nbsp; <select style="width: 100px;margin-top: 5px;" name="alarm_type" id="alarmType" value=""/></select></span>';
 	    str+='<div style="padding-left: 15px;font-size:14px; width: 680px;padding-top: 20px;margin-top: 30px;">';
 	    if($("#alarmType").val() == "1") {
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:7px;">目标温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="set_temp" id="set_temp"/></span> ';   
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">高报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="high_alarm_temp" id="high_alarm_temp"/></span> ';   
-	    	 str+='<span style="display:block;width: 70px;float:left;margin-left:100px;">低报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="low_alarm_temp" id="low_alarm_temp"/></span></div> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:7px;">目标温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="set_temp" id="set_temp" value="0"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">高报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="high_alarm_temp" id="high_alarm_temp" value="0"/></span> ';   
+	    	 str+='<span style="display:block;width: 70px;float:left;margin-left:100px;">低报温度:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:60px;" name="low_alarm_temp" id="low_alarm_temp" value="0"/></span></div> ';   
 	         p=['730px', '210px'];
 	    }else if($("#alarmType").val() == "2"){
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:-6px;">光照上限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_lux" id="high_lux"/></span> ';   
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">光照下限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="low_lux" id="low_lux"/></span> ';   
-	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:100px;">光照参照值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_lux" id="set_lux"/></span></div> ';
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:-6px;">光照上限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="high_lux" id="high_lux" value="0"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:110px;">光照下限制:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="low_lux" id="low_lux" value="0"/></span> ';   
+	    	 str+='<span style="display:block;width: 110px;float:left;margin-left:100px;">光照参照值:&nbsp;&nbsp; <input type="text" style="width: 100px;margin-top: -30px;margin-left:75px;" name="set_lux" id="set_lux" value="0"/></span></div> ';
 	         str+='<div style="padding-left: 15px;font-size:14px; width: 510px;padding-top: 20px;margin-top: 20px;">';
 	         str+='<span style="display:block;width: 110px;float:left;margin-left:7px;">开始时间:&nbsp;&nbsp; ';
 	         str += "<select id='start_time' style='width: 115px;margin-top: -30px;margin-left:60px;' class='m-wrap span12' tabindex='1' name='start_time'>";

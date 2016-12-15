@@ -30,6 +30,16 @@ public class BatchManageServiceImpl implements BatchManageService {
     public List<PageData> getCreateBatchData(PageData pd) throws Exception{
         return (List<PageData>) dao.findForList("BatchManageMapper.selectCreateBatchData", pd);
     }
+    
+    /**
+     * 获取调出数量
+     * @param pd
+     * @return
+     * @throws Exception
+     */
+    public List<PageData> getBatchDataCount(PageData pd) throws Exception{
+        return (List<PageData>) dao.findForList("BatchManageMapper.selectBatchDataCount", pd);
+    }
 
     /**
      * 保存创建批次数据
@@ -46,11 +56,11 @@ public class BatchManageServiceImpl implements BatchManageService {
         int i = 0;
         List<PageData> list = (List<PageData>) dao.findForList("BatchManageMapper.selectBatchId", pd);
         if(list.toArray().length == 1 && (Long)(list.get(0).get("num")) == 0){
-            i = (int) dao.save("BatchManageMapper.deleteCreateBatchDataFromCurr", pd);
+            i = (Integer) dao.save("BatchManageMapper.deleteCreateBatchDataFromCurr", pd);
             i = (i == 0 || i ==1 )?1:0;
-            i *= (int) dao.save("BatchManageMapper.insertCreateBatchDataToCurr", pd);
-            i *= (int) dao.save("BatchManageMapper.insertCreateBatchDataToHis", pd);
-            i *= (int) dao.save("BatchManageMapper.exec_SP_INIT_DAILY_REPORT", pd);
+            i *= (Integer) dao.save("BatchManageMapper.insertCreateBatchDataToCurr", pd);
+            i *= (Integer) dao.save("BatchManageMapper.insertCreateBatchDataToHis", pd);
+            i *= (Integer) dao.save("BatchManageMapper.exec_SP_INIT_DAILY_REPORT", pd);
             if(i == 1){
                 rt.put("result",true);
                 rt.put("msg","新建批次成功！");
@@ -112,12 +122,12 @@ public class BatchManageServiceImpl implements BatchManageService {
                 param.put("bak",pd.getString("bak"));
 
                 //修改批次数据入历史表
-                int i = (int) dao.save("BatchManageMapper.insertEditBatchDataToHis", param);
+                int i = (Integer) dao.save("BatchManageMapper.insertEditBatchDataToHis", param);
                 i = (i == 2)?1:0;
 
                 //调出批次数据更新当前表
                 try{
-                    i *= (int) dao.update("BatchManageMapper.updateEditBatchDataToCurr", param);
+                    i *= (Integer) dao.update("BatchManageMapper.updateEditBatchDataToCurr", param);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -178,8 +188,8 @@ public class BatchManageServiceImpl implements BatchManageService {
         if( (currMaleCount + currFemaleCount) == (maleCount + femaleCount + weed_out_total_count)) {
                 if((currMaleCount*maleWeight + currFemaleCount*femaleWeight) == (maleCount*maleWeight + femaleCount*femaleWeight + weed_out_total_weight)){
                     int i = 0;
-                    i = (int) dao.save("BatchManageMapper.insertOverBatchDataToHis", pd);
-                    i *= (int) dao.update("BatchManageMapper.updateOverBatchDataToCurr", pd);
+                    i = (Integer) dao.save("BatchManageMapper.insertOverBatchDataToHis", pd);
+                    i *= (Integer) dao.update("BatchManageMapper.updateOverBatchDataToCurr", pd);
                     if(i == 1){
                         rt.put("result",true);
                         rt.put("msg","出栏批次成功！");

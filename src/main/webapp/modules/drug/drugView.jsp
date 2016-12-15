@@ -32,7 +32,7 @@
 										  <div class="row-fluid">
 											  <div class="span3" align="left">
 												  <span_customer>生长周龄</span_customer>
-												  <input type="text" id="grow_week_age" name="grow_week_age">
+												  <input type="text" id="grow_week_age" name="grow_week_age" value="0">
 											  </div>
 											  <div class="span3" align="left">
 												  <span_customer>类型</span_customer>
@@ -76,11 +76,11 @@
 										  <div class="row-fluid">
 											  <div class="span3" align="left" style="margin-left: 20px;">
 											  <span_customer>起始周龄</span_customer>
-												  <input type="text" id="start_grow_week_age" name="start_grow_week_age">
+												  <input type="text" id="start_grow_week_age" name="start_grow_week_age" value="0">
 											  </div>
 											  <div class="span3" align="left" style="margin-left: 17px;">
 											  <span_customer>结束周龄</span_customer>
-												  <input type="text" id="end_grow_week_age" name="end_grow_week_age">
+												  <input type="text" id="end_grow_week_age" name="end_grow_week_age" value="0">
 											  </div>
 										  </div>
 
@@ -142,7 +142,7 @@
 										  </div>
 										  <div class="span3" align="left">
 											  <span_customer>用途</span_customer>
-											  <input type="text" id="use_type" name="use_type">
+											  <input type="text" id="use_type" name="use_type" placeholder="请输入用途">
 										  </div>
 										  <div class="span3" align="left">
 											  <span_customer>负责人</span_customer>
@@ -171,11 +171,11 @@
 										  </div>
 										  <div class="span3" align="left">
 											  <span_customer>使用数量</span_customer>
-											  <input type="text" id="use_unit" name="use_unit">
+											  <input type="text" id="use_unit" name="use_unit" value="0">
 										  </div>
 										  <div class="span3" align="left">
 											  <span_customer>批号</span_customer>
-											  <input type="text" id="good_batch_no" name="good_batch_no">
+											  <input type="text" id="good_batch_no" name="good_batch_no" value="0">
 										  </div>
 										  <div class="span3" align="left">
 											  <button type="button" class="btn green" onclick="addDrug();" id="add">确认</button>
@@ -196,7 +196,7 @@
 										  </div>
 										  <div class="span3" align="left">
 											  <span_customer>主要成分</span_customer>
-											  <input type="text" id="main_constitute" name="main_constitute">
+											  <input type="text" id="main_constitute" name="main_constitute" placeholder="请输入主要成分">
 										  </div>
 										  <div class="span3" align="left">
 											  <span_customer>厂家</span_customer>

@@ -26,16 +26,52 @@ public interface TemProfileService {
 	public List<PageData> getTemProfileMonth(PageData pd) throws Exception ;
 
 
+	/**
+	 * （app）温度查询--按日龄
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
 	List<PageData> selectTemForMobileDay(PageData pd) throws Exception;
 
+	/**
+	 * （app）温度查询--按小时
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
 	List<PageData> selectTemForMobileHour(PageData pd) throws Exception;
 
+	/**
+	 * （app）温度曲线--按分钟
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
 	List<PageData> selectTemForMobileMinute(PageData pd) throws Exception;
 
+	/**
+	 * （app）co2和光照查询--按日龄
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
 	List<PageData> selectLCForMobileDay(PageData pd) throws Exception;
 
+	/**
+	 * （app）co2和光照查询--按小时
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
 	List<PageData> selectLCForMobileHour(PageData pd) throws Exception;
 
+	/**
+	 * （app）co2和光照查询--按分钟
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
 	List<PageData> selectLCForMobileMinute(PageData pd) throws Exception;
 
 }

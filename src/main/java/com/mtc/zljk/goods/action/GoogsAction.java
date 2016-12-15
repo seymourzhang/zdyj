@@ -386,68 +386,55 @@ public class GoogsAction extends BaseAction {
 		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		Json j=new Json();
 		PageData pd = this.getPageData();
+		pd.put("flag", 1);
 		try {
 			List<PageData> stock = googsService.getStock(pd);
 			String adjustValue =pd.getString("adjustValue");
-			int count=Integer.valueOf(adjustValue);
-			if(count>0){//调增，读取库存第一条数据，插入库存变动表
-				PageData pd2=stock.get(0);
-				pd2.putAll(pd);
-				pd2.put("stock_id",stock.get(0).getInteger("id"));
-				pd2.put("create_person",user.getId());
-				pd2.put("create_date", new Date());	
-				pd2.put("create_time", new Date());
-				pd2.put("operation_date",new Date());
-				pd2.put("modify_person",user.getId());
-				pd2.put("modify_date", new Date());	
-				pd2.put("modify_time", new Date());
-				pd2.put("operation_kind",3);
-				pd2.put("count",count);
-				pd2.put("approve_status",1);
-				googsService.saveStockcChange(pd2);
-				googsService.updateRemindData(pd2);
-			}else{
-				BigDecimal number=new BigDecimal(count);
-				for (PageData pageData : stock) {
+			BigDecimal count = new BigDecimal(adjustValue);
+//			int count=Integer.valueOf(adjustValue);
+			BigDecimal num=googsService.getSumCount(pd);
+			if(stock.size()!=0 && count.add(num).compareTo(BigDecimal.ZERO)!=-1){
+			for (PageData pageData : stock) {
+				BigDecimal cc=pageData.getBigDecimal("count");
+				if(count.add(cc).compareTo(BigDecimal.ZERO)==-1){
 					pageData.putAll(pd);
-					BigDecimal cc=pageData.getBigDecimal("count");
-					BigDecimal big_decimal=cc.add(number);
-					int r=big_decimal.compareTo(BigDecimal.ZERO); //和0，Zero比较
-					if(r==-1){
-						number=cc.add(number);
-						pageData.put("stock_id",pageData.getInteger("id"));
-						pageData.put("create_person",user.getId());
-						pageData.put("create_date", new Date());	
-						pageData.put("create_time", new Date());
-						pageData.put("operation_date",new Date());
-						pageData.put("modify_person",user.getId());
-						pageData.put("modify_date", new Date());	
-						pageData.put("modify_time", new Date());
-						pageData.put("operation_kind",3);
-						pageData.put("count",BigDecimal.ZERO.subtract(cc));
-						pageData.put("approve_status",1);
-						googsService.saveStockcChange(pageData);
-					}else{
-						pageData.put("stock_id",pageData.getInteger("id"));
-						pageData.put("create_person",user.getId());
-						pageData.put("create_date", new Date());	
-						pageData.put("create_time", new Date());
-						pageData.put("operation_date",new Date());
-						pageData.put("modify_person",user.getId());
-						pageData.put("modify_date", new Date());	
-						pageData.put("modify_time", new Date());
-						pageData.put("operation_kind",3);
-						pageData.put("count",number);
-						pageData.put("approve_status",1);
-						googsService.saveStockcChange(pageData);
-
-					}
+					pageData.put("stock_id",stock.get(0).getInteger("id"));
+					pageData.put("create_person",user.getId());
+					pageData.put("create_date", new Date());	
+					pageData.put("create_time", new Date());
+					pageData.put("operation_date",new Date());
+					pageData.put("modify_person",user.getId());
+					pageData.put("modify_date", new Date());	
+					pageData.put("modify_time", new Date());
+					pageData.put("operation_kind",3);
+					pageData.put("count",BigDecimal.ZERO.subtract(cc));
+					pageData.put("approve_status",1);
+					googsService.saveStockcChange(pageData);
 					googsService.updateRemindData(pageData);
+					count=count.add(cc);
+				}else{
+					pageData.putAll(pd);
+					pageData.put("stock_id",stock.get(0).getInteger("id"));
+					pageData.put("create_person",user.getId());
+					pageData.put("create_date", new Date());	
+					pageData.put("create_time", new Date());
+					pageData.put("operation_date",new Date());
+					pageData.put("modify_person",user.getId());
+					pageData.put("modify_date", new Date());	
+					pageData.put("modify_time", new Date());
+					pageData.put("operation_kind",3);
+					pageData.put("count",count);
+					pageData.put("approve_status",1);
+					googsService.saveStockcChange(pageData);
+					googsService.updateRemindData(pageData);
+					break;
 				}
-			}
-
-			j.setSuccess(true);
+			 }
 			j.setMsg("1");
+			}else{
+				j.setMsg("0");
+			}
+			j.setSuccess(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -791,7 +778,7 @@ public class GoogsAction extends BaseAction {
 		Json j=new Json();
 		PageData pd = this.getPageData();
 		pd.put("currFlag",1);
-		List<PageData> stockApprovalList = googsService.getStockApproval(pd);
+		List<PageData> stockApprovalList = googsService.getStockApproval2(pd);
 		j.setSuccess(true);
 		j.setObj(stockApprovalList);
 		super.writeJson(j, response);
@@ -822,12 +809,20 @@ public class GoogsAction extends BaseAction {
 	public void rejectStockChange(HttpServletResponse response) throws Exception{
 		Json j=new Json();
 		PageData pd = this.getPageData();
-		pd.put("approve_status",3);
-		int result = googsService.approvalStockChange(pd);
+		pd.put("currFlag",1);
+		try{
+		List<PageData> list = googsService.getStockApproval(pd);
+		List<PageData> list2 = new ArrayList<PageData>();
+		for(PageData pageData:list){
+			pageData.put("remark", pd.get("remark"));
+			list2.add(pageData);
+		}
+//		pd.put("approve_status",3);
+		googsService.approvalStockChange(list2);
 		googsService.updateRemindData(pd);
-		if(result == 1){
-			j.setSuccess(true);
-		} else{
+		j.setSuccess(true);
+		}catch(Exception e) {
+			e.printStackTrace();
 			j.setSuccess(false);
 		}
 		super.writeJson(j, response);
@@ -840,17 +835,76 @@ public class GoogsAction extends BaseAction {
 	 * @throws Exception
 	 */
 	@RequestMapping("/approvalStockChange")
-	public void approvalStockChange(HttpServletResponse response) throws Exception{
+	public void approvalStockChange(HttpServletResponse response,HttpSession session) throws Exception{
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		Json j=new Json();
 		PageData pd = this.getPageData();
-		pd.put("approve_status",2);
-		int result = googsService.approvalStockChange(pd);
+		pd.put("currFlag",1);
+		List<PageData> list = googsService.getStockApproval(pd);
+		List<PageData> list3 = new ArrayList<PageData>();
+        for(PageData pageData:list){
+        	pageData.put("remark", pd.get("remark"));
+        	list3.add(pageData);
+        }
+//		pd.put("flag",1);
+//		List<PageData> stock = googsService.getStock(pd);
+//		pd.put("approve_status",2);
+		googsService.approvalStockChange2(list3);
 		googsService.updateRemindData(pd);
-		if(result == 1){
-			j.setSuccess(true);
-		} else{
-			j.setSuccess(false);
+		BigDecimal count=new BigDecimal(list.get(0).get("count").toString());
+//		BigDecimal num=googsService.getSumCount(pd);
+		if(count.compareTo(BigDecimal.ZERO)==-1){
+//			if(count.add(num).compareTo(BigDecimal.ZERO)!=-1){
+				List<PageData> list2 = new ArrayList<PageData>();
+				
+			for (PageData pageData : list) {
+//				BigDecimal cc=pageData.getBigDecimal("count");
+//						if(count.add(cc).intValue()<0){
+//							count=count.add(cc);
+							pageData.put("operation_date",new Date());
+							pageData.put("modify_person",user.getId());
+							pageData.put("modify_date", new Date());	
+							pageData.put("modify_time", new Date());
+//							pageData.put("count", 0);
+							list2.add(pageData);
+//							googsService.editStock(pageData);
+//						}else{
+//					pageData.put("operation_date",new Date());
+//					pageData.put("modify_person",user.getId());
+//					pageData.put("modify_date", new Date());	
+//					pageData.put("modify_time", new Date());
+//					pageData.put("count", cc.add(count));
+//					list2.add(pageData);
+//					googsService.editStock(pageData);
+//					break;
+//						}
+			        }
+			googsService.updateStock(list2);
+//			}else{
+//				j.setSuccess(false);
+//	        }
+		}else{
+			pd.put("stock_batch_no", DateUtil.getDaysTime());
+			pd.put("farm_name", list.get(0).get("farm_name"));
+			pd.put("good_code", list.get(0).get("good_code"));
+			pd.put("good_name", list.get(0).get("good_name"));
+			pd.put("spec", list.get(0).get("spec"));
+			pd.put("unit", list.get(0).get("unit"));
+			pd.put("corporation_id", list.get(0).get("corporation_id"));
+			pd.put("factory_id", list.get(0).get("factory_id"));
+			pd.put("exp",null);
+			pd.put("bak",null);
+			pd.put("create_person", user.getId());
+			pd.put("create_date", new Date());
+			pd.put("create_time", new Date());
+			pd.put("operation_date",new Date());
+			pd.put("modify_person",user.getId());
+			pd.put("modify_date", new Date());	
+			pd.put("modify_time", new Date());
+			pd.put("count", count.intValue());
+			googsService.saveStock(pd);
 		}
+		j.setSuccess(true);
 		super.writeJson(j, response);
 	}
 }

@@ -177,11 +177,7 @@ function addOrg(){
         parentOrgLevelId = nodes[0].org_level;
         parentOrgLevelName = nodes[0].org_level_name;
     } else{
-        layer.msg('请选择新建机构的上级机构!', {
-            skin : 'layui-layer-lan',
-            closeBtn : 0,
-            shift : 4
-        });
+        layer.msg('请选择新建机构的上级机构!', {});
         return;
     }
 
@@ -248,19 +244,11 @@ function addOrg(){
             orgLevelName= document.getElementById("orgLevelName").value;
 
             if(orgName == ""){
-                layer.msg('机构名称不能为空，请重新输入!', {
-                    skin : 'layui-layer-lan',
-                    closeBtn : 0,
-                    shift : 4
-                });
+                layer.msg('机构名称不能为空，请重新输入!', { });
                 return;
             }
             if(orgLevelName == ""){
-                layer.msg('机构层级不能为空，请重新输入!', {
-                    skin : 'layui-layer-lan',
-                    closeBtn : 0,
-                    shift : 4
-                });
+                layer.msg('机构层级不能为空，请重新输入!', {});
                 return;
             }
 
@@ -280,19 +268,11 @@ function addOrg(){
                 success: function (result) {
                     layer.close(index);
                     if(result.success){
-                        layer.msg('成功新增机构！', {
-                            skin : 'layui-layer-lan',
-                            closeBtn : 0,
-                            shift : 4
-                        });
+                        layer.msg('成功新增机构！', {});
                         reflushOrgList();
                         loadTableData(orgListTableName, []);
                     } else{
-                        layer.msg('新增机构失败！('+result.msg+')', {
-                            skin : 'layui-layer-lan',
-                            closeBtn : 0,
-                            shift : 4
-                        });
+                        layer.msg('新增机构失败！('+result.msg+')', {});
                         return;
                     }
                 }
@@ -317,11 +297,7 @@ function editOrg(){
         orgId = nodes[0].id;
         orgName = nodes[0].name;
     } else{
-        layer.msg('请选择需要修改的机构!', {
-            skin : 'layui-layer-lan',
-            closeBtn : 0,
-            shift : 4
-        });
+        layer.msg('请选择需要修改的机构!', {});
         return;
     }
 
@@ -354,11 +330,7 @@ function editOrg(){
             orgNameUpdated= document.getElementById("orgNameUpdated").value;
 
             if(orgNameUpdated == ""){
-                layer.msg('机构名称不能为空，请重新输入!', {
-                    skin : 'layui-layer-lan',
-                    closeBtn : 0,
-                    shift : 4
-                });
+                layer.msg('机构名称不能为空，请重新输入!', {});
                 return;
             }
 
@@ -374,19 +346,11 @@ function editOrg(){
                 success: function (result) {
                     layer.close(index);
                     if(result.success){
-                        layer.msg('成功修改机构！', {
-                            skin : 'layui-layer-lan',
-                            closeBtn : 0,
-                            shift : 4
-                        });
+                        layer.msg('成功修改机构！', {});
                         reflushOrgList();
                         loadTableData(orgListTableName, []);
                     } else{
-                        layer.msg('修改机构失败！('+result.msg+')', {
-                            skin : 'layui-layer-lan',
-                            closeBtn : 0,
-                            shift : 4
-                        });
+                        layer.msg('修改机构失败！('+result.msg+')', {});
                         return;
                     }
                 }
@@ -417,11 +381,7 @@ function deleteOrg(){
             }
         }
     } else{
-        layer.msg('请选择需要删除的机构!', {
-            skin : 'layui-layer-lan',
-            closeBtn : 0,
-            shift : 4
-        });
+        layer.msg('请选择需要删除的机构!', {});
         return;
     }
 
@@ -441,19 +401,11 @@ function deleteOrg(){
             dataType: "json",
             success: function (result) {
                 if(result.success){
-                    layer.msg('删除机构成功！', {
-                        skin : 'layui-layer-lan',
-                        closeBtn : 0,
-                        shift : 4
-                    });
+                    layer.msg('删除机构成功！', {});
                     reflushOrgList();
                     loadTableData(orgListTableName, []);
                 } else{
-                    layer.msg('删除机构失败！('+result.msg+')', {
-                        skin : 'layui-layer-lan',
-                        closeBtn : 0,
-                        shift : 4
-                    });
+                    layer.msg('删除机构失败！('+result.msg+')', {});
                     return;
                 }
             }
@@ -482,17 +434,9 @@ function mappingFarmHouse(){
         orgLevelId = nodes[0].org_level;
     } else{
         if(nodes.length > 1){
-            layer.msg('请选择一个机构!', {
-                skin : 'layui-layer-lan',
-                closeBtn : 0,
-                shift : 4
-            });
+            layer.msg('请选择一个机构!', { });
         } else{
-            layer.msg('请选择需要绑定农场的机构!', {
-                skin : 'layui-layer-lan',
-                closeBtn : 0,
-                shift : 4
-            });
+            layer.msg('请选择需要绑定农场的机构!', {});
         }
         return;
     }
@@ -565,36 +509,20 @@ function mappingFarmHouse(){
                                                     success: function (result) {
                                                         layer.close(index);
                                                         if(result.success){
-                                                            layer.msg('绑定农场成功！', {
-                                                                skin : 'layui-layer-lan',
-                                                                closeBtn : 0,
-                                                                shift : 4
-                                                            });
+                                                            layer.msg('成功绑定农场！', {});
                                                             reflushOrgData(orgId, orgLevelId);
                                                         } else{
-                                                            layer.msg('绑定农场失败！(' + result.msg + ')', {
-                                                                skin : 'layui-layer-lan',
-                                                                closeBtn : 0,
-                                                                shift : 4
-                                                            });
+                                                            layer.msg('绑定农场失败！(' + result.msg + ')', {});
                                                         }
                                                     }
                                                 });
                                             } else{
-                                                layer.msg('请选择需要绑定的农场!', {
-                                                    skin : 'layui-layer-lan',
-                                                    closeBtn : 0,
-                                                    shift : 4
-                                                });
+                                                layer.msg('请选择需要绑定的农场!', {});
                                             }
                                         }
                                     });
                                 } else{
-                                    layer.msg('当前没有需要绑定的农场!', {
-                                        skin : 'layui-layer-lan',
-                                        closeBtn : 0,
-                                        shift : 4
-                                    });
+                                    layer.msg('当前没有需要绑定的农场!', {});
                                     return;
                                 }
                     }

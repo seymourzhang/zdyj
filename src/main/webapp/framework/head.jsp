@@ -10,8 +10,9 @@
 			<!-- <div style="font-size: 22px;color: #FFFFFF;padding-left: 5px;padding-top: 11px;float: left;font-weight:lighter;">物联网</div> --></a> <a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse"></a>
 			<ul class="nav pull-right">
 				<li class="dropdown user">
-					<div style="width:330px;height:48px;z-index: 2;padding-top: 6px;">
-							<iframe  name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=93&num=2" width="330" height="48" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+					<div style="width:190px;height:48px;z-index: 2;">
+							<%--<iframe  name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=93&num=2" width="330" height="48" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>--%>
+						<iframe  name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=12&color=%23FFFFFF&icon=4&num=1"  width="190" height="48" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
 					</div>
 				</li>
 				<li class="dropdown user"><div  style="padding-top: 6px;text-align: center;padding-right: 20px;"> <span style="color: #fff;font-size: 14px;text-align: center;" id="dateMassage"></span> 

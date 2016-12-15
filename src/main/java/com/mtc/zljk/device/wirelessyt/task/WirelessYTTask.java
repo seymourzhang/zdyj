@@ -105,21 +105,38 @@ public class WirelessYTTask implements Runnable {
 				   + "5C2A"      // 校验码：2字节 (包含整帧（帧头+帧负荷）crc 校验和，计算时本字段填充为 0。源码请参考"crc 计算"这一章节。)
 				   + "05E6"      // 采集器序列号(2+8) 1510
 				   + "0003108EF03A3E3E"
+                    2 + 2  16比特short
+
 					   + "05E7"      // 传感器编号(2+2) 1511
 					   + "0001"
 					   + "03E8"      // 温度(2+4) 1000
 					   + "41B4CCCD"
 					   + "07E1"      // 传感器状态(2+4)  2017
 					   + "00000001"
+
+				    2 + 2  16比特short
+
 				   + "07D3"          // 供电状态(2+4)  2003
 				   + "0004"
 				   + "07D4"          // 电池电压  2004
 				   + "41B4CCCD"
 				   + "0640"          // 时间戳  1600
 				   + "56695154";
+
+				   消息类型：254
+				   帧内容前4个字节，设置服务器参数，5
+				   字符串：127.0.0.1:9876
+				   0
+
+                    4个字节，0-成功，其他不成功。
+
+                   消息类型：253
+				   帧内容前4个字节，设置服务器参数，5
+				   字符串：127.0.0.1:9876
+                   0
 			*/
 		/*
-		String res = "5B3A295D880B009E0003108EF06F9DDA0001791905E60003108EF06F9DDA05E7000103E8C60CA40007E10000000005E7000203E841A7333307E10000000005E7000303E8419CCCCD07E10000000005E7000403E841B2666607E10000000005E7000103F2C60CA40007E10000000005E70001041043E3800007E10000000005E700010456C60CA40007E10000000007D3000507D44085994C0640582939E9";
+		String res = "5B3A295D880B00E60003108EF06F9DF4001AC3CB05E60003108EF06F9DF407E2FFC205E7000103E841A8CCCD07E10000000007E2FFB205E7000203E841A7333307E10000000007E2FFCA05E7000303E841A8CCCD07E10000000007E2FFB905E7000403E841AC000007E10000000007E2FFAD05E7000503E841A8CCCD07E10000000007E2FFBA05E7000603E841A8CCCD07E10000000007E2FFB505E7000103F2424ACCCD07E10000000007E2FFBC05E7000104104418600007E10000000007E2FFC605E7000104564224000007E10000000007E2FFB507D3000507D44083C1030640584FB91A";
 //		res = "5B3A295D8805003D0003108EF06F9DDA0028227305E60003108EF06F9DDA07E00000008D07D80456312E3107D70F563030335230303143303153503741";
 		datas = StringHexUtil.hexString2Bytes(res);
         */
@@ -295,6 +312,10 @@ public class WirelessYTTask implements Runnable {
                 tName = "12路电流监测";
                 tValueType = WirelessYTConstants.VALUE_TYPE_STRING_2;
                 tValueLength = 4;
+            }else if(tId == WirelessYTConstants.ID_SIGNAL_STRENGTH_2018){
+                tName = "信号强度";
+                tValueType = WirelessYTConstants.VALUE_TYPE_INT;
+                tValueLength = 2;
             }else{
                 mLogger.error("Error：发现未知的数据ID类型。ID="+tId);
                 returnData = genResponseByte(messageType,temp3);
@@ -393,15 +414,21 @@ public class WirelessYTTask implements Runnable {
                     // 2017 传感器状态
                     }else if(tId == WirelessYTConstants.ID_SENSOR_STATUS_2017){
                         quota.STATUS.setValue(tRealVal);
-                        if(quota != null
-                                && !StringUtils.isEmpty(quota.DEVICE_ID.getValue())
-                                && !StringUtils.isEmpty(quota.PORT_ID.getValue())
-                                ){
-                            quota.COLLECT_DATETIME.setValue(DateUtil.getTime());
-                            quota.setMaketime(System.currentTimeMillis());
-                            quota.SOURCE_CODE.setValue(StringHexUtil.bytes2HexString(datas));
-                            quota.setDeviceKeyId();
-                            curYTKeyData.add(quota);
+                    }else if(tId == WirelessYTConstants.ID_SIGNAL_STRENGTH_2018){
+                        if(curYTKeyData.size() == 0 && quota == null){
+                            tWirelessYTDevice.setSignalStrength(tRealVal);
+                        }else{
+                            quota.setSignalStrength(tRealVal);
+                            if(quota != null
+                                    && !StringUtils.isEmpty(quota.DEVICE_ID.getValue())
+                                    && !StringUtils.isEmpty(quota.PORT_ID.getValue())
+                                    ){
+                                quota.COLLECT_DATETIME.setValue(DateUtil.getTime());
+                                quota.setMaketime(System.currentTimeMillis());
+                                quota.SOURCE_CODE.setValue(StringHexUtil.bytes2HexString(datas));
+                                quota.setDeviceKeyId();
+                                curYTKeyData.add(quota);
+                            }
                         }
                     }else if(tId == WirelessYTConstants.ID_TEMPERATURE_1000){
                         if(quota.PORT_ID.getValue().equals("1")){
@@ -437,6 +464,16 @@ public class WirelessYTTask implements Runnable {
                     }else if(tId == WirelessYTConstants.ID_ILUMINATION_1110){
                         if(quota.PORT_ID.getValue().equals("1")){
                             quota.LUX.setValue(tRealVal);
+                        }
+                        quota.PORT_ID.setValue(String.valueOf(tId) + "_" + quota.PORT_ID.getValue());
+                    }else if(tId == WirelessYTConstants.ID_OUTSIDE_TEMPERATURE_1005){
+                        if(quota.PORT_ID.getValue().equals("1")){
+                            quota.OUTSIDE_TEMP.setValue(tRealVal);
+                        }
+                        quota.PORT_ID.setValue(String.valueOf(tId) + "_" + quota.PORT_ID.getValue());
+                    }else if(tId == WirelessYTConstants.ID_AIR_PRESSURE_1050){
+                        if(quota.PORT_ID.getValue().equals("1")){
+                            quota.NEGATIVE_PRESSURE.setValue(tRealVal);
                         }
                         quota.PORT_ID.setValue(String.valueOf(tId) + "_" + quota.PORT_ID.getValue());
                     }

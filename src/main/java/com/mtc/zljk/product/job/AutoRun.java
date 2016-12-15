@@ -1,0 +1,23 @@
+package com.mtc.zljk.product.job;
+
+import com.mtc.zljk.product.service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+
+/**
+ * Created by LeLe on 12/14/2016.
+ */
+public class AutoRun {
+    @Autowired
+    TaskService taskService;
+
+    @Scheduled(cron="0 5 0 ? * *") //每天0点5分执行一次
+    public void run() {
+        try{
+            taskService.execProc("exec_SP_TASK_REMIND");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+}

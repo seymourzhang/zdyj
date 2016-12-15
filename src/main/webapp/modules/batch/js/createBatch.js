@@ -51,9 +51,13 @@ function createBatchColumns(){
                             title: "公鸡数",
                             width: '10%'
                         }, {
+                            field: "rate",
+                            title: "公母配比",
+                            width: '5%'
+                        }, {
                             field: "bak",
                             title: "备注",
-                            width: '25%'
+                            width: '20%'
                         }, {field: "status",
                             title: "状态",
                             visible: false

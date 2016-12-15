@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.mtc.zljk.util.common.PageData;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,8 +44,12 @@ public interface GoogsService {
 	public List<PageData> getStockSum(PageData pd) throws Exception;
 
 	public List<PageData> getStockApproval(PageData pd) throws Exception;
+	
+	public List<PageData> getStockApproval2(PageData pd) throws Exception;
 
-	public int approvalStockChange(PageData pd) throws Exception;
+	public void approvalStockChange(List<PageData> list) throws Exception;
+	
+	public void approvalStockChange2(List<PageData> list) throws Exception;
 
 	public int updateRemindData(PageData pd) throws Exception;
 	
@@ -63,4 +68,13 @@ public interface GoogsService {
 	public int editGoods(PageData pd)throws Exception;
 	
 	public int editCorporationGood(PageData pd)throws Exception;
+	
+	public void updateStock(List<PageData> list) throws Exception;
+
+	/**
+	 * 执行存储过程
+	 * @param procName 存储过程名
+	 * @throws Exception
+	 */
+	void execProc(String procName) throws Exception;
 }

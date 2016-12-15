@@ -50,12 +50,14 @@
 				tmp.role_level,
 				tmp.id user_id
 		FROM s_d_organization d
-		LEFT JOIN(SELECT * FROM v_user WHERE id = #{user_id} AND obj_type=2) tmp
-						ON tmp.obj_id = d.id
-							OR tmp.obj_id = d.parent_id
-		WHERE 1=1
-				AND (d.freeze_status=0  AND tmp.role_level is not null)
-				AND (d.level_id > tmp.role_level or d.id = tmp.obj_id)
+		LEFT JOIN (SELECT DISTINCT role_level role_level FROM v_user WHERE id = #{user_id} AND obj_type=2) tmp2
+    		ON 1=1
+    	LEFT JOIN(SELECT * FROM v_user WHERE id = #{user_id} AND obj_type=2) tmp
+			ON tmp.obj_id = d.id OR tmp.obj_id = (CASE WHEN tmp2.role_level=1 THEN d.id ELSE d.parent_id END )
+		WHERE  1=1
+				  AND d.freeze_status=0
+				  AND ((tmp.role_level is not null AND (d.level_id > tmp.role_level or d.id = tmp.obj_id))
+				  			OR (tmp.role_level is null AND tmp2.role_level=1))
 		ORDER BY d.id
     </select>
 
@@ -287,6 +289,9 @@
 		ON sdo.parent_id = sdo2.id
 		WHERE  sdo.level_id &lt;= (select max(aa.level_id) - 2 from s_d_organization aa)
 				AND sdo.freeze_status=0
+				<if test="user_id != null">
+					AND sdo.id in (select obj_id from v_user where id = #{user_id} and obj_type=2)
+				</if>
 		ORDER BY sdo.id
 	</select>
 
@@ -342,7 +347,7 @@
 	</select>
 
 	<!-- 绑定农场与机构 -->
-	<update id="setFarmMapping" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="id">
+	<insert id="setFarmMapping" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="id">
 
 			INSERT INTO s_d_organization(
 				organization_id
@@ -367,10 +372,41 @@
 					,CURRENT_TIME
 				FROM s_d_farm
 				WHERE 1 = 1
-					AND id IN
+						AND freeze_status = 0
+						AND id IN
 						<foreach collection="orgList" item="item" index="index" open="(" separator="," close=")">
 							  #{item}
 						</foreach>
-	</update>
+	</insert>
+
+	<!-- 绑定栋舍与农场 -->
+	<insert id="setHouseMapping" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="id">
+
+		INSERT INTO s_d_organization(
+				organization_id
+				,name_cn
+				,parent_id
+				,level_id
+				,level_name
+				,freeze_status
+				,create_person
+				,create_date
+				,create_time
+				)
+			SELECT
+				#{id}
+				,house_name
+				,(SELECT id FROM s_d_organization where organization_id = s_d_house.farm_id AND level_id = (#{level_id}-1))farm_id
+				,#{level_id}
+				,"栋舍"
+				,0
+				,#{user_id}
+				,CURRENT_DATE
+				,CURRENT_TIME
+			FROM s_d_house
+			WHERE 1 = 1
+				AND freeze_status = 0
+				AND id =#{id}
+	</insert>
 
 </mapper>

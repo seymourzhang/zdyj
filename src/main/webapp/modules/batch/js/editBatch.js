@@ -22,17 +22,25 @@ function editBatchColumns(){
         title: "调入至",
         width: '5%'
     }, {
-        field: "female_count_target",
-        title: "母鸡数",
-        width: '15%'
+        field: "female_count_target1",
+        title: "母鸡调出",
+        width: '10%'
     }, {
-        field: "male_count_target",
-        title: "公鸡数",
-        width: '15%'
+        field: "female_count_target2",
+        title: "母鸡调入",
+        width: '10%'
+    }, {
+        field: "male_count_target1",
+        title: "公鸡调出",
+        width: '10%'
+    }, {
+        field: "male_count_target2",
+        title: "公鸡调入",
+        width: '10%'
     }, {
         field: "bak",
         title: "备注",
-        width: '45%'
+        width: '30%'
     }];
     return dataColumns;
 };

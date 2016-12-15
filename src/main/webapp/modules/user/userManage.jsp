@@ -25,6 +25,7 @@
 			<div id="page-content" class="clearfix" style="padding-top: 10px;" > 
 				<div class="row-fluid" style="background-color: #ffffff;">
 					<form action="<%=path%>/user/userManage" method="post" style="background-color: #ffffff;" id="userForm">
+						<input type="hidden" name = "write_read" value="${pd.write_read}">
 						<%-- <input type="hidden" name="id" value="${pd.id}">
 						<input type="hidden" name="pid" value="${pd.pid}"> --%>
 							<div class="container-fluid">
@@ -110,11 +111,7 @@
 		//新增
 		function add(){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+				layer.msg('无权限，请联系管理员!', {});
 				return;
 			}
 			layer.open({
@@ -128,11 +125,7 @@
 		//编辑
 		function editUser(id){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+				layer.msg('无权限，请联系管理员!', {});
 				return;
 			}
 			layer.open({
@@ -145,12 +138,9 @@
 		}
 		//删除
 		function delUser(id) {
+
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+				layer.msg('无权限，请联系管理员!', {});
 				return;
 			}
 			//询问框
@@ -172,11 +162,7 @@
 						if (result.success) {
                             location.reload();
 						} else{
-                            layer.msg("删除用户失败！(" + result.msg + ")", {
-                                skin: 'layui-layer-lan'
-                                , closeBtn: 0
-                                , shift: 4 //动画类型
-                            });
+                            layer.msg("删除用户失败！(" + result.msg + ")", {});
 						}
 					}
 				});

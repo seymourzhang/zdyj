@@ -32,7 +32,7 @@
 							  <div class="row-fluid">
 								  <div class="span3" align="left">
 									  <span_customer>生长周龄</span_customer>
-									  <input type="text" id="grow_week_age" name="grow_week_age">
+									  <input type="text" id="grow_week_age" name="grow_week_age" value="0">
 								  </div>
 								  <div class="span3" align="left">
 									  <span_customer>类型</span_customer>
@@ -56,7 +56,7 @@
 <!-- 								  </div> -->
 								  <div class="span3" align="left">
 									  <span_customer>用途</span_customer>
-									  <input type="text" id="use_type" name="use_type">
+									  <input type="text" id="use_type" name="use_type" placeholder="请输入用途">
 
 								  </div>
 								  <div class="span3" align="left">
@@ -77,7 +77,7 @@
 								  </div>
 								  <div class="span3" align="left">
 									  <span_customer>使用数量</span_customer>
-									  <input type="text" id="use_unit" name="use_unit">
+									  <input type="text" id="use_unit" name="use_unit" value="0">
 								  </div>
 								  <div class="span3" align="left">
 									  <span_customer>品名</span_customer>

@@ -69,91 +69,95 @@ public class LoginMobileAction extends BaseAction{
 	@RequestMapping("/login")
 	public void login(HttpServletRequest request,HttpServletResponse response)throws Exception {
         //shiro管理的session
-        Subject currentUser = SecurityUtils.getSubject();
-        Session session = currentUser.getSession();
-
-        JSONObject resJson = new JSONObject();
-        PageData pd = new PageData();
-        pd = this.getPageData();
         String dealRes = null;
-        String aa = pd.toString();
-        aa = aa.substring(1, aa.length() - 2);
-        JSONObject jsonObject = new JSONObject(aa);
+        JSONObject resJson = new JSONObject();
+        try {
+            Subject currentUser = SecurityUtils.getSubject();
+            Session session = currentUser.getSession();
 
-        JSONObject tUserJson = jsonObject.getJSONObject("params");
-        String userName = tUserJson.optString("userCode");
-        String password = tUserJson.optString("passWord");
-        String passwd = new SimpleHash("SHA-1", userName, password).toString();    //密码加密
-        pd.put("user_code", userName);
-        pd.put("user_password", passwd);
+            PageData pd = new PageData();
+            pd = this.getPageData();
+            String aa = pd.toString();
+            aa = aa.substring(1, aa.length() - 2);
+            JSONObject jsonObject = new JSONObject(aa);
 
-        String loginApp = tUserJson.optString("loginApp");
-        String AndroidImei = tUserJson.optString("AndroidImei");
-        String uuid = tUserJson.optString("uuid");
-        String model = tUserJson.optString("model");
-        String sysVersion = tUserJson.optString("sysVersion");
-        String platForm = tUserJson.optString("platForm");
+            JSONObject tUserJson = jsonObject.getJSONObject("params");
+            String userName = tUserJson.optString("userCode");
+            String password = tUserJson.optString("passWord");
+            String passwd = new SimpleHash("SHA-1", userName, password).toString();    //密码加密
+            pd.put("user_code", userName);
+            pd.put("user_password", passwd);
 
-        pd = userService.getUserBylogin(pd);
+            String loginApp = tUserJson.optString("loginApp");
+            String AndroidImei = tUserJson.optString("AndroidImei");
+            String uuid = tUserJson.optString("uuid");
+            String model = tUserJson.optString("model");
+            String sysVersion = tUserJson.optString("sysVersion");
+            String platForm = tUserJson.optString("platForm");
 
-        if (pd != null) {
-            PageData pageData = new PageData();
-            if (!"".equals(AndroidImei) && AndroidImei != null) {
-                pageData.put("imei_no", AndroidImei);
-                pageData.put("user_id", pd.getInteger("id"));
-                pageData.put("user_code", userName);
-                pageData.put("uuid", uuid);
-                pageData.put("model", model);
-                pageData.put("sys_version", sysVersion);
-                pageData.put("platform", platForm);
-                pageData.put("create_person", pd.getInteger("id"));
-                int i = sbUserImeiService.insert(pageData);
-            }
-            SDUser user = new SDUser();
-            user.setId(pd.getInteger("id"));
-            user.setUser_code(pd.getString("user_code"));
-            user.setUser_password(pd.getString("user_password"));
-            user.setUser_real_name(pd.getString("user_real_name"));
-            user.setUser_real_name_en(pd.getString("user_real_name_en"));
-            user.setUser_mobile_1(pd.getString("user_mobile_1"));
-            user.setUser_status(pd.getString("user_status"));
-            user.setFreeze_status(pd.getString("freeze_status"));
-            session.setAttribute(Const.SESSION_USER, user);
-            JSONObject userInfo = getUserInfo(user);
-            resJson.put("userinfo", userInfo) ;
-            //shiro加入身份验证
-            Subject subject = SecurityUtils.getSubject();
-            UsernamePasswordToken token = new UsernamePasswordToken(userName, passwd);
-            try {
-                subject.login(token);
-            } catch (AuthenticationException e) {
-                resJson.put("Result", "Fail");
-                resJson.put("Error", "身份验证失败！");
-                dealRes = Constants.RESULT_SUCCESS;
-            }
-            if (!pd.getString("user_status").equals("1")) {
-                resJson.put("Result", "Fail");
-                resJson.put("LoginResult", 2);
-                resJson.put("Error", "账户异常！");
-                dealRes = Constants.RESULT_SUCCESS;
-            } else if (!pd.getString("freeze_status").equals("0")) {
-                resJson.put("Result", "Fail");
-                resJson.put("LoginResult", 2);
-                resJson.put("Error", "账户已被删除！");
-                dealRes = Constants.RESULT_SUCCESS;
+            pd = userService.getUserBylogin(pd);
+
+            if (pd != null) {
+                PageData pageData = new PageData();
+                if (!"".equals(AndroidImei) && AndroidImei != null) {
+                    pageData.put("imei_no", AndroidImei);
+                    pageData.put("user_id", pd.getInteger("id"));
+                    pageData.put("user_code", userName);
+                    pageData.put("uuid", uuid);
+                    pageData.put("model", model);
+                    pageData.put("sys_version", sysVersion);
+                    pageData.put("platform", platForm);
+                    pageData.put("create_person", pd.getInteger("id"));
+                    int i = sbUserImeiService.insert(pageData);
+                }
+                SDUser user = new SDUser();
+                user.setId(pd.getInteger("id"));
+                user.setUser_code(pd.getString("user_code"));
+                user.setUser_password(pd.getString("user_password"));
+                user.setUser_real_name(pd.getString("user_real_name"));
+                user.setUser_real_name_en(pd.getString("user_real_name_en"));
+                user.setUser_mobile_1(pd.getString("user_mobile_1"));
+                user.setUser_status(pd.getString("user_status"));
+                user.setFreeze_status(pd.getString("freeze_status"));
+                session.setAttribute(Const.SESSION_USER, user);
+                JSONObject userInfo = getUserInfo(user);
+                resJson.put("userinfo", userInfo);
+                //shiro加入身份验证
+                Subject subject = SecurityUtils.getSubject();
+                UsernamePasswordToken token = new UsernamePasswordToken(userName, passwd);
+                try {
+                    subject.login(token);
+                } catch (AuthenticationException e) {
+                    resJson.put("Result", "Fail");
+                    resJson.put("Error", "身份验证失败！");
+                    dealRes = Constants.RESULT_SUCCESS;
+                }
+                if (!pd.getString("user_status").equals("1")) {
+                    resJson.put("Result", "Fail");
+                    resJson.put("LoginResult", 2);
+                    resJson.put("Error", "账户异常！");
+                    dealRes = Constants.RESULT_SUCCESS;
+                } else if (!pd.getString("freeze_status").equals("0")) {
+                    resJson.put("Result", "Fail");
+                    resJson.put("LoginResult", 2);
+                    resJson.put("Error", "账户已被删除！");
+                    dealRes = Constants.RESULT_SUCCESS;
+                } else {
+                    pd.put("user_id", pd.getInteger("id"));
+                    List<PageData> lpd = organService.getFarmListByUserId(pd);
+                    resJson.put("FarmList", lpd);
+                    resJson.put("Result", "Success");
+                    resJson.put("LoginResult", 1);
+                    dealRes = Constants.RESULT_SUCCESS;
+                }
             } else {
-                pd.put("user_id", pd.getInteger("id"));
-                List<PageData> lpd = organService.getFarmListByUserId(pd);
-                resJson.put("FarmList", lpd);
-                resJson.put("Result", "Success");
-                resJson.put("LoginResult", 1);
+                resJson.put("Result", "Fail");
+                resJson.put("LoginResult", 3);
+                resJson.put("Error", "用户名或密码有误！");
                 dealRes = Constants.RESULT_SUCCESS;
             }
-        } else {
-            resJson.put("Result", "Fail");
-            resJson.put("LoginResult", 3);
-            resJson.put("Error", "用户名或密码有误！");
-            dealRes = Constants.RESULT_SUCCESS;
+        } catch (Exception e){
+            e.printStackTrace();
         }
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }

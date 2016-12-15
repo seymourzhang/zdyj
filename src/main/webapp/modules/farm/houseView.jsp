@@ -34,7 +34,7 @@
 
 							<tr style="background-color: #1288C0; color: white;" >
 								<th class="hidden-480" style="width:5%;text-align: center;">编号</th>
-								<th style="width:5%;">舍号</th>
+								<th style="width:5%;">栋舍</th>
 								<th style="width:15%;">所属农场</th>
 								<th style="width:8%;">栋舍类别</th>
 								<th style="width:42%;">数据采集设备</th>
@@ -95,11 +95,7 @@
 		//新增
 		function addFarm(){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 				layer.open({
@@ -113,11 +109,7 @@
 		//编辑
 		function editFarm(id){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -131,11 +123,7 @@
 		//删除
 		function delFarm(id) {
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			//询问框
@@ -152,12 +140,12 @@
 					success : function(result) {
 						result = $.parseJSON(result);
 						if (result.success) {
-							layer.alert(result.msg, function(index) {
-							    $("#tab_fag").val(2);
-								$("#farmViewForm").submit();
-							});
+                            layer.msg("删除栋舍成功！", {});
+							$("#tab_fag").val(2);
+							$("#farmViewForm").submit();
+
 						} else {
-							layer.alert(result.msg);
+                            layer.msg("删除栋舍失败！(" + result.msg + ")", {});
 						}
 					}
 				});
@@ -169,11 +157,7 @@
 		//新增
 		function addBatch(){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -187,11 +171,7 @@
 		//新增
 		function editBatch(id){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -205,11 +185,7 @@
 		//出栏
 		function laiBatch(id){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -222,12 +198,8 @@
 		}
 		//新增栋舍
 		function addHouse(){
-			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+			if(isRead!=2){
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -243,11 +215,7 @@
 		//编辑栋舍
 		function editHouse(id,deviceID){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -261,12 +229,8 @@
 		
 		//删除栋舍
 		function delHouse(id) {
-			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+			if(isRead!=2){
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			//询问框
@@ -286,12 +250,14 @@
 					success : function(result) {
 						result = $.parseJSON(result);
 						if (result.success) {
-							layer.alert(result.msg, function(index) {
+                            layer.msg("删除栋舍成功！", {});
+
 								$("#tab_fag").val(3);
 								$("#farmViewForm").submit();
-							});
+                                location.reload();
+
 						} else {
-							layer.alert(result.msg);
+                            layer.msg("删除栋舍失败！(" + result.msg + ")", {});
 						}
 					}
 				});
@@ -301,11 +267,7 @@
         //绑定设备
         function setDevice(id,deviceID){
             if(isRead==0){
-                layer.alert('无权限，请联系管理员!', {
-                    skin: 'layui-layer-lan'
-                    ,closeBtn: 0
-                    ,shift: 4 //动画类型
-                });
+                layer.msg("无权限，请联系管理员！", {});
                 return;
             }
             layer.open({

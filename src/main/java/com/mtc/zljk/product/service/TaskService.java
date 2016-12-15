@@ -28,4 +28,11 @@ public interface TaskService {
      * @throws Exception
      */
     List<PageData> getDateTypeName() throws Exception;
+
+    /**
+     * 执行存储过程
+     * @param procName 存储过程名
+     * @throws Exception
+     */
+    void execProc(String procName) throws Exception;
 }

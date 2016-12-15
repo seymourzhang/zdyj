@@ -7,18 +7,17 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 import com.mtc.zljk.user.entity.SDUser;
 import com.mtc.zljk.util.common.Const;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -157,21 +156,15 @@ public class BaseAction {
 	}
 
 	/**
-	 * 将实体POJO转化为JSON
-	 * @param obj
-	 * @return
-	 * @throws JSONException
-	 * @throws IOException
-	 */
-	public <T> JSONObject objectToJson(T obj) throws JSONException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		// Convert object to JSON string
-		String jsonStr = "";
-		try {
-			jsonStr = mapper.writeValueAsString(obj);
-		} catch (IOException e) {
-			throw e;
+	 * 获取用户权限
+	 * */
+	protected PageData getUserRights(PageData pd, HttpSession session){
+		if(!StringUtils.isBlank(pd.getString("write_read"))){
+			session.setAttribute("write_read", pd.getString("write_read"));
+		}else{
+			pd.put("write_read", session.getAttribute("write_read"));
 		}
-		return new JSONObject(jsonStr);
+		return pd;
 	}
+
 }

@@ -30,6 +30,7 @@ $(document).ready(function() {
 	/** *****耗用*************************************************** */
 
 	$("#good_id").change(function() {
+//		setGoodId();
 		setCorporation();
 		setFactory();
 	});
@@ -62,7 +63,23 @@ $(document).ready(function() {
 	queryStockApproval();
 	queryStockApprovalChange();
 	
-})
+//	$('#sssasdPrice').typeahead({
+//        source: [
+//            { id: 1, name: 'Toronto' },
+//            { id: 2, name: 'Montreal' },
+//            { id: 3, name: 'New York' },
+//            { id: 4, name: 'Buffalo' },
+//            { id: 5, name: 'Boston' },
+//            { id: 6, name: 'Columbus' },
+//            { id: 7, name: 'Dallas' },
+//            { id: 8, name: 'Vancouver' },
+//            { id: 9, name: 'Seattle' },
+//            { id: 10, name: 'Los Angeles' }
+//        ]
+//    });
+
+	
+});
 
 function setGoodName() {
 	$.ajax({
@@ -74,15 +91,51 @@ function setGoodName() {
 		dataType : "json",
 		success : function(result) {
 			var list = result.obj;
+//			var good=[{id:'',text:'请选择'}];
+//			for (var i = 0; i < list.length; i++) {
+//				good.push({id:list[i].good_id,text:list[i].good_name});
+//			}
+//			$('#good_name').typeahead({ //将返回数据加载到组件          
+//		        source: good
+//		    });
+//			$("#good_id").select2({
+//				 data: good,
+//				 theme: "classic",
+//				 placeholder:'请选择',
+//				 allowClear:true
+//				});
+			
 			$("#good_id option").remove();
 			for (var i = 0; i < list.length; i++) {
 				$("#good_id").append("<option value=" + list[i].good_id + ">" + list[i].good_name + "</option>");
 			}
+//			setGoodId();
 			setCorporation();
 			setFactory();
 		}
 	})
 }
+
+//function setGoodId() {
+//	if($("#good_name").val() != null && $("#good_name").val() !=""){
+//	$.ajax({
+//		type : "post",
+//		url : path + "/googs/getGoods",
+//		data : {
+//			"good_name" : $("#good_name").val()
+//		},
+//		dataType : "json",
+//		success : function(result) {
+//			var list = result.obj;
+//			if(list.length !=0){
+//			document.getElementById("good_id").value = list[0].good_id;
+//			setCorporation();
+//			setFactory();
+//			}
+//		}
+//	});
+//	}
+//}
 
 function setCorporation() {
 	$.ajax({
@@ -228,6 +281,9 @@ function getInStockTableColumns(){
     },{
     	field: "exp",
         title: "保质期"
+    },{
+    	field: "price",
+        title: "单价"
     }];
 	return dataColumns;
 }
@@ -365,6 +421,12 @@ function getOutStockTableColumns(){
     },{
     	field: "good_name",
         title: "品名"
+    },{
+    	field: "spec_name",
+        title: "规格"
+    },{
+    	field: "unit_name",
+        title: "单位"
     },{
     	field: "count",
         title: "耗用数量"
@@ -701,7 +763,12 @@ function getStockTableColumns(){
     },{
     	field: "stockCount",
         title: "库存量"
-    }];
+    }
+    ,{
+    	field: "waitCount",
+        title: "待审批量"
+    }   
+    ];
 	return dataColumns;
 };
 function queryStock(){
@@ -837,6 +904,9 @@ function getApprovalStockChangeTableColumns(){
 		field: "count",
 		title: "变更内容"
 	},{
+		field: "state",
+		title: "审批状态"
+	},{
 		field: "create_person",
 		title: "提交人"
 	},{
@@ -893,12 +963,19 @@ function rejectStockChange(remark) {
 	var row = $('#approvalStockTable').bootstrapTable('getSelections');
 	if (row.length == 1) {
 		var param = row[0];
-		var id = param["id"];
+//		var id = param["id"];
 		$.ajax({
 			url: path + "/googs/rejectStockChange",
 			data: {
-				id: id,
-				remark: remark
+//				id: id,
+				good_id:param["good_id"],
+				good_type:param["good_type"],
+				spec:param["spec"],
+				unit:param["unit"],
+				corporation_id:param["corporation_id"],
+				factory_id:param["factory_id"],
+				remark: remark,
+				farm_id:objGoods.farmId
 			},
 			type: "POST",
 			dataType: "json",
@@ -934,12 +1011,19 @@ function approvalStockChange(remark){
 	var row =  $('#approvalStockTable').bootstrapTable('getSelections');
 	if(row.length == 1){
 		var param =row[0];
-		var id = param["id"];
+//		var id = param["id"];
 		$.ajax({
 			url : path + "/googs/approvalStockChange",
 			data : {
-				id: id,
-				remark: remark
+//				id: id,
+				good_id:param["good_id"],
+				good_type:param["good_type"],
+				spec:param["spec"],
+				unit:param["unit"],
+				corporation_id:param["corporation_id"],
+				factory_id:param["factory_id"],
+				remark: remark,
+				farm_id:objGoods.farmId
 			},
 			type : "POST",
 			dataType : "json",

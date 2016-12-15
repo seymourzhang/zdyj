@@ -18,17 +18,20 @@
 
     <!-- 插入数据 -->
     <insert id="insert" parameterType="pd" flushCache="false">
-        INSERT INTO s_d_device_data_cur(
-        ID,device_id,device_type,port_id,source_code,alarm_code,set_temp,outside_temp,avg_temp,inside_temp1,inside_temp2,inside_temp3,inside_temp4,inside_temp5,inside_temp6,inside_temp7,inside_temp8,inside_temp9,humidity,water_consumption,lux,negative_pressure,CO2,small_fan_1,small_fan_2,small_fan_3,larger_fan_1,larger_fan_2,larger_fan_3,fenestella,skateboard,refrigeration,heating,collect_datetime,status,yt_datetime
+        INSERT into s_d_device_data_cur(
+        ID, device_id, device_type, port_id, source_code, alarm_code, set_temp, outside_temp, avg_temp, inside_temp1, inside_temp2, inside_temp3, inside_temp4, inside_temp5, inside_temp6, inside_temp7, inside_temp8, inside_temp9, inside_temp10, inside_temp11, inside_temp12, inside_temp13, inside_temp14, inside_temp15, inside_temp16, inside_temp17, inside_temp18, inside_temp19, inside_temp20, inside_temp21, inside_temp22, inside_temp23, inside_temp24, inside_temp25, inside_temp26, inside_temp27, humidity, water_consumption, lux, negative_pressure, CO2, small_fan_1, small_fan_2, small_fan_3, larger_fan_1, larger_fan_2, larger_fan_3, fenestella, skateboard, refrigeration, heating, collect_datetime, yt_datetime, status, signal_strenth
         )
         VALUES (
-        #{id},#{device_id},#{device_type},#{port_id},#{source_code},#{alarm_code},#{set_temp},#{outside_temp},#{avg_temp},#{inside_temp1},#{inside_temp2},#{inside_temp3},#{inside_temp4},#{inside_temp5},#{inside_temp6},#{inside_temp7},#{inside_temp8},#{inside_temp9},#{humidity},#{water_consumption},#{lux},#{negative_pressure},#{CO2},#{small_fan_1},#{small_fan_2},#{small_fan_3},#{larger_fan_1},#{larger_fan_2},#{larger_fan_3},#{fenestella},#{skateboard},#{refrigeration},#{heating},current_timestamp(),#{status},#{yt_datetime}
+        #{id},#{device_id},#{device_type},#{port_id},#{source_code},#{alarm_code},#{set_temp},#{outside_temp},#{avg_temp},#{inside_temp1},#{inside_temp2},#{inside_temp3},#{inside_temp4},#{inside_temp5},#{inside_temp6},#{inside_temp7},#{inside_temp8},#{inside_temp9},#{inside_temp10},#{inside_temp11},#{inside_temp12},#{inside_temp13},#{inside_temp14},#{inside_temp15},#{inside_temp16},#{inside_temp17},#{inside_temp18},#{inside_temp19},#{inside_temp20},#{inside_temp21},#{inside_temp22},#{inside_temp23},#{inside_temp24},#{inside_temp25},#{inside_temp26},#{inside_temp27},#{humidity},#{water_consumption},#{lux},#{negative_pressure},#{CO2},#{small_fan_1},#{small_fan_2},#{small_fan_3},#{larger_fan_1},#{larger_fan_2},#{larger_fan_3},#{fenestella},#{skateboard},#{refrigeration},#{heating},#{collect_datetime},#{yt_datetime},#{status},#{signal_strenth}
         )
     </insert>
     
     <update id="updateYT" parameterType="pd" flushCache="false">
 		update  s_d_device_data_cur
 		set collect_datetime			= #{collect_datetime}
+        <if test="source_code != null and source_code != ''">
+            , source_code				= #{source_code}
+        </if>
         <if test="inside_temp1 != null and inside_temp1 != ''">
             , inside_temp1				= #{inside_temp1}
         </if>
@@ -74,7 +77,10 @@
         <if test="yt_datetime != null and yt_datetime != ''">
             , yt_datetime				= #{yt_datetime}
         </if>
-			where 
+        <if test="signal_strenth != null and signal_strenth != ''">
+            , signal_strenth				= #{signal_strenth}
+        </if>
+			where
 				device_id = #{device_id} and  device_type=#{device_type} and port_id=#{port_id}
 	</update>
 </mapper>

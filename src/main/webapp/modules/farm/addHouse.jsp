@@ -70,9 +70,10 @@ function  addHouse(){
 				dataType: "json",
 				success: function(result) {
 					if(result.msg=='1'){
-						$("#tab_fag",window.parent.document).val(3);
-						$("#farmViewForm",window.parent.document).submit();
-						parent.layer.closeAll();   
+//						$("#tab_fag",window.parent.document).val(3);
+//						$("#farmViewForm",window.parent.document).submit();
+                        parent.location.reload();
+                        parent.layer.closeAll();
 					}else{
 						alert("添加失败！");
 					}

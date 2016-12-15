@@ -116,13 +116,16 @@ public class WirelessYTServiceImpl extends DeviceServiceImpl implements Wireless
             tmp.put("main_id", WirelessYTConstants.DEVICE_TYPE + "-" + yq.getCid() + "-x");
             tmp.put("device_code", yq.getCid());
             tmp.put("device_type",WirelessYTConstants.DEVICE_TYPE);
-            tmp.put("device_factory", "引通无线");
+            tmp.put("device_factory", "无线农汇通");
             tmp.put("port_id", "x");
             tmp.put("power_status", yq.getPower_status());
             tmp.put("voltage", yq.getVoltage());
             tmp.put("run_time", yq.getRun_time());
             tmp.put("hardware_version", yq.getHardware_version());
             tmp.put("software_version", yq.getSoftware_version());
+            tmp.put("signal_strength", yq.getSignalStrength());
+            tmp.put("device_property", yq.getDevice_attr());
+
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -171,6 +174,7 @@ public class WirelessYTServiceImpl extends DeviceServiceImpl implements Wireless
             tmp.put(yq.SKATEBOARD.getCode(), yq.SKATEBOARD.getValue());
             tmp.put(yq.COLLECT_DATETIME.getCode(),Const.getSDF().parse(yq.COLLECT_DATETIME.getValue()));
             tmp.put(yq.SOURCE_CODE.getCode(), yq.SOURCE_CODE.getValue());
+            tmp.put("signal_strenth",yq.getSignalStrength());
             Date YT_DATETIME = null ;
             try {
                 YT_DATETIME = new Date(Long.parseLong(yq.YT_DATETIME.getValue())*1000);

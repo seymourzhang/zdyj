@@ -33,12 +33,12 @@
 							<thead>
 
 							<tr style="background-color: #1288C0; color: white;" >
-								<th class="hidden-480" style="text-align: center;">编号</th>
-								<th>农场名称</th>
-								<th>地区</th>
-								<th>养殖品种</th>
-								<th>养殖方式</th>
-								<th>操作</th>
+								<th class="hidden-480" style="width: 5% ;text-align: center;">编号</th>
+								<th style="width: 20% ;text-align: center;">农场名称</th>
+								<th style="width: 20% ;text-align: center;">地区</th>
+								<th style="width: 10% ;text-align: center;">养殖品种</th>
+								<th style="width: 10% ;text-align: center;">养殖方式</th>
+								<th style="width: 35% ;text-align: center;">操作</th>
 							</tr>
 
 							</thead>
@@ -49,16 +49,16 @@
 										<td class="hidden-480" style="text-align: center;">${fl.id}</td>
 										<td>${fl.farm_name_chs}</td>
 										<td>
-											<c:if test="${fl.province!='' && fl.province!=null}">
-												${fl.province}
+											<c:if test="${fl.farm_add1!='' && fl.farm_add1!=null}">
+												${fl.farm_add1}
 											</c:if>
-											<c:if test="${fl.city!='' && fl.city!=null}">
+											<c:if test="${fl.farm_add2!='' && fl.farm_add2!=null}">
 												&nbsp;&nbsp;>>&nbsp;&nbsp;
-												${fl.city}
+												${fl.farm_add2}
 											</c:if>
-											<c:if test="${fl.area!='' && fl.area!=null}">
+											<c:if test="${fl.farm_add3!='' && fl.farm_add2!=null}">
 												&nbsp;&nbsp;>>&nbsp;&nbsp;
-												${fl.area}
+												${fl.farm_add3}
 											</c:if>
 										</td>
 										<td>${fl.code_name1}</td>
@@ -105,12 +105,8 @@
 		});
 		//新增
 		function addFarm(){
-			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+			if(isRead!=2){
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 				layer.open({
@@ -124,11 +120,7 @@
 		//编辑
 		function editFarm(id){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -141,12 +133,8 @@
 		}
 		//删除
 		function delFarm(id) {
-			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+			if(isRead!=2){
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			//询问框
@@ -166,12 +154,13 @@
 					success : function(result) {
 						result = $.parseJSON(result);
 						if (result.success) {
-							layer.alert(result.msg, function(index) {
+							layer.msg(result.msg, function(index) {
 							    $("#tab_fag").val(2);
 								$("#farmViewForm").submit();
+                                location.reload();
 							});
 						} else {
-							layer.alert(result.msg);
+                            layer.msg("删除农场失败！(" + result.msg + ")", {});
 						}
 					}
 				});
@@ -183,11 +172,7 @@
 		//新增
 		function addBatch(){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -201,11 +186,7 @@
 		//新增
 		function editBatch(id){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -219,11 +200,7 @@
 		//出栏
 		function laiBatch(id){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -237,11 +214,7 @@
 		//新增栋舍
 		function addHouse(){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -255,11 +228,7 @@
 		//编辑栋舍
 		function editHouse(id,deviceID){
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			layer.open({
@@ -274,11 +243,7 @@
 		//删除栋舍
 		function delHouse(id) {
 			if(isRead==0){
-				layer.alert('无权限，请联系管理员!', {
-				    skin: 'layui-layer-lan'
-				    ,closeBtn: 0
-				    ,shift: 4 //动画类型
-				  });
+                layer.msg("无权限，请联系管理员！", {});
 				return;
 			}
 			//询问框
@@ -295,12 +260,11 @@
 					success : function(result) {
 						result = $.parseJSON(result);
 						if (result.success) {
-							layer.alert(result.msg, function(index) {
-								$("#tab_fag").val(3);
-								$("#farmViewForm").submit();
-							});
+                            layer.msg(result.msg, {});
+                            $("#tab_fag").val(3);
+                            $("#farmViewForm").submit();
 						} else {
-							layer.alert(result.msg);
+                            layer.msg(result.msg, {});
 						}
 					}
 				});
