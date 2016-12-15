@@ -39,7 +39,9 @@ public class DailyQueryMobileAction extends BaseAction {
 
         String BreedBatchId = tUserJson.optString("BreedBatchId");
         int HouseId = tUserJson.optInt("HouseId");
+        int FarmId = tUserJson.optInt("FarmId");
         int DayAge = tUserJson.optInt("DayAge");
+        String HouseName = tUserJson.optString("HouseName");
         int death_num_male = tUserJson.optInt("death_num_male");
         int death_num_female = tUserJson.optInt("death_num_female");
         int culling_num_male = tUserJson.optInt("culling_num_male");
@@ -55,8 +57,10 @@ public class DailyQueryMobileAction extends BaseAction {
         String uniformity = tUserJson.optString("uniformity");
 
         pd.put("BreedBatchId", BreedBatchId);
+        pd.put("FarmId", FarmId);
         pd.put("HouseId", HouseId);
         pd.put("DayAge", DayAge);
+        pd.put("HouseName", HouseName);
         pd.put("death_num_male", death_num_male);
         pd.put("death_num_female", death_num_female);
         pd.put("culling_num_male", culling_num_male);
@@ -70,11 +74,12 @@ public class DailyQueryMobileAction extends BaseAction {
         pd.put("water_capacity_female", water_capacity_female);
         pd.put("layer_amount", layer_amount);
         pd.put("uniformity", uniformity);
+        pd.put("user_id", userId);
 
         int flag = dailyService.dailySave(pd);
-        if (flag < 0) {
+        if (flag == -1) {
             resJson.put("Result", "Fail");
-            resJson.put("Error", "更新失败！");
+            resJson.put("Error", "死淘数超过入栏数！");
         } else {
             resJson.put("Result", "Success");
             resJson.put("Error", "");
@@ -106,9 +111,10 @@ public class DailyQueryMobileAction extends BaseAction {
 
         PageData date = dailyService.selectDate(pd);
         pd.put("SpecialDate", SpecialDate);
-        PageData data = dailyService.selectBySpecialDate(pd);
+        PageData data = new PageData();
         if (!"0".equals(BreedBatchId)) {
             if ("Y".equals(SpecialFlag)) {
+                data = dailyService.selectBySpecialDate(pd);
                 if (data == null) {
                     resJson.put("Result", "Fail");
                     resJson.put("Error", "暂无数据！");

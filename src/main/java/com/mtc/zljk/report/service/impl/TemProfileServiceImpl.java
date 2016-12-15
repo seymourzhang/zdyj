@@ -53,7 +53,7 @@ public class TemProfileServiceImpl implements TemProfileService {
 			temp.put("house_code", pd.get("HouseId"));
 			temp = batchManageService.selectBatchDataForMobile(temp);
 			if (temp != null) {
-				DataRange = sdf.format("1".equals(temp.get("status").toString()) ? cur : sdf.parse(temp.get("operation_date").toString()));
+				DataRange = sdf.format("1".equals(temp.get("status").toString()) ? cur : sdf.parse(temp.get("market_date").toString()));
 			}
 		}
 		pd.put("DataRange", DataRange);

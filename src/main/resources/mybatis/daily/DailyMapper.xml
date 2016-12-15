@@ -19,8 +19,68 @@
             , female_cur_water    = ${water_capacity_female}
             , laying_cur_amount   = ${layer_amount}
             , female_cur_evenness = ${uniformity}
-
         where age = ${DayAge} and house_code = ${HouseId} and batch_id = #{BreedBatchId}
+    </update>
+
+    <insert id="insertDaily" parameterType="pd" flushCache="false">
+        INSERT INTO s_b_batch_change (service_id,
+                              batch_id,
+                              house_code,
+                              house_name,
+                              farm_id,
+                              operation_date,
+                              grow_age,
+                              male_weight,
+                              male_count,
+                              female_weight,
+                              female_count,
+                              weed_out_total_count,
+                              weed_out_total_weight,
+                              weed_out_avg_price,
+                              breed_days,
+                              market_date,
+                              variety_id,
+                              variety,
+                              corporation_id,
+                              corporation,
+                              bak,
+                              operation_type,
+                              create_person,
+                              create_date,
+                              create_time,
+                              modify_person,
+                              modify_date,
+                              modify_time)
+        VALUE (${service_id},
+                #{BreedBatchId},
+                ${HouseId},
+                #{HouseName},
+                ${FarmId},
+                #{create_date},
+                ${DayAge},
+                null,
+                ${male_count},
+                null,
+                ${female_count},
+                null, null, null, null, null, null, null, null, null,
+                #{bak},
+                #{operation_type},
+                ${user_id},
+                #{create_date},
+                #{create_time},
+                ${user_id},
+                #{modify_date},
+                #{modify_time}
+                );
+    </insert>
+
+    <update id="updateCurrCount" parameterType="pd" flushCache="false">
+        update s_b_batch_curr set male_count = male_count + ${male_count},
+                                    female_count = female_count + ${female_count},
+                                    modify_date = curdate(),
+                                    modify_date = curdate(),
+                                    modify_person = ${user_id}
+        where house_code = ${HouseId} and batch_id = #{BreedBatchId}
     </update>
 
     <select id="selectDailyByHouse" parameterType="pd" useCache="false">
@@ -62,6 +122,8 @@
     <select id="selectBySpecialDate" parameterType="pd" resultType="pd">
         SELECT
           sbbc.operation_date AS lairage,
+          sb.male_count,
+          sb.female_count,
           CASE sb.status
               WHEN 0
                 THEN sb.operation_date
@@ -80,7 +142,15 @@
              FROM s_b_batch_curr bc
              WHERE bc.house_code = ${HouseId} AND bc.batch_id = #{BreedBatchId}) sb
           ON sb.batch_id = sbbd.batch_id
-        WHERE sbbd.house_code = ${HouseId} AND sbbd.batch_id = #{BreedBatchId} AND
-             sbbd.growth_date = #{SpecialDate};
+        WHERE sbbd.house_code = ${HouseId} AND sbbd.batch_id = #{BreedBatchId}
+            <if test="SpecialDate != null and SpecialDate != ''">
+                AND sbbd.growth_date = #{SpecialDate}
+            </if>
+            <if test="SpecialDate == null and SpecialDate == ''">
+                AND sbbd.growth_date = curdate()
+            </if>
+            <if test="DayAge != null and DayAge != ''">
+                AND sbbd.age = ${DayAge}
+            </if>
     </select>
 </mapper>

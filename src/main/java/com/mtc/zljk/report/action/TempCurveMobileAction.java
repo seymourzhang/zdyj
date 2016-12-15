@@ -60,22 +60,22 @@ public class TempCurveMobileAction extends BaseAction {
             if ("01".equals(DataType)) {
                 lcp = temProfileService.selectTemForMobileDay(pd);
             } else if ("02".equals(DataType)) {
-                if (!"N".equals(ReqFlag) && DataRange.length() != 10) {
+                if (!"N".equals(ReqFlag) && DataRange.length() != 10 && !"0".equals(BreedBatchId)) {
                     ErrorMsg = "日期参数错误，请联系管理员！";
-                } else {
+                } else if (!"0".equals(BreedBatchId)){
                     lcp = temProfileService.selectTemForMobileHour(pd);
                 }
             } else if ("03".equals(DataType)) {
-                if (DataRange.length() != 16 && "Y".equals(ReqFlag)) {
+                if (DataRange.length() != 16 && "Y".equals(ReqFlag) && !"0".equals(BreedBatchId)) {
                     ErrorMsg = "日期参数错误，请联系管理员！";
-                } else if (DataRange.length() != 10 && "N".equals(ReqFlag)) {
+                } else if (DataRange.length() != 10 && "N".equals(ReqFlag) && !"0".equals(BreedBatchId)) {
                     ErrorMsg = "日期参数错误，请联系管理员！";
-                } else {
+                } else if (!"0".equals(BreedBatchId)){
                     lcp = temProfileService.selectTemForMobileMinute(pd);
                 }
             }
-            if (lcp.size() == 0) {
-                resJson.put("Error", "".equals(ErrorMsg) ? "暂无数据！" : ErrorMsg);
+            if (lcp.size() == 0 || "0".equals(BreedBatchId)) {
+                resJson.put("Error", "".equals(ErrorMsg) ? "暂无批次信息！" : ErrorMsg);
                 resJson.put("Result", "Fail");
                 dealRes = Constants.RESULT_SUCCESS;
             } else {
@@ -276,22 +276,22 @@ public class TempCurveMobileAction extends BaseAction {
             if ("01".equals(DataType)) {
                 lcp = temProfileService.selectLCForMobileDay(pd);
             } else if ("02".equals(DataType)) {
-                if (!"N".equals(ReqFlag) && DataRange.length() != 10) {
+                if (!"N".equals(ReqFlag) && DataRange.length() != 10 && !"0".equals(BreedBatchId)) {
                     ErrorMsg = "日期参数错误，请联系管理员！";
-                } else {
+                } else if (!"0".equals(BreedBatchId)){
                     lcp = temProfileService.selectLCForMobileHour(pd);
                 }
             } else if ("03".equals(DataType)) {
-                if (DataRange.length() != 16 && "Y".equals(ReqFlag)) {
+                if (DataRange.length() != 16 && "Y".equals(ReqFlag) && !"0".equals(BreedBatchId)) {
                     ErrorMsg = "日期参数错误，请联系管理员！";
-                } else if (DataRange.length() != 10 && "N".equals(ReqFlag)) {
+                } else if (DataRange.length() != 10 && "N".equals(ReqFlag) && !"0".equals(BreedBatchId)) {
                     ErrorMsg = "日期参数错误，请联系管理员！";
-                } else {
+                } else if (!"0".equals(BreedBatchId)){
                     lcp = temProfileService.selectLCForMobileMinute(pd);
                 }
             }
-            if (lcp.size() == 0) {
-                resJson.put("Error", "".equals(ErrorMsg) ? "暂无数据！" : ErrorMsg);
+            if (lcp.size() == 0 || "0".equals(BreedBatchId)) {
+                resJson.put("Error", "".equals(ErrorMsg) ? "暂无批次信息！" : ErrorMsg);
                 resJson.put("Result", "Fail");
                 dealRes = Constants.RESULT_SUCCESS;
             } else {

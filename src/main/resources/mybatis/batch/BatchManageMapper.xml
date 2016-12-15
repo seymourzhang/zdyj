@@ -75,11 +75,19 @@
               , CASE WHEN bc.status = 0
                 THEN (SELECT operation_date
                   FROM s_b_batch_change
-                  WHERE farm_id = ${farm_id} AND house_code = ${house_code}
+                  WHERE farm_id = bc.farm_id AND house_code = bc.house_code
+                        AND batch_id = bc.batch_id
+                        AND operation_type = '2'
+                  ORDER BY operation_date DESC LIMIT 1)
+                  ELSE bc.operation_date END                               AS operation_date
+              , CASE WHEN bc.status = 0
+                THEN (SELECT operation_date
+                  FROM s_b_batch_change
+                  WHERE farm_id = bc.farm_id AND house_code = bc.house_code
                         AND batch_id = bc.batch_id
                         AND operation_type = '1'
                   ORDER BY operation_date DESC LIMIT 1)
-                  ELSE bc.operation_date END                               AS operation_date
+                  ELSE bc.operation_date END                               AS market_date
               , dh.device_code
               , dc.code_name                                                AS house_type
         FROM s_b_batch_curr bc

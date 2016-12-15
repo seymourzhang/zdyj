@@ -60,37 +60,43 @@ public class FarmTaskServiceImpl implements FarmTaskService {
         pd.put("house_code", HouseId);
         PageData batch = batchManageService.selectBatchDataForMobile(pd);
 
-        Date batchStartDate = sdf.parse(batch.get("operation_date").toString());
-        pd.put("remindDate", sdf.format(remindDate));
-        List<PageData> temp = new ArrayList<>();
         PageData counts = new PageData();
-        if (rdate.equals(sdf.format(curDate))){
-            temp = (List<PageData>) dao.findForList("SBFarmTaskMapper.selectCurrForMobile", pd);
-        } else {
-            temp = (List<PageData>) dao.findForList("SBFarmTaskMapper.selectHistForMobile", pd);
-        }
-        JSONArray taskInfos = new JSONArray();
-        if (temp.size() != 0) {
-            for (PageData data : temp) {
-                JSONObject taskInfo = new JSONObject();
-                taskInfo.put("RemindID", data.get("id"));
-                taskInfo.put("TskId", data.get("task_id"));
-                taskInfo.put("TskType", data.get("task_type"));
-                taskInfo.put("TskName", data.get("task_name"));
-                taskInfo.put("dealStatus", data.get("deal_status"));
-                taskInfos.put(taskInfo);
-            }
-            resJson.put("Error", "");
-            resJson.put("Result", "Success");
-            resJson.put("TskInfo", taskInfos);
-        }else{
-            resJson.put("TskInfo", taskInfos);
-            resJson.put("Error", "暂无数据！");
+        if (batch == null){
+            resJson.put("Error", "暂无批次信息！");
             resJson.put("Result", "Fail");
-        }
+        }else {
+            Date batchStartDate = sdf.parse(batch.get("operation_date").toString());
+            pd.put("remindDate", sdf.format(remindDate));
+            List<PageData> temp = new ArrayList<>();
+            counts = new PageData();
+            if (rdate.equals(sdf.format(curDate))) {
+                temp = (List<PageData>) dao.findForList("SBFarmTaskMapper.selectCurrForMobile", pd);
+            } else {
+                temp = (List<PageData>) dao.findForList("SBFarmTaskMapper.selectHistForMobile", pd);
+            }
+            JSONArray taskInfos = new JSONArray();
+            if (temp.size() != 0) {
+                for (PageData data : temp) {
+                    JSONObject taskInfo = new JSONObject();
+                    taskInfo.put("RemindID", data.get("id"));
+                    taskInfo.put("TskId", data.get("task_id"));
+                    taskInfo.put("TskType", data.get("task_type"));
+                    taskInfo.put("TskName", data.get("task_name"));
+                    taskInfo.put("dealStatus", data.get("deal_status"));
+                    taskInfos.put(taskInfo);
+                }
+                resJson.put("Error", "");
+                resJson.put("Result", "Success");
+                resJson.put("TskInfo", taskInfos);
+            } else {
+                resJson.put("TskInfo", taskInfos);
+                resJson.put("Error", "暂无数据！");
+                resJson.put("Result", "Fail");
+            }
 
-        pd.put("operationDate", sdf.format(batchStartDate));
-        counts = (PageData) dao.findForObject("SBFarmTaskMapper.selectCountForMobile", pd);
+            pd.put("operationDate", sdf.format(batchStartDate));
+            counts = (PageData) dao.findForObject("SBFarmTaskMapper.selectCountForMobile", pd);
+        }
 
         resJson.put("HouseId", HouseId);
         resJson.put("UnCompleteTaskNum", counts == null ? 0 : counts.get("unCompletes"));
