@@ -176,6 +176,19 @@ public abstract class DeviceServiceImpl implements DeviceService {
     }
 
     /**
+     * 插入引通原始数据表
+     * @param pd 数据对象
+     */
+    public boolean insertYincomm(PageData pd) {
+        try{
+            dao.save("SBYincommMapper.insert",pd);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    /**
      * 插入数据
      * @param pd 数据指标对象
      */

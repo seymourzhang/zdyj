@@ -218,4 +218,14 @@ public class BatchManageAction extends BaseAction {
         j.setSuccess(true);
         super.writeJson(j, response);
     }
+    
+    @RequestMapping(value="/getOverBatchAge")
+    public void getOverBatchAge(HttpServletResponse response) throws Exception{
+    	Json j=new Json();
+    	PageData pd = this.getPageData();
+        List<PageData> outList = batchManageService.getOverBatchAge(pd);
+        j.setObj(outList);
+        j.setSuccess(true);
+        super.writeJson(j, response);
+    }
 }

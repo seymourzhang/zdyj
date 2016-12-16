@@ -221,13 +221,13 @@ public class TempCurveMobileAction extends BaseAction {
                 tJSONObject.put("TempAreaName", "目标");
                 tJSONObject.put("TempCurve", insideSetTempArray);
                 TempDatas.put(tJSONObject);
-                if ("03".equals(DataType)) {
-                    tJSONObject = new JSONObject();
-                    tJSONObject.put("TempAreaCode", "insideHumidity");
-                    tJSONObject.put("TempAreaName", "湿度");
-                    tJSONObject.put("TempCurve", insideHumidityArray);
-                    TempDatas.put(tJSONObject);
-                }
+//                if ("03".equals(DataType)) {
+                tJSONObject = new JSONObject();
+                tJSONObject.put("TempAreaCode", "insideHumidity");
+                tJSONObject.put("TempAreaName", "湿度");
+                tJSONObject.put("TempCurve", insideHumidityArray);
+                TempDatas.put(tJSONObject);
+//                }
                 resJson.put("TempDatas", TempDatas);
                 resJson.put("HouseId", HouseId);
                 resJson.put("DataDate", data_date);

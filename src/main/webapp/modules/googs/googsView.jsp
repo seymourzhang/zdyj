@@ -95,12 +95,14 @@
 										</div>
 										<div class="span3" align="left">
 											<span_customer>品名</span_customer>
-											<select id="good_id" tabindex="1"  name="good_id">
+											<select id="good_id"  name="good_id" style="display: none" >
+												<%--style="display: none"--%>
 <!-- 											<option value="1">cow</option>   -->
 <!--                                             <option value="2">bull</option>   -->
 <!--                                             <option value="3">ox</option>   class="form-control selectpicker" data-live-search="true"  class="js-example-basic-single"-->
 											</select>
-<!-- 											<input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
+											<input type="text" id="goods_id_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" />
+												<!-- 											<input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
 										</div>
 										<div class="span3" align="left">
 											<span_customer>规格</span_customer>
@@ -426,9 +428,12 @@
 <!--     <script type="text/javascript" src="<%=path%>/framework/js/select2.min.js"></script> -->
 <!--     <script type="text/javascript" src="<%=path%>/framework/css/select2.css"></script> -->
 <!--     <script type="text/javascript" src="<%=path%>/framework/css/select2.min.css"></script> -->
+
     <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
     <script type="text/javascript" src="<%=path%>/modules/googs/js/googsView.js"></script> 
 	<!-- 确认窗口 -->
-	
+
+
+
 </body>
 </html>

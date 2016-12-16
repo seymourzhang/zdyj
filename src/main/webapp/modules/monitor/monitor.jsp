@@ -53,7 +53,7 @@ $("#se1").attr("class","selected");
 $("#z101").attr("class","active");
 $("#op1").attr("class","arrow open"); 
 $("#monitorExpand").removeClass("collapse").addClass("expand");
-$("#monitorExpandForm").slideUp(200);
+// $("#monitorExpandForm").slideUp(200);
 $("#monitor_date_table").removeClass("table-hover");
 
 $("#enableMonitorSet").change(function() {
@@ -87,73 +87,28 @@ $("#enableMonitorSet").change(function() {
 						<input type="hidden" name="pid" value="${pd.pid}"> --%>
 				<div class="span12">
 					<!-- BEGIN PORTLET-->
-					<div class="portlet box blue1">
-								<div class="portlet-title">
-									<div class="caption">
-										<i class="icon-reorder"></i>检索条件
-									</div>
-									<div class="tools">
-									<a id="monitorExpand" href="javascript:;" class="collapse"></a>
-									</div>
-									<!-- <div class="actions">
-
-										<a href="javascript:;" class="btn green"><i class="icon-search"></i> 查询</a>
-
-									</div> -->
-
-								</div>
+<!-- 					<div class="portlet box blue1"> -->
+<!-- 								<div class="portlet-title"> -->
+<!-- 									<div class="caption"> -->
+<!-- 										<i class="icon-reorder"></i>检索条件 -->
+<!-- 									</div> -->
+<!-- 									<div class="tools"> -->
+<!-- 									<a id="monitorExpand" href="javascript:;" class="collapse"></a> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
 
 								<div class="portlet-body form1" id="monitorExpandForm">
 									<!-- BEGIN FORM-->
 									<div class="form-horizontal" style="height: 40px;">
 										<div style="height: 20px;">
 										<%@ include file="../../framework/org.jsp"%>
-<!-- 											<div class="span4"> -->
-<!-- 												<div class="control-group"> -->
-<!-- 													<label class="control-label" style="width: 60px;">农场</label> -->
-<!-- 													<div class="controls" style="margin-left: 65px;"> -->
-<!-- 														<select id="farmId" class="m-wrap span12" tabindex="1" name="farmId" onchange="reflushMonitor2();">	 -->
-<!-- 		                                                 <option value="">全部</option> -->
-<!-- 		                                                 <c:if test="${!empty farmList}"> -->
-<!-- 		                                                 <c:forEach var="farm" items="${farmList}"> -->
-<!-- 		                                                 <option value="${farm.id }">${farm.farm_name_chs }</option> -->
-<!-- 		                                                 </c:forEach> -->
-<!-- 		                                                 </c:if> -->
-<!-- 														</select> -->
-<!-- 													</div> -->
-<!-- 												</div> -->
-<!-- 											</div> -->
 
 											<!--/span-->
 
-<!-- 											<div class="span4"> -->
-
-<!-- 												<div class="control-group"> -->
-
-<!-- 													<label class="control-label" style="width: 60px;">栋舍</label> -->
-
-<!-- 													<div class="controls" style="margin-left: 65px;"> -->
-
-<!-- 														<select id="houseId" class="m-wrap span12" tabindex="1"  onchange="reflushMonitor();"> -->
-<!-- 														<option value="">全部</option> -->
-<!-- 		                                                 <c:if test="${!empty houseList}"> -->
-<!-- 		                                                 <c:forEach var="house" items="${houseList}"> -->
-<!-- 		                                                 <option value="${house.id }">${house.house_name}</option> -->
-<!-- 		                                                 </c:forEach> -->
-<!-- 		                                                 </c:if> -->
-<!-- 														</select> -->
-<!-- 													</div> -->
-<!-- 												</div> -->
-<!-- 											</div> -->
-											<!--/span-->
-
-											<div class="span4">
-
-												<div class="control-group">
-
-													<td><input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 100px;"/><a href="javascript:;" style="text-align: center" onclick="monitorSetting();">启用监控设置</a></td>
-
-												</div>
+											<div class="span4" style="margin-top: 5px;margin-left: 20px;">
+	
+										<input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 100px;"/><a href="javascript:;" style="text-align: center;margin-left: -40px;margin-top: 140px;" onclick="monitorSetting();">启用监控设置</a>
+									
 
 											</div>
 											<!--/span-->
@@ -162,45 +117,51 @@ $("#enableMonitorSet").change(function() {
 									<!-- END FORM-->
 								</div>
 
-							</div>
+<!-- 							</div> -->
 
 					<!-- END PORTLET-->
 
-					<div class="portlet box blue1">
+<!-- 					<div class="portlet box blue1"> -->
 
-						<div class="portlet-title">
+<!-- 						<div class="portlet-title"> -->
 
-							<div class="caption">
-								<i class="icon-globe"></i>监控列表
-							</div>
+<!-- 							<div class="caption"> -->
+<!-- 								<i class="icon-globe"></i>监控列表 -->
+<!-- 							</div> -->
 
-							<div class="tools">
-								<a href="javascript:reflushMonitor();" class="reload"></a> <a href="javascript:;" class="collapse"></a>
-							</div>
+<!-- 							<div class="tools"> -->
+<!-- 								<a href="javascript:reflushMonitor();" class="reload"></a> <a href="javascript:;" class="collapse"></a> -->
+<!-- 							</div> -->
 
-						</div>
+<!-- 						</div> -->
+
+                        <div class="row-fluid">
+                                <div class="span12">
+                                    <hr style="height:10px;border:none;border-top:1px solid #555555;" />
+                                </div>
+                            </div>
 
 						<div class="portlet-body" style="overflow-x: auto; overflow-y: auto;" >
 							<table class="table table-striped table-bordered table-hover"  id="monitor_date_table">
 								<thead style="color: #fff; background-color: #2586C4;">
 									<tr>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/farm.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Shape.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 203.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/farm.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Shape.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 203.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
 										
-										<th colspan="8" style="text-align: center;">温度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" /></th>
+										<th colspan="9" style="text-align: center;">温度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" style="height: 25px;" /></th>
 										
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 17.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 157.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/co2.png" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 17.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/light.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/co2.png" style="width: 25px; height: 25px;" /></th>
 
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Page 1.png" /></th>
-										<th colspan="2" style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 18.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 89.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 10.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 1.png" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 166.png" /></th>
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Page 1.png" /></th> -->
+<!-- 										<th colspan="2" style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 18.png" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 89.png" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 10.png" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 1.png" /></th> -->
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 166.png" style="width: 25px; height: 25px;" /></th>
 									</tr>
 									<tr>
 										<th style="text-align: center; border-right:12px solid #2586C4;">农场</th>
@@ -213,23 +174,23 @@ $("#enableMonitorSet").change(function() {
 										<th style="text-align: center;">室外</th>
 										<th style="text-align: center;">平均</th>
 										<th style="text-align: center;">温差</th>
-										<th style="text-align: center;">1</th>
-										<th style="text-align: center;">2</th>
-										<th style="text-align: center;">3</th>
-										<th style="text-align: center;">4</th>
-										
+										<th style="text-align: center;">前区1</th>
+										<th style="text-align: center;">前区2</th>
+										<th style="text-align: center;">中区1</th>
+										<th style="text-align: center;">后区1</th>
+										<th style="text-align: center;">后区2</th>
 										<th style="text-align: center;">湿度</th>
-										<th style="text-align: center;">耗水</th>
+										<th style="text-align: center;">光照</th>
 										<th style="text-align: center;"><span>C0</span><span style="font-size: 8px;">2</span></th>
 										
-										<th style="text-align: center;">负压</th>
+<!-- 										<th style="text-align: center;">负压</th> -->
 										
-										<th style="text-align: center;">大</th>
-										<th style="text-align: center;">小</th>
+<!-- 										<th style="text-align: center;">大</th> -->
+<!-- 										<th style="text-align: center;">小</th> -->
 										
-										<th style="text-align: center;">小窗</th>
-										<th style="text-align: center;">加热</th>
-										<th style="text-align: center;">制冷</th>
+<!-- 										<th style="text-align: center;">小窗</th> -->
+<!-- 										<th style="text-align: center;">加热</th> -->
+<!-- 										<th style="text-align: center;">制冷</th> -->
 										<th style="text-align: center;">时间</th>
 									</tr>
 
@@ -242,7 +203,7 @@ $("#enableMonitorSet").change(function() {
 
 						</div>
 
-					</div>
+<!-- 					</div> -->
 				</div>
 			</form>
 		</div>

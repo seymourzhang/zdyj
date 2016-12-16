@@ -409,6 +409,7 @@
                 ,sbbc.bak
                 ,sbbc.create_person
                 ,sbbc.create_time
+                ,(sbbc.male_count + sbbc.female_count) as over_batch_count
         FROM (SELECT id
                     , name_cn
                     , parent_id farm_id
@@ -499,6 +500,18 @@
                 AND sbbc.status = 1
                 AND sbbc.is_enable = 1
     </update>
+    
+    <!-- 查询出栏日龄 -->
+    <select id="selectOverBatchAge" parameterType="pd" resultType="pd" useCache="false">
+        SELECT
+            d.age
+        FROM s_b_breed_detail d
+             LEFT JOIN
+             s_b_batch_curr c
+             on c.batch_id = d.batch_id
+        WHERE c.operation_date = #{operation_date}
+              AND c.house_code = #{house_code}
+    </select>
 
 
 

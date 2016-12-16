@@ -186,5 +186,22 @@ public interface AlarmService {
 	public List<PageData> findUserAll()throws Exception;
 	
 	public List<PageData> selectSBCode(PageData pd)throws Exception;
+	
+	/**
+	 * 根据栋舍查询对应探头
+	 * @param pd
+	 * @return List<>
+	 * @throws Exception
+	 */
+	public List<PageData> selectInsideTemp(PageData pd)throws Exception;
+	
+	public List<PageData> selectDevice(PageData pd)throws Exception;
+	
+	/**
+	 * 更新栋舍探头设置
+	 * @param pd
+	 * @throws Exception
+	 */
+	void updateDeviceSub(PageData pd) throws Exception;
 
 }

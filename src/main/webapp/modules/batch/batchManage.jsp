@@ -190,7 +190,7 @@
                                     <span_customer>出栏日</span_customer>
                                     <div class="controls">
                                         <div class="input-append date overBatchDatePicker" data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
-                                            <input class="m-wrap span11 m-ctrl-medium overBatchDatePicker" readonly type="text" name="queryTime" id="overBatchQueryTime" />
+                                            <input class="m-wrap span11 m-ctrl-medium overBatchDatePicker" readonly type="text" name="queryTime" id="overBatchQueryTime" onchange="getOverBatchAge();"/>
                                             <span class="add-on">
                                                     <i class="icon-calendar"></i>
                                                 </span>
@@ -199,11 +199,30 @@
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>母鸡数</span_customer>
-                                    <input id="overBatchFemaleNum" type="text" value="0">
+                                    <input id="overBatchFemaleNum" type="text">
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>公鸡数</span_customer>
-                                    <input id="overBatchMaleNum" type="text" value="0">
+                                    <input id="overBatchMaleNum" type="text">
+                                </div>
+                                <div class="span3" align="left">
+                                    <span_customer>出栏日龄</span_customer>
+                                    <input id="overBatchAge" type="text" maxlength="40" disabled="disabled">
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span3" align="left">
+                                    <span_customer>出栏栋</span_customer>
+                                    <select id="overBatchHouseSelect" onchange="getCount();">
+                                    </select>
+                                </div>
+                                <div class="span3" align="left">
+                                    <span_customer>母鸡均重</span_customer>
+                                    <input id="overBatchFemaleAvgWeight" type="text" value="0" style="width:180px;">&nbsp;g
+                                </div>
+                                <div class="span3" align="left">
+                                    <span_customer>公鸡均重</span_customer>
+                                    <input id="overBatchMaleAvgWeight" type="text" value="0" style="width:180px;">&nbsp;g
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>备注</span_customer>
@@ -211,26 +230,8 @@
                                 </div>
                             </div>
                             <div class="row-fluid">
-                                <div class="span3" align="left">
-                                    <span_customer>出栏栋</span_customer>
-                                    <select id="overBatchHouseSelect">
-                                    </select>
-                                </div>
-                                <div class="span3" align="left">
-                                    <span_customer>母鸡均重</span_customer>
-                                    <input id="overBatchFemaleAvgWeight" type="text" value="0">
-                                </div>
-                                <div class="span3" align="left">
-                                    <span_customer>公鸡均重</span_customer>
-                                    <input id="overBatchMaleAvgWeight" type="text" value="0">
-                                </div>
-                                <div class="span3" align="left">
-
-                                </div>
-                            </div>
-                            <div class="row-fluid">
                                 <div class="span9" align="left">
-                                    --------------------------------------- <B>淘汰鸡</B> ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                    --------------------------------------- <B>淘汰鸡销售</B> ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                                 </div>
                                 <div class="span3" align="left">
 
@@ -239,17 +240,21 @@
                             <div class="row-fluid">
                                 <div class="span3" align="left">
                                     <span_customer>总重量</span_customer>
-                                    <input id="overBatchSumWeight" type="text" value="0">
+                                    <input id="overBatchSumWeight" type="text" value="0" style="width:160px;" onblur="getOverBatchAvgPriceSum();">&nbsp;kg
                                 </div>
                                 <div class="span3" align="left">
                                     <span_customer>只数</span_customer>
                                     <input id="overBatchSumNum" type="text" value="0">
                                 </div>
-                                <div class="span3" align="left">
-                                    <span_customer>均价价格</span_customer>
-                                    <input id="overBatchAvgPrice" type="text" value="0">
+                                <div class="span2" align="left">
+                                    <span_customer>单价</span_customer>
+                                    <input id="overBatchAvgPrice" type="text" value="0" style="width:60px;" onblur="getOverBatchAvgPriceSum();">&nbsp;元/kg
                                 </div>
-                                <div class="span3" align="left">
+                                <div class="span2" align="left">
+                                    <span_customer>总金额</span_customer>
+                                    <input id="overBatchAvgPriceSum" type="text" value="0" style="width:60px;" disabled="disabled">&nbsp;元
+                                </div>
+                                <div class="span2" align="left">
                                     <a id="overBatchBtnSave" href="javascript:;" class="btn green" onclick="saveData();"></i>确认</a>
                                 </div>
                             </div>

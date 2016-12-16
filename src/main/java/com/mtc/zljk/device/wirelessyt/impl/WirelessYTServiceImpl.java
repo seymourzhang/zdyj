@@ -77,6 +77,7 @@ public class WirelessYTServiceImpl extends DeviceServiceImpl implements Wireless
                     socket = socketServer.accept();
                     WirelessYTTask tWirelessYTTask = new WirelessYTTask();
                     tWirelessYTTask.setSocket(socket);
+                    tWirelessYTTask.settWirelessYTServiceImpl(this);
                     Thread tThread = new Thread(tWirelessYTTask);
                     tThread.start();
                     Thread.sleep(1000);
@@ -174,7 +175,7 @@ public class WirelessYTServiceImpl extends DeviceServiceImpl implements Wireless
             tmp.put(yq.SKATEBOARD.getCode(), yq.SKATEBOARD.getValue());
             tmp.put(yq.COLLECT_DATETIME.getCode(),Const.getSDF().parse(yq.COLLECT_DATETIME.getValue()));
             tmp.put(yq.SOURCE_CODE.getCode(), yq.SOURCE_CODE.getValue());
-            tmp.put("signal_strenth",yq.getSignalStrength());
+            tmp.put("signal_strength",yq.getSignalStrength());
             Date YT_DATETIME = null ;
             try {
                 YT_DATETIME = new Date(Long.parseLong(yq.YT_DATETIME.getValue())*1000);

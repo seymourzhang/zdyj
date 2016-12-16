@@ -31,28 +31,35 @@ public class CarbonReportAction extends BaseAction {
 	
 	@RequestMapping("/showCarbonReport")
 	public ModelAndView showCarbonReport() throws Exception {
-		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String id = pd.getString("id");
-		String pid = pd.getString("pid");
-		
-		/**当天日期**/
-		String beginTime=DateUtil.getDay();
-		String endTime=DateUtil.getDay();
-		pd.put("beginTime", beginTime);
-		pd.put("endTime", endTime);
-		
-		pd.put("id", id);
-		pd.put("pid", pid);
-		List<PageData> cr=carbonReportService.getCarbonReport(pd);
-		mv.setViewName("/modules/report/carbonReport");
-		mv.addObject("CarbonReport",cr);
-		mv.addObject("farmList",getFarmList());
-		mv.addObject("houseList",getHouseList(pd));
-		mv.addObject("batchList",getBatchList(pd));
+		pd.put("user_id", getUserId());
+		ModelAndView mv = this.getModelAndView();
+		mv.setViewName("modules/report/carbonReport");
 		mv.addObject("pd",pd);
 		return mv;
+//		ModelAndView mv = this.getModelAndView();
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		String id = pd.getString("id");
+//		String pid = pd.getString("pid");
+//
+//		/**当天日期**/
+//		String beginTime=DateUtil.getDay();
+//		String endTime=DateUtil.getDay();
+//		pd.put("beginTime", beginTime);
+//		pd.put("endTime", endTime);
+//
+//		pd.put("id", id);
+//		pd.put("pid", pid);
+//		List<PageData> cr=carbonReportService.getCarbonReport(pd);
+//		mv.setViewName("/modules/report/carbonReport");
+//		mv.addObject("CarbonReport",cr);
+//		mv.addObject("farmList",getFarmList());
+//		mv.addObject("houseList",getHouseList(pd));
+//		mv.addObject("batchList",getBatchList(pd));
+//		mv.addObject("pd",pd);
+//		return mv;
 	}
 	
 	/**
@@ -137,7 +144,6 @@ public class CarbonReportAction extends BaseAction {
 	
 	/**
 	 * 获取农场信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	List<PageData> getFarmList() throws Exception {

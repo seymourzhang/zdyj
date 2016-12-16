@@ -56,8 +56,6 @@ public class ByteNumUtil {
 	 * 
 	 * @param src
 	 *            byte数组
-	 * @param offset
-	 *            从数组的第offset位开始
 	 * @return int数值
 	 */
 	public static int bytesToInt2(byte[] src) {
@@ -70,7 +68,7 @@ public class ByteNumUtil {
 	/**
 	 * byte数组转换成long，本方法适用于(高位在前，低位在后)的顺序。
 	 * 
-	 * @param src
+	 * @param b
 	 *            byte数组
 	 * @return long 数值
 	 */
@@ -96,11 +94,32 @@ public class ByteNumUtil {
         s7 <<= 8 * 7; 
         s = s0 | s1 | s2 | s3 | s4 | s5 | s6 | s7; 
         return s; 
-    } 
-    public static void main(String[] args) {
-    	byte[] bb = {(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)0,(byte)2,(byte)1};
-    	byte[] bb2 = {(byte)0,(byte)0,(byte)2,(byte)1};
-    	System.out.println(bytesToInt(bb2));
-		System.out.println(bytes2Long(bb));
+    }
+
+	/**
+	 * byte数组转换short，本方法适用于(高位在前，低位在后)的顺序。
+	 */
+	public static short bytesToShort(byte[] src) {
+		short value;
+		value = (short) (((src[0] & 0xFF) << 8)
+				| src[1] & 0xFF);
+		return value;
+	}
+
+	public static byte[] short2Byte(short a){
+		byte[] b = new byte[2];
+		b[0] = (byte) (a >> 8);
+		b[1] = (byte) (a);
+
+		return b;
+	}
+
+	public static void main(String[] args) {
+		byte[] temp = StringHexUtil.hexString2Bytes("FFE2");
+		byte[] temp22 = {(byte)0,(byte)0,temp[0],temp[1]} ;
+
+		System.out.println("result11:" + ByteNumUtil.bytesToShort(StringHexUtil.hexString2Bytes("FFE2")));
+
+		System.out.println("result22:" + ByteNumUtil.bytesToInt(temp22));
 	}
 }

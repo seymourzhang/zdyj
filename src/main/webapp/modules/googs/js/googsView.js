@@ -77,9 +77,83 @@ $(document).ready(function() {
 //            { id: 10, name: 'Los Angeles' }
 //        ]
 //    });
+    initGoodsSelect();
 
-	
 });
+
+function initGoodsSelect(){
+    $.fn.typeahead.Constructor.prototype.blur = function() {
+        var that = this;
+        setTimeout(function () { that.hide() }, 250);
+    };
+
+    $('#goods_id_select').typeahead({
+        source: function(query, process) {
+        	var goods = getGoodsNameList('good_id', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getGoodsNameList('good_id', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getGoodsNameList('good_id', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getGoodsNameList('good_id', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setGoodsInfo('good_id', good.id);
+            return good.text;
+        }
+        // ,minLength:1
+        // ,displayKey: 'text'
+    });
+}
+
+function setGoodsInfo(selectName, goodId){
+    var select = document.getElementById(selectName);
+    var options = select.options;
+    for(var key in options){
+        if(goodId == options[key].value){
+        	options[key].selected = true;
+        }
+	}
+}
+
+function getGoodsNameList(selectName, value){
+	var goodsNameList = [];
+    var select = document.getElementById(selectName);
+    var options = select.options;
+	var oValue = "";
+    var oText = "";
+	for(var key in options){
+        oValue = options[key].value;
+		oText = options[key].text;
+        var oTextFlag = new RegExp(value).test(oText);
+        var oValueFlag = new RegExp(value).test(oValue);
+		if(oTextFlag == true || oValueFlag == true){
+			goodsNameList.push({id:oValue, text:oText});
+		}
+	}
+	// goodsNameList = [{id:'1', text:'新的什么'},{id:'2', text:'新的什么2'},{id:'3', text:'的什么'}];
+	return goodsNameList;
+}
 
 function setGoodName() {
 	$.ajax({
@@ -106,6 +180,7 @@ function setGoodName() {
 //				});
 			
 			$("#good_id option").remove();
+            $("#good_id").append("<option value='' selected = 'selected'>" + "</option>");
 			for (var i = 0; i < list.length; i++) {
 				$("#good_id").append("<option value=" + list[i].good_id + ">" + list[i].good_name + "</option>");
 			}

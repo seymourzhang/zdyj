@@ -8,6 +8,19 @@ function OrgSearch(count0rg,num){
 	search();
 }
 
+//温度探头
+function alarmHide(){
+	if($("#yincang").val()!="02"){
+		for(var i=0;i<5;i++){
+		$('#yincang2'+i).attr("disabled","disabled");
+		}
+	}else{
+		for(var i=0;i<5;i++){
+		$('#yincang2'+i).removeAttr("disabled");
+		}
+	}
+}
+
 //新增
 function addAlarmUrl(){
 	if(isRead==0){
@@ -233,6 +246,7 @@ function  querySBDayageSettingSub(){
 				yName='饮水量(L/10分钟)';
 				suffixName = 'L/10分钟';
 			}
+			device();
 			createChar(suffixName,yName,xNames,alarmType5);
 		}
 	});
@@ -405,6 +419,155 @@ function search(){
     });
     document.getElementById("reflushText").style.display="none";
 	
+}
+
+//根据栋舍查询设备
+function device(){
+	$.ajax({
+        url: path+"/alarm/device",
+        data: {"houseId":$("#orgId" + count0rg).val().split(",")[1]},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	var list = result.obj;
+        	$("#device_code option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#device_code").append("<option value=" + list[i].device_code + ">" + list[i].device_name+ "</option>");
+			}
+			insideTemp();
+        }
+    });
+}
+
+//根据栋舍查询探头
+function insideTemp(){
+	$.ajax({
+        url: path+"/alarm/insideTemp",
+        data: {"houseId":$("#orgId" + count0rg).val().split(",")[1],"device_code":$("#device_code").val()},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	var list = result.obj;
+        	$("#yincang2 div").remove();
+			for (var i = 0; i < list.length; i++) {
+				if(list[i].is_alarm == "Y"){
+				$("#yincang2").append('<div class="span2"><label><input id="yincang2'+i+'" name="Fruit" checked = "checked" type="checkbox" onclick="xuanze2'+i+'();" value="' + list[i].biz_code + '">' + list[i].code_name+ '</label></div> ');
+				}else{
+				$("#yincang2").append('<div class="span2"><label><input id="yincang2'+i+'" name="Fruit" type="checkbox" onclick="xuanze2'+i+'();" value="' + list[i].biz_code + '">' + list[i].code_name+ '</label></div> ');
+			
+				}
+			}
+        }
+    });
+}
+
+function xuanze20(){
+	var is_alarm;
+	if(document.getElementById("yincang20").checked==true){
+		is_alarm = "Y";
+	}else{
+		is_alarm = "N";
+	}
+	$.ajax({
+        url: path+"/alarm/updateDeviceSub",
+        data: {"houseId":$("#orgId" + count0rg).val().split(",")[1],"device_code":$("#device_code").val(),"biz_code":$("#yincang20").val(),"is_alarm":is_alarm},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	var list = result.obj;
+        
+        }
+    });
+}
+
+function xuanze21(){
+	var is_alarm;
+	if(document.getElementById("yincang21").checked==true){
+		is_alarm = "Y";
+	}else{
+		is_alarm = "N";
+	}
+	$.ajax({
+        url: path+"/alarm/updateDeviceSub",
+        data: {"houseId":$("#orgId" + count0rg).val().split(",")[1],"device_code":$("#device_code").val(),"biz_code":$("#yincang21").val(),"is_alarm":is_alarm},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	var list = result.obj;
+        
+        }
+    });
+}
+
+function xuanze22(){
+	var is_alarm;
+	if(document.getElementById("yincang22").checked==true){
+		is_alarm = "Y";
+	}else{
+		is_alarm = "N";
+	}
+	$.ajax({
+        url: path+"/alarm/updateDeviceSub",
+        data: {"houseId":$("#orgId" + count0rg).val().split(",")[1],"device_code":$("#device_code").val(),"biz_code":$("#yincang22").val(),"is_alarm":is_alarm},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	var list = result.obj;
+        
+        }
+    });
+}
+
+function xuanze23(){
+	var is_alarm;
+	if(document.getElementById("yincang23").checked==true){
+		is_alarm = "Y";
+	}else{
+		is_alarm = "N";
+	}
+	$.ajax({
+        url: path+"/alarm/updateDeviceSub",
+        data: {"houseId":$("#orgId" + count0rg).val().split(",")[1],"device_code":$("#device_code").val(),"biz_code":$("#yincang23").val(),"is_alarm":is_alarm},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	var list = result.obj;
+        
+        }
+    });
+}
+
+function xuanze24(){
+	var is_alarm;
+	if(document.getElementById("yincang24").checked==true){
+		is_alarm = "Y";
+	}else{
+		is_alarm = "N";
+	}
+	$.ajax({
+        url: path+"/alarm/updateDeviceSub",
+        data: {"houseId":$("#orgId" + count0rg).val().split(",")[1],"device_code":$("#device_code").val(),"biz_code":$("#yincang24").val(),"is_alarm":is_alarm},
+        type : "POST",
+        dataType: "json",
+        cache: false,
+        // timeout:50000,
+        success: function(result) {
+        	var list = result.obj;
+        
+        }
+    });
 }
 
 //修改

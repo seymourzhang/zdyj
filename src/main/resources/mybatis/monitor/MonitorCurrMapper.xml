@@ -109,10 +109,13 @@
                 , mc.farm_id
                 , mc.house_id
                 , DATE_FORMAT(mc.collect_datetime,'%H:%i:%s') collect_datetime
+                , DATE_FORMAT(mc.collect_datetime,'%Y-%m-%d %H:%i:%s') collect_datetime2
                 , mc.deal_status
-                , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarm_code
+                , mc.alarm_code biz_code
+                , g.code_name alarm_code
                 , mc.date_age
                 , mc.week_age
+                , mc.show_flag
                 , ifnull(truncate(mc.inside_temp1,1),"-") inside_temp1
                 , ifnull(truncate(mc.inside_temp2,1),"-") inside_temp2
                 , ifnull(truncate(mc.inside_temp3,1),"-") inside_temp3
@@ -122,13 +125,17 @@
                 , ifnull(truncate(mc.inside_temp7,1),"-") inside_temp7
                 , ifnull(truncate(mc.inside_temp8,1),"-") inside_temp8
                 , ifnull(truncate(mc.inside_temp9,1),"-") inside_temp9
+                , ifnull(truncate(mc.inside_temp10,1),"-") inside_temp10
+                , ifnull(truncate(mc.inside_temp11,1),"-") inside_temp11
+                , ifnull(truncate(mc.inside_temp19,1),"-") inside_temp19
+                , ifnull(truncate(mc.inside_temp20,1),"-") inside_temp20
                 , ifnull(truncate(format(mc.inside_avg_temp,1),1),"-") inside_avg_temp
                 , ifnull(truncate(format(mc.inside_set_temp,1),1),"-") inside_set_temp
                 , ifnull(truncate(mc.high_alarm_temp,1),"-") high_alarm_temp
                 , ifnull(truncate(mc.low_alarm_temp,1),"-") low_alarm_temp
                 , ifnull(truncate(format(mc.outside_temp,1),1),"-") outside_temp
                 , ifnull(truncate(mc.inside_humidity,1),"-") inside_humidity
-                , ifnull(truncate((mc.inside_avg_temp-mc.inside_set_temp),1),"-") point_temp_diff
+                , ifnull(truncate(mc.point_temp_diff,1),"-") point_temp_diff
                 , ifnull(truncate(mc.target_humidity,1),"-") target_humidity
                 , ifnull(truncate(mc.co2,1),"-") co2
                 , ifnull(truncate(mc.lux,1),"-") lux
@@ -164,6 +171,8 @@
         ON mc.heating= d.biz_code and d.code_type = 'KGZT'
         LEFT JOIN s_d_code e
         ON mc.fenestella= e.biz_code and e.code_type = 'KGZT'
+        LEFT JOIN s_d_code g
+        ON mc.alarm_code = g.biz_code and g.code_type = 'ALARM_CODE'
         LEFT JOIN s_d_farm f
         ON mc.farm_id= f.id
         LEFT JOIN s_d_house h

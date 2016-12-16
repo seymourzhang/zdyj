@@ -32,6 +32,16 @@ public class BatchManageServiceImpl implements BatchManageService {
     }
     
     /**
+     * 获取出栏日龄
+     * @param pd
+     * @return
+     * @throws Exception
+     */
+    public List<PageData> getOverBatchAge(PageData pd) throws Exception{
+        return (List<PageData>) dao.findForList("BatchManageMapper.selectOverBatchAge", pd);
+    }
+    
+    /**
      * 获取调出数量
      * @param pd
      * @return

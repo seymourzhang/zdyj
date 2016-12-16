@@ -76,17 +76,17 @@ function showTab(tabName, dataList){
         getOtherVar(dataList);
         showWeedOut(tabName, getHouseFlag());
     }
-    createTable(tabName); //创建表格
+    createTable(tabName,dataList); //创建表格
     reflushTable(tabName, dataList); //刷新表格数据
 };
 
 //创建表格
-function createTable(tabName){
-    initTable(tabName, createTableColumns(tabName), objBatch.jsonData);
+function createTable(tabName,dataList){
+    initTable(tabName, createTableColumns(tabName,dataList), objBatch.jsonData);
 };
 
 //创建表格列
-function createTableColumns(tabName){
+function createTableColumns(tabName,dataList){
     var columns;
     if(tabName == tabs.进鸡){
         columns = createBatchColumns();
@@ -95,7 +95,7 @@ function createTableColumns(tabName){
         columns = editBatchColumns();
     }
     if(tabName == tabs.出栏){
-        columns = overBatchColumns();
+        columns = overBatchColumns(dataList);
     }
     return columns;
 };
@@ -258,6 +258,10 @@ function reFlushData(tabName){
         dataType: "json",
         success: function (result) {
             dataList = eval(result.obj);
+            if(dataList[0].house_type =="2"){
+            	document.getElementById("overBatchFemaleAvgWeight").disabled=true;
+            	document.getElementById("overBatchMaleAvgWeight").disabled=true;
+            }
             showTab(tabName, dataList);
         }
     });
@@ -299,13 +303,52 @@ function getCount(){
         dataType: "json",
         success: function (result) {
             dataList = eval(result.obj);
+            if(currTabName == tabs.调鸡){
+            	if(dataList.length==0){
+                	document.getElementById("currStock1").value = 0;
+                    document.getElementById("currStock2").value = 0;
+                }else{
+                document.getElementById("currStock1").value = dataList[0].female_count;
+                document.getElementById("currStock2").value = dataList[0].male_count;
+                }
+            }
+            if(currTabName == tabs.出栏){
+            	if(dataList.length==0){
+                	document.getElementById("overBatchFemaleNum").value = 0;
+                    document.getElementById("overBatchMaleNum").value = 0;
+                }else{
+                document.getElementById("overBatchFemaleNum").value = dataList[0].female_count;
+                document.getElementById("overBatchMaleNum").value = dataList[0].male_count;
+                }
+            	getOverBatchAge();
+            }
+            
+        }
+    });
+}
+
+//获取指定栋舍的出栏日龄
+function getOverBatchAge(){	
+	$.ajax({
+        type: "post",
+        url: path + "/batch/getOverBatchAge",
+        data: {house_code:document.getElementById(currTabName + "HouseSelect").value,operation_date:document.getElementById(currTabName + "QueryTime").value},
+        dataType: "json",
+        success: function (result) {
+            dataList = eval(result.obj);
             if(dataList.length==0){
-            	document.getElementById("currStock1").value = 0;
-                document.getElementById("currStock2").value = 0;
+            document.getElementById("overBatchAge").value = "";
             }else{
-            document.getElementById("currStock1").value = dataList[0].female_count;
-            document.getElementById("currStock2").value = dataList[0].male_count;
+            	document.getElementById("overBatchAge").value = dataList[0].age;
             }
         }
     });
+}
+
+//获取总金额
+function getOverBatchAvgPriceSum(){	
+	var num1,num2;
+	num1 = $("#overBatchSumWeight").val();
+	num2 = $("#overBatchAvgPrice").val();
+	document.getElementById("overBatchAvgPriceSum").value = num1 * num2;
 }

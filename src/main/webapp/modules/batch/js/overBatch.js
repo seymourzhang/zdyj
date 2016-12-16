@@ -1,7 +1,11 @@
 /**
  * Created by LeLe on 11/2/2016.
  */
-function overBatchColumns(){
+function overBatchColumns(dataList){
+	var able = true;
+	if(dataList[0].house_type =="2"){
+		able = false;
+	}
     var dataColumns = [{field: "operation_date",
         title: "日期",
         visible: false
@@ -12,6 +16,10 @@ function overBatchColumns(){
         field: "house",
         title: "出栏栋",
         width: '5%'
+    }, {
+        field: "over_batch_count",
+        title: "出栏总数",
+        width: '10%'
     }, {
         field: "batchId",
         title: "批次序号",
@@ -27,7 +35,8 @@ function overBatchColumns(){
     }, {
         field: "female_weight",
         title: "只均重（g）",
-        width: '10%'
+        width: '10%',
+        visible: able
     }, {
         field: "male_count",
         title: "公鸡数",
@@ -35,10 +44,11 @@ function overBatchColumns(){
     }, {
         field: "male_weight",
         title: "只均重（g）",
-        width: '10%'
+        width: '10%',
+        visible: able
     }, {
         field: "weed_out_total_weight",
-        title: "淘汰鸡总重（KG）",
+        title: "淘汰鸡总重（kg）",
         width: '10%'
     }, {
         field: "weed_out_total_count",

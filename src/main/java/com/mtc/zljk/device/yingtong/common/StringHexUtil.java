@@ -24,6 +24,10 @@ public class StringHexUtil {
 		}
 		return sb.toString();
 	}
+
+	public static final String bytes2String(byte[] bArray) {
+		return new String(bArray);
+	}
 	
 	/**
 	 * 把字节转换成16进制字符串
@@ -94,9 +98,9 @@ public class StringHexUtil {
     	byte[] byteArray = hexString2Bytes("4198CCCD");
     	int resInt = ByteNumUtil.bytesToInt(byteArray);
     	Float resFloat = Float.intBitsToFloat(resInt);
-    	
+
     	System.out.println("resInt  :" + resInt);
     	System.out.println("resFloat:" + resFloat);
-    	
+
     }
 }

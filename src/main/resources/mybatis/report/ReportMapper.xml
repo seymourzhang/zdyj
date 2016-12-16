@@ -86,7 +86,8 @@
 	tData2.avgoutsidetemp,
 	tData2.highAlarmTemp,
 	tData2.lowAlarmTemp,
-	tData2.insideSetTemp
+	tData2.insideSetTemp,
+  	tData2.insideHumidity
 	FROM s_b_breed_detail a
 	LEFT JOIN s_b_batch_curr sbbc ON sbbc.batch_id = a.batch_id
 	LEFT JOIN (SELECT
@@ -100,7 +101,8 @@
 	truncate(AVG(tData.outside_temp), 1)    AS avgoutsidetemp,
 	truncate(AVG(tData.high_alarm_temp), 1) AS highAlarmTemp,
 	truncate(AVG(tData.low_alarm_temp), 1)  AS lowAlarmTemp,
-	truncate(AVG(tData.inside_set_temp), 1) AS insideSetTemp
+	truncate(AVG(tData.inside_set_temp), 1) AS insideSetTemp,
+    truncate(AVG(tData.inside_humidity), 1) AS insideHumidity
 	FROM (SELECT
 	date_format(collect_datetime, '%Y-%m-%d') AS timeId,
 	a.*
@@ -141,7 +143,8 @@
 		tData2.avgoutsidetemp,
 		tData2.highAlarmTemp,
 		tData2.lowAlarmTemp,
-		tData2.insideSetTemp
+		tData2.insideSetTemp,
+  		tData2.insideHumidity
 		FROM s_d_code sc
 		LEFT JOIN (
 		SELECT
@@ -159,7 +162,8 @@
 		TRUNCATE(AVG(tData.outside_temp), 1)    AS avgoutsidetemp,
 		TRUNCATE(AVG(tData.high_alarm_temp), 1) AS highAlarmTemp,
 		TRUNCATE(AVG(tData.low_alarm_temp), 1)  AS lowAlarmTemp,
-		TRUNCATE(AVG(tData.inside_set_temp), 1) AS insideSetTemp
+		TRUNCATE(AVG(tData.inside_set_temp), 1) AS insideSetTemp,
+		TRUNCATE(AVG(tData.inside_humidity), 1) AS insideHumidity
 		FROM (SELECT
 		(CASE WHEN DATE_FORMAT(collect_datetime, '%i') BETWEEN '00' AND '30'
 		THEN CONCAT(DATE_FORMAT(collect_datetime, '%H'), ':30')
@@ -174,10 +178,12 @@
 		) AS tData2 ON tData2.timeId = sc.biz_code
 		LEFT JOIN (SELECT #{DataRange} AS data_date) AS tData3 ON 1 = 1
 		LEFT JOIN s_b_breed_detail tData4 ON date_format(tData4.growth_date, '%Y-%m-%d') = tData3.data_date AND tData4.batch_id = #{BreedBatchId}
-		WHERE sc.code_type = 'HalfHour';
+		WHERE sc.code_type = 'HalfHour'
+		ORDER BY x_axis
 	</select>
 
 	<select id="selectTemForMobileMinute" resultType="pd" parameterType="pd" useCache="false">
+		/*在分钟情况下*/
 		SELECT
 		'Y'                                            AS dataflag,
 		CONCAT(${Hour}, ':', CASE WHEN tData.timeId = '00'
@@ -313,7 +319,8 @@
 		) AS tData2 ON tData2.timeId = sc.biz_code
 		LEFT JOIN (SELECT #{DataRange} AS data_date) AS tData3 ON 1 = 1
 		LEFT JOIN s_b_breed_detail tData4 ON date_format(tData4.growth_date, '%Y-%m-%d') = tData3.data_date AND tData4.batch_id = #{BreedBatchId}
-		WHERE sc.code_type = 'HalfHour';
+		WHERE sc.code_type = 'HalfHour'
+		ORDER BY x_axis
 	</select>
 
 	<select id="selectLCForMobileMinute" resultType="pd" parameterType="pd" useCache="false">

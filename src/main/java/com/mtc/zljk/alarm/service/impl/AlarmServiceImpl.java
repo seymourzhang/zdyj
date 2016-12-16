@@ -135,5 +135,17 @@ public class AlarmServiceImpl implements AlarmService {
 	public List<PageData> selectSBCode(PageData pd)throws Exception{
 		return (List<PageData>) dao.findForList("SBDayageSettingSubMapper.selectSBCode", pd);
 	}
+	
+	public List<PageData> selectInsideTemp(PageData pd)throws Exception{
+		return (List<PageData>) dao.findForList("SBDayageSettingSubMapper.selectInsideTemp", pd);
+	}
+	
+	public List<PageData> selectDevice(PageData pd)throws Exception{
+		return (List<PageData>) dao.findForList("SBDayageSettingSubMapper.selectDevice", pd);
+	}
+	
+	public void updateDeviceSub(PageData pd) throws Exception{
+		dao.update("SBDayageSettingSubMapper.updateDeviceSub", pd);
+	}
   
 }  

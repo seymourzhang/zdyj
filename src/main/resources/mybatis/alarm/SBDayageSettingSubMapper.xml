@@ -1267,6 +1267,64 @@
 		where  user_status =1
 	</select>
 	
+	<update id="updateDeviceSub" flushCache="false">
+	UPDATE s_d_device_sub u SET u.is_alarm = #{is_alarm}  , u.modify_person = #{modify_person}
+	  , u.modify_date = #{modify_date}
+	  WHERE exists(select 1 FROM s_b_devi_house h
+	left join
+	s_d_device d
+	on d.device_code = h.device_code
+	left join
+	(select show_column,main_id,sensor_no from s_d_device_sub ) s
+	on s.main_id = d.main_id
+	left join
+	s_d_code c
+	on c.biz_code = s.show_column
+	where 
+	c.code_type = 'SENSOR_LOCATION' 
+	and c.biz_code !=#{biz_code}
+	and h.house_id = #{houseId}
+	and d.device_code = #{device_code} 
+	and s.main_id = u.main_id)
+	and u.show_column = #{biz_code}
+	</update>
+	
+	<select id="selectInsideTemp" resultType="pd" useCache="false">
+	SELECT c.code_type,
+	        c.biz_code,
+			c.code_name,
+			c.bak1,
+			c.bak2,
+			c.code_desc,
+			s.is_alarm
+	FROM s_b_devi_house h
+	left join
+	s_d_device d
+	on d.device_code = h.device_code
+	left join
+	s_d_device_sub s
+	on s.main_id = d.main_id
+	left join
+	s_d_code c
+	on c.biz_code = s.show_column
+	where 
+	c.code_type = #{code_type} 
+	and c.biz_code !='outside_temp'
+	and h.house_id = #{houseId}
+	and d.device_code = #{device_code}
+	</select>
+	
+	<select id="selectDevice" resultType="pd" useCache="false">
+	SELECT h.device_code,
+	       concat(d.device_code,'-',d.device_factory,'-',d.port_id) as device_name
+	FROM s_b_devi_house h
+	left join
+	s_d_device d
+	on d.device_code = h.device_code
+	where 
+    h.house_id = #{houseId}
+	</select>
+	
 	<select id="selectSBCode" resultType="pd" useCache="false">
     SELECT code_type,
 			biz_code,

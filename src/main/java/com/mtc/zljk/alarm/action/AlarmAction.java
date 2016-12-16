@@ -59,6 +59,41 @@ public class AlarmAction extends BaseAction{
 		return mv;
 	}
 	
+	@RequestMapping("/insideTemp")
+	public void insideTemp(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		List<PageData> tem=new ArrayList<PageData>();
+		pd.put("code_type", "SENSOR_LOCATION");
+		tem = alarmService.selectInsideTemp(pd);
+		j.setSuccess(true);
+		j.setObj(tem);	
+		super.writeJson(j, response);
+	}
+	
+	@RequestMapping("/device")
+	public void device(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		List<PageData> tem=new ArrayList<PageData>();
+		tem = alarmService.selectDevice(pd);
+		j.setSuccess(true);
+		j.setObj(tem);	
+		super.writeJson(j, response);
+	}
+	
+	@RequestMapping("/updateDeviceSub")
+	public void updateDeviceSub(HttpServletResponse response,HttpServletRequest request) throws Exception{
+		Json j=new Json();
+		SDUser user = (SDUser)request.getSession().getAttribute(Const.SESSION_USER);
+		PageData pd = this.getPageData();
+		pd.put("modify_person", user.getId());
+		pd.put("modify_date", new Date());
+		alarmService.updateDeviceSub(pd);
+		j.setSuccess(true);
+		super.writeJson(j, response);
+	}
+	
 	/**
 	 * 根据查询条件查询报警曲线图
 	 * @param response

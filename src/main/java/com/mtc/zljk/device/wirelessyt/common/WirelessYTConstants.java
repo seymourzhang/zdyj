@@ -17,7 +17,8 @@ public class WirelessYTConstants {
     // 指标值的类型
     public static String VALUE_TYPE_FLOAT = "FLOAT";
     public static String VALUE_TYPE_INT = "INT";
-    public static String VALUE_TYPE_STRING_16 = "STRING16";
+    public static String VALUE_TYPE_SHORT = "SHORT";
+    public static String VALUE_TYPE_STRING = "STRING";
     public static String VALUE_TYPE_STRING_2 = "STRING2";
     public static String VALUE_TYPE_DATETIME = "DATETIME";
     public static String VALUE_TYPE_NULL = "NULL";
@@ -80,6 +81,10 @@ public class WirelessYTConstants {
     public static int ID_MM_PROPERTY_2016 = 2016 ;
     // 信号强度
     public static int ID_SIGNAL_STRENGTH_2018 = 2018 ;
+    // MM属性2
+    public static int ID_MM_PROPERTY_2019 = 2019 ;
+    // SIM_ICCID
+    public static int ID_SIM_ICCID_2020 = 2020 ;
     // 硬件版本
     public static int ID_HARDWARE_VERSION_2008 = 2008 ;
     // 总有功电量

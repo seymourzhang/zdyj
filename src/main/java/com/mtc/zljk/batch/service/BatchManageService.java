@@ -21,6 +21,14 @@ public interface BatchManageService {
     List<PageData> getCreateBatchData(PageData pd) throws Exception;
     
     /**
+     * 获取出栏日龄
+     * @param pd
+     * @return
+     * @throws Exception
+     */
+    List<PageData> getOverBatchAge(PageData pd) throws Exception;
+    
+    /**
      * 获取调出数量
      * @param pd
      * @return

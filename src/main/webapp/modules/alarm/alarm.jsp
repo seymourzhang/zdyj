@@ -75,14 +75,6 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 		}
 	}
 	
-	function alarmHide(){
-		if($("#yincang").val()=="1"){
-			$("#yincang2").css("display", "block");
-		}else{
-			$("#yincang2").css("display", "none");
-		}
-	}
-	
 </script>
 
 </head>
@@ -183,62 +175,77 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
                             <div id="WaterFrame" style="display: none;margin-left: 20px;float: left;width: 500px;" >
                                 <table id="WaterTable" style="margin-left: 0px;float: left;width: 500px;"></table>
                             </div>
-                            
-                            <div style="margin-left: 550px;height: 10px;width: 500px;margin-top: 0px;" id="alarmParam">
-                            <table style="margin-left: 220px;height: 10px;width: 500px;margin-top: 0px;">
-							<thead>
-
-									<tr>
-										<th>报警延迟</th>	
-										<td>
-										<select id="alarm_delay" name="alarm_delay" class="m-wrap span12" tabindex="1" onchange="">													
+        
+                            <div style="margin-left: 550px;height: 10px;width: 610px;margin-top: 0px;" id="alarmParam">
+                             <div class="row-fluid">
+                             <div class="span3"></div>
+                             <div class="span3">
+									  <span_customer>报警延迟</span_customer>
+									  <select id="alarm_delay" name="alarm_delay" class="m-wrap span12" tabindex="1" onchange=""  style="margin-left:60px;margin-top: -40px;">													
 														<c:if test="${!empty alarm_delay}">
 		                                                 <c:forEach var="alarmDelay" items="${alarm_delay}">
 		                                                 <option value="${alarmDelay.biz_code }">${alarmDelay.code_name }</option>
 		                                                 </c:forEach>
 		                                                 </c:if>
 														</select>
-										</td>
-										<th>语音报警</th>
-                                    <td>
-                                    <a href="javascript:bindingUserUrl();" onclick="">上传报警通讯录</a>
-                                    </td>																		
-									</tr>
-									<tr>
-									<th>温度补偿</th>	
-									<td>
-									<select id="temp_cpsation" name="temp_cpsation" class="m-wrap span12" tabindex="1" onchange="tempCordon()">									                    
+								  </div>
+<!-- 								  <div class="span3"></div> -->
+								  <div class="span3" style="width:180px;margin-left: 70px; ">
+									  <span_customer>语音报警</span_customer>
+									  <a href="javascript:bindingUserUrl();" onclick="">上传报警通讯录</a>
+								  </div>
+								 </div>
+								 <div class="row-fluid" style="margin-top: -130px;margin-left: 120px;">
+                                <div class="span12">
+                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;" />
+                                </div>
+                            </div>
+							<div class="row-fluid" style="margin-top: -100px;">
+							<div class="span3"></div>
+                             <div class="span3" >
+									  <span_customer>温度补偿</span_customer>
+									  <select id="temp_cpsation" name="temp_cpsation" class="m-wrap span12" tabindex="1" onchange="tempCordon()" style="margin-left:60px;margin-top: -40px;">									                    
 														<option value="1">是</option>
 														<option value="0">否</option>                                                        
 														</select>
-									</td>	
-									<th>补偿值</th>	
-									<td>
-									<input  type="text" id="temp_cordon" class="span6 m-wrap" style="width: 100px;" name="temp_cordon">
-									</td>								
-									</tr>
-									<tr>
-									<th>
-									报警形式
-									</th>
-									<td>
-									<select id="yincang" name="alarm_way" class="m-wrap span12" tabindex="1" onchange="alarmHide();">
+								  </div>
+								  <div class="span3" style="width:180px;margin-left: 70px; ">
+									  <span_customer>补偿值</span_customer>
+									  <input  type="text" id="temp_cordon" class="span6 m-wrap" style="width: 100px;margin-left: -15px;" name="temp_cordon">
+								  </div>
+								 </div>	
+								 <div class="row-fluid" style="margin-top: -130px;margin-left: 120px;">
+                                <div class="span12">
+                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;" />
+                                </div>
+                            </div>
+								 <div class="row-fluid">
+								 <div class="span3"></div>
+                             <div class="span3">
+									  <span_customer>报警形式</span_customer>
+									  <select id="yincang" name="alarm_way" class="m-wrap span12" tabindex="1" onchange="alarmHide();" style="margin-left:60px;margin-top: -40px;">
 														<option value="02">独立探头报警</option>
 														<option value="03">平均温度报警</option>                                                        
 														</select>
-									</td>
-									<td id="yincang2" style="display:none;">
-									    <label><input name="Fruit" type="checkbox" value="1" />1号探头 </label> 
-										<label><input name="Fruit" type="checkbox" value="2" />2号探头 </label> 
-										<label><input name="Fruit" type="checkbox" value="3" />3号探头 </label> 
-										<label><input name="Fruit" type="checkbox" value="4" />4号探头</label> 
-									</td>	
-									</tr>
-								</thead>
-						</table>
+								  </div>
+								  
+								  </div>
+								 
+								 <div class="row-fluid">
+								 <div class="span3"></div>
+								 <div class="span3" style="margin-left: 1px;">
+									  设备控制器
+									  <select id="device_code" name="device_code" class="m-wrap span12" tabindex="1" style="margin-left:72px;margin-top: -40px;width: 300px;">
+														                                                       
+									 </select>
+								 </div>
+								 </div>
+								 <div class="row-fluid" id="yincang2" style="margin-left: 130px;width: 500px;">
+								 </div>
+								
 						</div>
 
-						<div class="portlet-body" style="margin-left: 25px;float:left;margin-top: 50px;" id="anniu">
+						<div class="portlet-body" style="margin-left: 25px;float:left; id="anniu">
 						<button type="button" class="btn blue" onclick="openAdjustWin('${hourList}')">
 <!-- 						<i class="icon-ok"></i> -->
 <!-- 						<a href="javascript:addAlarmUrl();"><i class="icon-edit"></i> -->
@@ -267,13 +274,7 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 						</div>
 						</div>
                         
-                        
-<!--                         <div class="portlet-body" style="margin-right: 200px;margin-left: 500px;height: 10px;margin-top: 0px;"> -->
-							
-
-<!-- 						</div>	 -->
-						
-<!-- 					</div> -->
+                       
 					<br/>
 					<div class="portlet box blue1">
 								<div class="portlet-title">

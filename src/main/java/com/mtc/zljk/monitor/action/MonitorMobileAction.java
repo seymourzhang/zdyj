@@ -1,11 +1,10 @@
 package com.mtc.zljk.monitor.action;
 
-import com.mtc.zljk.alarm.service.AlarmCurrService;
 import com.mtc.zljk.monitor.service.MonitorService;
-import com.mtc.zljk.user.entity.SDUser;
 import com.mtc.zljk.util.action.BaseAction;
 import com.mtc.zljk.util.common.*;
 import com.mtc.zljk.util.service.OrganService;
+import com.sun.xml.internal.xsom.impl.scd.SCDImpl;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,9 +27,6 @@ public class MonitorMobileAction extends BaseAction {
 
     @Autowired
     private MonitorService monitorService;
-
-    @Autowired
-    private AlarmCurrService alarmCurrService;
 
     @Autowired
     private OrganService organService;
@@ -48,6 +44,10 @@ public class MonitorMobileAction extends BaseAction {
         aa = aa.substring(1, aa.length() - 2);
         JSONObject jsonObject = new JSONObject(aa);
 
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
+//        Date curDate = new Date();
+
         int userId = jsonObject.optInt("id_spa");
         JSONObject tUserJson = jsonObject.getJSONObject("params");
         int FarmId = tUserJson.optInt("FarmId");
@@ -64,41 +64,79 @@ public class MonitorMobileAction extends BaseAction {
             house.add(a.getInteger("id"));
             pd.put("houseId", house);
             mcl = monitorService.selectByCondition(pd);
-            if (mcl.size() != 0) {
+            if (mcl.size() != 0 ) {
                 for (PageData data : mcl) {
-                    JSONObject jo = new JSONObject();
-                    jo.put("houseName", a.get("name_cn"));
-                    jo.put("dayAge", data.get("date_age"));
-                    jo.put("out_temp", "-99.0".equals(data.get("outside_temp").toString()) || "-".equals(data.get("outside_temp").toString())  ? "-" : data.get("outside_temp").toString() + "℃");
-                    jo.put("tempLeft1", "-99.0".equals(data.get("inside_temp1").toString()) || "-".equals(data.get("inside_temp1").toString())  ? "-" : data.get("inside_temp1").toString() + "℃");
-                    jo.put("tempLeft2", "-99.0".equals(data.get("inside_temp2").toString()) || "-".equals(data.get("inside_temp2").toString())  ? "-" : data.get("inside_temp2").toString() + "℃");
-                    jo.put("tempMiddle1", "-99.0".equals(data.get("inside_temp3").toString()) || "-".equals(data.get("inside_temp3").toString())  ? "-" : data.get("inside_temp3").toString() + "℃");
-                    jo.put("tempMiddle2", "-99.0".equals(data.get("inside_temp4").toString()) || "-".equals(data.get("inside_temp4").toString())  ? "-" : data.get("inside_temp4").toString() + "℃");
-                    jo.put("tempRight1", "-99.0".equals(data.get("inside_temp5").toString()) || "-".equals(data.get("inside_temp5").toString())  ? "-" : data.get("inside_temp5").toString() + "℃");
-                    jo.put("tempRight2", "-99.0".equals(data.get("inside_temp6").toString()) || "-".equals(data.get("inside_temp6").toString())  ? "-" : data.get("inside_temp6").toString() + "℃");
-                    jo.put("tar_temp", "-99.0".equals(data.get("inside_set_temp").toString()) || "-".equals(data.get("inside_set_temp").toString())  ? "-" : data.get("inside_set_temp").toString() + "℃");
-                    jo.put("avg_temp", "-99.0".equals(data.get("inside_avg_temp").toString()) || "-".equals(data.get("inside_avg_temp").toString())  ? "-" : data.get("inside_avg_temp").toString() + "℃");
-                    jo.put("H_temp", "-99.0".equals(data.get("high_alarm_temp").toString()) || "-".equals(data.get("high_alarm_temp").toString())  ? "-" : data.get("high_alarm_temp").toString() + "℃");
-                    jo.put("L_temp", "-99.0".equals(data.get("low_alarm_temp").toString()) || "-".equals(data.get("low_alarm_temp").toString())  ? "-" : data.get("low_alarm_temp").toString() + "℃");
-                    jo.put("point_temp", "-99.0".equals(data.get("point_temp_diff").toString()) || "-".equals(data.get("point_temp_diff").toString())  ? "-" : data.get("point_temp_diff").toString() + "℃");
-                    jo.put("humi", "-99.0".equals(data.get("point_temp_diff").toString()) || "-".equals(data.get("point_temp_diff").toString())  ? "-" : data.get("inside_humidity").toString() + "%");
-                    jo.put("CO2", "-99.0".equals(data.get("point_temp_diff").toString()) || "-".equals(data.get("point_temp_diff").toString())  ? "-" : data.get("co2"));
-                    jo.put("illumination", "-99.0".equals(data.get("point_temp_diff").toString()) || "-".equals(data.get("point_temp_diff").toString())  ? "-" : data.get("lux"));
-                    jo.put("power_status", "-".equals(data.get("power_status")) ? "-" : (data.get("power_status").equals("1") ? "断电" : "正常"));
-                    jo.put("temp_in1_alarm", data.get("temp_in1_alarm"));
-                    jo.put("temp_in2_alarm", data.get("temp_in2_alarm"));
-                    jo.put("temp_in3_alarm", data.get("temp_in3_alarm"));
-                    jo.put("temp_avg_alarm", data.get("temp_avg_alarm"));
-                    jo.put("point_temp_alarm", data.get("point_temp_alarm"));
-                    jo.put("power_status_alarm", data.get("power_status_alarm"));
-                    jo.put("co2_alarm", data.get("co2_alarm"));
-                    jo.put("lux_alarm", data.get("lux_alarm"));
-                    monitor.put(jo);
+                    /*long accident = Long.parseLong(data.get("accidentTime").toString());
+                    Date collectDate = sdf.parse(data.get("collect_datetime2").toString());
+                    long dateDiff = (curDate.getTime() - collectDate.getTime()) / (1000 * 60);//转换成分钟差*/
+                    String alarmCode = data.get("biz_code").toString();
+                    if ("1".equals(data.get("show_flag").toString()) && !"1".equals(alarmCode)) {
+                        JSONObject jo = new JSONObject();
+                        jo.put("houseName", a.get("name_cn"));
+                        jo.put("dayAge", data.get("date_age"));
+                        jo.put("data_time", sdf1.format(sdf1.parse(data.get("collect_datetime").toString())));
+                        jo.put("out_temp", "-99.0".equals(data.get("outside_temp").toString()) || "-".equals(data.get("outside_temp").toString()) ? "-" : data.get("outside_temp").toString() + "℃");
+                        jo.put("tempLeft1", "-99.0".equals(data.get("inside_temp1").toString()) || "-".equals(data.get("inside_temp1").toString()) ? "-" : data.get("inside_temp1").toString() + "℃");
+                        jo.put("tempLeft2", "-99.0".equals(data.get("inside_temp2").toString()) || "-".equals(data.get("inside_temp2").toString()) ? "-" : data.get("inside_temp2").toString() + "℃");
+                        jo.put("tempMiddle1", "-99.0".equals(data.get("inside_temp10").toString()) || "-".equals(data.get("inside_temp10").toString()) ? "-" : data.get("inside_temp10").toString() + "℃");
+                        jo.put("tempMiddle2", "-99.0".equals(data.get("inside_temp11").toString()) || "-".equals(data.get("inside_temp11").toString()) ? "-" : data.get("inside_temp11").toString() + "℃");
+                        jo.put("tempRight1", "-99.0".equals(data.get("inside_temp19").toString()) || "-".equals(data.get("inside_temp19").toString()) ? "-" : data.get("inside_temp19").toString() + "℃");
+                        jo.put("tempRight2", "-99.0".equals(data.get("inside_temp20").toString()) || "-".equals(data.get("inside_temp20").toString()) ? "-" : data.get("inside_temp20").toString() + "℃");
+                        jo.put("tar_temp", "-99.0".equals(data.get("inside_set_temp").toString()) || "-".equals(data.get("inside_set_temp").toString()) ? "-" : data.get("inside_set_temp").toString() + "℃");
+                        jo.put("avg_temp", "-99.0".equals(data.get("inside_avg_temp").toString()) || "-".equals(data.get("inside_avg_temp").toString()) ? "-" : data.get("inside_avg_temp").toString() + "℃");
+                        jo.put("H_temp", "-99.0".equals(data.get("high_alarm_temp").toString()) || "-".equals(data.get("high_alarm_temp").toString()) ? "-" : data.get("high_alarm_temp").toString() + "℃");
+                        jo.put("L_temp", "-99.0".equals(data.get("low_alarm_temp").toString()) || "-".equals(data.get("low_alarm_temp").toString()) ? "-" : data.get("low_alarm_temp").toString() + "℃");
+                        jo.put("point_temp", "-99.0".equals(data.get("point_temp_diff").toString()) || "-".equals(data.get("point_temp_diff").toString()) ? "-" : data.get("point_temp_diff").toString() + "℃");
+                        jo.put("humi", "-99.0".equals(data.get("inside_humidity").toString()) || "-".equals(data.get("inside_humidity").toString()) ? "-" : data.get("inside_humidity").toString() + "%");
+                        jo.put("CO2", "-99.0".equals(data.get("co2").toString()) || "-".equals(data.get("co2").toString()) ? "-" : data.get("co2"));
+                        jo.put("illumination", "-99.0".equals(data.get("lux").toString()) || "-".equals(data.get("lux").toString()) ? "-" : data.get("lux"));
+                        jo.put("power_status", "-".equals(data.get("power_status")) ? "-" : (data.get("power_status").equals("1") ? "断电" : "正常"));
+                        jo.put("temp_in1_alarm", data.get("temp_in1_alarm"));
+                        jo.put("temp_in2_alarm", data.get("temp_in2_alarm"));
+                        jo.put("temp_in3_alarm", data.get("temp_in3_alarm"));
+                        jo.put("temp_avg_alarm", data.get("temp_avg_alarm"));
+                        jo.put("point_temp_alarm", data.get("point_temp_alarm"));
+                        jo.put("power_status_alarm", data.get("power_status_alarm"));
+                        jo.put("co2_alarm", data.get("co2_alarm"));
+                        jo.put("lux_alarm", data.get("lux_alarm"));
+                        monitor.put(jo);
+                    }else{
+                        JSONObject show_n = new JSONObject();
+                        show_n.put("houseName", a.get("name_cn"));
+                        show_n.put("dayAge", "-");
+                        show_n.put("data_time", "-");
+                        show_n.put("out_temp", "-");
+                        show_n.put("tempLeft1", "-");
+                        show_n.put("tempLeft2", "-");
+                        show_n.put("tempMiddle1", "-");
+                        show_n.put("tempMiddle2", "-");
+                        show_n.put("tempRight1", "-");
+                        show_n.put("tempRight2", "-");
+                        show_n.put("tar_temp", "-");
+                        show_n.put("avg_temp", "-");
+                        show_n.put("H_temp", "-");
+                        show_n.put("L_temp", "-");
+                        show_n.put("point_temp", "-");
+                        show_n.put("humi", "-");
+                        show_n.put("CO2", "-");
+                        show_n.put("illumination", "-");
+                        show_n.put("power_status", "-");
+                        show_n.put("temp_in1_alarm", "-");
+                        show_n.put("temp_in2_alarm", "-");
+                        show_n.put("temp_in3_alarm", "-");
+                        show_n.put("temp_avg_alarm", "-");
+                        show_n.put("point_temp_alarm", "-");
+                        show_n.put("power_status_alarm", "-");
+                        show_n.put("co2_alarm", "-");
+                        show_n.put("lux_alarm", "-");
+                        monitor.put(show_n);
+                    }
                 }
             } else {
                 JSONObject jo = new JSONObject();
                 jo.put("houseName", a.get("name_cn"));
                 jo.put("dayAge", "-");
+                jo.put("data_time", "-");
                 jo.put("out_temp", "-");
                 jo.put("tempLeft1", "-");
                 jo.put("tempLeft2", "-");

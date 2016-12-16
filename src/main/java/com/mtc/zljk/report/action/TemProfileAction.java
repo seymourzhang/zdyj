@@ -46,30 +46,37 @@ public class TemProfileAction extends BaseAction {
 	
 	@RequestMapping("/showTemProfile")
 	public ModelAndView showTemProfile() throws Exception {
-		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String id = pd.getString("id");
-		String pid = pd.getString("pid");
-		
-		/**当天日期**/
-		String beginTime=DateUtil.getDay();
-		String endTime=DateUtil.getDay();
-		pd.put("beginTime", beginTime);
-		pd.put("endTime", endTime);
-		
-		pd.put("id", id);
-		pd.put("pid", pid);
-		List<PageData> tem=temProfileService.getTemProfile(pd);
-		mv.setViewName("/modules/report/temProfile");
-		mv.addObject("TemProfile",tem);
-		
-		
-		mv.addObject("farmList",getFarmList());
-		mv.addObject("houseList",getHouseList(pd));
-		mv.addObject("batchList",getBatchList(pd));
+		pd.put("user_id", getUserId());
+		ModelAndView mv = this.getModelAndView();
+		mv.setViewName("modules/report/temProfile");
 		mv.addObject("pd",pd);
 		return mv;
+//		ModelAndView mv = this.getModelAndView();
+//		PageData pd = new PageData();
+//		pd = this.getPageData();
+//		String id = pd.getString("id");
+//		String pid = pd.getString("pid");
+//
+//		/**当天日期**/
+//		String beginTime=DateUtil.getDay();
+//		String endTime=DateUtil.getDay();
+//		pd.put("beginTime", beginTime);
+//		pd.put("endTime", endTime);
+//
+//		pd.put("id", id);
+//		pd.put("pid", pid);
+//		List<PageData> tem=temProfileService.getTemProfile(pd);
+//		mv.setViewName("/modules/report/temProfile");
+//		mv.addObject("TemProfile",tem);
+//
+//
+//		mv.addObject("farmList",getFarmList());
+//		mv.addObject("houseList",getHouseList(pd));
+//		mv.addObject("batchList",getBatchList(pd));
+//		mv.addObject("pd",pd);
+//		return mv;
 	}
 	
 	/**
@@ -154,7 +161,6 @@ public class TemProfileAction extends BaseAction {
 	
 	/**
 	 * 获取农场信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	List<PageData> getFarmList() throws Exception {

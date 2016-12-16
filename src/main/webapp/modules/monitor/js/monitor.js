@@ -82,25 +82,26 @@ function reflushMonitor() {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + (list[i]["point_temp_diff"] != null ? list[i]["point_temp_diff"] : '' ) + "</a></td>";
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp1"] + "</a></td>";
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp2"] + "</a></td>";
-                str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp3"] + "</a></td>";
-                str += "<td style='height:30px;text-align: center;border-right: 2px solid #b4cef8;' onclick=" + strTemp + ">" + list[i]["inside_temp4"] + "</a></td>";
+                str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp10"] + "</a></td>";
+                str += "<td style='height:30px;text-align: center;border-right: 2px solid #b4cef8;' onclick=" + strTemp + ">" + list[i]["inside_temp19"] + "</a></td>";
+                str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp20"] + "</a></td>";
                 str += "<td style='height:30px;text-align: center;' onclick=" + strHumidity + ">" + list[i]["inside_humidity"] + "</a></td>";
-                str += "<td style='height:30px;text-align: center;' onclick=" + strWater + ">" + list[i]["water_consumption"] + "</a></td>";
+                str += "<td style='height:30px;text-align: center;' onclick=" + strWater + ">" + list[i]["lux"] + "</a></td>";
                 if (list[i]["co2"] == 0) {
                     str += "<td style='height:30px;text-align: center;' onclick=" + strCarbon + ">" + "-" + "</a></td>";
                 } else {
                     str += "<td style='height:30px;text-align: center;' onclick=" + strCarbon + ">" + list[i]["co2"] + "</a></td>";
                 }
-                if (list[i]["negative_pressure"] == 0) {
-                    str += "<td style='height:30px;text-align: center;' onclick=" + strNegative + ">" + "-" + "</a></td>";
-                } else {
-                    str += "<td style='height:30px;text-align: center;' onclick=" + strNegative + ">" + list[i]["negative_pressure"] + "</a></td>";
-                }
-                str += "<td style='height:30px;text-align: center;'>" + list[i]["larger_fan"] + "</td>";
-                str += "<td style='height:30px;text-align: center;'>" + list[i]["small_fan"] + "</td>";
-                str += "<td style='height:30px;text-align: center;'>" + list[i]["fenestella_name"] + "</td>";
-                str += "<td style='height:30px;text-align: center;'>" + list[i]["heating_name"] + "</td>";
-                str += "<td style='height:30px;text-align: center;'>" + list[i]["refrigeration_name"] + "</td>";
+//                if (list[i]["negative_pressure"] == 0) {
+//                    str += "<td style='height:30px;text-align: center;' onclick=" + strNegative + ">" + "-" + "</a></td>";
+//                } else {
+//                    str += "<td style='height:30px;text-align: center;' onclick=" + strNegative + ">" + list[i]["negative_pressure"] + "</a></td>";
+//                }
+//                str += "<td style='height:30px;text-align: center;'>" + list[i]["larger_fan"] + "</td>";
+//                str += "<td style='height:30px;text-align: center;'>" + list[i]["small_fan"] + "</td>";
+//                str += "<td style='height:30px;text-align: center;'>" + list[i]["fenestella_name"] + "</td>";
+//                str += "<td style='height:30px;text-align: center;'>" + list[i]["heating_name"] + "</td>";
+//                str += "<td style='height:30px;text-align: center;'>" + list[i]["refrigeration_name"] + "</td>";
                 str += "<td style='height:30px;text-align: center;'>" + list[i]["collect_datetime"] + "</td>";
                 $("#tbodyMonitorCurList").append(str);
 

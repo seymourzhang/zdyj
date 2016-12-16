@@ -1,5 +1,7 @@
 package com.mtc.zljk.device.wirelessyt.entity;
 
+import java.util.Date;
+
 /**
  * 引通控制器
  * @TODO
@@ -36,13 +38,6 @@ public class WirelessYTDevice {
 	public void setDataK(String dataK) {
 		this.dataK = dataK;
 	}
-	public String getTime() {
-		return time;
-	}
-	public void setTime(String time) {
-		this.time = time;
-	}
-	private String time;
 
 	private String power_status;
 	private String voltage;
@@ -51,7 +46,32 @@ public class WirelessYTDevice {
 	private String hardware_version;
 	private String software_version;
 	private String device_attr;
+	private String device_info;
+	private String sim_iccid;
+
+	// 系统时间，存储秒数
 	private long makeTime;
+	// 设备时间，存储秒数
+	private long ytDataTime;
+
+	private String frame_type;
+	private String frame_sn;
+
+	public String getDevice_info() {
+		return device_info;
+	}
+
+	public void setDevice_info(String device_info) {
+		this.device_info = device_info;
+	}
+
+	public String getSim_iccid() {
+		return sim_iccid;
+	}
+
+	public void setSim_iccid(String sim_iccid) {
+		this.sim_iccid = sim_iccid;
+	}
 
 	public String getSignalStrength() {
 		return signalStrength;
@@ -115,5 +135,29 @@ public class WirelessYTDevice {
 
 	public void setSoftware_version(String software_version) {
 		this.software_version = software_version;
+	}
+
+	public String getFrame_type() {
+		return frame_type;
+	}
+
+	public void setFrame_type(String frame_type) {
+		this.frame_type = frame_type;
+	}
+
+	public String getFrame_sn() {
+		return frame_sn;
+	}
+
+	public void setFrame_sn(String frame_sn) {
+		this.frame_sn = frame_sn;
+	}
+
+	public long getYtDataTime() {
+		return ytDataTime;
+	}
+
+	public void setYtDataTime(long ytDataTime) {
+		this.ytDataTime = ytDataTime;
 	}
 }
