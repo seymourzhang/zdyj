@@ -92,19 +92,19 @@
 	LEFT JOIN s_b_batch_curr sbbc ON sbbc.batch_id = a.batch_id
 	LEFT JOIN (SELECT
 	tData.timeId,
-	truncate(avg(tData.inside_temp1), 1)    AS avgtempLeft1,
-	truncate(avg(tData.inside_temp2), 1)    AS avgtempLeft2,
-	truncate(avg(tData.inside_temp10), 1)       AS avgtempMiddle1,
-	truncate(avg(tData.inside_temp11), 1)    AS avgtempMiddle2,
-	truncate(avg(tData.inside_temp19), 1)    AS avgtempRight1,
-	truncate(avg(tData.inside_temp20), 1)    AS avgtempRight2,
-	truncate(AVG(tData.outside_temp), 1)    AS avgoutsidetemp,
-	truncate(AVG(tData.high_alarm_temp), 1) AS highAlarmTemp,
-	truncate(AVG(tData.low_alarm_temp), 1)  AS lowAlarmTemp,
-	truncate(AVG(tData.inside_set_temp), 1) AS insideSetTemp,
-    truncate(AVG(tData.inside_humidity), 1) AS insideHumidity
+	truncate(avg(if(tData.inside_temp1=-99, null, tData.inside_temp1)), 1)    AS avgtempLeft1,
+	truncate(avg(if(tData.inside_temp2=-99, null, tData.inside_temp2)), 1)    AS avgtempLeft2,
+	truncate(avg(if(tData.inside_temp10=-99, null, tData.inside_temp10)), 1)       AS avgtempMiddle1,
+	truncate(avg(if(tData.inside_temp11=-99, null, tData.inside_temp11)), 1)    AS avgtempMiddle2,
+	truncate(avg(if(tData.inside_temp19=-99, null, tData.inside_temp19)), 1)    AS avgtempRight1,
+	truncate(avg(if(tData.inside_temp20=-99, null, tData.inside_temp20)), 1)    AS avgtempRight2,
+	truncate(AVG(if(tData.outside_temp=-99, null, tData.outside_temp)), 1)    AS avgoutsidetemp,
+	truncate(AVG(if(tData.high_alarm_temp=-99, null, tData.high_alarm_temp)), 1) AS highAlarmTemp,
+	truncate(AVG(if(tData.low_alarm_temp=-99, null, tData.low_alarm_temp)), 1)  AS lowAlarmTemp,
+	truncate(AVG(if(tData.inside_set_temp=-99, null, tData.inside_set_temp)), 1) AS insideSetTemp,
+    truncate(AVG(if(tData.inside_humidity=-99, null, tData.inside_humidity)), 1) AS insideHumidity
 	FROM (SELECT
-	date_format(collect_datetime, '%Y-%m-%d') AS timeId,
+	date_format(update_datetime, '%Y-%m-%d') AS timeId,
 	a.*
 	FROM s_b_monitor_hist a
 	WHERE 1 = 1
@@ -153,25 +153,25 @@
 		ELSE tData.timeId END                   AS timeId,
 		tData.house_id,
 		tData.date_age,
-		TRUNCATE(AVG(tData.inside_temp1), 1)    AS avgtempLeft1,
-		TRUNCATE(AVG(tData.inside_temp2), 1)    AS avgtempLeft2,
-		TRUNCATE(AVG(tData.inside_temp10), 1)    AS avgtempMiddle1,
-		TRUNCATE(AVG(tData.inside_temp11), 1)    AS avgtempMiddle2,
-		TRUNCATE(AVG(tData.inside_temp19), 1)    AS avgtempRight1,
-		TRUNCATE(AVG(tData.inside_temp20), 1)    AS avgtempRight2,
-		TRUNCATE(AVG(tData.outside_temp), 1)    AS avgoutsidetemp,
-		TRUNCATE(AVG(tData.high_alarm_temp), 1) AS highAlarmTemp,
-		TRUNCATE(AVG(tData.low_alarm_temp), 1)  AS lowAlarmTemp,
-		TRUNCATE(AVG(tData.inside_set_temp), 1) AS insideSetTemp,
-		TRUNCATE(AVG(tData.inside_humidity), 1) AS insideHumidity
+		TRUNCATE(AVG(if(tData.inside_temp1=-99, null, tData.inside_temp1)), 1)    AS avgtempLeft1,
+		TRUNCATE(AVG(if(tData.inside_temp2=-99, null, tData.inside_temp2)), 1)    AS avgtempLeft2,
+		TRUNCATE(AVG(if(tData.inside_temp10=-99, null, tData.inside_temp10)), 1)    AS avgtempMiddle1,
+		TRUNCATE(AVG(if(tData.inside_temp11=-99, null, tData.inside_temp11)), 1)    AS avgtempMiddle2,
+		TRUNCATE(AVG(if(tData.inside_temp19=-99, null, tData.inside_temp19)), 1)    AS avgtempRight1,
+		TRUNCATE(AVG(if(tData.inside_temp20=-99, null, tData.inside_temp20)), 1)    AS avgtempRight2,
+		TRUNCATE(AVG(if(tData.outside_temp=-99, null, tData.outside_temp)), 1)    AS avgoutsidetemp,
+		TRUNCATE(AVG(if(tData.high_alarm_temp=-99, null, tData.high_alarm_temp)), 1) AS highAlarmTemp,
+		TRUNCATE(AVG(if(tData.low_alarm_temp=-99, null, tData.low_alarm_temp)), 1)  AS lowAlarmTemp,
+		TRUNCATE(AVG(if(tData.inside_set_temp=-99, null, tData.inside_set_temp)), 1) AS insideSetTemp,
+		TRUNCATE(AVG(if(tData.inside_humidity=-99, null, tData.inside_humidity)), 1) AS insideHumidity
 		FROM (SELECT
-		(CASE WHEN DATE_FORMAT(collect_datetime, '%i') BETWEEN '00' AND '30'
-		THEN CONCAT(DATE_FORMAT(collect_datetime, '%H'), ':30')
-		ELSE CONCAT(DATE_FORMAT(adddate(collect_datetime, INTERVAL 1 HOUR), '%H'), ':00') END) AS timeId,
+		(CASE WHEN DATE_FORMAT(update_datetime, '%i') BETWEEN '00' AND '30'
+		THEN CONCAT(DATE_FORMAT(update_datetime, '%H'), ':30')
+		ELSE CONCAT(DATE_FORMAT(adddate(update_datetime, INTERVAL 1 HOUR), '%H'), ':00') END) AS timeId,
 		a.*
 		FROM s_b_monitor_hist a
 		WHERE a.house_id = ${HouseId}
-		AND DATE_FORMAT(a.collect_datetime, '%Y-%m-%d') = #{DataRange}
+		AND DATE_FORMAT(a.update_datetime, '%Y-%m-%d') = #{DataRange}
 		) tData
 		GROUP BY tData.timeId
 		ORDER BY tData.timeId
@@ -192,27 +192,27 @@
 		'Null'                                         AS data_date,
 		concat('(日龄：', tData2.age, ')')            AS data_age,
 		tData.house_id,
-		truncate(AVG(tData.inside_temp1), 1)           AS avgtempLeft1,
-		truncate(AVG(tData.inside_temp2), 1)           AS avgtempLeft2,
-		truncate(AVG(tData.inside_temp10), 1)           AS avgtempMiddle1,
-		truncate(AVG(tData.inside_temp11), 1)           AS avgtempMiddle2,
-		truncate(AVG(tData.inside_temp19), 1)           AS avgtempRight1,
-		truncate(AVG(tData.inside_temp20), 1)           AS avgtempRight2,
-		truncate(AVG(tData.outside_temp), 1)           AS avgoutsidetemp,
-		truncate(AVG(tData.high_alarm_temp), 1)        AS highAlarmTemp,
-		truncate(AVG(tData.low_alarm_temp), 1)         AS lowAlarmTemp,
-		truncate(AVG(tData.inside_set_temp), 1)        AS insideSetTemp,
-		truncate(AVG(tData.inside_humidity), 1)        AS insideHumidity
+		truncate(AVG(if(tData.inside_temp1=-99, null, tData.inside_temp1)), 1)           AS avgtempLeft1,
+		truncate(AVG(if(tData.inside_temp2=-99, null, tData.inside_temp2)), 1)           AS avgtempLeft2,
+		truncate(AVG(if(tData.inside_temp10=-99, null, tData.inside_temp10)), 1)           AS avgtempMiddle1,
+		truncate(AVG(if(tData.inside_temp11=-99, null, tData.inside_temp11)), 1)           AS avgtempMiddle2,
+		truncate(AVG(if(tData.inside_temp19=-99, null, tData.inside_temp19)), 1)           AS avgtempRight1,
+		truncate(AVG(if(tData.inside_temp20=-99, null, tData.inside_temp20)), 1)           AS avgtempRight2,
+		truncate(AVG(if(tData.outside_temp=-99, null, tData.outside_temp)), 1)           AS avgoutsidetemp,
+		truncate(AVG(if(tData.high_alarm_temp=-99, null, tData.high_alarm_temp)), 1)        AS highAlarmTemp,
+		truncate(AVG(if(tData.low_alarm_temp=-99, null, tData.low_alarm_temp)), 1)         AS lowAlarmTemp,
+		truncate(AVG(if(tData.inside_set_temp=-99, null, tData.inside_set_temp)), 1)        AS insideSetTemp,
+		truncate(AVG(if(tData.inside_humidity=-99, null, tData.inside_humidity)), 1)        AS insideHumidity
 		FROM (SELECT
-		DATE_FORMAT(adddate(a.collect_datetime, INTERVAL 1 MINUTE), '%i') AS timeId,
+		DATE_FORMAT(adddate(a.update_datetime, INTERVAL 1 MINUTE), '%i') AS timeId,
 		a.*
 		FROM s_b_monitor_hist a
 		WHERE 1 = 1
 		AND a.house_id = ${HouseId}
-		AND a.collect_datetime &gt;= STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i')
-		AND a.collect_datetime &lt; STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i')
+		AND a.update_datetime &gt;= STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i')
+		AND a.update_datetime &lt; STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i')
 		) tData
-		LEFT JOIN s_b_breed_detail tData2 ON date_format(tData2.growth_date, '%Y-%m-%d') = date_format(tData.collect_datetime, '%Y-%m-%d') AND tData2.batch_id = #{BreedBatchId}
+		LEFT JOIN s_b_breed_detail tData2 ON date_format(tData2.growth_date, '%Y-%m-%d') = date_format(tData.update_datetime, '%Y-%m-%d') AND tData2.batch_id = #{BreedBatchId}
 		GROUP BY tData.timeId
 		UNION ALL
 		SELECT
@@ -235,11 +235,11 @@
 		FROM s_d_code sc
 		WHERE 1 = 1
 		AND sc.code_type = #{DataType}
-		AND sc.biz_code > (SELECT right(concat('0', ifnull(DATE_FORMAT(MAX(sbh.collect_datetime), '%i') + 1, 0)), 2)
+		AND sc.biz_code > (SELECT right(concat('0', ifnull(DATE_FORMAT(MAX(sbh.update_datetime), '%i') + 1, 0)), 2)
 		FROM s_b_monitor_hist sbh
 		WHERE 1 = 1
 		AND sbh.house_id = ${HouseId}
-		AND sbh.collect_datetime BETWEEN
+		AND sbh.update_datetime BETWEEN
 		STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i') AND
 		STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i'))
 		ORDER BY x_axis;
@@ -260,10 +260,10 @@
 		LEFT JOIN s_b_batch_curr sbbc ON sbbc.batch_id = a.batch_id
 		LEFT JOIN (SELECT
 		tData.timeId,
-		truncate(avg(tData.co2), 1)    AS co2,
-		truncate(avg(tData.lux), 1)    AS lux
+		truncate(avg(if(tData.co2=-99, null, tData.co2)), 1)    AS co2,
+		truncate(avg(if(tData.lux=-99, null, tData.lux)), 1)    AS lux
 		FROM (SELECT
-		date_format(collect_datetime, '%Y-%m-%d') AS timeId,
+		date_format(update_datetime, '%Y-%m-%d') AS timeId,
 		a.*
 		FROM s_b_monitor_hist a
 		WHERE 1 = 1
@@ -303,16 +303,16 @@
 		ELSE tData.timeId END                   AS timeId,
 		tData.house_id,
 		tData.date_age,
-		TRUNCATE(AVG(tData.co2), 1)    AS co2,
-		TRUNCATE(AVG(tData.lux), 1)    AS lux
+		TRUNCATE(AVG(if(tData.co2=-99, null, tData.co2)), 1)    AS co2,
+		TRUNCATE(AVG(if(tData.lux=-99, null, tData.lux)), 1)    AS lux
 		FROM (SELECT
-		(CASE WHEN DATE_FORMAT(collect_datetime, '%i') BETWEEN '00' AND '30'
-		THEN CONCAT(DATE_FORMAT(collect_datetime, '%H'), ':30')
-		ELSE CONCAT(DATE_FORMAT(adddate(collect_datetime, INTERVAL 1 HOUR), '%H'), ':00') END) AS timeId,
+		(CASE WHEN DATE_FORMAT(update_datetime, '%i') BETWEEN '00' AND '30'
+		THEN CONCAT(DATE_FORMAT(update_datetime, '%H'), ':30')
+		ELSE CONCAT(DATE_FORMAT(adddate(update_datetime, INTERVAL 1 HOUR), '%H'), ':00') END) AS timeId,
 		a.*
 		FROM s_b_monitor_hist a
 		WHERE a.house_id = ${HouseId}
-		AND DATE_FORMAT(a.collect_datetime, '%Y-%m-%d') = #{DataRange}
+		AND DATE_FORMAT(a.update_datetime, '%Y-%m-%d') = #{DataRange}
 		) tData
 		GROUP BY tData.timeId
 		ORDER BY tData.timeId
@@ -332,16 +332,16 @@
 		'Null'                                         AS data_date,
 		concat('(日龄：', tData.date_age, ')')            AS data_age,
 		tData.house_id,
-		truncate(AVG(tData.co2), 1)           AS co2,
-		truncate(AVG(tData.lux), 1)           AS lux
+		truncate(AVG(if(tData.co2=-99, null, tData.co2)), 1)           AS co2,
+		truncate(AVG(if(tData.lux=-99, null, tData.lux)), 1)           AS lux
 		FROM (SELECT
-		DATE_FORMAT(adddate(a.collect_datetime, INTERVAL 1 MINUTE), '%i') AS timeId,
+		DATE_FORMAT(adddate(a.update_datetime, INTERVAL 1 MINUTE), '%i') AS timeId,
 		a.*
 		FROM s_b_monitor_hist a
 		WHERE 1 = 1
 		AND a.house_id = ${HouseId}
-		AND a.collect_datetime &gt;= STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i')
-		AND a.collect_datetime &lt; STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i')
+		AND a.update_datetime &gt;= STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i')
+		AND a.update_datetime &lt; STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i')
 		) tData
 		GROUP BY tData.timeId
 		UNION ALL
@@ -356,11 +356,11 @@
 		FROM s_d_code sc
 		WHERE 1 = 1
 		AND sc.code_type = #{DataType}
-		AND sc.biz_code > (SELECT right(concat('0', ifnull(DATE_FORMAT(MAX(sbh.collect_datetime), '%i') + 1, 0)), 2)
+		AND sc.biz_code > (SELECT right(concat('0', ifnull(DATE_FORMAT(MAX(sbh.update_datetime), '%i') + 1, 0)), 2)
 		FROM s_b_monitor_hist sbh
 		WHERE 1 = 1
 		AND sbh.house_id = ${HouseId}
-		AND sbh.collect_datetime BETWEEN
+		AND sbh.update_datetime BETWEEN
 		STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i') AND
 		STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i'))
 		ORDER BY x_axis;

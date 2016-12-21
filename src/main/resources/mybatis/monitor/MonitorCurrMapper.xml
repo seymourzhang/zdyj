@@ -88,7 +88,7 @@
                 , e.code_name fenestella_name
                 , d.code_name heating_name
                 , c.code_name refrigeration_name
-                , DATE_FORMAT(mc.collect_datetime,'%H:%i:%s') collect_datetime
+                , DATE_FORMAT(mc.update_datetime,'%H:%i:%s') collect_datetime
         FROM s_b_monitor_curr mc
         LEFT JOIN s_d_code c
         ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'
@@ -101,7 +101,7 @@
         LEFT JOIN s_d_house h
         ON mc.house_id= h.id
         WHERE mc.show_flag=1
-        ORDER BY mc.collect_datetime DESC
+        ORDER BY mc.update_datetime DESC
     </select>
 
     <select id="selectByCondition" resultType="pd" useCache="false">

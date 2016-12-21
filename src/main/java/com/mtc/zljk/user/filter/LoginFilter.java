@@ -28,7 +28,7 @@ public class LoginFilter extends  OncePerRequestFilter {
 	        String[] notFilter = new String[] {"/zdyj/index.jsp","/zdyj/modules/user/login.jsp","/zdyj/monitor/responseall","/zdyj/alarmCurr/mobileAlarm",
 					"/zdyj/alarmCurr/mobileAlarmCurr","/zdyj/alarmCurr/mobilesSolveAlarmCurr","/zdyj/login/login",
 					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin",
-//					"/zdyj/loginMobile/*","/zdyj/monitorMobile/*", "/zdyj/alarmMobile/*", "/zdyj/dailyMobile/*", "/zdyj/taskMobile/*", "/zdyj/tempMobile/*",
+					"/zdyj/loginMobile/*","/zdyj/monitorMobile/*", "/zdyj/alarmMobile/*", "/zdyj/dailyMobile/*", "/zdyj/taskMobile/*", "/zdyj/tempMobile/*", "/zdyj/farmMobile/*",
 					"/zdyj/checkVersion", "/zdyj/nht_zdyj*"};
 	  
 	        // 请求的url  
@@ -70,10 +70,15 @@ public class LoginFilter extends  OncePerRequestFilter {
 	        //url以css和js结尾的不进行拦截  
 	        if(url.endsWith(".css") || url.endsWith(".js")|| url.endsWith(".png")|| url.endsWith(".png")|| url.endsWith(".jpg")|| url.endsWith(".ico")|| url.endsWith(".css")){  
 	            return false;  
-	        }  
-	        //含有notFilter中的任何一个则不进行拦截
+	        }
+
+			/*if (url.indexOf(url.indexOf("Mobile")) != -1) {
+				return false;
+			}*/
+
+			//含有notFilter中的任何一个则不进行拦截
 	        for (String s : notFilter) {  
-	            if (url.indexOf("") != -1) {
+	            if (url.indexOf(s.replace("*", "")) != -1) {
 	                return false;  
 	            }  
 	        }  
