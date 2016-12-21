@@ -71,24 +71,59 @@ function reflushMonitor() {
                     str += "<td style='height:30px;text-align: center;color: #fff;background-color: #E83828 !important;'>" + list[i]["alarm_code"] + "</a></td>";
                 }
 
-
-                str += "<td style='height:30px;text-align: center;border-left: 2px solid #b4cef8;' onclick=" + strTemp + ">" + list[i]["inside_set_temp"] + "</a></td>";
+                if (list[i]["inside_set_temp"] == -99) {
+                	str += "<td style='height:30px;text-align: center;border-left: 2px solid #b4cef8;' onclick=" + strTemp + ">" + "-" + "</td>";
+                } else {
+                    str += "<td style='height:30px;text-align: center;border-left: 2px solid #b4cef8;' onclick=" + strTemp + ">" + list[i]["inside_set_temp"] + "</a></td>";
+                }
                 if (list[i]["outside_temp"] == -99) {
-                    str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + "-" + "</a></td>";
+                    str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + "-" + "</td>";
                 } else {
                     str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["outside_temp"] + "</a></td>";
                 }
+                if (list[i]["inside_avg_temp"] == -99) {
+                	str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_avg_temp"] + "</a></td>";
+                }
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + (list[i]["point_temp_diff"] != null ? list[i]["point_temp_diff"] : '' ) + "</a></td>";
+                if (list[i]["inside_temp1"] == -99) {
+                	str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp1"] + "</a></td>";
+                }
+                if (list[i]["inside_temp2"] == -99) {
+                	str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp2"] + "</a></td>";
+                }
+                if (list[i]["inside_temp10"] == -99) {
+                	str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp10"] + "</a></td>";
+                }
+                if (list[i]["inside_temp19"] == -99) {
+                	str += "<td style='height:30px;text-align: center;border-right: 2px solid #b4cef8;' onclick=" + strTemp + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;border-right: 2px solid #b4cef8;' onclick=" + strTemp + ">" + list[i]["inside_temp19"] + "</a></td>";
+                }
+                if (list[i]["inside_temp20"] == -99) {
+                	str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strTemp + ">" + list[i]["inside_temp20"] + "</a></td>";
+                }
+                if (list[i]["inside_humidity"] == -99) {
+                	str += "<td style='height:30px;text-align: center;' onclick=" + strHumidity + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strHumidity + ">" + list[i]["inside_humidity"] + "</a></td>";
+                }
+                if (list[i]["lux"] == -99) {
+                	str += "<td style='height:30px;text-align: center;' onclick=" + strWater + ">" + "-" + "</td>";
+                } else {
                 str += "<td style='height:30px;text-align: center;' onclick=" + strWater + ">" + list[i]["lux"] + "</a></td>";
-                if (list[i]["co2"] == 0) {
-                    str += "<td style='height:30px;text-align: center;' onclick=" + strCarbon + ">" + "-" + "</a></td>";
+                }
+                if (list[i]["co2"] == 0 || list[i]["co2"] == -99) {
+                    str += "<td style='height:30px;text-align: center;' onclick=" + strCarbon + ">" + "-" + "</td>";
                 } else {
                     str += "<td style='height:30px;text-align: center;' onclick=" + strCarbon + ">" + list[i]["co2"] + "</a></td>";
                 }

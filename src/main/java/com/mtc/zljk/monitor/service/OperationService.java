@@ -22,7 +22,7 @@ public interface OperationService {
      * @return List<PageData>
      * @throws Exception
      */
-    List<PageData> selectAll() throws Exception;
+    List<PageData> selectAll(PageData pd) throws Exception;
 
     /***
      * 按条件查询栋舍

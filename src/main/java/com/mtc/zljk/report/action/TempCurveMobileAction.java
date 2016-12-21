@@ -99,7 +99,7 @@ public class TempCurveMobileAction extends BaseAction {
                     }
 
                     if (x_axis.toString().endsWith("60")) {
-                        int tHor = Integer.parseInt(x_axis.toString().substring(0, 2)) + 1;
+                        int tHor = Integer.parseInt(x_axis.toString().substring(0, 2).replace(":", "")) + 1;
                         x_axis = PubFun.fillLeftChar(tHor, '0', 2) + ":00";
                     }
 
@@ -237,9 +237,11 @@ public class TempCurveMobileAction extends BaseAction {
                 resJson.put("Error", "");
                 dealRes = Constants.RESULT_SUCCESS;
             }
-        } catch (JSONException JSONe){
-            JSONe.printStackTrace();
-            dealRes = Constants.RESULT_FAIL;
+        } catch (Exception e){
+            e.printStackTrace();
+            resJson.put("Result", "Fail");
+            resJson.put("Error", "程序处理错误，请联系管理员！");
+            dealRes = Constants.RESULT_SUCCESS;
         }
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }
@@ -306,7 +308,7 @@ public class TempCurveMobileAction extends BaseAction {
                     }
 
                     if (x_axis.toString().endsWith("60")) {
-                        int tHor = Integer.parseInt(x_axis.toString().substring(0, 2)) + 1;
+                        int tHor = Integer.parseInt(x_axis.toString().substring(0, 2).replace(":", "")) + 1;
                         x_axis = PubFun.fillLeftChar(tHor, '0', 2) + ":00";
                     }
 

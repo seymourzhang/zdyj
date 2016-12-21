@@ -47,14 +47,16 @@
 											  </div>
 											  <div class="span3" align="left">
 												  <span_customer>品名</span_customer>
-												  <select id="drug_id"  tabindex="1"  name="drug_id" >
+												  <select id="drug_id"  tabindex="1"  name="drug_id" style="display: none;">
 <!-- 													  <option value="">全部</option> -->
 													  <c:if test="${!empty goodsList}">
 														  <c:forEach var="goods" items="${goodsList}">
+														      <option value=""></option>
 															  <option value="${goods.good_id }">${goods.good_name}</option>
 														  </c:forEach>
 													  </c:if>
 												  </select>
+												  <input type="text" id="drug_id_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onchange="empty()" />
 											  </div>
 <!-- 											  <div class="span3" align="left"> -->
 <!-- 												  <span_customer>使用方法</span_customer> -->
@@ -131,14 +133,16 @@
 <!-- 										  </div> -->
 										  <div class="span3" align="left">
 											  <span_customer>品名</span_customer>
-											  <select id="drug_id1" tabindex="1"  name="drug_id1" onchange="setFactory();">
+											  <select id="drug_id1" tabindex="1"  name="drug_id1" onchange="setFactory();" style="display: none;">
 <!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty goodsList}">
 													  <c:forEach var="goods" items="${goodsList}">
+													      <option value=""></option>
 														  <option value="${goods.good_id }">${goods.good_name}</option>
 													  </c:forEach>
 												  </c:if>
 											  </select>
+											  <input type="text" id="drug_id1_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onchange="empty()" />
 										  </div>
 										  <div class="span3" align="left">
 											  <span_customer>用途</span_customer>

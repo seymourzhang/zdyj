@@ -4,6 +4,8 @@ import com.mtc.zljk.device.dmr.service.DmrService;
 import com.mtc.zljk.device.rotem.service.RotemService;
 import com.mtc.zljk.device.wirelessyt.WirelessYTService;
 import com.mtc.zljk.device.yingtong.service.YingtongService;
+import com.mtc.zljk.util.common.IPUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,8 @@ import org.springframework.stereotype.Component;
  */
 @Component("deviceAutoRun")
 public class AutoRun {
+
+    private static Logger mLogger = Logger.getLogger(AutoRun.class);
 
     @Autowired
     DmrService dmrService;
@@ -37,6 +41,11 @@ public class AutoRun {
 //        System.out.println("更新引通数据至数据库...");
 //        yingtongService.start();
 //        System.out.println("更新引通数据完毕！");
+
+        if(!IPUtil.needRunTask()){
+            mLogger.info("本机不启用deviceAutoRun");
+            return ;
+        }
 
         System.out.println("更新引通无线数据开始！");
         tWirelessYTService.start();

@@ -25,8 +25,136 @@ $(document).ready(function(){
       forward3();
       
       searchData("plan");
+      initDrugsSelect();
 	});
 
+function empty(){
+	if(document.getElementById("drug_id_select").value==""){
+		document.getElementById("drug_id").value = null;
+	}	
+	if(document.getElementById("drug_id1_select").value==""){
+		document.getElementById("drug_id1").value = null;
+	}	
+}
+
+function initDrugsSelect(){
+    $.fn.typeahead.Constructor.prototype.blur = function() {
+        var that = this;
+        setTimeout(function () { that.hide(); }, 250);
+    };
+
+    //计划
+    $('#drug_id_select').typeahead({
+        source: function(query, process) {
+        	var goods = getDrugsNameList('drug_id', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            if(results.length ==0){
+            	document.getElementById("drug_id").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getDrugsNameList('drug_id', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getDrugsNameList('drug_id', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getDrugsNameList('drug_id', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setDrugsInfo('drug_id', good.id);
+            return good.text;
+        }
+        // ,minLength:1
+        // ,displayKey: 'text'
+    });
+    
+    //实际
+    $('#drug_id1_select').typeahead({
+        source: function(query, process) {
+        	var goods = getDrugsNameList('drug_id1', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            if(results.length ==0){
+            	document.getElementById("drug_id1").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getDrugsNameList('drug_id1', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getDrugsNameList('drug_id1', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getDrugsNameList('drug_id1', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setDrugsInfo('drug_id1', good.id);
+            return good.text;
+        }
+    });
+    
+}
+
+function setDrugsInfo(selectName, goodId){
+    var select = document.getElementById(selectName);
+    var options = select.options;
+    for(var key in options){
+        if(goodId == options[key].value){
+        	options[key].selected = true;
+        }
+	}
+}
+
+function getDrugsNameList(selectName, value){
+	var drugsNameList = [];
+    var select = document.getElementById(selectName);
+    var options = select.options;
+	var oValue = "";
+    var oText = "";
+	for(var key in options){
+        oValue = options[key].value;
+		oText = options[key].text;
+        var oTextFlag = new RegExp(value).test(oText);
+        var oValueFlag = new RegExp(value).test(oValue);
+		if(oTextFlag == true || oValueFlag == true){
+			drugsNameList.push({id:oValue, text:oText});
+		}
+	}
+	// goodsNameList = [{id:'1', text:'新的什么'},{id:'2', text:'新的什么2'},{id:'3', text:'的什么'}];
+	return drugsNameList;
+}
 
 function setDrugId(){
 	$.ajax({

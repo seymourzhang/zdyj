@@ -18,8 +18,8 @@ public class OperationServiceImpl implements OperationService {
     @Resource(name="daoSupport")
     private DaoSupport dao;
 
-    public List<PageData> selectAll() throws Exception{
-        return (List<PageData>) dao.findForList("OperationMapper.selectAll", null);
+    public List<PageData> selectAll(PageData pd) throws Exception{
+        return (List<PageData>) dao.findForList("OperationMapper.selectAll", pd);
     }
 
     public List<PageData> selectByConditionMy(PageData pd) throws Exception{

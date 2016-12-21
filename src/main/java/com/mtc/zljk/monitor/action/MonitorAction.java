@@ -78,7 +78,7 @@ public class MonitorAction extends BaseAction{
 //			arg1.getWriter().print(str);
 		PageData pd = this.getPageData();
 		PageData pageData = new PageData();
-		List<PageData> mcl = new ArrayList<>();
+		List<PageData> mcl = new ArrayList<PageData>();
 		if ("true".equals(pd.get("checked"))) {
 			SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 			pageData.put("user_code", user.getId());
@@ -198,27 +198,30 @@ public class MonitorAction extends BaseAction{
         /*List<PageData> orglist= moduleService.service("organServiceImpl", "getOrgListByRoleId", new Object[]{pd});*/
         //获取架构全部
         PageData pd2 = new PageData();
-        List<PageData> orgAll= operationService.selectAll();
+        pd2.put("user_id", user.getId());
+        List<PageData> orgAll= operationService.selectAll(pd2);
         //获取设定id
         pd2.put("user_code", user.getId());
         PageData mcl = getMonitorSet(pd2);
+        List boss = new ArrayList();
+        if(mcl!=null){
         List<String> houseArrays = Arrays.asList(mcl.get("house_id_group").toString().split(","));
         pd = new PageData();
-        pd.put("level_id", 4);
+        pd.put("level_id", 3);
         pd.put("groupId", houseArrays);
         List<PageData> houseId = operationService.selectByCondition(pd);
         List<String> farmArrays = Arrays.asList(mcl.get("farm_id_group").toString().split(","));
         pd = new PageData();
-        pd.put("level_id", 3);
+        pd.put("level_id", 2);
         pd.put("groupId", farmArrays);
         List<PageData> farmId = operationService.selectByCondition(pd);
-        List boss = new ArrayList();
+        
         boss.addAll(farmId);
         boss.addAll(houseId);
         //获取农场以上层级id
         List<PageData> temps = modifySet(mcl);
         boss.addAll(temps);
-
+        }
         //处理组织架构数据
         List<PageData> list = new ArrayList<PageData>();
         for (PageData pageData : orgAll) {
@@ -229,7 +232,8 @@ public class MonitorAction extends BaseAction{
             data.put("open", "true");
 //			data.put("chkDisabled", "true");
             int tmp = 0;
-            List<PageData> ss = new ArrayList<>(boss);
+            if(mcl != null){
+            List<PageData> ss = new ArrayList<PageData>(boss);
             for (PageData p2 : ss) {
                 if(p2.get("id").equals(pageData.getInteger("id"))){
                     tmp = 1;
@@ -240,6 +244,9 @@ public class MonitorAction extends BaseAction{
                 data.put("checked", "true");
             } else {
                 data.put("checked", "false");
+            }
+            }else{
+            	data.put("checked", "false");
             }
             list.add(data);
         }
@@ -265,8 +272,8 @@ public class MonitorAction extends BaseAction{
             PageData pdTemp = new PageData();
             pdTemp.put("groupId", ids);
             List<PageData> list = operationService.selectByConditionMy(pdTemp);
-            List<String> farmIdGroup = new ArrayList<>();
-            List<String> houseIdGroup = new ArrayList<>();
+            List<String> farmIdGroup = new ArrayList<String>();
+            List<String> houseIdGroup = new ArrayList<String>();
             for (PageData pageData : list) {
                 if ("3".equals(pageData.get("level_id").toString())) {
                     farmIdGroup.add(pageData.get("organization_id").toString());

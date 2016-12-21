@@ -95,13 +95,13 @@
 										</div>
 										<div class="span3" align="left">
 											<span_customer>品名</span_customer>
-											<select id="good_id"  name="good_id" style="display: none" >
+											<select id="good_id"  name="good_id" style="display: none;" >
 												<%--style="display: none"--%>
 <!-- 											<option value="1">cow</option>   -->
 <!--                                             <option value="2">bull</option>   -->
 <!--                                             <option value="3">ox</option>   class="form-control selectpicker" data-live-search="true"  class="js-example-basic-single"-->
 											</select>
-											<input type="text" id="goods_id_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" />
+											<input type="text" id="goods_id_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onchange="empty()" />
 												<!-- 											<input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
 										</div>
 										<div class="span3" align="left">
@@ -187,8 +187,9 @@
 										</div>
 										<div class="span3" align="left">
 											<span_customer>品名</span_customer>
-											<select id="good_id_out"  tabindex="1"  name="good_id" >
+											<select id="good_id_out" name="good_id" style="display: none;">
 											</select>
+											<input type="text" id="goods_id_out_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onblur="empty();" />
 <!--                                                 <input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
 										</div>
 										<div class="span3" align="left">
@@ -255,8 +256,9 @@
 										</div>
 										<div class="span3" align="left">
 											<span_customer>品名</span_customer>
-												<select id="good_id_stock" tabindex="1"  name="good_id">
+												<select id="good_id_stock" tabindex="1"  name="good_id" style="display: none;">
 												</select>
+												<input type="text" id="good_id_stock_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onblur="empty();" />
 										</div>
 										<div class="span3" align="left">
 											<span_customer>规格</span_customer>

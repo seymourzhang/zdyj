@@ -81,18 +81,34 @@ $(document).ready(function() {
 
 });
 
+function empty(){
+	if(document.getElementById("goods_id_select").value==""){
+		document.getElementById("good_id").value = null;
+	}	
+	if(document.getElementById("goods_id_out_select").value==""){
+		document.getElementById("good_id_out").value = null;
+	}	
+	if(document.getElementById("good_id_stock_select").value==""){
+		document.getElementById("good_id_stock").value = null;
+	}
+}
+
 function initGoodsSelect(){
     $.fn.typeahead.Constructor.prototype.blur = function() {
         var that = this;
-        setTimeout(function () { that.hide() }, 250);
+        setTimeout(function () { that.hide(); }, 250);
     };
 
+    //入库
     $('#goods_id_select').typeahead({
         source: function(query, process) {
         	var goods = getGoodsNameList('good_id', query);
             var results = goods.map(function (item,index,input){
                 return item.id+"";
 			});
+            if(results.length ==0){
+            	document.getElementById("good_id").value = null;
+            }
             process(results);
             // return goods;
         }
@@ -124,6 +140,91 @@ function initGoodsSelect(){
         // ,minLength:1
         // ,displayKey: 'text'
     });
+    
+    //耗用
+    $('#goods_id_out_select').typeahead({
+        source: function(query, process) {
+        	var goods = getGoodsNameList('good_id_out', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            if(results.length ==0){
+            	document.getElementById("good_id_out").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getGoodsNameList('good_id_out', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getGoodsNameList('good_id_out', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getGoodsNameList('good_id_out', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setGoodsInfo('good_id_out', good.id);
+            return good.text;
+        }
+        // ,minLength:1
+        // ,displayKey: 'text'
+    });
+    
+    //库存调整
+    $('#good_id_stock_select').typeahead({
+        source: function(query, process) {
+        	var goods = getGoodsNameList('good_id_stock', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            if(results.length ==0){
+            	document.getElementById("good_id_stock").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getGoodsNameList('good_id_stock', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getGoodsNameList('good_id_stock', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getGoodsNameList('good_id_stock', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setGoodsInfo('good_id_stock', good.id);
+            return good.text;
+        }
+        // ,minLength:1
+        // ,displayKey: 'text'
+    });
+    
 }
 
 function setGoodsInfo(selectName, goodId){
@@ -413,6 +514,7 @@ function setGoodNameOut() {
 		success : function(result) {
 			var list = result.obj;
 			$("#good_id_out option").remove();
+			$("#good_id_out").append("<option value='' selected = 'selected'>" + "</option>");
 			for (var i = 0; i < list.length; i++) {
 				$("#good_id_out").append("<option value=" + list[i].good_id + ">" + list[i].good_name + "</option>");
 			}
@@ -552,7 +654,7 @@ function setGoodNameStock() {
 		success : function(result) {
 			var list = result.obj;
 			$("#good_id_stock option").remove();
-			$("#good_id_stock").append("<option value=''>全部</option>");
+			$("#good_id_stock").append("<option value='' selected = 'selected'>" + "</option>");
 			for (var i = 0; i < list.length; i++) {
 				$("#good_id_stock").append("<option value=" + list[i].good_id + ">" + list[i].good_name + "</option>");
 			}

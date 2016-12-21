@@ -27,9 +27,9 @@ public class LoginFilter extends  OncePerRequestFilter {
 	        // 不拦截的url  
 	        String[] notFilter = new String[] {"/zdyj/index.jsp","/zdyj/modules/user/login.jsp","/zdyj/monitor/responseall","/zdyj/alarmCurr/mobileAlarm",
 					"/zdyj/alarmCurr/mobileAlarmCurr","/zdyj/alarmCurr/mobilesSolveAlarmCurr","/zdyj/login/login",
-					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin","/zdyj/loginMobile/*","/zdyj/monitorMobile/*",
-					"/zdyj/alarmMobile/*", "/zdyj/dailyMobile/*", "/zdyj/taskMobile/*",
-					"/zdyj/checkVersion", "/zdyj/tempMobile/*"};
+					"/zdyj/login/login","/zdyj/login/outLogin","/zdyj/login/login_toLogin",
+//					"/zdyj/loginMobile/*","/zdyj/monitorMobile/*", "/zdyj/alarmMobile/*", "/zdyj/dailyMobile/*", "/zdyj/taskMobile/*", "/zdyj/tempMobile/*",
+					"/zdyj/checkVersion", "/zdyj/nht_zdyj*"};
 	  
 	        // 请求的url  
 	        String url = request.getRequestURI();  
@@ -73,7 +73,7 @@ public class LoginFilter extends  OncePerRequestFilter {
 	        }  
 	        //含有notFilter中的任何一个则不进行拦截
 	        for (String s : notFilter) {  
-	            if (url.indexOf(s.replace("*","")) != -1) {
+	            if (url.indexOf("") != -1) {
 	                return false;  
 	            }  
 	        }  
