@@ -38,3 +38,5 @@
 <style type="text/css">
     span_customer{padding-right:10px;width:4em;display:block;float:left;line-height:26px;}
 </style>
+
+<link rel="stylesheet" href="<%=path%>/framework/css/system.css" />

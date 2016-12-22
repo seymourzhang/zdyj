@@ -200,6 +200,8 @@ public class LoginMobileAction extends BaseAction{
         JSONArray ja = new JSONArray();
         for (PageData pageData : ll) {
             pd.put("house_code", pageData.get("id"));
+            pd.put("house_id", pageData.get("id"));
+            List<PageData> device = farmService.findDevice(pd);
             PageData lpd = batchManageService.selectBatchDataForMobile(pd);
             JSONObject o = new JSONObject();
             o.put("id", pageData.get("id"));
@@ -210,11 +212,11 @@ public class LoginMobileAction extends BaseAction{
                 o.put("BreedBatchStatus", 0);
                 o.put("houseTypeName", "");
             } else {
-                o.put("deviceCode", pageData.get("device_code") == null ? "" : pageData.get("device_code"));
                 o.put("BreedBatchId", lpd.get("batch_id") == null ? 0 : lpd.get("batch_id"));
                 o.put("BreedBatchStatus", lpd.get("status").equals(0) ? 2 : 1);
                 o.put("houseTypeName", lpd.get("house_type"));
             }
+            o.put("deviceCode", device.size() == 0 ? "" : device.get(0).get("device_code"));
             ja.put(o);
         }
         resJson.put("HouseInfos", ja);

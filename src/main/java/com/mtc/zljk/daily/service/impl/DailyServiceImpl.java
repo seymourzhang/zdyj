@@ -26,6 +26,8 @@ public class DailyServiceImpl implements DailyService{
         int cullingFemale = pd.getInteger("culling_num_female");
         int deathMale = pd.getInteger("death_num_male");
         int deathFemale = pd.getInteger("death_num_female");
+        int genderErrorMale = pd.getInteger("gender_error_male");
+        int genderErrorFemale = pd.getInteger("gender_error_female");
         PageData temp = (PageData) dao.findForObject("DailyMapper.selectBySpecialDate", pd);
         int checkMale = temp.getInteger("male_count");
         int checkFemale = temp.getInteger("female_count");
@@ -34,7 +36,9 @@ public class DailyServiceImpl implements DailyService{
         Date curDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        if (checkFemale - cullingFemale < 0 || checkMale - deathFemale < 0){
+        int maleCountDiff = checkFemale - cullingFemale - deathFemale;
+        int femaleCountDiff = checkMale - deathMale - deathFemale;
+        if (maleCountDiff < 0 || femaleCountDiff < 0){
             result = -1;
         }else {
             pd.put("service_id", 0);
@@ -57,6 +61,13 @@ public class DailyServiceImpl implements DailyService{
                 pd.put("bak", "淘汰数量");
                 dao.save("DailyMapper.insertDaily", pd);
                 dao.save("DailyMapper.updateCurrCount", pd);
+            }
+            if (deathFemale + deathMale != 0) {
+                pd.put("operation_type", "8");
+                pd.put("male_count", -genderErrorMale);
+                pd.put("female_count", -genderErrorFemale);
+                pd.put("bak", "鉴别错误");
+                dao.save("DailyMapper.insertDaily", pd);
             }
             result = (Integer) dao.save("DailyMapper.dailySave", pd);
         }

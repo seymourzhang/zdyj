@@ -129,11 +129,11 @@
                 , ifnull(truncate(mc.inside_temp11,1),"-") inside_temp11
                 , ifnull(truncate(mc.inside_temp19,1),"-") inside_temp19
                 , ifnull(truncate(mc.inside_temp20,1),"-") inside_temp20
-                , ifnull(truncate(format(mc.inside_avg_temp,1),1),"-") inside_avg_temp
-                , ifnull(truncate(format(mc.inside_set_temp,1),1),"-") inside_set_temp
+                , ifnull(truncate(mc.inside_avg_temp,1),"-") inside_avg_temp
+                , ifnull(truncate(mc.inside_set_temp,1),"-") inside_set_temp
                 , ifnull(truncate(mc.high_alarm_temp,1),"-") high_alarm_temp
                 , ifnull(truncate(mc.low_alarm_temp,1),"-") low_alarm_temp
-                , ifnull(truncate(format(mc.outside_temp,1),1),"-") outside_temp
+                , ifnull(truncate(mc.outside_temp,1),"-") outside_temp
                 , ifnull(truncate(mc.inside_humidity,1),"-") inside_humidity
                 , ifnull(truncate(mc.point_temp_diff,1),"-") point_temp_diff
                 , ifnull(truncate(mc.target_humidity,1),"-") target_humidity

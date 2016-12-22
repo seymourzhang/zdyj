@@ -64,7 +64,7 @@ public class MonitorMobileAction extends BaseAction {
             house.add(a.getInteger("id"));
             pd.put("houseId", house);
             mcl = monitorService.selectByCondition(pd);
-            if (mcl.size() != 0 ) {
+            if (mcl.size() != 0) {
                 for (PageData data : mcl) {
                     /*long accident = Long.parseLong(data.get("accidentTime").toString());
                     Date collectDate = sdf.parse(data.get("collect_datetime2").toString());
@@ -75,21 +75,21 @@ public class MonitorMobileAction extends BaseAction {
                         jo.put("houseName", a.get("name_cn"));
                         jo.put("dayAge", data.get("date_age"));
                         jo.put("data_time", sdf1.format(sdf1.parse(data.get("collect_datetime").toString())));
-                        jo.put("out_temp", "-99.0".equals(data.get("outside_temp").toString()) || "-".equals(data.get("outside_temp").toString()) ? "-" : data.get("outside_temp").toString() + "℃");
-                        jo.put("tempLeft1", "-99.0".equals(data.get("inside_temp1").toString()) || "-".equals(data.get("inside_temp1").toString()) ? "-" : data.get("inside_temp1").toString() + "℃");
-                        jo.put("tempLeft2", "-99.0".equals(data.get("inside_temp2").toString()) || "-".equals(data.get("inside_temp2").toString()) ? "-" : data.get("inside_temp2").toString() + "℃");
-                        jo.put("tempMiddle1", "-99.0".equals(data.get("inside_temp10").toString()) || "-".equals(data.get("inside_temp10").toString()) ? "-" : data.get("inside_temp10").toString() + "℃");
-                        jo.put("tempMiddle2", "-99.0".equals(data.get("inside_temp11").toString()) || "-".equals(data.get("inside_temp11").toString()) ? "-" : data.get("inside_temp11").toString() + "℃");
-                        jo.put("tempRight1", "-99.0".equals(data.get("inside_temp19").toString()) || "-".equals(data.get("inside_temp19").toString()) ? "-" : data.get("inside_temp19").toString() + "℃");
-                        jo.put("tempRight2", "-99.0".equals(data.get("inside_temp20").toString()) || "-".equals(data.get("inside_temp20").toString()) ? "-" : data.get("inside_temp20").toString() + "℃");
-                        jo.put("tar_temp", "-99.0".equals(data.get("inside_set_temp").toString()) || "-".equals(data.get("inside_set_temp").toString()) ? "-" : data.get("inside_set_temp").toString() + "℃");
-                        jo.put("avg_temp", "-99.0".equals(data.get("inside_avg_temp").toString()) || "-".equals(data.get("inside_avg_temp").toString()) ? "-" : data.get("inside_avg_temp").toString() + "℃");
-                        jo.put("H_temp", "-99.0".equals(data.get("high_alarm_temp").toString()) || "-".equals(data.get("high_alarm_temp").toString()) ? "-" : data.get("high_alarm_temp").toString() + "℃");
-                        jo.put("L_temp", "-99.0".equals(data.get("low_alarm_temp").toString()) || "-".equals(data.get("low_alarm_temp").toString()) ? "-" : data.get("low_alarm_temp").toString() + "℃");
-                        jo.put("point_temp", "-99.0".equals(data.get("point_temp_diff").toString()) || "-".equals(data.get("point_temp_diff").toString()) ? "-" : data.get("point_temp_diff").toString() + "℃");
-                        jo.put("humi", "-99.0".equals(data.get("inside_humidity").toString()) || "-".equals(data.get("inside_humidity").toString()) ? "-" : data.get("inside_humidity").toString() + "%");
-                        jo.put("CO2", "-99.0".equals(data.get("co2").toString()) || "-".equals(data.get("co2").toString()) ? "-" : data.get("co2"));
-                        jo.put("illumination", "-99.0".equals(data.get("lux").toString()) || "-".equals(data.get("lux").toString()) ? "-" : data.get("lux"));
+                        jo.put("out_temp", "-".equals(data.get("outside_temp").toString()) ? "-" : data.get("outside_temp").toString() + "℃");
+                        jo.put("tempLeft1", "-".equals(data.get("inside_temp1").toString()) ? "-" : data.get("inside_temp1").toString() + "℃");
+                        jo.put("tempLeft2", "-".equals(data.get("inside_temp2").toString()) ? "-" : data.get("inside_temp2").toString() + "℃");
+                        jo.put("tempMiddle1", "-".equals(data.get("inside_temp10").toString()) ? "-" : data.get("inside_temp10").toString() + "℃");
+                        jo.put("tempMiddle2", "-".equals(data.get("inside_temp11").toString()) ? "-" : data.get("inside_temp11").toString() + "℃");
+                        jo.put("tempRight1", "-".equals(data.get("inside_temp19").toString()) ? "-" : data.get("inside_temp19").toString() + "℃");
+                        jo.put("tempRight2", "-".equals(data.get("inside_temp20").toString()) ? "-" : data.get("inside_temp20").toString() + "℃");
+                        jo.put("tar_temp", "-".equals(data.get("inside_set_temp").toString()) ? "-" : data.get("inside_set_temp").toString() + "℃");
+                        jo.put("avg_temp", "-".equals(data.get("inside_avg_temp").toString()) ? "-" : data.get("inside_avg_temp").toString() + "℃");
+                        jo.put("H_temp", "-".equals(data.get("high_alarm_temp").toString()) ? "-" : data.get("high_alarm_temp").toString() + "℃");
+                        jo.put("L_temp", "-".equals(data.get("low_alarm_temp").toString()) ? "-" : data.get("low_alarm_temp").toString() + "℃");
+                        jo.put("point_temp", "-".equals(data.get("point_temp_diff").toString()) ? "-" : data.get("point_temp_diff").toString() + "℃");
+                        jo.put("humi", "-".equals(data.get("inside_humidity").toString()) ? "-" : data.get("inside_humidity").toString() + "%");
+                        jo.put("CO2", "-".equals(data.get("co2").toString()) ? "-" : data.get("co2"));
+                        jo.put("illumination", "-".equals(data.get("lux").toString()) ? "-" : data.get("lux"));
                         jo.put("power_status", "-".equals(data.get("power_status")) ? "-" : (data.get("power_status").equals("1") ? "断电" : "正常"));
                         jo.put("temp_in1_alarm", data.get("temp_in1_alarm"));
                         jo.put("temp_in2_alarm", data.get("temp_in2_alarm"));
@@ -100,7 +100,7 @@ public class MonitorMobileAction extends BaseAction {
                         jo.put("co2_alarm", data.get("co2_alarm"));
                         jo.put("lux_alarm", data.get("lux_alarm"));
                         monitor.put(jo);
-                    }else{
+                    } else {
                         JSONObject show_n = new JSONObject();
                         show_n.put("houseName", a.get("name_cn"));
                         show_n.put("dayAge", "-");

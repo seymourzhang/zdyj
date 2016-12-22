@@ -101,14 +101,19 @@ $("#enableMonitorSet").change(function() {
 									<!-- BEGIN FORM-->
 									<div class="form-horizontal" style="height: 40px;">
 										<div style="height: 20px;">
+										<script type="text/javascript">
+										var flag = "";
+										</script>
 										<%@ include file="../../framework/org.jsp"%>
 
 											<!--/span-->
 
 											<div class="span4" style="margin-top: 5px;margin-left: 20px;">
 	
-										<input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 100px;"/><a href="javascript:;" style="text-align: center;margin-left: -40px;margin-top: 140px;" onclick="monitorSetting();">启用监控设置</a>
-									
+										<input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 100px;"/>
+										<div style="margin-top: -18px;">
+										<a href="javascript:;" style="margin-left: 60px;" onclick="monitorSetting();">启用监控设置</a>
+									    </div>
 
 											</div>
 											<!--/span-->
@@ -149,8 +154,10 @@ $("#enableMonitorSet").change(function() {
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Shape.png" style="width: 25px; height: 25px;" /></th>
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 203.png" style="width: 25px; height: 25px;" /></th>
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
-										
-										<th colspan="9" style="text-align: center;">温度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" style="height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
+										<th colspan="6" style="text-align: center;">温度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" style="height: 25px;" /></th>
 										
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 17.png" style="width: 25px; height: 25px;" /></th>
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/light.png" style="width: 25px; height: 25px;" /></th>
@@ -167,16 +174,16 @@ $("#enableMonitorSet").change(function() {
 										<th style="text-align: center; border-right:12px solid #2586C4;">农场</th>
 										<th style="text-align: center;">舍号</th>
 										<th style="text-align: center;">日龄</th>
-										<th style="text-align: center;">警报</th>
+										<th style="text-align: center;">状态</th>
 										
 										
 										<th style="text-align: center;">目标</th>
 										<th style="text-align: center;">室外</th>
 										<th style="text-align: center;">平均</th>
-										<th style="text-align: center;">温差</th>
+										<th style="text-align: center;">点温差</th>
 										<th style="text-align: center;">前区1</th>
 										<th style="text-align: center;">前区2</th>
-										<th style="text-align: center;">中区1</th>
+										<th style="text-align: center;">中区</th>
 										<th style="text-align: center;">后区1</th>
 										<th style="text-align: center;">后区2</th>
 										<th style="text-align: center;">湿度</th>

@@ -58,7 +58,9 @@ public interface FarmService {
 	public List<PageData> findCode(PageData pd) throws Exception;
 	
 	public List<PageData> findAreaChina(PageData pd) throws Exception;
-	
+
+	public List<PageData> findDeviceIsExist(PageData pd) throws Exception;
+
 	public List<PageData> findDevice(PageData pd) throws Exception;
 	
 	public List<PageData> findHouseDevice(PageData pd) throws Exception;

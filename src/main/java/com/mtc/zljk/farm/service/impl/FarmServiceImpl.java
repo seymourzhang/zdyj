@@ -64,6 +64,10 @@ public class FarmServiceImpl implements FarmService {
 		return (List<PageData>) dao.findForList("SDFarmMapper.findDevice", pd);
 	}
 
+	public List<PageData> findDeviceIsExist(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDFarmMapper.findDeviceIsExist", pd);
+	}
+
 	public List<PageData> findSensor(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDFarmMapper.findSensor", pd);
 	}

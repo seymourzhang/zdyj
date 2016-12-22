@@ -21,11 +21,7 @@
 		<title>正大鸡场管理系统</title>
 
 		<!-- ace styles -->
-		<script src="<%=path %>/framework/jquery/jquery-1.11.2.min.js" type="text/javascript"></script>
-		<script src="<%=path%>/framework/jquery/jquery.tips.js"  type="text/javascript" ></script>
-		<script src="<%=path %>/framework/js/bootstrap.min.js" type="text/javascript"></script>
-		<script src="<%=path %>/framework/js/app.js" type="text/javascript"></script>
-		<script type="text/javascript" src="<%=path%>/framework/js/extJquery.js"></script>
+		<%@ include file="../../framework/inc.jsp"%>
 		<script type="text/javascript" src="<%=path%>/modules/user/js/login.js"></script>
 		<link rel="shortcut icon" href="<%=path%>/framework/image/favicon.ico">
 
@@ -57,7 +53,7 @@
 	<tr>
 		<td style="background-color: #417CC5;height:85px;">
 			<%-- <div style='float: left;width:170px;height:40px;background-image: url("<%=path%>/modules/user/image/logo.png");background-repeat: no-repeat;' ></div> --%>
-			<div style='float: left;margin-left:20px;font-size:24;color:white;'>正大鸡场管理系统 V2017</div>
+			<div class ='font_system color_system_font_white font_system_size_32' style='float: left;margin-left:20px;'>正大鸡场管理系统 V2017</div>
 
 		</td>
 	</tr>
@@ -67,14 +63,14 @@
 				 <form class="bd" id="loginForm"  method="POST" >
 					<table class="win" width="290" cellspacing="0" style="margin:15px auto;" border="0">
 						<tr>
-							<td colspan="2" style="height:60px;border-bottom: 1px solid #c5c5c5;color: #417CC5;font-weight: bold;font-size:35px;font-family:黑体;">正大鸡场管理系统</td>
+							<td colspan="2" class="font_system color_system_font_blue font_system_size_32" style="height:60px;border-bottom: 1px solid #c5c5c5;font-weight: bold;">用户登录</td>
 						</tr>
 						<tr>
-							<td style="height:50px;width:50px;border-left: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;background:#f2f2f3">
+							<td style="height:45px;width:50px;border-left: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;background:#f2f2f3">
 								<img src="<%=path%>/modules/user/image/PersonMain.png" />
 							</td>
-							<td style="height:50px;border-right: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;text-align:left;padding-left:5px;">
-								<input type="text" id="userName" name="user_code" autocomplete="on" value="" style='font-weight: bold;font-size:13pt;width:150px;border:0px;outline:none;'/>
+							<td style="height:45px;border-right: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;text-align:left;padding-left:5px;padding-top:12px;">
+								<input class="font_system font_system_size_13" type="text" id="userName" name="user_code" autocomplete="on" value="" style='font-weight: bold;width:225px;height:100%;border:0px;outline:none;'/>
 
 							</td>
 						</tr>
@@ -82,11 +78,11 @@
 							<td colspan="2" style="height:20px;"></td>
 						</tr>
 						<tr>
-							<td style="height:50px;width:50px;border-top: 1px solid #c5c5c5;border-left: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;background:#f2f2f3">
+							<td style="height:45px;width:50px;border-top: 1px solid #c5c5c5;border-left: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;background:#f2f2f3">
 								<img src="<%=path%>/modules/user/image/LockMain.png" />
 							</td>
-							<td style="height:50px;border-top: 1px solid #c5c5c5;border-right: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;text-align:left;padding-left:5px;">
-								<input type="password"  onkeydown="javascript:enterSumbit()" name="user_password" id="password" value="" style='font-weight: bold;font-size:13pt;width:150px;border:none;outline:none;' />
+							<td style="height:45px;border-top: 1px solid #c5c5c5;border-right: 1px solid #c5c5c5;border-bottom: 1px solid #c5c5c5;text-align:left;padding-left:5px;padding-top:12px;">
+								<input class="font_system font_system_size_13" type="password"  onkeydown="javascript:enterSumbit()" name="user_password" id="password" value="" style='font-weight: bold;height:100%;width:225px;border:none;outline:none;' />
 							</td>
 						</tr>
 					</table>
@@ -94,7 +90,7 @@
 						<tr height="40px">
 							<td>
 								<label for="rmbUser"  style="margin-right:56px;">
-									<input type="checkbox" name="chkRememberUsername"  checked="true" id="rmbUser">记住帐号</label>
+									<input class="font_system font_system_size_13" type="checkbox" name="chkRememberUsername"  checked="true" id="rmbUser">记住帐号</label>
 							</td>
 						</tr>
 						<tr>
@@ -109,10 +105,8 @@
 	</tr>
 	<tr>
 		<td align="center" style="height:35px;background: #417CC5;">
-			<div id="fontwrr" >
-				<font color="white" size="2">
+			<div id="fontwrr" class="font_system color_system_font_white font_system_size_13">
 					版权所有(上海农汇信息科技有限公司) 沪ICP备13027505 Copyright©2006-2017 All Rights Reserved
-				</font>
 			</div>
 		</td>
 	</tr>

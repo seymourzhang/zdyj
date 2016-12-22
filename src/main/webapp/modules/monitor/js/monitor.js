@@ -3,6 +3,7 @@ var num;
 
 
 function OrgSearch(count0rg,num){
+	flag="";
 	reflushMonitor();
 }
 

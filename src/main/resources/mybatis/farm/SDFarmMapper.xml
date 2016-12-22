@@ -415,7 +415,8 @@
 		select * from s_d_device t
 		where exists (
 		   select 1 from (select device_code from s_b_devi_house a
-		   INNER JOIN s_d_house b on a.house_id = b.house_code and b.freeze_status = '0'
+		   INNER JOIN s_d_organization c on c.id = a.house_id
+		   INNER JOIN s_d_house b on c.organization_id = b.house_code and b.freeze_status = '0'
 		   <if test="house_id != null and house_id !='' "> 
          		and a.house_id = #{house_id}
            </if> 
@@ -423,7 +424,19 @@
 		where t.device_code = t1.device_code)
 		<if test="device_code != null and device_code !='' ">
          	and t.device_code = #{device_code}
-        </if> 
+        </if>
+	</select>
+
+	<!-- 查询是否绑定 -->
+	<select id="findDeviceIsExist" parameterType="pd" resultType="pd" useCache="false">
+		select * from s_b_devi_house a
+		where 1=1
+		<if test="house_id != null and house_id !='' ">
+			and a.house_id &lt;&gt; #{house_id}
+		</if>
+		<if test="device_code != null and device_code !='' ">
+			and a.device_code = #{device_code}
+		</if>
 	</select>
 
 	<!-- 查询传感器表 -->
@@ -444,7 +457,8 @@
 					AND dds.main_id = #{main_id}
 				</if>
 			WHERE c.code_type='SENSOR_LOCATION'
-			ORDER BY c.bak1, dds.main_id, dds.sensor_code
+-- 			ORDER BY c.bak1, dds.main_id, dds.sensor_code
+	  		ORDER BY dds.sensor_no
 	</select>
 
 	<!-- 绑定栋舍与设备 -->
@@ -471,8 +485,11 @@
 	<!-- 解绑栋舍与设备 -->
 	<delete id="delDevice" parameterType="pd"  flushCache="false">
 		DELETE FROM s_b_devi_house
-			WHERE device_code = #{device_code}
+			WHERE 1=1
 				AND house_id = #{house_id}
+				<if test="device_code != null and device_code != ''">
+					AND device_code = #{device_code}
+				</if>
 	</delete>
 
 	<!-- 解绑设备与传感器 -->

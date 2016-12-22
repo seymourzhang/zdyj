@@ -1,0 +1,43 @@
+/*系统默认字体*/
+.font_system{font-family: 'Microsoft YaHei','微软雅黑',SimHei,Arial,'Times New Roman' ;}
+/*系统默认字体大小*/
+.font_system_size_13{font-size: 13px;}
+/*系统三级菜单字体大小*/
+.font_system_size_15{font-size: 15px;}
+/*系统导航栏、搜索组件等字体大小*/
+.font_system_size_18{font-size: 18px;}
+/*系统最大号字体大小*/
+.font_system_size_32{font-size: 32px;}
+
+/*系统白色字体颜色*/
+.color_system_font_white{color: white}
+/*系统蓝色字体颜色*/
+.color_system_font_blue{color: #4464A1}
+/*按钮默认背景颜色*/
+.color_button_background{color: #78BD48}
+/*警示性文字颜色*/
+.color_font_warning{color: #FF0400}
+/*弹框标题背景颜色*/
+.color_layer_title_background{color: #E85B09}
+/*表格背景颜色*/
+.color_table_background{color: #F2F2F2}
+
+
+/*系统组件默认大小*/
+.size_component{
+    width: 140px;
+    height: 22px;
+}
+/*按钮组件大小*/
+.size_component_button{
+    width: 90px;
+    height: 22px;
+}
+/*备注组件大小*/
+.size_component_remark{
+    width: 200px;
+    height: 22px;
+}
+
+
+
