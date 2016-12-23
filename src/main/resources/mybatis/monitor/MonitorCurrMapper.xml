@@ -116,29 +116,29 @@
                 , mc.date_age
                 , mc.week_age
                 , mc.show_flag
-                , ifnull(truncate(mc.inside_temp1,1),"-") inside_temp1
-                , ifnull(truncate(mc.inside_temp2,1),"-") inside_temp2
-                , ifnull(truncate(mc.inside_temp3,1),"-") inside_temp3
-                , ifnull(truncate(mc.inside_temp4,1),"-") inside_temp4
-                , ifnull(truncate(mc.inside_temp5,1),"-") inside_temp5
-                , ifnull(truncate(mc.inside_temp6,1),"-") inside_temp6
-                , ifnull(truncate(mc.inside_temp7,1),"-") inside_temp7
-                , ifnull(truncate(mc.inside_temp8,1),"-") inside_temp8
-                , ifnull(truncate(mc.inside_temp9,1),"-") inside_temp9
-                , ifnull(truncate(mc.inside_temp10,1),"-") inside_temp10
-                , ifnull(truncate(mc.inside_temp11,1),"-") inside_temp11
-                , ifnull(truncate(mc.inside_temp19,1),"-") inside_temp19
-                , ifnull(truncate(mc.inside_temp20,1),"-") inside_temp20
-                , ifnull(truncate(mc.inside_avg_temp,1),"-") inside_avg_temp
-                , ifnull(truncate(mc.inside_set_temp,1),"-") inside_set_temp
-                , ifnull(truncate(mc.high_alarm_temp,1),"-") high_alarm_temp
-                , ifnull(truncate(mc.low_alarm_temp,1),"-") low_alarm_temp
-                , ifnull(truncate(mc.outside_temp,1),"-") outside_temp
-                , ifnull(truncate(mc.inside_humidity,1),"-") inside_humidity
-                , ifnull(truncate(mc.point_temp_diff,1),"-") point_temp_diff
-                , ifnull(truncate(mc.target_humidity,1),"-") target_humidity
-                , ifnull(truncate(mc.co2,1),"-") co2
-                , ifnull(truncate(mc.lux,1),"-") lux
+                , ifnull(if(truncate(mc.inside_temp1, 1)=-99, '-', truncate(mc.inside_temp1, 1)),"-") inside_temp1
+                , ifnull(if(truncate(mc.inside_temp2, 1)=-99, '-', truncate(mc.inside_temp2, 1)),"-") inside_temp2
+                , ifnull(if(truncate(mc.inside_temp3, 1)=-99, '-', truncate(mc.inside_temp3, 1)),"-") inside_temp3
+                , ifnull(if(truncate(mc.inside_temp4, 1)=-99, '-', truncate(mc.inside_temp4, 1)),"-") inside_temp4
+                , ifnull(if(truncate(mc.inside_temp5, 1)=-99, '-', truncate(mc.inside_temp5, 1)),"-") inside_temp5
+                , ifnull(if(truncate(mc.inside_temp6, 1)=-99, '-', truncate(mc.inside_temp6, 1)),"-") inside_temp6
+                , ifnull(if(truncate(mc.inside_temp7, 1)=-99, '-', truncate(mc.inside_temp7, 1)),"-") inside_temp7
+                , ifnull(if(truncate(mc.inside_temp8, 1)=-99, '-', truncate(mc.inside_temp8, 1)),"-") inside_temp8
+                , ifnull(if(truncate(mc.inside_temp9, 1)=-99, '-', truncate(mc.inside_temp9, 1)),"-") inside_temp9
+                , ifnull(if(truncate(mc.inside_temp10, 1)=-99, '-', truncate(mc.inside_temp10, 1)),"-") inside_temp10
+                , ifnull(if(truncate(mc.inside_temp11, 1)=-99, '-', truncate(mc.inside_temp11, 1)),"-") inside_temp11
+                , ifnull(if(truncate(mc.inside_temp19, 1)=-99, '-', truncate(mc.inside_temp19, 1)),"-") inside_temp19
+                , ifnull(if(truncate(mc.inside_temp20, 1)=-99, '-', truncate(mc.inside_temp20, 1)),"-") inside_temp20
+                , ifnull(if(truncate(mc.inside_avg_temp, 1)=-99, '-', truncate(mc.inside_avg_temp, 1)),"-") inside_avg_temp
+                , ifnull(if(truncate(mc.inside_set_temp, 1)=-99, '-', truncate(mc.inside_set_temp, 1)),"-") inside_set_temp
+                , ifnull(if(truncate(mc.high_alarm_temp, 1)=-99, '-', truncate(mc.high_alarm_temp, 1)),"-") high_alarm_temp
+                , ifnull(if(truncate(mc.low_alarm_temp, 1)=-99, '-', truncate(mc.low_alarm_temp, 1)),"-") low_alarm_temp
+                , ifnull(if(truncate(mc.outside_temp, 1)=-99, '-', truncate(mc.outside_temp, 1)),"-") outside_temp
+                , ifnull(if(truncate(mc.inside_humidity, 1)=-99, '-', truncate(mc.inside_humidity, 1)),"-") inside_humidity
+                , ifnull(if(truncate(mc.point_temp_diff, 1)=-99, '-', truncate(mc.point_temp_diff, 1)),"-") point_temp_diff
+                , ifnull(if(truncate(mc.target_humidity, 1)=-99, '-', truncate(mc.target_humidity, 1)),"-") target_humidity
+                , ifnull(if(truncate(mc.co2, 1)=-99, '-', truncate(mc.co2, 1)),"-") co2
+                , ifnull(if(truncate(mc.lux, 1)=-99, '-', truncate(mc.lux, 1)),"-") lux
                 , ifnull(mc.power_status, "-") power_status
                 , mc.update_datetime
                 , mc.small_fan

@@ -21,7 +21,7 @@ public class DailyServiceImpl implements DailyService{
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
 
-    public int dailySave(PageData pd) throws Exception{
+    public int dailySave(PageData pd) throws Exception {
         int cullingMale = pd.getInteger("culling_num_male");
         int cullingFemale = pd.getInteger("culling_num_female");
         int deathMale = pd.getInteger("death_num_male");
@@ -37,10 +37,10 @@ public class DailyServiceImpl implements DailyService{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         int maleCountDiff = checkFemale - cullingFemale - deathFemale;
-        int femaleCountDiff = checkMale - deathMale - deathFemale;
-        if (maleCountDiff < 0 || femaleCountDiff < 0){
+        int femaleCountDiff = checkMale - deathMale - cullingMale;
+        if (maleCountDiff < 0 || femaleCountDiff < 0) {
             result = -1;
-        }else {
+        } else {
             pd.put("service_id", 0);
             pd.put("create_date", sdf.format(curDate));
             pd.put("create_time", sdf.format(curDate));
@@ -62,7 +62,7 @@ public class DailyServiceImpl implements DailyService{
                 dao.save("DailyMapper.insertDaily", pd);
                 dao.save("DailyMapper.updateCurrCount", pd);
             }
-            if (deathFemale + deathMale != 0) {
+            if (genderErrorMale + genderErrorFemale != 0) {
                 pd.put("operation_type", "8");
                 pd.put("male_count", -genderErrorMale);
                 pd.put("female_count", -genderErrorFemale);

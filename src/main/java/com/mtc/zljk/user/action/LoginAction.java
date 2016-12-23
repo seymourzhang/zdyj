@@ -167,8 +167,8 @@ public class LoginAction extends BaseAction {
 		//shiro管理的session
 		Subject currentUser = SecurityUtils.getSubject();  
 		Session session = currentUser.getSession();
-		
-		
+
+		pd.put("user_status", '1');
 		pd.put("user_code", userName);   
 		String passwd = new SimpleHash("SHA-1", userName, password).toString();	//密码加密
 		pd.put("user_password", passwd);
