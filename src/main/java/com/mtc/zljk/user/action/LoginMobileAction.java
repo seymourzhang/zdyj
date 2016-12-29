@@ -87,6 +87,7 @@ public class LoginMobileAction extends BaseAction{
             String passwd = new SimpleHash("SHA-1", userName, password).toString();    //密码加密
             pd.put("user_code", userName);
             pd.put("user_password", passwd);
+		    pd.put("user_status", '1');
 
             String loginApp = tUserJson.optString("loginApp");
             String AndroidImei = tUserJson.optString("AndroidImei");
@@ -200,11 +201,12 @@ public class LoginMobileAction extends BaseAction{
         JSONArray ja = new JSONArray();
         for (PageData pageData : ll) {
             pd.put("house_code", pageData.get("id"));
-            pd.put("house_id", pageData.get("id"));
+            pd.put("house_id", pageData.get("organization_id"));
             List<PageData> device = farmService.findDevice(pd);
             PageData lpd = batchManageService.selectBatchDataForMobile(pd);
             JSONObject o = new JSONObject();
             o.put("id", pageData.get("id"));
+            o.put("house_org_id", pageData.get("organization_id"));
             o.put("name", pageData.get("name_cn"));
             if (lpd == null) {
                 o.put("deviceCode", "");

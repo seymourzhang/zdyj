@@ -415,7 +415,7 @@
 		select * from s_d_device t
 		where exists (
 		   select 1 from (select device_code from s_b_devi_house a
-		   INNER JOIN s_d_organization c on c.id = a.house_id
+		   INNER JOIN s_d_organization c on c.organization_id = a.house_id
 		   INNER JOIN s_d_house b on c.organization_id = b.house_code and b.freeze_status = '0'
 		   <if test="house_id != null and house_id !='' "> 
          		and a.house_id = #{house_id}

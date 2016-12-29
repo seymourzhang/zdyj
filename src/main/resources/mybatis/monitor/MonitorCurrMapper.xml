@@ -12,8 +12,8 @@
                 , (select code_name from s_d_code g where g.code_type = 'ALARM_CODE' and mc.alarm_code = g.biz_code) alarm_code
                 , mc.date_age
                 , mc.week_age
-                , format(mc.inside_temp1,1) inside_temp1
-                , format(mc.inside_temp2,1) inside_temp2
+                ,ifnull(truncate(mc.inside_temp1,1),"-") inside_temp1
+                ,ifnull(truncate(mc.inside_temp2,1),"-") inside_temp2
                 , format(mc.inside_temp3,1) inside_temp3
                 , format(mc.inside_temp4,1) inside_temp4
                 , mc.inside_temp5
@@ -21,6 +21,9 @@
                 , mc.inside_temp7
                 , mc.inside_temp8
                 , mc.inside_temp9
+                ,ifnull(truncate(mc.inside_temp10,1),"-") inside_temp10
+                ,ifnull(truncate(mc.inside_temp19,1),"-") inside_temp19
+                ,ifnull(truncate(mc.inside_temp20,1),"-") inside_temp20
                 , format(mc.inside_avg_temp,1) inside_avg_temp
                 , format(mc.inside_set_temp,1) inside_set_temp
                 , mc.high_alarm_temp
@@ -29,7 +32,8 @@
                 , format(mc.inside_humidity,0) inside_humidity
                 , format((mc.inside_avg_temp-mc.inside_set_temp),1) point_temp_diff
                 , format(mc.target_humidity,0) target_humidity
-                , format(mc.co2,1) co2
+                , ifnull(truncate(mc.co2,1),"-") co2
+                , ifnull(truncate(mc.lux,1),"-") lux
                 , mc.power_status
                 , mc.update_datetime
                 , mc.small_fan

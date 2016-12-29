@@ -118,7 +118,11 @@ function deleteAlarm(uidNum,alarmType) {
 		$.ajax({
 			url : path + "/alarm/deleteAlarm",
 			data : {
-				"uidNum" : uidNum,"alarm_type":alarmType
+				"uidNum" : uidNum,
+				"alarm_type":alarmType,
+				"farmId": $("#orgId" + (count0rg - 1)).val().split(",")[1],
+		        "houseId": $("#orgId" + count0rg).val().split(",")[1],
+		        
 			},
 			type : "POST",
 			success : function(result) {
@@ -210,7 +214,7 @@ function  querySBDayageSettingSub(){
 				for (var i = 0; i < list.length; i++) {
 					if(list[i].high_alarm_co2!=undefined){
 					xNames.push(list[i].day_age+'日龄');
-					setCo2.push(list[i].set_co2);
+//					setCo2.push(list[i].set_co2);
 					highAlarmCo2.push(list[i].high_alarm_co2 );
 //					lowAlarmCo2.push(list[i].low_alarm_co2 );
 					}
@@ -218,12 +222,14 @@ function  querySBDayageSettingSub(){
 				alarmType5 = [{
 		            name: 'CO2报警值',
 		            data: highAlarmCo2
-		        },{
-		            name: 'CO2参考值',
-		            data: setCo2
-		        }];
-				yName='CO2(ml/m³)';
-				suffixName = 'ml/m³';
+		        }
+//				,{
+//		            name: 'CO2参考值',
+//		            data: setCo2
+//		        }
+				];
+				yName='CO2(PPM)';
+				suffixName = 'PPM';
 			}else if(alarmtype1=="4"){
 				for (var i = 0; i < list.length; i++) {
 					if(list[i].set_water_deprivation!=undefined){
@@ -341,7 +347,7 @@ function batchChange(){
 		 return;
 	 }
     for(var i = 0; i < deleteRow.length; i++){
-    	deleteRow2 = deleteRow2+deleteRow[i].uid_num+";";
+    	deleteRow2 = deleteRow2+deleteRow[i].uid_num+","+deleteRow[i].day_age+";";
     }
     document.getElementById("reflushText").style.display="inline";
 	$.ajax({
@@ -399,11 +405,26 @@ function search(){
             } else {
                 var obj = result.obj;
                 initTable(paramTypeSelectValue, getTableDataColumns(paramTypeSelectValue), []);
-                if(null != obj) {
+                if(null != obj && paramTypeSelectValue !="Carbon") {
                     var dataJosn = $.parseJSON(JSON.stringify(obj));
                     $("#" + paramTypeSelectValue + "Table").bootstrapTable('load',dataJosn);
-                } else{
+                } else if(obj.length != 0 && paramTypeSelectValue =="Carbon"){
+                	var dataJosn = $.parseJSON(JSON.stringify(obj));
+                    $("#" + paramTypeSelectValue + "Table").bootstrapTable('load',dataJosn);
+                    }else{              
                     initTableRow(paramTypeSelectValue, getTableEmptyRow(paramTypeSelectValue));
+                }
+                if(paramTypeSelectValue =="Carbon"){
+                	$("#addData").css("display", "none");
+                	$("#delData").css("display", "none");
+                	$("#upData").css("display", "none");
+                	$("#upData2").css("display", "");
+                }
+                else{
+                	$("#addData").css("display", "");
+                	$("#delData").css("display", "");
+                	$("#upData").css("display", "");
+                	$("#upData2").css("display", "none");
                 }
                 var obj1 = result.obj1;
                 if(obj1 != ""){
@@ -411,6 +432,7 @@ function search(){
 	       		 document.getElementById('temp_cpsation').value= obj1.temp_cpsation;
 	       		 document.getElementById('yincang').value= obj1.alarm_way;
 	       		 document.getElementById('temp_cordon').value= obj1.temp_cordon;
+	       		document.getElementById('point_alarm').value= obj1.point_alarm;
                 }
 //                showTableToolBar(paramTypeSelectValue);
                 querySBDayageSettingSub();
@@ -616,6 +638,7 @@ function update(){
     		yincang: $("#yincang").val(),
     		temp_cordon: $("#temp_cordon").val(),
     		alarm_type:$("#alarmType").val(),
+    		point_alarm:$("#point_alarm").val(),
     		updateRow: updateRow2
         };
     
@@ -662,7 +685,11 @@ function updateHouseAlarm(){
     		alarm_delay: $("#alarm_delay").val(),
     		temp_cpsation: $("#temp_cpsation").val(),
     		yincang: $("#yincang").val(),
-    		temp_cordon: $("#temp_cordon").val()
+    		temp_cordon: $("#temp_cordon").val(),
+    		point_alarm:$("#point_alarm").val(),
+    		farmId:$("#orgId" + (count0rg - 1)).val().split(",")[1],
+     	    houseId:$("#orgId" + count0rg).val().split(",")[1],
+     	    alarm_type:$("#alarmType").val()
         };
 	$.ajax({
         // async: true,
@@ -678,6 +705,7 @@ function updateHouseAlarm(){
 	       		 document.getElementById('temp_cpsation').value= obj.temp_cpsation;
 	       		 document.getElementById('yincang').value= obj.alarm_way;
 	       		 document.getElementById('temp_cordon').value= obj.temp_cordon;
+	       		document.getElementById('point_alarm').value= obj.point_alarm;
                 }
             
         }
@@ -1005,6 +1033,7 @@ function getCarbonTableDataColumns(){
                 if (!v) return '日龄不能为空';
             }
         },
+        visible: false,
         width: '5%'
     }, {
         field: "high_alarm_co2",
@@ -1021,14 +1050,7 @@ function getCarbonTableDataColumns(){
     }, {
         field: "set_co2",
         title: "CO2参考值",
-        editable: {
-            type: 'text',
-            title: 'CO2参考值',
-            mode: 'inline',
-            validate: function (v) {
-                if (!v) return 'CO2参考值不能为空';
-            }
-        },
+        visible: false,
         width: '18%'
     }];
     return dataColumns;
@@ -1093,6 +1115,62 @@ function getWaterTableDataColumns(){
         width: '18%'
     }];
     return dataColumns;
+}
+
+/** 二氧化碳保存功能按键 **/
+function upAndAdd(){
+	var param;
+	var dage;
+	var updateRow;
+	updateRow = $('#' + paramTypeSelectValue + 'Table').bootstrapTable('getSelections');
+    if (updateRow.length==0) {
+    	updateHouseAlarm();
+        layer.alert('请先进行设置！!', {
+            skin: 'layui-layer-lan'
+            ,closeBtn: 0
+            ,shift: 4 //动画类型
+        });
+        return;
+    }
+    if($("#orgId" + count0rg).val().split(",")[3]=="1"){
+    	dage = 175;
+    }else{
+    	dage = 455;
+    }
+	param = {
+			day_age: dage,
+			farmId: $("#orgId" + (count0rg - 1)).val().split(",")[1],
+			houseId: $("#orgId" + count0rg).val().split(",")[1],
+			alarm_type: $("#alarmType").val(),
+			set_co2: 0,//updateRow[0].set_co2,
+			high_alarm_co2: updateRow[0].high_alarm_co2
+    };
+	
+	$.ajax({
+		url : path + "/alarm/addAlarm",
+		data : param,
+		type : "POST",
+		dataType : "json",
+		success : function(result) {
+			search();
+			layer.close(index); 
+			if(result.msg=="1") {
+				layer.alert('操作成功!', {
+					skin : 'layui-layer-lan',
+					closeBtn : 0,
+					shift : 4
+				// 动画类型
+				});
+			}else{
+				layer.alert('操作失败!', {
+					skin : 'layui-layer-lan',
+					closeBtn : 0,
+					shift : 4
+				// 动画类型
+				});
+			}
+		}
+	});
 }
 
 
@@ -1179,15 +1257,33 @@ function openAdjustWin(hourList){
 						end_time:$("#end_time").val()
 		        };
 			}else {
+//				param = {
+//						day_age: $("#day_age").val(),
+//						farmId: $("#orgId" + (count0rg - 1)).val().split(",")[1],
+//						houseId: $("#orgId" + count0rg).val().split(",")[1],
+//						alarm_type: $("#alarmType").val(),
+//						high_alarm_co2: $("#high_alarm_co2").val(),
+//						set_co2: $("#set_co2").val()
+//		        };
+				var updateRow;
+				updateRow = $('#' + paramTypeSelectValue + 'Table').bootstrapTable('getSelections');
+			    if (updateRow.length==0) {
+			    	updateHouseAlarm();
+			        layer.alert('请先进行设置！!', {
+			            skin: 'layui-layer-lan'
+			            ,closeBtn: 0
+			            ,shift: 4 //动画类型
+			        });
+			        return;
+			    }
 				param = {
-						day_age: $("#day_age").val(),
+						day_age: updateRow[0].day_age,
 						farmId: $("#orgId" + (count0rg - 1)).val().split(",")[1],
 						houseId: $("#orgId" + count0rg).val().split(",")[1],
 						alarm_type: $("#alarmType").val(),
-						high_alarm_co2: $("#high_alarm_co2").val(),
-						set_co2: $("#set_co2").val()
+						high_alarm_co2: updateRow[0].high_alarm_co2
 		        };
-			}
+			}			
 
 			$.ajax({
 				url : path + "/alarm/addAlarm",
@@ -1195,8 +1291,8 @@ function openAdjustWin(hourList){
 				type : "POST",
 				dataType : "json",
 				success : function(result) {
-					layer.close(index); 
 					search();
+					layer.close(index); 
 					if(result.msg=="1") {
 						layer.alert('操作成功!', {
 							skin : 'layui-layer-lan',

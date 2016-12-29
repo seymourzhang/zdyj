@@ -203,5 +203,19 @@ public interface AlarmService {
 	 * @throws Exception
 	 */
 	void updateDeviceSub(PageData pd) throws Exception;
+	
+	/**
+	 * 新增历史日龄目标温度设置
+	 * @param pd
+	 * @throws Exception
+	 */
+	void saveSbDayageSettingSubHis(PageData pd) throws Exception;
+	
+	/**
+	 * 新增栋舍报警设置历史设置
+	 * @param pd
+	 * @throws Exception
+	 */
+	void saveSbHouseAlarmHis(PageData pd) throws Exception;
 
 }

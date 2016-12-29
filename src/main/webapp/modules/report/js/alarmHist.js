@@ -717,10 +717,15 @@ function getAlarmHistTableDataColumns(){
         title: "低温报警"
     }, {
         field: "high_lux_num",
-        title: "高光照报警"
+        title: "高光照报警",
+        visible: false
     }, {
         field: "low_lux_num",
-        title: "低光照报警"
+        title: "低光照报警",
+        visible: false
+    }, {
+        field: "high_low_lux_num",
+        title: "光照异常报警"
     }, {
         field: "high_co2_num",
         title: "高二氧化碳报警"

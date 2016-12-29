@@ -99,7 +99,7 @@ public class FarmMobileAction extends BaseAction {
             pd.put("device_code", DeviceCode);
             pd.put("create_person", userId);
             List<PageData> deviceList = farmService.findDeviceIsExist(pd);
-            if (deviceList.size() > 0) {
+            if (deviceList.size() > 0 && !DeviceCode.equals("") ) {
                 resJson.put("Result", "Fail");
                 resJson.put("Error", "该设备已绑定栋舍");
                 dealRes = Constants.RESULT_SUCCESS;
@@ -119,26 +119,31 @@ public class FarmMobileAction extends BaseAction {
                         int o = farmService.delSensor(pageData);
                     }
                 }
-                int j = farmService.mappingDevice(pd);
-                if (j == 1) {
+                if (!DeviceCode.equals("")) {
+                    int j = farmService.mappingDevice(pd);
+                    if (j == 1) {
+                        resJson.put("Result", "Success");
+                        resJson.put("Error", "");
+                        for (int i = 0; i < SensorInfo.length(); ++i) {
+                            PageData pageData = new PageData();
+                            pageData.put("farm_id", FarmId);
+                            pageData.put("house_id", HouseId);
+                            pageData.put("device_code", DeviceCode);
+                            pageData.put("main_id", mainId);
+                            pageData.put("show_column", SensorInfo.getJSONObject(i).get("show_column"));
+                            pageData.put("sensor_code", "1000");
+                            pageData.put("sensor_no", SensorInfo.getJSONObject(i).get("sensor_no"));
+                            pageData.put("create_person", userId);
+                            int a = farmService.insertSensor(pageData);
+                        }
+                    } else {
+                        resJson.put("Result", "Fail");
+                        resJson.put("Error", "无该编号的设备");
+                    }
+                    dealRes = Constants.RESULT_SUCCESS;
+                } else {
                     resJson.put("Result", "Success");
                     resJson.put("Error", "");
-                    dealRes = Constants.RESULT_SUCCESS;
-                    for (int i = 0; i < SensorInfo.length(); ++i) {
-                        PageData pageData = new PageData();
-                        pageData.put("farm_id", FarmId);
-                        pageData.put("house_id", HouseId);
-                        pageData.put("device_code", DeviceCode);
-                        pageData.put("main_id", mainId);
-                        pageData.put("show_column", SensorInfo.getJSONObject(i).get("show_column"));
-                        pageData.put("sensor_code", "1000");
-                        pageData.put("sensor_no", SensorInfo.getJSONObject(i).get("sensor_no"));
-                        pageData.put("create_person", userId);
-                        int a = farmService.insertSensor(pageData);
-                    }
-                } else {
-                    resJson.put("Result", "Fail");
-                    resJson.put("Error", "无该编号的设备");
                     dealRes = Constants.RESULT_SUCCESS;
                 }
             }

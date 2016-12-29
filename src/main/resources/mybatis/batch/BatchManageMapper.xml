@@ -90,8 +90,9 @@
                   ELSE bc.operation_date END                               AS market_date
               , dc.code_name                                                AS house_type
         FROM s_b_batch_curr bc
-        LEFT JOIN s_d_house h ON h.id = bc.house_code
-        LEFT JOIN s_d_code dc ON dc.code_type = 'HOUSE_TYPE' AND dc.biz_code = h.house_type
+          LEFT JOIN s_d_organization o on o.id = bc.house_code
+          LEFT JOIN s_d_house h ON h.id = o.organization_id
+          LEFT JOIN s_d_code dc ON dc.code_type = 'HOUSE_TYPE' AND dc.biz_code = h.house_type
         WHERE bc.farm_id = ${farm_id} AND bc.house_code = ${house_code}
         LIMIT 1;
     </select>

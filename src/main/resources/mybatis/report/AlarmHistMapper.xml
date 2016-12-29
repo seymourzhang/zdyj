@@ -99,7 +99,8 @@
                         IFNULL(A5.alarm_num ,'-') as high_lux_num,
                         IFNULL(A6.alarm_code,'-') as low_lux_code,
              		       IFNULL(A6.alarm_name,'-') as low_lux,
-                        IFNULL(A6.alarm_num ,'-') as low_lux_num
+                        IFNULL(A6.alarm_num ,'-') as low_lux_num,
+                        IFNULL((A6.alarm_num + A5.alarm_num),'-') as high_low_lux_num
              FROM (SELECT  distinct farm_id, 
              		       house_id, 
              		       date,

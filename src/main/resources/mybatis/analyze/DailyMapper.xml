@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="DailyMapper">
     <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
-    <update id="dailySave" parameterType="pd">
+    <update id="batchSave" parameterType="pd">
         update s_b_breed_detail
         set
             male_death_pm       = ${death_num_male}
@@ -19,7 +19,47 @@
             , female_cur_water    = ${water_capacity_female}
             , laying_cur_amount   = ${layer_amount}
             , female_cur_evenness = ${uniformity}
+            , male_cur_amount     = (SELECT male_count
+                                 FROM s_b_batch_curr
+                                 WHERE batch_id = #{BreedBatchId} AND house_code = ${HouseId}) + ${maleDiff}
+            , female_cur_amount   = (SELECT female_count
+                                 FROM s_b_batch_curr
+                                 WHERE batch_id = #{BreedBatchId} AND house_code = ${HouseId}) + ${femaleDiff}
         where age = ${DayAge} and house_code = ${HouseId} and batch_id = #{BreedBatchId}
+    </update>
+
+    <update id="batchOldSave" parameterType="pd">
+        update s_b_breed_detail
+        set
+            male_cur_amount     = male_cur_amount + ${maleDiff}
+            , female_cur_amount = female_cur_amount + ${femaleDiff}
+            , male_ytd_amount   = male_ytd_amount + ${maleDiff}
+            , female_ytd_amount   = female_ytd_amount + ${femaleDiff}
+        where age &gt; ${DayAge} and house_code = ${HouseId} and batch_id = #{BreedBatchId}
+    </update>
+
+    <update id="batchCurSave" parameterType="pd">
+        UPDATE s_b_breed_detail
+        SET
+          male_cur_amount     = (SELECT male_count
+                                 FROM s_b_batch_curr
+                                 WHERE batch_id = #{BreedBatchId} AND house_code = ${HouseId}) + ${maleDiff}
+          , female_cur_amount = (SELECT female_count
+                                 FROM s_b_batch_curr
+                                 WHERE batch_id = #{BreedBatchId} AND house_code = ${HouseId}) + ${femaleDiff}
+          , male_ytd_amount   = (SELECT male_count
+                                 FROM s_b_batch_curr
+                                 WHERE batch_id = #{BreedBatchId} AND house_code = ${HouseId}) - (male_death_am +
+                                                                                                  male_death_pm +
+                                                                                                  male_culling_am +
+                                                                                                  male_culling_pm ) + ${maleDiff}
+          , female_ytd_amount = (SELECT female_count
+                                 FROM s_b_batch_curr
+                                 WHERE batch_id = #{BreedBatchId} AND house_code = ${HouseId}) - (female_death_am +
+                                                                                                  female_death_pm +
+                                                                                                  female_culling_am +
+                                                                                                  female_culling_pm) + ${femaleDiff}
+        WHERE age &gt; ${DayAge} AND house_code = ${HouseId} AND batch_id = #{BreedBatchId};
     </update>
 
     <insert id="insertDaily" parameterType="pd" flushCache="false">
@@ -75,8 +115,8 @@
     </insert>
 
     <update id="updateCurrCount" parameterType="pd" flushCache="false">
-        update s_b_batch_curr set male_count = male_count + ${male_count},
-                                    female_count = female_count + ${female_count},
+        update s_b_batch_curr set male_count = male_count + ${maleDiff},
+                                    female_count = female_count + ${femaleDiff},
                                     modify_date = curdate(),
                                     modify_date = curdate(),
                                     modify_person = ${user_id}

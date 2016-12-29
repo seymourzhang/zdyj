@@ -12,7 +12,8 @@
 	    	   d.create_person,
 	    	   d.create_date,
 	    	   d.create_time,
-	  		   devi.device_code
+	  		   devi.device_code,
+	  		   h.house_type
 	    from s_d_organization d
 		LEFT JOIN s_d_rights c
 		on d.id = c.obj_id
@@ -22,6 +23,8 @@
 		on a.role_id = b.role_id
 	  	LEFT JOIN s_b_devi_house devi
 	  	on devi.house_id = d.id and devi.farm_id = d.parent_id
+	  	LEFT JOIN s_d_house h
+	  	on h.id = d.organization_id
 		where c.obj_type = 2
 	  		AND d.freeze_status=0
 		<if test="user_id != null"> 

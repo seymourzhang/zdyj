@@ -1,6 +1,6 @@
-package com.mtc.zljk.daily.action;
+package com.mtc.zljk.analyze.action;
 
-import com.mtc.zljk.daily.service.DailyService;
+import com.mtc.zljk.analyze.service.DailyService;
 import com.mtc.zljk.util.action.BaseAction;
 import com.mtc.zljk.util.common.Constants;
 import com.mtc.zljk.util.common.DealSuccOrFail;
@@ -80,7 +80,10 @@ public class DailyQueryMobileAction extends BaseAction {
         if (flag == -1) {
             resJson.put("Result", "Fail");
             resJson.put("Error", "死淘数超过入栏数！");
-        } else {
+        } else if (flag == -2) {
+            resJson.put("Result", "Fail");
+            resJson.put("Error", "日期超过当前时间，请重新输入！");
+        }else{
             resJson.put("Result", "Success");
             resJson.put("Error", "");
         }

@@ -123,7 +123,7 @@ function initSensorListTable(){
         visible: false
     }, {
         field: "sensor_no",
-        title: "传感器",
+        title: "传感器编号",
         width: '60%',
         editable: {
             type: 'text',

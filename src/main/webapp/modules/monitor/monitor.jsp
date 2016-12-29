@@ -102,7 +102,7 @@ $("#enableMonitorSet").change(function() {
 									<div class="form-horizontal" style="height: 40px;">
 										<div style="height: 20px;">
 										<script type="text/javascript">
-										var flag = "";
+										var allSearch = "true";
 										</script>
 										<%@ include file="../../framework/org.jsp"%>
 
@@ -154,12 +154,13 @@ $("#enableMonitorSet").change(function() {
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Shape.png" style="width: 25px; height: 25px;" /></th>
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 203.png" style="width: 25px; height: 25px;" /></th>
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
-										<th colspan="6" style="text-align: center;">温度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" style="height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/goal.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/out.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/avg.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/pointTemp.png" style="width: 25px; height: 25px;" /></th>
+										<th colspan="5" style="text-align: center;">温度&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" style="height: 25px;" /></th>
 										
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 17.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/humidity.png" style="width: 25px; height: 25px;" /></th>
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/light.png" style="width: 25px; height: 25px;" /></th>
 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/co2.png" style="width: 25px; height: 25px;" /></th>
 

@@ -671,7 +671,9 @@
 		 house_id ,
 		 day_age ,
 		 high_alarm_co2 ,
+		 <if test="set_co2 != null and set_co2 !=''">
 		 set_co2,
+		 </if>
 		 set_humidity ,
 		 memo ,
 		 create_person ,
@@ -685,7 +687,9 @@
 			#{houseId},
 			#{day_age},
 			#{high_alarm_co2},
+			<if test="set_co2 != null and set_co2 != ''">
 			#{set_co2},
+			</if>
 			#{set_humidity},
 			#{memo},
 			#{create_person},
@@ -745,7 +749,9 @@
 		 low_lux ,
 		 start_time ,
 		 end_time ,
+		 <if test="set_co2 != null and set_co2 !=''">
 		 set_co2 ,
+		 </if>
 		 high_alarm_co2 ,
 		 low_alarm_co2 ,
 		 set_water_deprivation ,
@@ -771,7 +777,9 @@
 			#{low_lux},
 			#{start_time},
 			#{end_time},
+			<if test="set_co2 != null and set_co2 !=''">
 			#{set_co2},
+			</if>
 			#{high_alarm_co2},
 			#{low_alarm_co2},
 			#{set_water_deprivation},
@@ -853,7 +861,10 @@
 	   </if>
 	   <!-- 二氧化碳 -->
 	   <if test="alarm_type == 3"> 
-		UPDATE s_b_dayage_setting_sub SET high_alarm_co2 = #{high_alarm_co2} , set_co2 = #{set_co2}
+		UPDATE s_b_dayage_setting_sub SET high_alarm_co2 = #{high_alarm_co2} 
+		<if test="set_co2 != null and set_co2 !=''">
+		, set_co2 = #{set_co2}
+		</if>
 		 , modify_person = #{modify_person}
 		  , modify_date = #{modify_date} , modify_time = #{modify_time}
 		WHERE uid_num = #{uid_num}
@@ -1057,10 +1068,10 @@
 			alarm_type,
 			alarm_delay,
 			temp_cpsation,
-			ROUND(temp_cordon,1) temp_cordon,
+			ifnull(ROUND(temp_cordon,1),0) temp_cordon,
 			alarm_way,
 			alarm_probe,
-			point_alarm,
+			ifnull(point_alarm,0) point_alarm,
 			create_person,
 			create_date,
 			create_time,
@@ -1075,6 +1086,9 @@
 			<if test="houseId != null">
 			AND house_id = #{houseId}
 			</if>
+			<if test="AlarmType != null and AlarmType != ''">
+				AND alarm_type = #{AlarmType}
+			</if>
 	</select>
 	<!-- 更新栋舍报警设置 -->
 	<update id="updateSBHouseAlarm" flushCache="false">
@@ -1082,9 +1096,12 @@
 	  <if test="temp_cordon != null and temp_cordon != '' ">
 	  temp_cordon = #{temp_cordon} , 
 	  </if>
-	  alarm_way = #{alarm_way} 
+	  alarm_way = #{alarm_way}
 	  <if test="alarm_way == 1">
 	  , alarm_probe = #{alarm_probe}
+	  </if>
+	  <if test="point_alarm != null and point_alarm != '' ">
+	  point_alarm = #{point_alarm} , 
 	  </if>
 	  ,modify_person = #{modify_person},modify_date = #{modify_date},modify_time = #{modify_time}
 	  WHERE farm_id = #{farmId} AND house_id = #{houseId}
@@ -1284,7 +1301,9 @@
 	c.code_type = 'SENSOR_LOCATION' 
 	and c.biz_code !=#{biz_code}
 	and h.house_id = #{houseId}
-	and d.device_code = #{device_code} 
+	<if test="device_code != null and device_code != ''">
+		and d.device_code = #{device_code}
+	</if>
 	and s.main_id = u.main_id)
 	and u.show_column = #{biz_code}
 	</update>
@@ -1307,11 +1326,13 @@
 	left join
 	s_d_code c
 	on c.biz_code = s.show_column
-	where 
-	c.code_type = #{code_type} 
+	where
+	c.code_type = #{code_type}
 	and c.biz_code !='outside_temp'
 	and h.house_id = #{houseId}
-	and d.device_code = #{device_code}
+	<if test="device_code != null and device_code != ''">
+		and d.device_code = #{device_code}
+	</if>
 	</select>
 	
 	<select id="selectDevice" resultType="pd" useCache="false">
@@ -1334,5 +1355,188 @@
 			code_desc
     FROM s_d_code WHERE code_type = #{code_type} 
     ORDER BY biz_code
+    </select>
+    <!-- 新增历史日龄目标温度设置--> 
+    <insert id="saveSbDayageSettingSubHis" parameterType="pd"  flushCache="false">
+    <!-- 温度 -->
+	   <if test="alarm_type == 1">
+		INSERT into s_b_dayage_setting_sub_his (
+		 uid_num,
+		 farm_id ,
+		 house_id ,
+		 day_age ,
+		 alarm_type,
+		 set_values ,
+		 high_alarm_values ,
+		 low_alarm_values ,
+		 alarm_operation ,
+		 modify_person ,
+		 modify_date ,
+		 modify_time
+		) values (
+		    #{uid_num},
+			#{farmId},
+			#{houseId},
+			#{day_age},
+			#{alarm_type},
+			#{set_temp},
+			#{high_alarm_temp},
+			#{low_alarm_temp},
+			#{alarm_operation},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+		</if>
+		<!-- 光照 -->
+	   <if test="alarm_type == 2">
+	   INSERT into s_b_dayage_setting_sub_his (
+		 uid_num,
+		 farm_id ,
+		 house_id ,
+		 day_age ,
+		 alarm_type,
+		 set_values ,
+		 high_alarm_values ,
+		 low_alarm_values ,
+		 alarm_operation ,
+		 modify_person ,
+		 modify_date ,
+		 modify_time,
+		 start_time,
+		 end_time
+		) values (
+		    #{uid_num},
+			#{farmId},
+			#{houseId},
+			#{day_age},
+			#{alarm_type},
+			#{set_lux},
+			#{high_lux},
+			#{low_lux},
+			#{alarm_operation},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time},
+			#{start_time},
+			#{end_time}
+		)
+	   </if>
+	   <!-- 二氧化碳 -->
+	   <if test="alarm_type == 3"> 
+	   INSERT into s_b_dayage_setting_sub_his (
+		 uid_num,
+		 farm_id ,
+		 house_id ,
+		 day_age ,
+		 alarm_type,
+		 set_values ,
+		 high_alarm_values ,
+		 alarm_operation ,
+		 modify_person ,
+		 modify_date ,
+		 modify_time
+		) values (
+		    #{uid_num},
+			#{farmId},
+			#{houseId},
+			#{day_age},
+			#{alarm_type},
+			#{set_co2},
+			#{high_alarm_co2},
+			#{alarm_operation},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+	   </if>
+    </insert>
+    <!-- 新增栋舍报警设置历史设置--> 
+    <insert id="saveSbHouseAlarmHis" parameterType="pd"  flushCache="false">
+		INSERT into s_b_house_alarm_his (
+		 farm_id ,
+		 house_id ,
+		 alarm_type,
+		 alarm_delay ,
+		 temp_cpsation ,
+		 temp_cordon ,
+		 alarm_way ,
+		 alarm_probe,
+		 point_alarm,
+		 modify_person ,
+		 modify_date ,
+		 modify_time
+		) values (
+			#{farmId},
+			#{houseId},
+			#{alarm_type},
+			#{alarm_delay},
+			#{temp_cpsation},
+			#{temp_cordon},
+			#{alarm_way},
+			#{alarm_probe},
+			#{point_alarm},
+			#{modify_person},
+			#{modify_date},
+			#{modify_time}
+		)
+    </insert>
+    <!-- 查询日龄目标温度历史设置 -->
+    <select id="selectAlarmHisByCondition" resultType="pd" useCache="false">
+        SELECT  s.uid_num ,
+		 s.farm_id ,
+		 s.house_id ,
+		 s.day_age ,
+		 s.alarm_type,
+		 IFNULL(ROUND(s.set_values,1),"") set_values ,
+		 IFNULL(ROUND(s.high_alarm_values,1),"") high_alarm_values ,
+		 IFNULL(ROUND(s.low_alarm_values,1),"") low_alarm_values ,
+		 s.super_high_alarm_values ,
+		 s.super_low_alarm_values ,
+		 s.memo ,
+		 s.alarm_operation ,
+		 s.approve_status ,
+		 s.create_time ,
+		 s.modify_person ,
+		 s.modify_date ,
+		 s.modify_time ,
+		 s.start_time ,
+		 s.end_time 
+        FROM s_b_dayage_setting_sub_his s
+        WHERE 1=1
+        and s.farm_id = #{farmId} 
+        and s.house_id = #{houseId}
+        and s.alarm_type = #{alarm_type}
+        and s.alarm_operation = '新增'
+        ORDER BY s.farm_id,s.house_id,s.day_age 
+    </select>
+    <!-- 查询日龄目标温度历史设置明细 -->
+    <select id="selectAlarmHisDetailByCondition" resultType="pd" useCache="false">
+        SELECT  s.uid_num ,
+		 s.farm_id ,
+		 s.house_id ,
+		 s.day_age ,
+		 s.alarm_type,
+		 IFNULL(ROUND(s.set_values,1),"") set_values ,
+		 IFNULL(ROUND(s.high_alarm_values,1),"") high_alarm_values ,
+		 IFNULL(ROUND(s.low_alarm_values,1),"") low_alarm_values ,
+		 s.super_high_alarm_values ,
+		 s.super_low_alarm_values ,
+		 s.memo ,
+		 s.alarm_operation ,
+		 s.approve_status ,
+		 s.create_time ,
+		 s.modify_person ,
+		 s.modify_date ,
+		 s.modify_time ,
+		 s.start_time ,
+		 s.end_time 
+        FROM s_b_dayage_setting_sub_his s
+        WHERE 1=1
+        and s.farm_id = #{farmId} 
+        and s.house_id = #{houseId}
+        and s.alarm_type = #{alarm_type}
+        and s.uid_num = #{uid_num}
+        ORDER BY s.farm_id,s.house_id,s.day_age 
     </select>
 </mapper>

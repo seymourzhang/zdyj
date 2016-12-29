@@ -47,16 +47,21 @@ function reflushAlarmCurr(){
               str+="<td style='height:30px;text-align: center;'>"+ list[i]["alarm_name"]+"</td>";
               str+="<td style='height:30px;text-align: center;'>"+ list[i]["set_value"]+" "+list[i]["value_unit"]+"</td>";
               str+="<td style='height:30px;text-align: center;'>"+ list[i]["actual_value"]+" "+list[i]["value_unit"]+"</td>";
-              if(list[i]["deal_status_name"]=='处理中'){
-            	  str+="<td style='color:#FF6600;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
-              }else if(list[i]["deal_status_name"]=='已处理'){
-            	  str+="<td style='color:#00EC00;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
-              }else if(list[i]["deal_status_name"]=='未处理'){
-            	  str+="<td style='color:#EA0000;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
-              }
+//              if(list[i]["deal_status_name"]=='处理中'){
+//            	  str+="<td style='color:#FF6600;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
+//              }else if(list[i]["deal_status_name"]=='已处理'){
+//            	  str+="<td style='color:#00EC00;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
+//              }else if(list[i]["deal_status_name"]=='未处理'){
+//            	  str+="<td style='color:#EA0000;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
+//              }
 //            str+="<td style='height:30px;text-align: center;'>"+ list[i]["deal_status_name"]+"</td>";
               str+="<td style='height:30px;text-align: center;'>"+ list[i]["alarm_time"]+"</td>";
-              str+="<td style='height:30px;text-align: center;'>"+(list[i]["deal_time"] != null ? list[i]["deal_time"]:'' )+"</td>";
+              if(list[i]["deal_time"] != null){
+            	  str+="<td style='height:30px;text-align: center;'>"+list[i]["deal_time"] +"</td>";
+              }else{
+            	  str+="<td style='height:30px;text-align: center;color: #E83828;'>"+'未响应' +"</td>";
+              }
+              
               str+="<td style='height:30px;text-align: center;'>"+(list[i]["user_name"] != null ? list[i]["user_name"]:'' )+"</td>";
 //            str+="<td style='height:30px;text-align: center;'>"+ list[i]["deal_time"]+"</td>";
 //            str+="<td style='height:30px;text-align: center;'>"+ list[i]["user_name"]+"</td>";

@@ -33,18 +33,13 @@
 						<input type="hidden" name="pid" value="${pd.pid}"> --%>
 				<div class="span12">
 					<!-- BEGIN PORTLET-->
-					<div class="portlet box blue1">
-								<div class="portlet-title">
-									<div class="caption">
-										<i class="icon-reorder"></i>检索条件
-									</div>
-									<!-- <div class="actions">
+<!-- 					<div class="portlet box blue1"> -->
+<!-- 								<div class="portlet-title"> -->
+<!-- 									<div class="caption"> -->
+<!-- 										<i class="icon-reorder"></i>检索条件 -->
+<!-- 									</div> -->
 
-										<a href="javascript:;" class="btn green"><i class="icon-search"></i> 查询</a>
-
-									</div> -->
-
-								</div>
+<!-- 								</div> -->
 
 								<div class="portlet-body form1">
 									<!-- BEGIN FORM-->
@@ -95,36 +90,48 @@
 									<!-- END FORM-->
 								</div>
 
-							</div>
+<!-- 							</div> -->
+                    <div class="row-fluid">
+                                <div class="span12">
+                                    <hr style="height:10px;border:none;border-top:1px solid #555555;" />
+                                </div>
+                            </div>
 
 					<!-- END PORTLET-->
 
-					<div class="portlet box blue1">
+<!-- 					<div class="portlet box blue1"> -->
 
-						<div class="portlet-title">
+<!-- 						<div class="portlet-title"> -->
 
-							<div class="caption">
-								<i class="icon-globe"></i>警报列表
-							</div>
+<!-- 							<div class="caption"> -->
+<!-- 								<i class="icon-globe"></i>警报列表 -->
+<!-- 							</div> -->
 
-							<div class="tools">
-								<a href="javascript:reflushAlarmCurr();" class="reload"></a> <a href="javascript:;" class="collapse"></a>
-							</div>
+<!-- 							<div class="tools"> -->
+<!-- 								<a href="javascript:reflushAlarmCurr();" class="reload"></a> <a href="javascript:;" class="collapse"></a> -->
+<!-- 							</div> -->
 
-						</div>
+<!-- 						</div> -->
 
 						<div class="portlet-body" style="overflow-x: auto; overflow-y: auto;" id="real_date_table">
 							<table class="table table-striped table-bordered table-hover" >
 
-								<thead>
-
+								<thead style="color: #fff; background-color: #2586C4;">
+                                    <tr>
+                                        <th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/farm.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Shape.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
+										<th colspan="2" style="text-align: center;"><img src="<%=path %>/modules/monitor/image/fact.png" style="width: 25px; height: 25px;" /></th>
+										<th colspan="2" style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 166.png" style="width: 25px; height: 25px;" /></th>
+										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/worker.png" style="width: 25px; height: 25px;" /></th>
+                                    </tr>
 									<tr>
 										<th style="text-align: center;">农场</th>
 										<th style="text-align: center;">舍号</th>
 										<th style="text-align: center;">报警类型</th>
 										<th style="text-align: center;">目标值</th>
 										<th style="text-align: center;">实际值</th>
-										<th style="text-align: center;">警报状态</th>
+<!-- 										<th style="text-align: center;">警报状态</th> -->
 										<th style="text-align: center;">警报时间</th>
 										<th style="text-align: center;">响应时间/分钟</th>
 										<th style="text-align: center;">响应人员</th>
@@ -139,7 +146,7 @@
 
 						</div>
 
-					</div>
+<!-- 					</div> -->
 				</div>
 			</form>
 		</div>

@@ -147,5 +147,13 @@ public class AlarmServiceImpl implements AlarmService {
 	public void updateDeviceSub(PageData pd) throws Exception{
 		dao.update("SBDayageSettingSubMapper.updateDeviceSub", pd);
 	}
+	
+	public void saveSbDayageSettingSubHis(PageData pd) throws Exception{
+		   dao.save("SBDayageSettingSubMapper.saveSbDayageSettingSubHis", pd);
+	}
+	
+	public void saveSbHouseAlarmHis(PageData pd) throws Exception{
+		   dao.save("SBDayageSettingSubMapper.saveSbHouseAlarmHis", pd);
+	}
   
 }  
