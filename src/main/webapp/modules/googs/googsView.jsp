@@ -349,7 +349,7 @@
 												<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>驳回
 											</button>
 											<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(1);">
-												<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>通过
+												&nbsp;&nbsp;&nbsp;<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>通过
 											</button>
 										</div>
 									</div>
@@ -399,6 +399,9 @@
 	</div>
 	<script type="text/javascript">
 		var isRead="${pd.write_read}";//菜单是否只读
+        var tabId = "${pd.tabId}";
+		if(null == tabId || "" == tabId)
+		    tabId =0;
 // 		$(function(){
 // 			$(".selectpicker").selectpicker({
 // 			dropuAuto : false

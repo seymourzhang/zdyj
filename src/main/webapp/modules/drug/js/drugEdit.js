@@ -124,6 +124,16 @@ function setDrugId(){
 }
 
 function addDrug(){
+	var grow_week_age = $("#grow_week_age").val();
+	if (parseInt(grow_week_age)<0) {
+		layer.alert('生长周龄必须大于0!', {
+			skin : 'layui-layer-lan',
+			closeBtn : 0,
+			shift : 4
+		// 动画类型
+		});
+		return;
+	}
 	var drug_id = $("#drug_id").val(); 
 	if (drug_id == "") {
 		layer.alert('药品不能为空!', {
@@ -135,8 +145,8 @@ function addDrug(){
 		return;
 	}
 	var use_unit = $("#use_unit").val();
-	if (use_unit == "") {
-		layer.alert('使用数量不能为空!', {
+	if (use_unit<0) {
+		layer.alert('使用数量必须大于0!', {
 			skin : 'layui-layer-lan',
 			closeBtn : 0,
 			shift : 4

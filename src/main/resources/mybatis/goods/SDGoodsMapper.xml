@@ -28,45 +28,55 @@
 		<if test="good_type != null"> 
 			and good_type = #{good_type}
 		</if>
-		order by good_id
+		order by good_id 
+		limit 0,5000
     </select> 
     
     <select id="getGoodsList2" resultType="pd" useCache="false">  
-	   (SELECT  good_id,
-		       good_code, 
-		       good_name, 
-		       good_type, 
-		       bak, 
-		       create_person, 
-		       create_date, 
-		       create_time, 
-		       modify_person, 
-		       modify_date, 
-		       modify_time 
-		FROM   s_d_goods
+	   (SELECT  g.good_id,
+		       g.good_code, 
+		       g.good_name, 
+		       c.code_name good_type, 
+		       g.bak, 
+		       g.create_person, 
+		       g.create_date, 
+		       g.create_time, 
+		       g.modify_person, 
+		       g.modify_date, 
+		       g.modify_time 
+		FROM   s_d_goods g
+		left join 
+		s_d_code c
+		on c.biz_code = g.good_type
 		where 1=1
+		and c.code_type = 'good_type'
 		<if test="good_name != null and good_name != ''"> 
-			and good_name LIKE CONCAT(CONCAT('%', #{good_name}),'%')
+			and g.good_name LIKE CONCAT(CONCAT('%', #{good_name}),'%')
 		</if>
-		order by good_id)
+		order by g.modify_time desc, g.create_time desc)
 		<if test="good_name != null and good_name != ''"> 
 		union all
-		(SELECT  good_id,
-		       good_code, 
-		       good_name, 
-		       good_type, 
-		       bak, 
-		       create_person, 
-		       create_date, 
-		       create_time, 
-		       modify_person, 
-		       modify_date, 
-		       modify_time 
-		FROM   s_d_goods
+		(SELECT  g.good_id,
+		       g.good_code, 
+		       g.good_name, 
+		       c.code_name good_type,
+		       g.bak, 
+		       g.create_person, 
+		       g.create_date, 
+		       g.create_time, 
+		       g.modify_person, 
+		       g.modify_date, 
+		       g.modify_time 
+		FROM   s_d_goods g
+		left join 
+		s_d_code c
+		on c.biz_code = g.good_type
 		where 1=1
-			and good_code LIKE CONCAT(CONCAT('%', #{good_name}),'%')			
-		order by good_id)
-        </if>	
+		and c.code_type = 'good_type'
+			and g.good_code LIKE CONCAT(CONCAT('%', #{good_name}),'%')			
+		order by g.modify_time desc, g.create_time desc)
+        </if>
+        limit 0,5000	
     </select> 
     
     <select id="getCorporationGood" resultType="pd" useCache="false">  
@@ -97,13 +107,13 @@
 			and g.good_id = #{good_id}
 		</if>
 		<if test="corporation != null and corporation != ''"> 
-			and g.corporation LIKE CONCAT(CONCAT('%', #{corporation}),'%')
+			and lower(g.corporation) LIKE lower(CONCAT(CONCAT('%', #{corporation}),'%'))
 		</if>
 		<if test="corporation_id != null and corporation_id != ''"> 
 			and g.corporation_id = #{corporation_id}
 		</if>
 		<if test="factory_name != null and factory_name != ''"> 
-			and g.factory_name LIKE CONCAT(CONCAT('%', #{factory_name}),'%')
+			and lower(g.factory_name) LIKE lower(CONCAT(CONCAT('%', #{factory_name}),'%'))
 		</if>
 		<if test="factory_id != null and factory_id != ''"> 
 			and g.factory_id = #{factory_id}
@@ -114,7 +124,8 @@
 		<if test="unit != null and unit != ''"> 
 			and g.unit = #{unit}
 		</if>
-		order by g.id
+		order by g.id 
+		limit 0,5000
     </select> 
     
     
@@ -268,10 +279,10 @@
     <select id="getCorporation" resultType="pd" useCache="false">  
 		SELECT  c.corporation_id, 
 		        c.corporation, 
-		        c.corporation_person, 
-		        c.corporation_address, 
-		        c.telphone, 
-		        c.bak, 
+		        IFNULL(c.corporation_person,'') corporation_person, 
+		        IFNULL(c.corporation_address,'') corporation_address, 
+		        IFNULL(c.telphone,'') telphone, 
+		        IFNULL(c.bak,'') bak, 
 		        c.create_person, 
 		        c.create_date, 
 		        c.create_time, 
@@ -296,11 +307,11 @@
     <!-- 查询供应商主数据 -->
     <select id="getCorporation2" resultType="pd" useCache="false">  
 		SELECT  c.corporation_id, 
-		        c.corporation, 
-		        c.corporation_person, 
-		        c.corporation_address, 
-		        c.telphone, 
-		        c.bak, 
+		        IFNULL(c.corporation,'') corporation, 
+		        IFNULL(c.corporation_person,'') corporation_person, 
+		        IFNULL(c.corporation_address,'') corporation_address, 
+		        IFNULL(c.telphone,'') telphone, 
+		        IFNULL(c.bak,'') bak, 
 		        c.create_person, 
 		        c.create_date, 
 		        c.create_time, 
@@ -313,7 +324,7 @@
 			and c.corporation_id = #{corporation_id}
 		</if>
 		<if test="corporation != null and corporation != ''">
-			and c.corporation LIKE CONCAT(CONCAT('%', #{corporation}),'%')
+			and lower(c.corporation) LIKE lower(CONCAT(CONCAT('%', #{corporation}),'%'))
 		</if>
 		order by c.corporation_id
     </select>
@@ -329,11 +340,11 @@
      <!-- 查询厂家 -->
     <select id="getFactory" resultType="pd" useCache="false">  
 		SELECT  f.factory_id, 
-			    f.factory_name, 
-				f.factory_person, 
-				f.factory_address, 
-				f.telphone, 
-				f.bak, 
+			    IFNULL(f.factory_name,'') factory_name, 
+				IFNULL(f.factory_person,'') factory_person, 
+				IFNULL(f.factory_address,'') factory_address, 
+				IFNULL(f.telphone,'') telphone, 
+				IFNULL(f.bak,'') bak, 
 				f.create_person, 
 				f.create_date, 
 				f.create_time, 
@@ -358,11 +369,11 @@
     <!-- 查询供应商主数据 -->
     <select id="getFactory2" resultType="pd" useCache="false">  
 		SELECT  f.factory_id, 
-			    f.factory_name, 
-				f.factory_person, 
-				f.factory_address, 
-				f.telphone, 
-				f.bak, 
+			    IFNULL(f.factory_name,'') factory_name, 
+				IFNULL(f.factory_person,'') factory_person, 
+				IFNULL(f.factory_address,'') factory_address, 
+				IFNULL(f.telphone,'') telphone, 
+				IFNULL(f.bak,'') bak, 
 				f.create_person, 
 				f.create_date, 
 				f.create_time, 
@@ -372,7 +383,7 @@
 		FROM s_d_factory f
 		where 1=1
 		<if test="factory_name != null and factory_name != ''">
-			and f.factory_name LIKE CONCAT(CONCAT('%', #{factory_name}),'%')
+			and lower(f.factory_name) LIKE lower(CONCAT(CONCAT('%', #{factory_name}),'%'))
 		</if>
 		order by f.factory_id
     </select>
@@ -910,6 +921,47 @@
 
 	<select id="exec_SP_DELETE_STOCK_REMIND" useCache="false">
 		CALL SP_DELETE_STOCK_REMIND()
+	</select>
+
+	<select id="getRemindMsg" resultType="pd" useCache="false">
+		select
+		  id,
+		  change_id,
+		  good_id,
+		  good_code,
+		  good_name,
+		  good_type,
+		  spec,
+		  unit,
+		  bef_count,
+		  count,
+		  aft_count,
+		  corporation_id,
+		  factory_id,
+		  farm_id,
+		  farm_name,
+		  house_id,
+		  house_name,
+		  stock_batch_no,
+		  exp,
+		  operation_date,
+		  remind_person,
+		  approve_status,
+		  create_person,
+		  create_date,
+		  create_time,
+		  modify_person,
+		  modify_date,
+		  modify_time,
+		  ISENABLED,
+		  b.code_name aprrove_status_name
+		from s_d_stock_change_remind a
+			left join (select * from s_d_code
+		where code_type='approve_status') b
+			on a.approve_status = b.biz_code
+		where 1=1
+		  and ISENABLED=1
+		  and a.remind_person = #{user_id}
 	</select>
 
 </mapper>

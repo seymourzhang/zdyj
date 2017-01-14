@@ -1,4 +1,5 @@
 //var tickInterval=7;
+var list10 = new Array();
 var count0rg;
 var num;
 var paramTypeList = new Array("TemperatureCurve","NegativePressure","Carbon","Water");
@@ -139,7 +140,7 @@ function deleteAlarm(uidNum,alarmType) {
 	});
 }
 
-function  querySBDayageSettingSub(){
+function  querySBDayageSettingSub(num){
 	$.ajax({
 		type : "post",
 		url : path + "/alarm/queryAlarm",
@@ -157,6 +158,9 @@ function  querySBDayageSettingSub(){
 			var highLux = new Array();
 			var setLux = new Array();
 			var lowLux = new Array();
+			var timeList = new Array();
+			var timeList2 = new Array();
+			var timeList3 = new Array();
 			var setCo2 = new Array();
 			var highAlarmCo2 = new Array();
 //			var lowAlarmCo2 = new Array();
@@ -168,60 +172,235 @@ function  querySBDayageSettingSub(){
 			var alarmType5 =[];
 			var yName = '';
 			var suffixName = '';
+			if($("#orgId" + count0rg).val().split(",")[3]=="1"){
+				if(alarmtype1=="1"){
+					for (var i = 0; i < list.length; i++) {
+						if(list[i].set_temp!=undefined){						 
+							xNames.push(parseInt(list[i].day_age/7+1));
+							setTemp.push(list[i].set_temp);
+							highAlarmTemp.push(list[i].high_alarm_temp );
+							lowAlarmTemp.push(list[i].low_alarm_temp );
+						}
+					}
+						alarmType5 = [{
+				            name: '目标温度',
+				            data: setTemp,
+				            color: 'green'
+				        },  {
+				            name: '高报温度',
+				            data: highAlarmTemp,
+				            color: 'blue'
+				        }, {
+				            name: '低报温度',
+				            data: lowAlarmTemp,
+				            color: 'red'
+				        }];
+						yName = '温度(°C)';
+						suffixName = '°C';
+					}else if(alarmtype1=="2"){
+						for (var i = 0; i < list.length; i++) {
+							if(list[i].high_lux!=undefined){
+								if(list[i].day_age%7==0){
+								xNames.push(parseInt(list[i].day_age/7));
+								highLux.push(list[i].high_lux );
+								lowLux.push(list[i].low_lux );
+								setLux.push(list[i].set_lux );
+								var time1 = new Date(list[i].start_time);
+								var time2 = new Date(list[i].end_time);
+								var hour1 = time1.getHours();
+								var hour2 = time2.getHours();
+								timeList.push(hour2-hour1);
+								timeList2.push(hour1);
+								list10.push(list[i]);
+								}
+							}					
+						}
+						
+						alarmType5 = [{
+				            name: '时间段',
+				            data: timeList
+				        },{ 
+				            name: ' ',
+				            data: timeList2,
+				            color:'white'
+				        }];
+						yName='小时(Hour)';
+						suffixName = 'Hour';
+					}else if(alarmtype1=="3"){
+						for (var i = 0; i < list.length; i++) {
+							if(list[i].high_alarm_co2!=undefined){
+							xNames.push(parseInt(list[i].day_age/7+1));
+							highAlarmCo2.push(list[i].high_alarm_co2 );
+							}
+						}
+						alarmType5 = [{
+				            name: 'CO2报警值',
+				            data: highAlarmCo2,
+				            color: 'blue'
+				        }
+						];
+						yName='CO2(PPM)';
+						suffixName = 'PPM';
+					}
+			}else{
 			if(alarmtype1=="1"){
 			for (var i = 0; i < list.length; i++) {
 				if(list[i].set_temp!=undefined){
-					xNames.push(list[i].day_age+'日龄');
+				  if(num==16){
+					xNames.push(parseInt(list[i].day_age/7+1));
 					setTemp.push(list[i].set_temp);
 					highAlarmTemp.push(list[i].high_alarm_temp );
 					lowAlarmTemp.push(list[i].low_alarm_temp );
+					if(parseInt(list[i].day_age/7)==16){
+						break;
+					}
+				  }else if(num==36){
+						if(parseInt(list[i].day_age/7)>16 && parseInt(list[i].day_age/7)<=36){
+						xNames.push(parseInt(list[i].day_age/7+1));
+						setTemp.push(list[i].set_temp);
+						highAlarmTemp.push(list[i].high_alarm_temp );
+						lowAlarmTemp.push(list[i].low_alarm_temp );
+						}
+					}else if(num==60){
+						if(parseInt(list[i].day_age/7)>36 && parseInt(list[i].day_age/7)<=60){
+							xNames.push(parseInt(list[i].day_age/7+1));
+							setTemp.push(list[i].set_temp);
+							highAlarmTemp.push(list[i].high_alarm_temp );
+							lowAlarmTemp.push(list[i].low_alarm_temp );
+							}
+					}else{
+						if(parseInt(list[i].day_age/7)>60){
+							xNames.push(parseInt(list[i].day_age/7+1));
+							setTemp.push(list[i].set_temp);
+							highAlarmTemp.push(list[i].high_alarm_temp );
+							lowAlarmTemp.push(list[i].low_alarm_temp );
+							}
+					}
 				}
 			}
 				alarmType5 = [{
 		            name: '目标温度',
-		            data: setTemp
+		            data: setTemp,
+		            color: 'green'
 		        },  {
 		            name: '高报温度',
-		            data: highAlarmTemp
+		            data: highAlarmTemp,
+		            color: 'blue'
 		        }, {
 		            name: '低报温度',
-		            data: lowAlarmTemp
+		            data: lowAlarmTemp,
+		            color: 'red'
 		        }];
 				yName = '温度(°C)';
 				suffixName = '°C';
 			}else if(alarmtype1=="2"){
 				for (var i = 0; i < list.length; i++) {
 					if(list[i].high_lux!=undefined){
-						xNames.push(list[i].day_age+'日龄');
+					  if(num==16){
+						if(list[i].day_age%7==0){
+						xNames.push(parseInt(list[i].day_age/7));
 						highLux.push(list[i].high_lux );
 						lowLux.push(list[i].low_lux );
 						setLux.push(list[i].set_lux );
+						var time1 = new Date(list[i].start_time);
+						var time2 = new Date(list[i].end_time);
+						var hour1 = time1.getHours();
+						var hour2 = time2.getHours();
+						timeList.push(hour2-hour1);
+						timeList2.push(hour1);
+						list10.push(list[i]);
+						}
+						
+						if(parseInt(list[i].day_age/7)==16){
+							break;
+						}
+					  }else if(num==36){
+						  if(parseInt(list[i].day_age/7)>16 && parseInt(list[i].day_age/7)<=36 && list[i].day_age%7==0){
+						  xNames.push(parseInt(list[i].day_age/7));
+							highLux.push(list[i].high_lux );
+							lowLux.push(list[i].low_lux );
+							setLux.push(list[i].set_lux );
+							var time1 = new Date(list[i].start_time);
+							var time2 = new Date(list[i].end_time);
+							var hour1 = time1.getHours();
+							var hour2 = time2.getHours();
+							timeList.push(hour2-hour1);
+							timeList2.push(hour1);
+							list10.push(list[i]);
+						  }
+					  }else if(num==60){
+						  if(parseInt(list[i].day_age/7)>36 && parseInt(list[i].day_age/7)<=60 && list[i].day_age%7==0){
+							  xNames.push(parseInt(list[i].day_age/7));
+								highLux.push(list[i].high_lux );
+								lowLux.push(list[i].low_lux );
+								setLux.push(list[i].set_lux );
+								var time1 = new Date(list[i].start_time);
+								var time2 = new Date(list[i].end_time);
+								var hour1 = time1.getHours();
+								var hour2 = time2.getHours();
+								timeList.push(hour2-hour1);
+								timeList2.push(hour1);
+								list10.push(list[i]);
+							  }
+					  }else{
+						  if(parseInt(list[i].day_age/7)>60 && list[i].day_age%7==0){
+							  xNames.push(parseInt(list[i].day_age/7));
+								highLux.push(list[i].high_lux );
+								lowLux.push(list[i].low_lux );
+								setLux.push(list[i].set_lux );
+								var time1 = new Date(list[i].start_time);
+								var time2 = new Date(list[i].end_time);
+								var hour1 = time1.getHours();
+								var hour2 = time2.getHours();
+								timeList.push(hour2-hour1);
+								timeList2.push(hour1);
+								list10.push(list[i]);
+							  }
+					  }
 					}					
 				}
+				
 				alarmType5 = [{
-		            name: '光照上限制',
-		            data: highLux
-		        } ,{
-		            name: '光照下限制',
-		            data: lowLux
-		        },{
-		            name: '光照参考值',
-		            data: setLux
+		            name: '时间段',
+		            data: timeList
+		        },{ 
+		            name: ' ',
+		            data: timeList2,
+		            color:'white'
 		        }];
-				yName='光照(Lux)';
-				suffixName = 'Lux';
+				yName='小时(Hour)';
+				suffixName = 'Hour';
 			}else if(alarmtype1=="3"){
 				for (var i = 0; i < list.length; i++) {
 					if(list[i].high_alarm_co2!=undefined){
-					xNames.push(list[i].day_age+'日龄');
-//					setCo2.push(list[i].set_co2);
+					  if(num==16){
+					xNames.push(parseInt(list[i].day_age/7+1));
 					highAlarmCo2.push(list[i].high_alarm_co2 );
-//					lowAlarmCo2.push(list[i].low_alarm_co2 );
+						if(parseInt(list[i].day_age/7)==16){
+							break;
+						}
+					  }else if(num==36){
+						  if(parseInt(list[i].day_age/7)>16 && parseInt(list[i].day_age/7)<=36){
+							  xNames.push(parseInt(list[i].day_age/7+1));
+							  highAlarmCo2.push(list[i].high_alarm_co2 );
+						  }
+					  }else if(num==60){
+						  if(parseInt(list[i].day_age/7)>36 && parseInt(list[i].day_age/7)<=60){
+							  xNames.push(parseInt(list[i].day_age/7+1));
+							  highAlarmCo2.push(list[i].high_alarm_co2 );
+						  }
+					  }else{
+						  if(parseInt(list[i].day_age/7)>60){
+							  xNames.push(parseInt(list[i].day_age/7+1));
+							  highAlarmCo2.push(list[i].high_alarm_co2 );
+						  }
+					  }
 					}
 				}
 				alarmType5 = [{
 		            name: 'CO2报警值',
-		            data: highAlarmCo2
+		            data: highAlarmCo2,
+		            color: 'blue'
 		        }
 //				,{
 //		            name: 'CO2参考值',
@@ -233,7 +412,7 @@ function  querySBDayageSettingSub(){
 			}else if(alarmtype1=="4"){
 				for (var i = 0; i < list.length; i++) {
 					if(list[i].set_water_deprivation!=undefined){
-					xNames.push(list[i].day_age+'日龄');
+					xNames.push(parseInt(list[i].day_age/7)+'周龄');
 					setWaterDeprivation.push(list[i].set_water_deprivation);
 					highWaterDeprivation.push(list[i].high_water_deprivation );
 					lowWaterDeprivation.push(list[i].low_water_deprivation );
@@ -252,8 +431,14 @@ function  querySBDayageSettingSub(){
 				yName='饮水量(L/10分钟)';
 				suffixName = 'L/10分钟';
 			}
+		  }
 			device();
+			if(alarmtype1=="2"){
+				createChar2(yName,xNames,alarmType5);
+//				createChar(suffixName,yName,xNames,alarmType5);
+			}else{
 			createChar(suffixName,yName,xNames,alarmType5);
+			}
 		}
 	});
 }
@@ -270,7 +455,10 @@ function createChar(suffixName,yName,xNames,alarmType5) {
 	        },
 	        xAxis: {
 	        	tickInterval: 6,      	
-	            categories: xNames
+	            categories: xNames,
+	            title: {
+	                text: '单位：周龄'
+	            }
 	        },
 	        credits: {
 	            enabled: false
@@ -289,6 +477,17 @@ function createChar(suffixName,yName,xNames,alarmType5) {
 	                color: '#808080'
 	            }]
 	        },
+	        legend: {
+	            align: 'right',
+	            x: 3,
+	            verticalAlign: 'top',
+	            y: -10,
+	            floating: true,
+	            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+	            borderColor: '#CCC',
+	            borderWidth: 1,
+	            shadow: false
+	        },
 	        tooltip: {
 	            valueSuffix: suffixName
 	        },
@@ -306,14 +505,110 @@ function createChar(suffixName,yName,xNames,alarmType5) {
 	                }
 	            }
 	        },
-	        legend: {
-	            layout: 'vertical',
-	            align: 'right',
-	            verticalAlign: 'middle',
-	            borderWidth: 0
-	        },
+//	        legend: {
+//	            layout: 'vertical',
+//	            align: 'right',
+//	            verticalAlign: 'middle',
+//	            borderWidth: 0
+//	        },
 	        series: alarmType5
 	    });
+}
+
+//创建光照报警堆叠柱状图
+function createChar2(yName,xNames,alarmType5) {
+	$('#container').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            categories: xNames,
+            lineColor: '#197F07',
+            title: {
+                text: '单位：周龄'
+            }
+        },
+        yAxis: {
+            min: 0,
+            gridLineWidth:'0px',
+            lineColor: '#197F07',
+            minorGridLineColor:'#197F07', 
+            gridLineColor: '#197F07',
+            gridLineWidth: 0,
+            lineColor:'#197F07',
+            tickWidth:10,
+            tickLength:1,
+            tickColor:'#197F07',
+            title: {
+                text: yName
+            },
+            tickInterval:1,
+            max:24
+        },
+        legend: {
+            align: 'right',
+            x: 3,
+            verticalAlign: 'top',
+            y: -10,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            formatter: function () {
+            	var setLux,highLux,lowLux;
+            	for(var i=0;i<list10.length;i++){
+            		if(parseInt(list10[i].day_age/7)==this.x){
+            			setLux = list10[i].set_lux;
+            			highLux = list10[i].high_lux;
+            			lowLux = list10[i].low_lux;
+            			break;
+            		}
+            	}
+                if(this.series.color=='white'){
+                    return;
+                }else{
+                    return '<b>' + this.x+'周龄' + '</b><br/>' +
+                        this.series.name + ': ' + this.y
+                        +'<br/>'+
+                        '光照上限值:'+highLux
+                        +'<br/>'+
+                        '光照下限值:'+lowLux
+                        +'<br/>'+
+                        '光照参考值:'+setLux;
+//                        + '<br/>' +
+//                        'Total: ' + this.point.stackTotal;
+                }
+            }
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal'
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        series: alarmType5
+//        	[{
+//            index:3,
+//            name: ' ',
+//            data: [5, 3, 4, 7, 2],
+//            color:'white'
+//        }, {index:2,
+//            name: 'Jane',
+//            data: [10, 2, 3, 2, 1]
+//           }, {index:1,
+//               name: ' ',
+//               data: [3, 4, 4, 2, 5],
+//               color:'white'
+//              }]
+    });
 }
 
 //function checkAll() {
@@ -349,7 +644,7 @@ function batchChange(){
     for(var i = 0; i < deleteRow.length; i++){
     	deleteRow2 = deleteRow2+deleteRow[i].uid_num+","+deleteRow[i].day_age+";";
     }
-    document.getElementById("reflushText").style.display="inline";
+    document.getElementById("reflushText").style.display="";
 	$.ajax({
         // async: true,
         url: path+"/alarm/deleteAlarm",
@@ -370,7 +665,7 @@ function batchChange(){
                 } else{
                     initTableRow(paramTypeSelectValue, getTableEmptyRow(paramTypeSelectValue));
                 }
-                querySBDayageSettingSub();
+                querySBDayageSettingSub(16);
         }
     });
 	document.getElementById("reflushText").style.display="none";
@@ -384,7 +679,7 @@ function search(){
         houseId: $("#orgId" + count0rg).val().split(",")[1],
         alarm_type: $("#alarmType").val()
     };
-    document.getElementById("reflushText").style.display="inline";
+    $("#reflushText").css("display", "");
     $.ajax({
         // async: true,
         url: path+"/alarm/queryAlarm2",
@@ -405,7 +700,7 @@ function search(){
             } else {
                 var obj = result.obj;
                 initTable(paramTypeSelectValue, getTableDataColumns(paramTypeSelectValue), []);
-                if(null != obj && paramTypeSelectValue !="Carbon") {
+                if(paramTypeSelectValue !="Carbon") {
                     var dataJosn = $.parseJSON(JSON.stringify(obj));
                     $("#" + paramTypeSelectValue + "Table").bootstrapTable('load',dataJosn);
                 } else if(obj.length != 0 && paramTypeSelectValue =="Carbon"){
@@ -430,12 +725,23 @@ function search(){
                 if(obj1 != ""){
                  document.getElementById('alarm_delay').value= obj1.alarm_delay;
 	       		 document.getElementById('temp_cpsation').value= obj1.temp_cpsation;
-	       		 document.getElementById('yincang').value= obj1.alarm_way;
+	       		 document.getElementById('yincang').value= obj1.alarm_probe;
 	       		 document.getElementById('temp_cordon').value= obj1.temp_cordon;
 	       		document.getElementById('point_alarm').value= obj1.point_alarm;
                 }
 //                showTableToolBar(paramTypeSelectValue);
-                querySBDayageSettingSub();
+                querySBDayageSettingSub(16);
+                if($("#orgId" + count0rg).val().split(",")[3]=="1"){
+                	document.getElementById("one").style.display="none";
+                	document.getElementById("two").style.display="none";
+                	document.getElementById("three").style.display="none";
+                	document.getElementById("fine").style.display="none";
+                }else{
+                	document.getElementById("one").style.display="";
+                	document.getElementById("two").style.display="";
+                	document.getElementById("three").style.display="";
+                	document.getElementById("fine").style.display="";
+                }
             }
         }
     });
@@ -635,13 +941,13 @@ function update(){
     var p = {
     		alarm_delay: $("#alarm_delay").val(),
     		temp_cpsation: $("#temp_cpsation").val(),
-    		yincang: $("#yincang").val(),
+    		alarm_probe: $("#yincang").val(),
     		temp_cordon: $("#temp_cordon").val(),
     		alarm_type:$("#alarmType").val(),
     		point_alarm:$("#point_alarm").val(),
     		updateRow: updateRow2
         };
-    
+    $("#reflushText").css("display", "");
 	$.ajax({
         // async: true,
         url: path+"/alarm/updateAlarm",
@@ -651,7 +957,7 @@ function update(){
         cache: false,
         // timeout:50000,
         success: function(result) {
-        	querySBDayageSettingSub();
+        	querySBDayageSettingSub(16);
         	var obj = result.obj;
             initTable(paramTypeSelectValue, getTableDataColumns(paramTypeSelectValue), []);
             if(null != obj) {
@@ -660,6 +966,7 @@ function update(){
             } else{
                 initTableRow(paramTypeSelectValue, getTableEmptyRow(paramTypeSelectValue));
             }
+            $("#reflushText").css("display", "none");
         	if(result.success==false){
                 // alert("保存失败！"+result.msg);
                 layer.alert('保存失败！'+result.msg, {
@@ -684,7 +991,7 @@ function updateHouseAlarm(){
 	var p = {
     		alarm_delay: $("#alarm_delay").val(),
     		temp_cpsation: $("#temp_cpsation").val(),
-    		yincang: $("#yincang").val(),
+    		alarm_probe: $("#yincang").val(),
     		temp_cordon: $("#temp_cordon").val(),
     		point_alarm:$("#point_alarm").val(),
     		farmId:$("#orgId" + (count0rg - 1)).val().split(",")[1],
@@ -703,7 +1010,7 @@ function updateHouseAlarm(){
                 if(obj != ""){
                  document.getElementById('alarm_delay').value= obj.alarm_delay;
 	       		 document.getElementById('temp_cpsation').value= obj.temp_cpsation;
-	       		 document.getElementById('yincang').value= obj.alarm_way;
+	       		 document.getElementById('yincang').value= obj.alarm_probe;
 	       		 document.getElementById('temp_cordon').value= obj.temp_cordon;
 	       		document.getElementById('point_alarm').value= obj.point_alarm;
                 }
@@ -1046,6 +1353,13 @@ function getCarbonTableDataColumns(){
                 if (!v) return 'CO2报警值不能为空';
             }
         },
+        formatter: function(value,row,index){
+        	if(value ==undefined){
+        		return "-";
+        	}else{
+        		return value;
+        	}
+        },
         width: '18%'
     }, {
         field: "set_co2",
@@ -1284,13 +1598,14 @@ function openAdjustWin(hourList){
 						high_alarm_co2: updateRow[0].high_alarm_co2
 		        };
 			}			
-
+			$("#reflushText").css("display", "");
 			$.ajax({
 				url : path + "/alarm/addAlarm",
 				data : param,
 				type : "POST",
 				dataType : "json",
 				success : function(result) {
+					$("#reflushText").css("display", "none");
 					search();
 					layer.close(index); 
 					if(result.msg=="1") {

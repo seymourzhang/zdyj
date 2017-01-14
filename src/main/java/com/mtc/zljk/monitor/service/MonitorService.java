@@ -13,7 +13,7 @@ public interface MonitorService {
      * @return List<MonitorCurr>
      * @throws Exception
      */
-	List<PageData> selectAll() throws Exception;
+	List<PageData> selectAll(PageData pd) throws Exception;
 
 	/**
 	 * 查询全部 （移动专用）

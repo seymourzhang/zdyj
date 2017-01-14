@@ -54,9 +54,9 @@
                     <div class="span3" align="center">
                         <div class="zTreeDemoBackground left" style="border:1px solid #20124d;overflow:auto;">
                             <div align="center">
-                                <a id="addOrg" href="javascript:;" class="btn blue" onclick="addOrg();"><i class="icon-plus">&nbsp;</i>新增</a>
-                                <a id="editOrg" href="javascript:;" class="btn blue" onclick="editOrg();"><i class="icon-edit">&nbsp;</i>修改</a>
-                                <a id="deleteOrg" href="javascript:;" class="btn blue" onclick="deleteOrg();"><i class="icon-trash">&nbsp;</i>删除</a>
+                                <a id="addOrg" href="javascript:;" class="btn blue" onclick="addOrg();"><i class="icon-plus"></i>新增</a>
+                                <a id="editOrg" href="javascript:;" class="btn blue" onclick="editOrg();"><i class="icon-edit">&nbsp;&nbsp;&nbsp;</i>修改</a>
+                                <a id="deleteOrg" href="javascript:;" class="btn blue" onclick="deleteOrg();"><i class="icon-trash">&nbsp;&nbsp;&nbsp;</i>删除</a>
                             </div>
                             <p></p>
                             <ul id="orgListTree" class="ztree"></ul>

@@ -27,8 +27,22 @@
                  #{bak1},
                  #{bak2},
                  #{create_person},
-                 curdate(),
-                 curdate());
+                 #{create_date},
+                 #{create_time});
+    </insert>
+
+    <insert id="insertLog" parameterType="pd">
+        INSERT INTO s_l_user_logon (user_id, user_code, login_ip, mac_addr, create_person, create_date, create_time, modify_person, modify_date, modify_time)
+        value ( #{user_id},
+                 #{user_code},
+                 null,
+                 null,
+                 #{user_id},
+                 #{create_date},
+                 #{create_time},
+                 #{user_id},
+                 #{modify_date},
+                 #{modify_time});
     </insert>
 
     <delete id="delete" parameterType="pd">

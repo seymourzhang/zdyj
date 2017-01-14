@@ -17,17 +17,23 @@ function initOthers(tableName, oTable){
 
 function initTable(tableName,dataColumns,dataJosn){
     //1.初始化Table
-    var oTable = new table(tableName,null,dataColumns,dataJosn);
+    var oTable = new table(tableName,null,dataColumns,dataJosn, null);
     initOthers(tableName, oTable);
 };
 
 function initTableWithToolBar(tableName,toolBar,dataColumns,dataJosn) {
     //1.初始化Table
-    var oTable = new table(tableName,toolBar,dataColumns,dataJosn);
+    var oTable = new table(tableName,toolBar,dataColumns,dataJosn, null);
     initOthers(tableName, oTable);
 };
 
-function table(tableName,toolBar,dataColumns,dataJosn) {
+function initTableWithSubTable(tableName,dataColumns,dataJosn, functionExpandRow) {
+    //1.初始化Table
+    var oTable = new table(tableName,null ,dataColumns,dataJosn, functionExpandRow);
+    initOthers(tableName, oTable);
+};
+
+function table(tableName,toolBar,dataColumns,dataJosn, functionExpandRow) {
 
     var oTableInit = new Object();
 
@@ -60,6 +66,9 @@ function table(tableName,toolBar,dataColumns,dataJosn) {
             detailView: false,                   //是否显示父子表
             columns: dataColumns,
             data: dataJosn,
+            clickToSelect: (functionExpandRow == null)?false:true,
+            detailView: (functionExpandRow == null)?false:true,//父子表
+            onExpandRow: functionExpandRow,
             // onEditableSave: editableSave,
                 // function (field, row, oldValue, $el) {
                 // $.ajax({

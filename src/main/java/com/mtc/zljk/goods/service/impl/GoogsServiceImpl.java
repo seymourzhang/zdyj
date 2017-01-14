@@ -139,5 +139,15 @@ public class GoogsServiceImpl implements GoogsService {
 	public void execProc(String procName) throws Exception{
 		dao.findForObject("SDGoodsMapper." + procName, null);
 	}
-	
+
+	/**
+	 * 获取库存相关提醒信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> getRemindMsg(PageData pd) throws Exception{
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getRemindMsg", pd);
+	}
+
 }

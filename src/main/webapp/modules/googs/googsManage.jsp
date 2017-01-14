@@ -42,7 +42,7 @@
 						<%-- 供应商 --%>
 						<div class="tab-pane" id="tab_1">
 							<!-- BEGIN FORM-->
-							<form id="corporationForm">
+							<form id="corporationForm"  onsubmit="return false;">
 <!-- 								<input type="text"  name="corporationFarmId"  id="corporationFarmId" style="display:none" value="${farmId}" /> -->
 <!-- 								<input type="text"  name="corporationFarm"  id="corporationFarm" style="display:none" value="${farm}" /> -->
 								<div class="container-fluid">
@@ -61,7 +61,7 @@
 <!-- 								</div> -->
 										<div class="span3" align="left" style="margin-top: 0px;">
 											<span_customer>供应商</span_customer>
-											<input type="text" value="" placeholder="模糊查询供应商名称" name="corporation" id="corporation">
+											<input type="text" value="" placeholder="请输入供应商名称" name="corporation" id="corporation">
 <!-- 											<select id="corporation_id" tabindex="1"  name="corporation_id"> -->
 <!-- 											</select> -->
 										</div>
@@ -99,9 +99,9 @@
 									</div>
 								</div>
 								<div class="span4">
-									<p id = "corporationFarmTitle" align="center">
-										农场
-									</p>
+<!-- 									<p id = "corporationFarmTitle" align="center"> -->
+<!-- 										农场 -->
+<!-- 									</p> -->
 								</div>
 								<div class="span4"></div>
 							</div>
@@ -118,7 +118,7 @@
 					
 						<%-- 厂家 --%>
 						<div class="tab-pane" id="tab_2">
-							<form id="factoryForm">
+							<form id="factoryForm"  onsubmit="return false;">
 								<div class="container-fluid">
 									<div class="row-fluid">
 <!-- 									<div class="portlet box blue1" style="width: 1300px;margin-left: -20px;"> -->
@@ -135,7 +135,7 @@
 <!-- 								</div> -->
 										<div class="span3" align="left" style="margin-top: 0px;">
 											<span_customer>厂家</span_customer>
-											<input type="text" value="" placeholder="模糊查询厂家名称" name="factory_name" id="factory_name">
+											<input type="text" value="" placeholder="请输入厂家名称" name="factory_name" id="factory_name">
 <!-- 											<select id="factory_id" tabindex="1"  name="factory_id"> -->
 <!-- 											</select> -->
 										</div>
@@ -173,9 +173,9 @@
 									</div>
 								</div>
 								<div class="span4">
-									<p id = "factoryFarmTitle" align="center">
-										农场
-									</p>
+<!-- 									<p id = "factoryFarmTitle" align="center"> -->
+<!-- 										农场 -->
+<!-- 									</p> -->
 								</div>
 								<div class="span4">
 								</div>
@@ -211,7 +211,7 @@
 <!-- 								</div> -->
 										<div class="span3" align="left" style="margin-top: 0px;">
 											<span_customer >物资</span_customer>
-											<input type="text" value="" placeholder="模糊查询物资名称或编码" name="good_name" id="good_name">
+											<input type="text" value="" placeholder="请输入物资名称或编码" name="good_name" id="good_name">
 <!-- 											<select id="good_id" tabindex="1"  name="good_id"> -->
 <!-- 											</select> -->
 										</div>
@@ -250,9 +250,9 @@
 									</div>
 								</div>
 								<div class="span4" align="center">
-									<p id = "goodsFarmTitle" align="center">
-										农场
-									</p>
+<!-- 									<p id = "goodsFarmTitle" align="center"> -->
+<!-- 										农场 -->
+<!-- 									</p> -->
 								</div>
 								<div class="span4" align="center">
 
@@ -272,23 +272,23 @@
 						
 						<%-- 物资关系  --%>
 						<div class="tab-pane" id="tab_4">
-							<form id="corporationGoodForm">
+							<form id="corporationGoodForm"  onsubmit="return false;">
 								<div class="container-fluid">
 
 									<div class="row-fluid">
 										<div class="span3" align="left" style="margin-top: 0px;">
 											<span_customer >物资</span_customer>
-											<input type="text" value="" placeholder="模糊查询物资名称或编码" name="good_name" id="good_name">
+											<input type="text" value="" placeholder="请输入物资名称或编码" name="good_name" id="good_name">
 <!-- 											<select id="good_id" tabindex="1"  name="good_id"> -->
 <!-- 											</select> -->
 										</div>
 										<div class="span3" align="left">
 											<span_customer>供应商</span_customer>
-											<input type="text" value="" placeholder="模糊查询供应商名称" name="corporation" id="corporation">
+											<input type="text" value="" placeholder="请输入供应商名称" name="corporation" id="corporation">
 										</div>
 										<div class="span3" align="left">
 										   <span_customer>厂家</span_customer>
-											<input type="text" value="" placeholder="模糊查询厂家名称" name="factory_name" id="factory_name">
+											<input type="text" value="" placeholder="请输入厂家名称" name="factory_name" id="factory_name">
 										</div>
 										<div class="span3" align="left">
 											<button type="button" class="btn blue" onclick="getCorporationGood()" >查 询</button>
@@ -319,9 +319,9 @@
 <!-- 									</div> -->
 								</div>
 								<div class="span4" align="center">
-									<p id = "corporationGoodFarmTitle" align="center">
-										农场
-									</p>
+<!-- 									<p id = "corporationGoodFarmTitle" align="center"> -->
+<!-- 										农场 -->
+<!-- 									</p> -->
 								</div>
 								<div class="span4" align="center">
 

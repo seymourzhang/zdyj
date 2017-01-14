@@ -30,62 +30,71 @@ public class DailyQueryMobileAction extends BaseAction {
         JSONObject resJson = new JSONObject();
         String dealRes = null;
         PageData pd = new PageData();
-        pd = this.getPageData();
-        String aa = pd.toString();
-        aa = aa.substring(1, aa.length() - 2);
-        JSONObject jsonObject = new JSONObject(aa);
-        int userId = jsonObject.optInt("id_spa");
-        JSONObject tUserJson = jsonObject.getJSONObject("params");
+        try {
+            pd = this.getPageData();
+            String aa = pd.toString();
+            aa = aa.substring(1, aa.length() - 2);
+            JSONObject jsonObject = new JSONObject(aa);
+            int userId = jsonObject.optInt("id_spa");
+            JSONObject tUserJson = jsonObject.getJSONObject("params");
 
-        String BreedBatchId = tUserJson.optString("BreedBatchId");
-        int HouseId = tUserJson.optInt("HouseId");
-        int FarmId = tUserJson.optInt("FarmId");
-        int DayAge = tUserJson.optInt("DayAge");
-        String HouseName = tUserJson.optString("HouseName");
-        int death_num_male = tUserJson.optInt("death_num_male");
-        int death_num_female = tUserJson.optInt("death_num_female");
-        int culling_num_male = tUserJson.optInt("culling_num_male");
-        int culling_num_female = tUserJson.optInt("culling_num_female");
-        String body_weight_male = tUserJson.optString("body_weight_male");
-        String body_weight_female = tUserJson.optString("body_weight_female");
-        int gender_error_male = tUserJson.optInt("gender_error_male");
-        int gender_error_female = tUserJson.optInt("gender_error_female");
-        String feed_code_female = tUserJson.optString("feed_code_female");
-        String feed_weight_female = tUserJson.optString("feed_weight_female");
-        String water_capacity_female = tUserJson.optString("water_capacity_female");
-        int layer_amount = tUserJson.optInt("layer_amount");
-        String uniformity = tUserJson.optString("uniformity");
+            String BreedBatchId = tUserJson.optString("BreedBatchId");
+            int HouseId = tUserJson.optInt("HouseId");
+            int FarmId = tUserJson.optInt("FarmId");
+            int DayAge = tUserJson.optInt("DayAge");
+            String HouseName = tUserJson.optString("HouseName");
+            int death_num_male = tUserJson.optInt("death_num_male");
+            int death_num_female = tUserJson.optInt("death_num_female");
+            int culling_num_male = tUserJson.optInt("culling_num_male");
+            int culling_num_female = tUserJson.optInt("culling_num_female");
+            String body_weight_male = tUserJson.optString("body_weight_male");
+            String body_weight_female = tUserJson.optString("body_weight_female");
+            int gender_error_male = tUserJson.optInt("gender_error_male");
+            int gender_error_female = tUserJson.optInt("gender_error_female");
+            String feed_code_female = tUserJson.optString("feed_code_female");
+            String feed_weight_female = tUserJson.optString("feed_weight_female");
+            String water_capacity_female = tUserJson.optString("water_capacity_female");
+            int layer_amount = tUserJson.optInt("layer_amount");
+            String uniformity = tUserJson.optString("uniformity");
 
-        pd.put("BreedBatchId", BreedBatchId);
-        pd.put("FarmId", FarmId);
-        pd.put("HouseId", HouseId);
-        pd.put("DayAge", DayAge);
-        pd.put("HouseName", HouseName);
-        pd.put("death_num_male", death_num_male);
-        pd.put("death_num_female", death_num_female);
-        pd.put("culling_num_male", culling_num_male);
-        pd.put("culling_num_female", culling_num_female);
-        pd.put("body_weight_male", body_weight_male);
-        pd.put("body_weight_female", body_weight_female);
-        pd.put("gender_error_male", gender_error_male);
-        pd.put("gender_error_female", gender_error_female);
-        pd.put("feed_code_female", feed_code_female);
-        pd.put("feed_weight_female", feed_weight_female);
-        pd.put("water_capacity_female", water_capacity_female);
-        pd.put("layer_amount", layer_amount);
-        pd.put("uniformity", uniformity);
-        pd.put("user_id", userId);
+            pd.put("BreedBatchId", BreedBatchId);
+            pd.put("FarmId", FarmId);
+            pd.put("HouseId", HouseId);
+            pd.put("DayAge", DayAge);
+            pd.put("HouseName", HouseName);
+            pd.put("death_num_male", death_num_male);
+            pd.put("death_num_female", death_num_female);
+            pd.put("culling_num_male", culling_num_male);
+            pd.put("culling_num_female", culling_num_female);
+            pd.put("body_weight_male", body_weight_male);
+            pd.put("body_weight_female", body_weight_female);
+            pd.put("gender_error_male", gender_error_male);
+            pd.put("gender_error_female", gender_error_female);
+            pd.put("feed_code_female", feed_code_female);
+            pd.put("feed_weight_female", feed_weight_female);
+            pd.put("water_capacity_female", water_capacity_female);
+            pd.put("layer_amount", layer_amount);
+            pd.put("uniformity", uniformity);
+            pd.put("user_id", userId);
 
-        int flag = dailyService.dailySave(pd);
-        if (flag == -1) {
+            int flag = dailyService.dailySave(pd);
+            if (flag == -1) {
+                resJson.put("Result", "Fail");
+                resJson.put("Error", "死淘数超过入栏数！");
+            } else if (flag == -2) {
+                resJson.put("Result", "Fail");
+                resJson.put("Error", "日期超过当前时间，请重新输入！");
+            } else if (flag == -3) {
+                resJson.put("Result", "Fail");
+                resJson.put("Error", "程序处理错误，请联系管理员！");
+            } else {
+                resJson.put("Result", "Success");
+                resJson.put("Error", "");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
             resJson.put("Result", "Fail");
-            resJson.put("Error", "死淘数超过入栏数！");
-        } else if (flag == -2) {
-            resJson.put("Result", "Fail");
-            resJson.put("Error", "日期超过当前时间，请重新输入！");
-        }else{
-            resJson.put("Result", "Success");
-            resJson.put("Error", "");
+            resJson.put("Error", "程序处理错误，请联系管理员！");
         }
         dealRes = Constants.RESULT_SUCCESS;
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);

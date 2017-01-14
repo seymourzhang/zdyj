@@ -71,7 +71,10 @@
 		<!-- varro  判断未处理的警报信息 -->
  		<if test="deal_status != null and deal_status !=''"> 
 			and ac.deal_status = #{deal_status}
- 		</if> 
+ 		</if>
+		<if test="user_id != null and user_id !=''">
+			and EXISTS(SELECT DISTINCT a.obj_id FROM v_user a WHERE a.id =#{user_id} AND a.obj_type=2 AND (a.obj_id=ac.farm_id OR a.obj_id=ac.house_id ))
+		</if>
 		ORDER BY ac.alarm_time DESC
 	</select>
 

@@ -8,4 +8,6 @@ import com.mtc.zljk.util.common.PageData;
 public interface SBUserImeiService {
 
     int insert(PageData pd) throws Exception;
+
+    int insertLog(PageData pd) throws Exception;
 }

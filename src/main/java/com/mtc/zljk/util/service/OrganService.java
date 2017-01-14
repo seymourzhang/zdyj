@@ -2,6 +2,7 @@ package com.mtc.zljk.util.service;
 
 import java.util.List;
 
+import com.mtc.zljk.util.common.Page;
 import com.mtc.zljk.util.common.PageData;
 
 public interface OrganService {
@@ -45,4 +46,5 @@ public interface OrganService {
 
 	List<PageData> getFarmForMapping(PageData pd) throws Exception;
 
+	List<PageData> getFarmUser(PageData pd) throws Exception;
 }

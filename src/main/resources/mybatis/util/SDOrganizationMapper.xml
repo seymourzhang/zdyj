@@ -13,7 +13,8 @@
 	    	   d.create_date,
 	    	   d.create_time,
 	  		   devi.device_code,
-	  		   h.house_type
+	  		   h.house_type,
+               dc.code_name
 	    from s_d_organization d
 		LEFT JOIN s_d_rights c
 		on d.id = c.obj_id
@@ -25,6 +26,8 @@
 	  	on devi.house_id = d.id and devi.farm_id = d.parent_id
 	  	LEFT JOIN s_d_house h
 	  	on h.id = d.organization_id
+        LEFT JOIN s_d_code dc
+        on dc.code_type = 'HOUSE_TYPE' AND dc.biz_code = h.house_type
 		where c.obj_type = 2
 	  		AND d.freeze_status=0
 		<if test="user_id != null"> 
@@ -61,6 +64,8 @@
 				  AND d.freeze_status=0
 				  AND ((tmp.role_level is not null AND (d.level_id > tmp.role_level or d.id = tmp.obj_id))
 				  			OR (tmp.role_level is null AND tmp2.role_level=1))
+				  AND tmp.id is not null
+				  OR (d.create_person = #{user_id})
 		ORDER BY d.id
     </select>
 
@@ -79,12 +84,18 @@
                 farm.farm_add2,
                 farm.farm_add3,
 				house.house_type,
-				code.code_name house_type_name
+				code.code_name house_type_name,
+				ac.pinyin_name,
+				(select name from s_d_area_china where id = farm.farm_add1) as level1,
+				(select name from s_d_area_china where id = farm.farm_add2) as level2,
+				(select name from s_d_area_china where id = farm.farm_add3) as level3
 	     FROM  s_d_organization a
 		 LEFT JOIN s_d_organization b
 			ON a.parent_id = b.id
          LEFT JOIN s_d_farm farm
             ON farm.id = a.id
+		LEFT JOIN s_d_area_china ac
+			ON ac.id = farm.farm_add3
 		LEFT JOIN s_d_house house
 			ON house.id = a.id
 		LEFT JOIN (SELECT * FROM s_d_code
@@ -293,18 +304,26 @@
 		WHERE  sdo.level_id &lt;= (select max(aa.level_id) - 2 from s_d_organization aa)
 				AND sdo.freeze_status=0
 				<if test="user_id != null">
-					AND sdo.id in (select obj_id from v_user where id = #{user_id} and obj_type=2)
+					AND (sdo.id in (select obj_id from v_user where id = #{user_id} and obj_type=2)
+					OR (sdo.create_person = #{user_id}))
 				</if>
 		ORDER BY sdo.id
 	</select>
 
 	<select id="getMaxOrgLevelId" resultType="pd" useCache="false">
-		  SELECT MAX(level_id) max_level_id FROM s_d_organization WHERE freeze_status=0;
+		  SELECT
+			  (CASE WHEN tmp.max_level_id is null THEN (SELECT MAX(level_id)+1 FROM s_d_organization) ELSE tmp.max_level_id END) max_level_id
+			FROM (SELECT
+					MAX(org.level_id) max_level_id
+				  FROM s_d_organization org
+				  WHERE org.freeze_status=0
+						AND level_name='农场') tmp
 	</select>
 
 	<!-- 新增机构 -->
 	<insert id="insertOrg" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO s_d_organization(organization_id
+		INSERT INTO s_d_organization(id
+										, organization_id
 										, name_cn
 										, parent_id
 										, level_id
@@ -314,7 +333,8 @@
 										, create_date
 										, create_time)
 	  	VALUES(
-	  		#{organization_id}
+	  		get_organization_id(TRUE)
+	  		,get_organization_id(FALSE)
 	  		,#{name_cn}
 	  		,#{parent_id}
 	  		,#{level_id}
@@ -353,7 +373,8 @@
 	<insert id="setFarmMapping" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="id">
 
 			INSERT INTO s_d_organization(
-				organization_id
+				id
+				,organization_id
 				,name_cn
 				,parent_id
 				,level_id
@@ -364,7 +385,8 @@
 				,create_time
 			)
 				SELECT
-					farm_code
+					id
+					,farm_code
 					,farm_name_chs
 					,#{parent_id}
 					,#{level_id}+1
@@ -386,7 +408,8 @@
 	<insert id="setHouseMapping" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="id">
 
 		INSERT INTO s_d_organization(
-				organization_id
+				id
+				,organization_id
 				,name_cn
 				,parent_id
 				,level_id
@@ -397,9 +420,10 @@
 				,create_time
 				)
 			SELECT
-				#{id}
+				id
+				,#{id}
 				,house_name
-				,(SELECT id FROM s_d_organization where organization_id = s_d_house.farm_id AND level_id = (#{level_id}-1))farm_id
+				,farm_id
 				,#{level_id}
 				,"栋舍"
 				,0
@@ -411,5 +435,24 @@
 				AND freeze_status = 0
 				AND id =#{id}
 	</insert>
+
+	<select id="getFarmUser" parameterType="pd" resultType="pd" flushCache="false">
+		SELECT u.*
+        FROM s_d_organization o
+          LEFT JOIN s_d_rights r
+            ON r.obj_type = 2 AND r.obj_id = o.id
+          LEFT JOIN s_d_role_rights rr
+            ON rr.rights_id = r.rights_id
+          LEFT JOIN s_d_user_role ur
+            ON ur.role_id = rr.role_id
+          LEFT JOIN s_d_user u
+            ON u.id = ur.user_id
+          LEFT JOIN s_d_user_role_temp urt
+            ON urt.user_id = u.id
+          LEFT JOIN s_d_role_temp rt
+            ON rt.role_temp_id = urt.role_temp_id
+        WHERE o.parent_id = ${farm_id} and rt.role_level >= 2
+        GROUP BY u.id;
+	</select>
 
 </mapper>

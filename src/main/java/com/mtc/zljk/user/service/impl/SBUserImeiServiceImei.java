@@ -20,4 +20,8 @@ public class SBUserImeiServiceImei implements SBUserImeiService{
         dao.delete("SBUserImeiMapper.delete", pd);
         return (Integer) dao.save("SBUserImeiMapper.insert", pd);
     }
+
+    public int insertLog(PageData pd) throws Exception{
+        return (Integer) dao.save("SBUserImeiMapper.insertLog", pd);
+    }
 }

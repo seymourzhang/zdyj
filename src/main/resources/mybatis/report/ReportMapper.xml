@@ -76,7 +76,7 @@
 	ELSE 'Y' END)                                               AS dataflag,
 	a.age                                                        AS data_age,
 	a.growth_date                                                AS data_date,
-	concat(date_format(a.growth_date, '%Y-%m-%d'), '(', a.age, ')') AS x_axis,
+	concat(date_format(a.growth_date, '%m-%d'), '(', a.age, ')') AS x_axis,
 	tData2.avgtempLeft1,
 	tData2.avgtempLeft2,
 	tData2.avgtempMiddle1,
@@ -253,7 +253,7 @@
 		ELSE 'Y' END)                                               AS dataflag,
 		a.age                                                        AS data_age,
 		a.growth_date                                                AS data_date,
-		concat(date_format(a.growth_date, '%Y-%m-%d'), '(', a.age, ')') AS x_axis,
+		concat(date_format(a.growth_date, '%m-%d'), '(', a.age, ')') AS x_axis,
 		tData2.co2,
 		tData2.lux
 		FROM s_b_breed_detail a

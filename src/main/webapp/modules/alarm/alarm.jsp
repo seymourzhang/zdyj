@@ -22,6 +22,9 @@
 <script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
 <script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
 
+<!-- <script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script> -->
+<!-- <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script> -->
+<!-- <script type="text/javascript" src="http://cdn.hcharts.cn/modules/exporting.js"></script> -->
 <script type="text/javascript" src="<%=path%>/framework/js/charts/highcharts.js"></script>
 <!-- <script type="text/javascript" src="<%=path%>/framework/js/charts/exporting.src.js"></script> -->
 <script type="text/javascript">
@@ -80,7 +83,7 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 </head>
 <body style="background-color: #ffffff;">
 	<!--  <div class="container-fluid" id="main-container" style="background-color: #ffffff;"> -->
-	<div id="page-content" class="clearfix" style="padding-top: 10px;">
+	<div id="page-content" class="clearfix" style="padding-top: 10px;width: 1288px;">
 		<div class="row-fluid" style="background-color: #ffffff;">
 			<form action="" method="post" style="background-color: #ffffff;" id="alarmForm">
 				<%-- <input type="hidden" name="id" value="${pd.id}">--%>
@@ -154,12 +157,11 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 <!-- 							</div> -->
 
 <!-- 						</div> -->
-                        
 						<div class="portlet-body" style="overflow-x: auto; overflow-y: auto;margin-top: -10px;" >
 <!-- 							<table class="table table-striped table-bordered table-hover" id="monitor_date_table"   -->
 <!-- 							style="margin-left: 30px;float: left;width: 500px;" data-options="singleSelect:true,collapsible:true,method:'POST'">                               -->
 <!-- 							</table> -->
-                        <div id = "reflushText" style="display: none;  float:right;"><font color="#FF0000">刷新中,请稍后...</font></div>
+                        <div id = "reflushText" style="display:none;float:right;"><font color="#FF0000">刷新中,请稍后...</font></div>
                             <div id="TemperatureCurveFrame" style="display: block;margin-left: 20px;float: left;width: 503px;margin-top: -20px;">
                                 <table id="TemperatureCurveTable" style="margin-left: 0px;float: left;width: 500px;"></table>
                             </div>
@@ -236,7 +238,7 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 								 </div>
                              <div class="span3" style="width: 200px;">
 									  <span_customer>报警形式</span_customer>
-									  <select id="yincang" name="alarm_way" class="m-wrap span12" tabindex="1" style="width: 130px;margin-left: -2px;margin-top: -7px;">
+									  <select id="yincang" name="alarm_probe" class="m-wrap span12" tabindex="1" style="width: 130px;margin-left: -2px;margin-top: -7px;">
 <!-- 														onchange="alarmHide();" -->
 														<option value="02">独立探头报警</option> 
 														<option value="03">平均温度报警</option>                                                        
@@ -296,6 +298,29 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 								<div class="portlet-body" id="user_date_table">
 									<input type="hidden" name="buttonValue" id="buttonValue">
 									<div id="container" class="form-horizontal" ></div>
+									
+									<div class="span12"> 
+										<div class="span3">
+											<div class="control-group" style="padding-left: 100px;">
+												<input type="button"  style="width: 80px;display:none;" value="0-16周" onclick="javascript:querySBDayageSettingSub(16);" id="one">
+											</div>
+										</div>
+										<div class="span3">
+											<div class="control-group" style="padding-left: 100px;">
+												<input type="button"  style="width: 80px;display:none;" value="17-36周" onclick="javascript:querySBDayageSettingSub(36);" id="two">
+											</div>
+										</div>
+										<div class="span3">
+											<div class="control-group" style="padding-left: 50px;">
+												<input type="button"  style="width: 80px;display:none;" value="37-60周" onclick="javascript:querySBDayageSettingSub(60);" id="three">
+											</div>
+										</div>
+										<div class="span3">
+											<div class="control-group" style="padding-left: 50px;">
+												<input type="button"  style="width: 80px;display:none;" value="61周以后" onclick="javascript:querySBDayageSettingSub(80);" id="fine">
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 				</div>

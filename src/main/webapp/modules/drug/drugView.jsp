@@ -189,7 +189,7 @@
 									  <div class="row-fluid">
 										  <div class="span3" align="left">
 											  <span_customer>栋舍</span_customer>
-											  <select id="houseId" tabindex="1"  name="houseId" >
+											  <select id="houseId" tabindex="1"  name="houseId" onchange="setUser();">
 <!-- 												  <option value="">全部</option> -->
 												  <c:if test="${!empty houseList}">
 													  <c:forEach var="house" items="${houseList}">

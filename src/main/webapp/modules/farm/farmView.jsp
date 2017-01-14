@@ -34,11 +34,11 @@
 
 							<tr style="background-color: #1288C0; color: white;" >
 								<th class="hidden-480" style="width: 5% ;text-align: center;">编号</th>
-								<th style="width: 20% ;text-align: center;">农场名称</th>
-								<th style="width: 20% ;text-align: center;">地区</th>
+								<th style="width: 15% ;text-align: center;">农场名称</th>
+								<th style="width: 45% ;text-align: center;">地区</th>
 								<th style="width: 10% ;text-align: center;">养殖品种</th>
 								<th style="width: 10% ;text-align: center;">养殖方式</th>
-								<th style="width: 35% ;text-align: center;">操作</th>
+								<th style="width: 15% ;text-align: center;">操作</th>
 							</tr>
 
 							</thead>
@@ -50,15 +50,15 @@
 										<td>${fl.farm_name_chs}</td>
 										<td>
 											<c:if test="${fl.farm_add1!='' && fl.farm_add1!=null}">
-												${fl.farm_add1}
+												${fl.province}
 											</c:if>
 											<c:if test="${fl.farm_add2!='' && fl.farm_add2!=null}">
 												&nbsp;&nbsp;>>&nbsp;&nbsp;
-												${fl.farm_add2}
+												${fl.city}
 											</c:if>
 											<c:if test="${fl.farm_add3!='' && fl.farm_add2!=null}">
 												&nbsp;&nbsp;>>&nbsp;&nbsp;
-												${fl.farm_add3}
+												${fl.area}
 											</c:if>
 										</td>
 										<td>${fl.code_name1}</td>

@@ -22,70 +22,77 @@ public class DailyServiceImpl implements DailyService {
 	private DaoSupport dao;
 
     public int dailySave(PageData pd) throws Exception {
-        int cullingMale = pd.getInteger("culling_num_male");
-        int cullingFemale = pd.getInteger("culling_num_female");
-        int deathMale = pd.getInteger("death_num_male");
-        int deathFemale = pd.getInteger("death_num_female");
-        int genderErrorMale = pd.getInteger("gender_error_male");
-        int genderErrorFemale = pd.getInteger("gender_error_female");
-
-        PageData temp = (PageData) dao.findForObject("DailyMapper.selectBySpecialDate", pd);
-        int checkMale = temp.getInteger("male_count");
-        int checkFemale = temp.getInteger("female_count");
-        int dayAge = temp.getInteger("age");
         int result = 0;
+        try {
+            int cullingMale = pd.getInteger("culling_num_male");
+            int cullingFemale = pd.getInteger("culling_num_female");
+            int deathMale = pd.getInteger("death_num_male");
+            int deathFemale = pd.getInteger("death_num_female");
+            int genderErrorMale = pd.getInteger("gender_error_male");
+            int genderErrorFemale = pd.getInteger("gender_error_female");
 
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date specialDate = sdf.parse(temp.get("growth_date").toString());
-        Date curDate = sdf.parse(sdf.format(date));
+            PageData temp = (PageData) dao.findForObject("DailyMapper.selectBySpecialDate", pd);
+            int checkMale = temp.getInteger("male_count");
+            int checkFemale = temp.getInteger("female_count");
+            int dayAge = temp.getInteger("age");
 
-        int maleCountDiff = checkFemale - cullingFemale - deathFemale;
-        int femaleCountDiff = checkMale - deathMale - cullingMale;
-        if (maleCountDiff < 0 || femaleCountDiff < 0) {
-            result = -1;
-        } else {
-            pd.put("service_id", 0);
-            pd.put("create_date", new Date());
-            pd.put("create_time", new Date());
-            pd.put("modify_date", new Date());
-            pd.put("modify_time", new Date());
-            int maleOld = temp.getInteger("male_culling_am") + temp.getInteger("male_death_am") + temp.getInteger("male_culling_pm") + temp.getInteger("male_death_pm");
-            int femaleOld = temp.getInteger("female_culling_am") + temp.getInteger("female_death_am") + temp.getInteger("female_culling_pm") + temp.getInteger("female_death_pm");
-            int diffMale = maleOld - deathMale - cullingMale;
-            int diffFemale = femaleOld - deathFemale - cullingFemale;
-            pd.put("femaleDiff", diffFemale);
-            pd.put("maleDiff", diffMale);
-            if (curDate.equals(specialDate)) {
-                dao.save("DailyMapper.batchCurSave", pd);
-            } else if (specialDate.before(curDate)){
-                dao.save("DailyMapper.batchOldSave", pd);
-            } else if (specialDate.after(curDate)) {
-                result = -2;
+            Date date = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date specialDate = sdf.parse(temp.get("growth_date").toString());
+            Date curDate = sdf.parse(sdf.format(date));
+
+            int maleCountDiff = checkFemale - cullingFemale - deathFemale;
+            int femaleCountDiff = checkMale - deathMale - cullingMale;
+            if (maleCountDiff < 0 || femaleCountDiff < 0) {
+                result = -1;
+            } else {
+                pd.put("service_id", 0);
+                pd.put("create_date", new Date());
+                pd.put("create_time", new Date());
+                pd.put("modify_date", new Date());
+                pd.put("modify_time", new Date());
+                int maleOld = temp.getInteger("male_culling_am") + temp.getInteger("male_death_am") + temp.getInteger("male_culling_pm") + temp.getInteger("male_death_pm");
+                int femaleOld = temp.getInteger("female_culling_am") + temp.getInteger("female_death_am") + temp.getInteger("female_culling_pm") + temp.getInteger("female_death_pm");
+                int diffMale = maleOld - deathMale - cullingMale;
+                int diffFemale = femaleOld - deathFemale - cullingFemale;
+                pd.put("femaleDiff", diffFemale);
+                pd.put("maleDiff", diffMale);
+                if (cullingFemale + cullingMale != 0) {
+                    pd.put("operation_type", "6");
+                    pd.put("male_count", -cullingMale);
+                    pd.put("female_count", -cullingFemale);
+                    pd.put("bak", "损耗数量");
+                    dao.save("DailyMapper.insertDaily", pd);
+                }
+                if (deathFemale + deathMale != 0) {
+                    pd.put("operation_type", "5");
+                    pd.put("male_count", -deathMale);
+                    pd.put("female_count", -deathFemale);
+                    pd.put("bak", "淘汰数量");
+                    dao.save("DailyMapper.insertDaily", pd);
+                }
+                if (genderErrorMale + genderErrorFemale != 0) {
+                    pd.put("operation_type", "8");
+                    pd.put("male_count", -genderErrorMale);
+                    pd.put("female_count", -genderErrorFemale);
+                    pd.put("bak", "鉴别错误");
+                    dao.save("DailyMapper.insertDaily", pd);
+                }
+                if (curDate.equals(specialDate)) {
+                    dao.save("DailyMapper.batchCurUpdate", pd);
+                    dao.save("DailyMapper.batchCurSave", pd);
+                    dao.save("DailyMapper.updateCurrCount", pd);
+                } else if (specialDate.before(curDate)) {
+                    dao.save("DailyMapper.batchOldUpdate", pd);
+                    dao.save("DailyMapper.batchOldSave", pd);
+                    dao.save("DailyMapper.updateCurrCount", pd);
+                } else if (specialDate.after(curDate)) {
+                    result = -2;
+                }
             }
-            if (cullingFemale + cullingMale != 0) {
-                pd.put("operation_type", "6");
-                pd.put("male_count", -cullingMale);
-                pd.put("female_count", -cullingFemale);
-                pd.put("bak", "损耗数量");
-                dao.save("DailyMapper.insertDaily", pd);
-            }
-            if (deathFemale + deathMale != 0) {
-                pd.put("operation_type", "5");
-                pd.put("male_count", -deathMale);
-                pd.put("female_count", -deathFemale);
-                pd.put("bak", "淘汰数量");
-                dao.save("DailyMapper.insertDaily", pd);
-            }
-            if (genderErrorMale + genderErrorFemale != 0) {
-                pd.put("operation_type", "8");
-                pd.put("male_count", -genderErrorMale);
-                pd.put("female_count", -genderErrorFemale);
-                pd.put("bak", "鉴别错误");
-                dao.save("DailyMapper.insertDaily", pd);
-            }
-            dao.save("DailyMapper.batchSave", pd);
-            dao.save("DailyMapper.updateCurrCount", pd);
+        }catch (Exception e){
+            e.printStackTrace();
+            result = -3;
         }
         return result;
     }

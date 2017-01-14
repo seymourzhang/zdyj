@@ -77,4 +77,12 @@ public interface GoogsService {
 	 * @throws Exception
 	 */
 	void execProc(String procName) throws Exception;
+
+	/**
+	 * 获取库存相关提醒信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> getRemindMsg(PageData pd) throws Exception;
 }

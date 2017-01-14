@@ -14,7 +14,7 @@
 <%@ include file="../../framework/inc.jsp"%>
 <link rel="stylesheet" href="<%=path %>/framework/css/datepicker.css" />
 <script type="text/javascript" src="<%=path%>/framework/js/charts/highcharts.js"></script>
-<script type="text/javascript" src="<%=path%>/framework/js/charts/exporting.src.js"></script>
+<!-- <script type="text/javascript" src="<%=path%>/framework/js/charts/exporting.src.js"></script> -->
 <script type="text/javascript" src="<%=path%>/modules/report/js/alarmHist.js"></script>
 </head>
 <script>

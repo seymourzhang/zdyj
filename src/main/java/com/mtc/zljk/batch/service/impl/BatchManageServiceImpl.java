@@ -123,7 +123,8 @@ public class BatchManageServiceImpl implements BatchManageService {
                 SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
                 param.put("service_id",df.format(new Date()).toString());
                 param.putAll(outList.get(0));
-                param.put("batchId",inList.get(0).getString("batchId"));
+                param.put("batchId",outList.get(0).getString("batch_id"));
+                param.put("batchId_target",inList.get(0).getString("batchId"));
                 param.put("house_code_target",inList.get(0).getInteger("houseId").toString());
                 param.put("house_name_target",inList.get(0).getString("house"));
                 param.put("male_count",pd.getString("male_count"));

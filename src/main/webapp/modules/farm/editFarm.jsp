@@ -32,7 +32,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					$('#editfarm_msg').html("");
 				}
 			  });
-		 
 		$("#province_id").change(function() {
 			setCityId();
 			$('#editfarm_msg').html("");
@@ -44,6 +43,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		setCityId();
 		/* setAreaId(); */
 	})
+
 	function  setCityId(){
 		 var province_id=$("#province_id").val();
 		$.ajax({
@@ -171,7 +171,7 @@ function closeB(){
 					 <option value="">请选择</option>
                       <c:if test="${!empty prlist}">
 						  <c:forEach var="prl" items="${prlist}">
-							 <option value="${prl.id }" <c:if test="${prl.short_name==farmData.farm_add1}">selected</c:if>>
+							 <option value="${prl.id }" <c:if test="${prl.id==farmData.farm_add1}">selected</c:if>>
 							 	${prl.short_name}
 							 </option>
 						  </c:forEach>

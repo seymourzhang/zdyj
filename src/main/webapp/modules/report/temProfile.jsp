@@ -34,6 +34,9 @@
 </div>
 <script type="text/javascript">
     var isRead="${pd.write_read}";//菜单是否只读
+	var farm_id = "${pd.farm_id}";
+    var house_id = "${pd.house_id}";
+    var batch_no = "${pd.batch_no}";
 </script>
 <!-- #main-content -->
 <script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>

@@ -6,7 +6,7 @@
 
     <!-- 查询可调数量 -->
     <select id="selectBatchDataCount" parameterType="pd" resultType="pd" useCache="false">
-        SELECT
+        SELECT batch_id,
             male_count
             ,female_count
         FROM s_b_batch_curr
@@ -337,7 +337,7 @@
                     , CURTIME()
                     , CURDATE()
             ),(#{service_id}
-                    , #{batchId}
+                    , #{batchId_target}
                     , #{house_code_target}
                     , #{house_name_target}
                     , #{farm_id}

@@ -79,8 +79,9 @@ public class MonitorAction extends BaseAction{
 		PageData pd = this.getPageData();
 		PageData pageData = new PageData();
 		List<PageData> mcl = new ArrayList<PageData>();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		pd.put("user_id",user.getId());
 		if ("true".equals(pd.get("checked"))) {
-			SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 			pageData.put("user_code", user.getId());
 			pd = getMonitorSet(pageData);
 			String farmIdGroup = pd.get("farm_id_group").toString();
@@ -317,7 +318,7 @@ public class MonitorAction extends BaseAction{
 		if(pd.get("farmId")!=null || pd.get("houseId")!=null) {
 			mcl = monitorService.selectByCondition(pd);
 		} else {
-			mcl = monitorService.selectAll();
+			mcl = monitorService.selectAll(pd);
 		}
 		return mcl;
 	}

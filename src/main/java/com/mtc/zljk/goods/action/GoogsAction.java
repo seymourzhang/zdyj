@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.Context;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -90,31 +91,31 @@ public class GoogsAction extends BaseAction {
 
 //		mv.addObject("houseList",getHouse(farmList.get(0).getInteger("id")));
 		mv.addObject("pd",pd);
-		pd.put("code_type", "good_type");
-		List<PageData> goodType= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
-		Json j = new Json();
-		j.setObj(goodType);
-		mv.addObject("goodTypeList",j.getObj());
+//		pd.put("code_type", "good_type");
+//		List<PageData> goodType= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
+//		Json j = new Json();
+//		j.setObj(goodType);
+//		mv.addObject("goodTypeList",j.getObj());
 		
-		pd.put("code_type", "unit");
-		List<PageData> unit= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
-		j.setObj(unit);
-		mv.addObject("unit",j.getObj());
+//		pd.put("code_type", "unit");
+//		List<PageData> unit= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
+//		j.setObj(unit);
+//		mv.addObject("unit",j.getObj());
+//		
+//		pd.put("code_type", "spec");
+//		List<PageData> spec= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
+//		j.setObj(spec);
+//		mv.addObject("spec",spec);
 		
-		pd.put("code_type", "spec");
-		List<PageData> spec= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
-		j.setObj(spec);
-		mv.addObject("spec",spec);
-		
-		List<PageData> corporation=googsService.getCorporation3(pd);
-		j.setObj(corporation);
-		mv.addObject("corporation",j.getObj());
-		List<PageData> factory=googsService.getFactory3(pd);
-		j.setObj(factory);
-		mv.addObject("factory",j.getObj());
-		List<PageData> goods=googsService.getGoodsList(pd);
-		j.setObj(goods);
-		mv.addObject("goods",j.getObj());
+//		List<PageData> corporation=googsService.getCorporation3(pd);
+//		j.setObj(corporation);
+//		mv.addObject("corporation",j.getObj());
+//		List<PageData> factory=googsService.getFactory3(pd);
+//		j.setObj(factory);
+//		mv.addObject("factory",j.getObj());
+//		List<PageData> goods=googsService.getGoodsList(pd);
+//		j.setObj(goods);
+//		mv.addObject("goods",j.getObj());
 		
 		return mv;
 		

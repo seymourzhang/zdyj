@@ -37,8 +37,8 @@
 								<th style="width:5%;">栋舍</th>
 								<th style="width:15%;">所属农场</th>
 								<th style="width:8%;">栋舍类别</th>
-								<th style="width:42%;">数据采集设备</th>
-								<th style="width:25%;">操作</th>
+								<th style="width:47%;">数据采集设备</th>
+								<th style="width:20%;">操作</th>
 							</tr>
 
 							</thead>
@@ -54,7 +54,7 @@
 										<td class="center hidden-480" style="width: 145px;">
 											<a href="javascript:void(0);" onclick="editHouse('${hl.id}','${hl.deviceID}')" class="btn mini blue"><i class="icon-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp;
 											<a href="javascript:void(0);" onclick="delHouse(${hl.id})" class="btn mini black"><i class="icon-trash"></i> 删除</a>&nbsp;&nbsp;&nbsp;
-											<a href="javascript:void(0);" onclick="setDevice('${hl.id}','${hl.deviceID}')" class="btn mini purple"><i class="icon-list-alt"></i> 绑定设备</a></td>
+											<%--<a href="javascript:void(0);" onclick="setDevice('${hl.id}','${hl.deviceID}')" class="btn mini purple"><i class="icon-list-alt"></i> 绑定设备</a></td>--%>
 									</tr>
 								</c:forEach>
 							</c:if>

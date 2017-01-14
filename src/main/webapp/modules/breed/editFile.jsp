@@ -138,9 +138,9 @@
     <!-- The container for the uploaded files -->
 
     <div class="control-group">
-        <label class="control-label" style="width: 100px; left: 5px; position: relative;top: 20px;">备注:</label>
-        <div class="controls" style="margin-left: 5px;position: relative;top: 20px;">
-            <input id="tips" type="text" style="width: 510px; height: 130px; margin-bottom: 0px" name="user_code" value="">
+        <label class="control-label" style="width: 100px; left: 5px; position: relative;top: 45px;">备注:</label>
+        <div class="controls" style="margin-left: 45px;position: relative;top: 20px;">
+            <input id="tips" type="text" style="width: 460px; margin-bottom: 0px" name="user_code" value="">
         </div>
     </div>
 

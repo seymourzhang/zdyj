@@ -57,7 +57,7 @@ function setBatchId(){
 			for (var i = 0; i < list.length; i++) {
 				$("#batchId").append("<option value=" + list[i].batch_no+ ">" + list[i].batch_no + "</option>");
 			}
-			$("#batchId").val(list[0].batch_no);
+			document.getElementById("batchId").value=list[0].batch_no;
 			
 			$.ajax({                              
 		        // async: true,
@@ -270,31 +270,33 @@ function reflushAlarmHist(num){
 }
 
 function reflushAlarmHist2(num){
+	var farmId = $("#orgId" + (count0rg - 1)).val().split(",")[1];
+	var houseId = $("#orgId" + count0rg).val().split(",")[1];
 	if(num==1){
 	$.ajax({
 		type : "post",
 		url : path + "/temProfile/getBatch",
 		data : {
-			"farmId" : $("#orgId" + (count0rg - 1)).val().split(",")[1],
-			"houseId" : $("#orgId" + count0rg).val().split(",")[1]
+			"farmId" : farmId,
+			"houseId" : houseId
 		},
 		dataType: "json",
 		success : function(result) {
 			var list = result.obj;
 			$("#batchId option").remove();
-			if(null != list){
+			if(0 != list.length){
 			for (var i = 0; i < list.length; i++) {
 				$("#batchId").append("<option value=" + list[i].batch_no+ ">" + list[i].batch_no + "</option>");
 			}
-			$("#batchId").val(list[0].batch_no);
+			document.getElementById("batchId").value=list[0].batch_no;
 			}else{
-				$("#batchId").val("");
+				document.getElementById("batchId").value="";
 			}
 			$.ajax({                              
 		        // async: true,
 		        url: path+"/alarmHist/queryAlarmHist2",
 		        data: {
-					"farmId" : $("#orgId" + count0rg).val().split(",")[1],"houseId":$("#orgId" + count0rg).val().split(",")[1],"batchNo":$("#batchId").val()
+					"farmId" : $("#orgId" + (count0rg - 1)).val().split(",")[1],"houseId":$("#orgId" + count0rg).val().split(",")[1],"batchNo":$("#batchId").val()
 				},
 		        type: "POST",
 		        dataType: "json",
@@ -303,7 +305,7 @@ function reflushAlarmHist2(num){
 		        success: function (result) {
 		            var list = result.obj;
 		            initTable("alarmHist", getTableDataColumns("alarmHist"), []);
-	                if(null != list) {
+	                if(0 != list.length) {
 	                    var dataJosn = $.parseJSON(JSON.stringify(list));
 	                    $("#alarmHistTable").bootstrapTable('load',dataJosn);
 	                } else{
@@ -344,7 +346,7 @@ function reflushAlarmHist2(num){
 			success : function(result) {
 				var list = result.obj;
 				$("#batchId2 option").remove();
-				if(null != list){
+				if(0 != list.length){
 				for (var i = 0; i < list.length; i++) {
 					$("#batchId2").append("<option value=" + list[i].batch_no+ ">" + list[i].batch_no + "</option>");
 				}
@@ -385,7 +387,7 @@ function reflushAlarmHist2(num){
 			        success: function (result) {
 			        	var list = result.obj;
 			        	initTable("alarmHistDetail", getTableDataColumns("alarmHistDetail"), []);
-		                if(null != list) {
+		                if(0 != list.length) {
 		                    var dataJosn = $.parseJSON(JSON.stringify(list));
 		                    $("#alarmHistDetailTable").bootstrapTable('load',dataJosn);
 		                } else{
@@ -429,7 +431,7 @@ function reflushAlarmHist3(num){
         success: function (result) {
             var list = result.obj;
             initTable("alarmHist", getTableDataColumns("alarmHist"), []);
-            if(null != list) {
+            if(0 != list.length) {
                 var dataJosn = $.parseJSON(JSON.stringify(list));
                 $("#alarmHistTable").bootstrapTable('load',dataJosn);
             } else{
@@ -489,7 +491,7 @@ function reflushAlarmHist3(num){
 	        success: function (result) {
 	        	var list = result.obj;
 	        	initTable("alarmHistDetail", getTableDataColumns("alarmHistDetail"), []);
-                if(null != list) {
+                if(0 != list.length) {
                     var dataJosn = $.parseJSON(JSON.stringify(list));
                     $("#alarmHistDetailTable").bootstrapTable('load',dataJosn);
                 } else{
@@ -549,7 +551,7 @@ function reflushAlarmHist4(){
         success: function (result) {
         	var list = result.obj;
         	initTable("alarmHistDetail", getTableDataColumns("alarmHistDetail"), []);
-            if(null != list) {
+            if(0 != list.length) {
                 var dataJosn = $.parseJSON(JSON.stringify(list));
                 $("#alarmHistDetailTable").bootstrapTable('load',dataJosn);
             } else{
@@ -716,19 +718,14 @@ function getAlarmHistTableDataColumns(){
         field: "low_temp_num",
         title: "低温报警"
     }, {
-        field: "high_lux_num",
-        title: "高光照报警",
-        visible: false
-    }, {
-        field: "low_lux_num",
-        title: "低光照报警",
-        visible: false
-    }, {
         field: "high_low_lux_num",
         title: "光照异常报警"
     }, {
         field: "high_co2_num",
         title: "高二氧化碳报警"
+    }, {
+        field: "no_ele_num",
+        title: "断电报警"
     }];
     return dataColumns;
 }

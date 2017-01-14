@@ -19,6 +19,8 @@
 				WHERE t1.role_temp_id = t2.role_temp_id
 						AND user_id = #{user_id} ) b
 	  ON a.role_level >= b.role_level
+	  WHERE a.role_temp_id >= (CASE WHEN b.role_temp_id = 1 THEN 1
+                                WHEN b.role_temp_id = 2 THEN 2 ELSE b.role_temp_id END)
 	ORDER BY a.role_level, a.role_temp_id
     </select>
      <!-- 通过用户id查询所属角色 -->

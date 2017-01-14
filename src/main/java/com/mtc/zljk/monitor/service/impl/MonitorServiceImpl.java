@@ -16,8 +16,8 @@ public class MonitorServiceImpl implements MonitorService {
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
 
-	public List<PageData> selectAll() throws Exception{
-		return (List<PageData>) dao.findForList("MonitorCurrMapper.selectAll", null);
+	public List<PageData> selectAll(PageData pd) throws Exception{
+		return (List<PageData>) dao.findForList("MonitorCurrMapper.selectAll", pd);
 	}
 
 	public List<PageData> selectAllForMobile() throws Exception{

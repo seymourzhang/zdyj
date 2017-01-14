@@ -39,7 +39,9 @@ public class AlarmHistAction extends BaseAction {
 		pd = this.getPageData();
 		pd.put("farmId", getFarmList().get(0).get("id"));
 		pd.put("houseId", getHouseList(pd).get(0).get("id"));
+		if(getBatchList(pd).size()!=0){
 		pd.put("batchNo", getBatchList(pd).get(0).get("batch_no"));
+		}
 		List<PageData> alarm = alarmHistService.getAlarmHist(pd);
 		mv.setViewName("/modules/report/alarmHist");
 		mv.addObject("AlarmHist",alarm);

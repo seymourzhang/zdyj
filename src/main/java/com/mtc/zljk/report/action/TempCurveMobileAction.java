@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,14 +41,16 @@ public class TempCurveMobileAction extends BaseAction {
             String ErrorMsg = "";
             JSONObject jsonObject = new JSONObject(aa);
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
             int userId = jsonObject.optInt("id_spa");
             JSONObject tUserJson = jsonObject.getJSONObject("params");
-            pd.put("BreedBatchId", tUserJson.get("FarmBreedId"));
-            pd.put("FarmId", tUserJson.get("FarmId"));
-            pd.put("HouseId", tUserJson.get("HouseId"));
-            pd.put("DataType", tUserJson.get("DataType"));
-            pd.put("ReqFlag", tUserJson.get("ReqFlag"));
-            pd.put("DataRange", tUserJson.get("DataRange"));
+            pd.put("BreedBatchId", tUserJson.optString("FarmBreedId"));
+            pd.put("FarmId", tUserJson.optInt("FarmId"));
+            pd.put("HouseId", tUserJson.optInt("HouseId"));
+            pd.put("DataType", tUserJson.optString("DataType"));
+            pd.put("ReqFlag", tUserJson.optString("ReqFlag"));
+            pd.put("DataRange", tUserJson.optString("DataRange"));
 
             int HouseId = tUserJson.getInt("HouseId");
             String ReqFlag = tUserJson.optString("ReqFlag");
@@ -230,7 +233,7 @@ public class TempCurveMobileAction extends BaseAction {
 //                }
                 resJson.put("TempDatas", TempDatas);
                 resJson.put("HouseId", HouseId);
-                resJson.put("DataDate", data_date);
+                resJson.put("DataDate", DataType.equals("03") ? sdf.format(sdf.parse(DataRange)) : data_date);
                 resJson.put("data_age", data_age);
                 resJson.put("FarmBreedId", BreedBatchId);
                 resJson.put("Result", "Success");
@@ -257,6 +260,8 @@ public class TempCurveMobileAction extends BaseAction {
         try {
             String ErrorMsg = "";
             JSONObject jsonObject = new JSONObject(aa);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             int userId = jsonObject.optInt("id_spa");
             JSONObject tUserJson = jsonObject.getJSONObject("params");
@@ -347,7 +352,7 @@ public class TempCurveMobileAction extends BaseAction {
                 TempDatas.put(tJSONObject);
                 resJson.put("TempDatas", TempDatas);
                 resJson.put("HouseId", HouseId);
-                resJson.put("DataDate", data_date);
+                resJson.put("DataDate", DataType.equals("03") ? sdf.format(sdf.parse(DataRange)) : data_date);
                 resJson.put("data_age", data_age);
                 resJson.put("FarmBreedId", BreedBatchId);
                 resJson.put("Result", "Success");

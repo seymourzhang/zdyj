@@ -15,6 +15,12 @@
 <script type="text/javascript" src="<%=path%>/framework/js/extJquery.js"></script>
 <script type="text/javascript" src="<%=path%>/modules/monitor/js/monitor.js"></script>
 <%----%>
+<!--图标样式-->
+<!--     <link rel="stylesheet" href="<%=path %>/framework/css/zTreeStyle.css" /> -->
+
+    <!--主要样式-->
+<!--     <script type="text/javascript" src="<%=path %>/framework/jquery/jquery.ztree.core.js"></script> -->
+<!-- 	<script type="text/javascript" src="<%=path %>/framework/jquery/jquery.ztree.excheck.js"></script> -->
 </head>
 <script>
 	var xNames = new Array();//X坐标
@@ -38,7 +44,7 @@ var outsideTemp = new Array();//室外温度
 	insideTemp3.push(${tep.inside_temp3 });
 	insideTemp4.push(${tep.inside_temp4 });
 	insideSetTemp.push(${tep.inside_set_temp });
-	/* insideAvgTemp.push(${tep.inside_avg_temp }); */
+	<%--/* insideAvgTemp.push(${tep.inside_avg_temp }); */--%>
 	highAlarmTemp.push(${tep.high_alarm_temp });
 	lowAlarmTemp.push(${tep.low_alarm_temp });
 	outsideTemp.push(${tep.outside_temp });
@@ -72,12 +78,35 @@ $("#enableMonitorSet").change(function() {
         });
     }
 
+    function changeOrg() {
+    	$.ajax({
+    		type: "post",
+    		url: "<%=path%>/monitor/getOrgBySetted",
+    		data: {},
+    		dataType: "json",
+    		success: function (result) {
+    			var setting = {
+    				check: {
+    					enable: true,
+    					chkDisabledInherit:true
+    				},
+    				data: {
+    					simpleData: {
+    						enable: true
+    					}
+    				}
+    			};
+    			var zNodes = result.obj;
+    			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+    		}
+    	});
+    }
 
 	<%--console.log("farmList:" + ${farmList});--%>
 </script>
 <body style="background-color: #ffffff;">
 	<%--引用跳转页面方法:siMenu()--%>
-<!-- 	<script type="text/javascript" src="/zljk/framework/js/head.js"></script> -->
+ 	<script type="text/javascript" src="<%=path %>/framework/js/head.js"></script>
 	<%--引用结束--%>
 	<!--  <div class="container-fluid" id="main-container" style="background-color: #ffffff;"> -->
 	<div id="page-content" class="clearfix" style="padding-top: 10px;">
@@ -108,14 +137,14 @@ $("#enableMonitorSet").change(function() {
 
 											<!--/span-->
 
-											<div class="span4" style="margin-top: 5px;margin-left: 20px;">
+<!-- 											<div class="span4" style="margin-top: 5px;margin-left: 20px;"> -->
 	
-										<input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 100px;"/>
-										<div style="margin-top: -18px;">
-										<a href="javascript:;" style="margin-left: 60px;" onclick="monitorSetting();">启用监控设置</a>
-									    </div>
+										<input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 100px;display: none"/>
+<!-- 										<div style="margin-top: -18px;"> -->
+<!-- 										<a href="javascript:;" style="margin-left: 60px;" onclick="monitorSetting();">启用监控设置</a>monitorSetting(); -->
+<!-- 									    </div> -->
 
-											</div>
+<!-- 											</div> -->
 											<!--/span-->
 										</div>
 									</div>
@@ -173,7 +202,7 @@ $("#enableMonitorSet").change(function() {
 									</tr>
 									<tr>
 										<th style="text-align: center; border-right:12px solid #2586C4;">农场</th>
-										<th style="text-align: center;">舍号</th>
+										<th style="text-align: center;">栋号</th>
 										<th style="text-align: center;">日龄</th>
 										<th style="text-align: center;">状态</th>
 										
@@ -189,7 +218,7 @@ $("#enableMonitorSet").change(function() {
 										<th style="text-align: center;">后区2</th>
 										<th style="text-align: center;">湿度</th>
 										<th style="text-align: center;">光照</th>
-										<th style="text-align: center;"><span>C0</span><span style="font-size: 8px;">2</span></th>
+										<th style="text-align: center;"><span>CO</span><span style="font-size: 8px;">2</span></th>
 										
 <!-- 										<th style="text-align: center;">负压</th> -->
 										

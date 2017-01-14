@@ -70,7 +70,7 @@ public class OrgAction extends BaseAction{
 
 		List<PageData> tmpPdList = organService.getMaxOrgLevelId(null);
 		PageData tmpPd = tmpPdList.get(0);
-		int max_level_id = tmpPd.getInteger("max_level_id");
+		int max_level_id = Integer.valueOf(String.valueOf(tmpPd.get("max_level_id")));
 
 		List<PageData> organizationList = new ArrayList<>();
 		List<Integer> parentOrgIdList = new ArrayList<>();
@@ -78,7 +78,7 @@ public class OrgAction extends BaseAction{
 
 		List<PageData> tmpRtList = new ArrayList<>();
 		//获取农场清单
-		for(int i=(level_id+1); i < max_level_id; i++){
+		for(int i=(level_id+1); i < max_level_id+1; i++){
 
 			tmpPd.clear();
 			if(i == (level_id+1)){
@@ -373,9 +373,9 @@ public class OrgAction extends BaseAction{
 		int orgLevelId = Integer.valueOf(pd.getString("level_id"));
 
 		List<PageData> maxLevelList = organService.getMaxOrgLevelId(null);
-		int maxOrgLevelId = maxLevelList.get(0).getInteger("max_level_id");
+		int maxOrgLevelId = Integer.valueOf(String.valueOf(maxLevelList.get(0).get("max_level_id")))  ;
 
-		if((maxOrgLevelId-2) == orgLevelId){
+		if((maxOrgLevelId-1) == orgLevelId){
 			String orgStr = pd.getString("org");
 			List<Integer> orgList = new ArrayList<>();
 
@@ -390,8 +390,8 @@ public class OrgAction extends BaseAction{
 				if(i > 0){
 					for(int k=0; k<i; k++){
 						PageData paramPd = new PageData();
-						Long objId = (Long)pd.get("id");
-						paramPd.put("obj_id",objId+k);
+//						Long objId = (Long)pd.get("id");
+						paramPd.put("obj_id",orgList.get(k));
 						paramPd.put("obj_type",2);
 						paramPd.put("create_person",user.getId());
 						moduleService.service("roleServiceImpl","insertRightsObj",new Object[]{paramPd});

@@ -554,8 +554,8 @@ public class FarmAction extends BaseAction{
 			pd.put("user_id",user.getId());
 
 			List<PageData> maxLevelList = organService.getMaxOrgLevelId(null);
-			int maxOrgLevelId = maxLevelList.get(0).getInteger("max_level_id");
-			pd.put("level_id",maxOrgLevelId);
+			int maxOrgLevelId = Integer.valueOf(String.valueOf(maxLevelList.get(0).get("max_level_id")));
+			pd.put("level_id",maxOrgLevelId+1);
 
 			int k = organService.setHouseMapping(pd);
 			if(k > 0){
@@ -852,7 +852,8 @@ public class FarmAction extends BaseAction{
      */
 	List<PageData> getFarmList(PageData pd) throws Exception {
 		List<PageData> mcl;
-		mcl = moduleService.service("farmServiceImpl", "selectByCondition", new Object[]{pd});//farmService.selectAll();
+//		mcl = moduleService.service("farmServiceImpl", "selectByCondition", new Object[]{pd});//farmService.selectAll();
+		mcl = farmService.selectByCondition(pd);
 		return mcl;
 	}
 	

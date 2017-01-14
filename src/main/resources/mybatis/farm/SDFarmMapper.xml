@@ -7,76 +7,76 @@
 	<!-- 查询全部 -->
 	<select id="selectAll" resultType="pd" useCache="false">
 		select  
-		id,
-		farm_code,
-		farm_name_chs,
-		farm_name_en,
-		feed_method,
-		layers,
-		rows,
-		feed_density,
-		h_length,
-		h_width,
-		h_height,
-		feed_purpose,
-		corporation,
-		farm_add1,
-		farm_add2,
-		farm_add3,
-		farm_add4,
-		farm_add5,
-		memo_1,
-		memo_2,
-		freeze_status,
-		create_person,
-		create_date,
-		create_time,
-		modify_person,
-		modify_date,
-		modify_time
-		from s_d_farm
-		where s_d_farm.freeze_status='0'
+		d.id,
+		d.farm_code,
+		d.farm_name_chs,
+		d.farm_name_en,
+		d.feed_method,
+		d.layers,
+		d.rows,
+		d.feed_density,
+		d.h_length,
+		d.h_width,
+		d.h_height,
+		d.feed_purpose,
+		d.corporation,
+		(select a.name from s_d_area_china a where a.id = d.farm_add1) as farm_add1,
+		(select a.name from s_d_area_china a where a.id = d.farm_add2) as farm_add2,
+		(select a.name from s_d_area_china a where a.id = d.farm_add3) as farm_add3,
+		d.farm_add4,
+		d.farm_add5,
+		d.memo_1,
+		d.memo_2,
+		d.freeze_status,
+		d.create_person,
+		d.create_date,
+		d.create_time,
+		d.modify_person,
+		d.modify_date,
+		d.modify_time
+		from s_d_farm d
+		where d.freeze_status='0'
 	</select>
 	<!-- 根据条件查询 -->
 	<select id="selectByCondition" parameterType="pd" resultType="pd" useCache="false">
 		select  
-			id,
-			farm_code,
-			farm_name_chs,
-			farm_name_en,
-			feed_method,
-			layers,
-			rows,
-			feed_density,
-			h_length,
-			h_width,
-			h_height,
-			feed_purpose,
-			corporation,
-			farm_add1,
-			farm_add2,
-			farm_add3,
-			farm_add4,
-			farm_add5,
-			memo_1,
-			memo_2,
-			freeze_status,
-			create_person,
-			create_date,
-			create_time,
-			modify_person,
-			modify_date,
-			modify_time
-		from s_d_farm
-		where freeze_status=0
+			d.id,
+			d.farm_code,
+			d.farm_name_chs,
+			d.farm_name_en,
+			d.feed_method,
+			d.layers,
+			d.rows,
+			d.feed_density,
+			d.h_length,
+			d.h_width,
+			d.h_height,
+			d.feed_purpose,
+			d.corporation,
+			(select a.name from s_d_area_china a where a.id = d.farm_add1) as farm_add1,
+			(select a.name from s_d_area_china a where a.id = d.farm_add2) as farm_add2,
+			(select a.name from s_d_area_china a where a.id = d.farm_add3) as farm_add3,
+			d.farm_add4,
+			d.farm_add5,
+			d.memo_1,
+			d.memo_2,
+			d.freeze_status,
+			d.create_person,
+			d.create_date,
+			d.create_time,
+			d.modify_person,
+			d.modify_date,
+			d.modify_time
+		from (select * from s_d_farm a where exists(select id from s_d_organization b where a.id=b.id)) d
+		where d.freeze_status=0
 			<if test="farmCode != null">
-			and farm_code = #{farmCode}
+			and d.farm_code = #{farmCode}
 			</if>
 			<if test="farmNameChs != null ">
-			and farm_name_chs = #{farmNameChs}
+			and d.farm_name_chs = #{farmNameChs}
 			</if>
 			<if test="farmId != null and farmId != 0">
-			and id = #{farmId}
+			and d.id = #{farmId}
 			</if>
 			<if test="user_id != null and user_id != 0">
 			and exists(select
@@ -93,7 +93,7 @@
 								on 1=1
 						where usr.id is not null
 									and org.level_id=(org2.max_level-1)
-									and (s_d_farm.id = org.id or usr.role_level=1))
+									and (d.id = org.id or usr.role_level=1))
 			</if>
 	</select>
 	<!-- 查询栋舍全部 -->
@@ -232,7 +232,7 @@
 		left join s_d_code as c1 on c1.biz_code=s_d_house.house_type and c1.code_type='HOUSE_TYPE'
 		where s_d_house.freeze_status='0'
 		<if test="user_id != null and user_id != ''">
-			and exists(select
+			and (exists(select
 			usr.role_level,
 			org.id,
 			org.parent_id,
@@ -248,6 +248,8 @@
 			and org.level_id=org2.max_level
 			and (case when usr.role_level=org2.max_level then org.organization_id else (select distinct organization_id from s_d_organization where id = org.parent_id and level_id = (org2.max_level-1)) end)
 			= (case when usr.role_level=org2.max_level then s_d_house.id else s_d_house.farm_id end))
+			or 
+            s_d_house.create_person =#{user_id})
 		</if>
 		<if test="id != null and id !='' ">
 			and s_d_house.id = #{id}
@@ -296,6 +298,7 @@
 	<!-- 新增农场 -->
 	<insert id="saveFarm" parameterType="pd"  flushCache="false" keyProperty="id">
 		insert into s_d_farm (
+			id,
 			farm_name_chs,
 			farm_name_en,
 			feed_method,
@@ -311,6 +314,7 @@
 			modify_date,
 			modify_time
 		) values (
+			get_organization_id(TRUE),
 			#{farm_name_chs},
 			#{farm_name_en},
 			#{feed_method},
@@ -523,6 +527,7 @@
 	<!-- 新增栋舍 Varro -->
 	<insert id="saveHouse" parameterType="pd"  flushCache="false" keyProperty="id">
 		insert into s_d_house (
+			id,
 			house_code,
 			house_name,
 			house_type,
@@ -535,6 +540,7 @@
 			modify_date,
 			modify_time
 		) values (
+		    get_organization_id(TRUE),
 			#{house_code},
 			#{house_name},
 			#{house_type},

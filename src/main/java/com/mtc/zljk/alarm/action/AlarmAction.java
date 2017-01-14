@@ -2681,16 +2681,19 @@ public class AlarmAction extends BaseAction{
 				 alarmService.deleteSBDayageSettingSub(pd2);
 				    alarmService.deleteSBDayageTempSub(pd2);
 			}
-			
 		for(PageData pageData1 : pageData){
 			int g=0;
 			int pdID=0,startTime=0,endTime=0;
+			if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2){
 			String[] st = pageData1.get("start_time").toString().split(":");
 			startTime = Integer.valueOf(st[0]).intValue();
 			String[] et = pageData1.get("end_time").toString().split(":");
 			endTime = Integer.valueOf(et[0]).intValue();
-			pd.put("houseId", pd.get("houseId2"));
 			pd.put("day_age", Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7);
+			}else{
+				pd.put("day_age", Integer.valueOf(pageData1.get("day_age").toString()).intValue());	
+			}
+			pd.put("houseId", pd.get("houseId2"));
 			pd.put("set_temp", pageData1.get("set_temp"));
 			pd.put("high_alarm_temp", pageData1.get("high_alarm_temp"));
 			pd.put("low_alarm_temp", pageData1.get("low_alarm_temp"));
@@ -2712,9 +2715,14 @@ public class AlarmAction extends BaseAction{
 			pd.put("modify_person",user.getId());
 			pd.put("modify_date", new Date());	
 			pd.put("modify_time", new Date());	
-			
-			for(PageData pageData3 : pageData2){			
-				if(Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7 == Integer.valueOf(pageData3.get("day_age").toString()).intValue()){
+			int rling=0;
+			if(Integer.valueOf(pd.get("alarm_type").toString()).intValue()==2){
+				rling = Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7;
+			}else{
+				rling = Integer.valueOf(pageData1.get("day_age").toString()).intValue();
+			}
+			for(PageData pageData3 : pageData2){
+				if(rling == Integer.valueOf(pageData3.get("day_age").toString()).intValue()){
 					g++;					
 				    pdID = Integer.valueOf(pageData3.get("uid_num").toString()).intValue();
 					pd.put("uid_num", pdID);
@@ -3195,7 +3203,7 @@ public class AlarmAction extends BaseAction{
 						}
 					}
 					
-					int day_age3 = Integer.valueOf(pageData1.get("day_age").toString()).intValue()*7;
+					int day_age3 = rling;
 					
 			    	List<PageData> list = new ArrayList<PageData>();
 //					List<PageData> pageData6 = alarmService.selectSBDayageTempSubByCondition(pd3);

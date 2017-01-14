@@ -20,4 +20,8 @@
 		CALL SP_ALARM_MONTH(#{beginDate},#{endDate})
 	</select>
 
+	<select id="SP_LUX" parameterType="pd"  resultType="pd" useCache="false">
+		CALL SP_LUX(#{lastDate})
+	</select>
+
 </mapper>

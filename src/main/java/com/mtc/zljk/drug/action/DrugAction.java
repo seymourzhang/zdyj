@@ -256,5 +256,23 @@ public class DrugAction extends BaseAction {
                 j.setSuccess(true);
         super.writeJson(j, response);
     }
+    
+    /**
+     * 负责人
+     * yoven 2016-10-31
+     * @return
+     */
+    @RequestMapping(value="/getUser")
+    public void getUser(HttpServletResponse response,HttpSession session)throws Exception{
+        Json j=new Json();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		pd.put("user_id", user.getId());
+        List<PageData> userList = drugService.selectUser(pd);
+                j.setObj(userList);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
 	
 }

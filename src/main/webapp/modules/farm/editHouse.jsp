@@ -56,15 +56,15 @@ function  editHouse(){
             });
 		/* }else if(dk==""){
 			$('#editHouse_msg').html("请选择对应设备！"); */
-		}else if(hn!=hoNname){
-			if(restHouseName(hn,fid)){
+		}else if(hn!=hoNname && restHouseName(hn,fid)){
+// 			if(){
 //				$('#editHouse_msg').html("栋舍名称已经存在！");
                 layer.msg("栋舍名称已经存在", {
                     skin: 'layui-layer-lan'
                     , closeBtn: 0
                     , shift: 4 //动画类型
                 });
-			}
+// 			}
 		}else{
 			var param =$.serializeObject($('#editHouse_form'));
 			 $.ajax({

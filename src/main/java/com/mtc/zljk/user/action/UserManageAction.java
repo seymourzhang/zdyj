@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mtc.zljk.goods.service.GoogsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -49,6 +50,9 @@ public class UserManageAction extends BaseAction {
 	
 	@Autowired 
 	private AlarmCurrService alarmCurrService;
+
+	@Autowired
+	private GoogsService googsService;
 	
 	
 	
@@ -307,14 +311,43 @@ public class UserManageAction extends BaseAction {
 	}
 	
 	/**
-	 * 获取警报提醒信息
+	 * 获取警报信息
 	 * @return 数据列表
      */
 	@RequestMapping("/getAlarmIncoMsg")
-	public void getAlarmIncoMsg(HttpServletResponse response) throws Exception{
+	public void getAlarmIncoMsg(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
 		Json j=new Json();
 		PageData pd = this.getPageData();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		pd.put("user_id",user.getId());
 		List<PageData> mcl = getAlarmIncoList(pd);
+		j.setSuccess(true);
+		j.setObj(mcl);
+		super.writeJson(j, response);
+	}
+
+	/**
+	 * 获取警报信息
+	 * @param pd 数据对象
+	 * @return 数据列表
+	 */
+	List<PageData> getAlarmIncoList(PageData pd) throws Exception {
+		pd.put("deal_status", "01");//未处理多警报
+		List<PageData> mcl = alarmCurrService.selectByCondition(pd);
+		return mcl;
+	}
+
+	/**
+	 * 获取提醒信息
+	 * @return 数据列表
+	 */
+	@RequestMapping("/getRemindIncoMsg")
+	public void getRemindIncoMsg(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		pd.put("user_id",user.getId());
+		List<PageData> mcl = getRemindIncoList(pd);
 		j.setSuccess(true);
 		j.setObj(mcl);
 		super.writeJson(j, response);
@@ -325,9 +358,9 @@ public class UserManageAction extends BaseAction {
 	 * @param pd 数据对象
 	 * @return 数据列表
      */
-	List<PageData> getAlarmIncoList(PageData pd) throws Exception {
+	List<PageData> getRemindIncoList(PageData pd) throws Exception {
 		pd.put("deal_status", "01");//未处理多警报
-		List<PageData> mcl = alarmCurrService.selectByCondition(pd);
+		List<PageData> mcl = googsService.getRemindMsg(pd);
 		return mcl;
 	}
 	

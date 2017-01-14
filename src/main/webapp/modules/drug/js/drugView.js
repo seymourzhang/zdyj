@@ -286,15 +286,15 @@ function addDrug(){
 		return;
 	}
 	var main_constitute = $("#main_constitute").val();
-	if (main_constitute == "") {
-		layer.alert('主要成分不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
-		return;
-	}
+//	if (main_constitute == "") {
+//		layer.alert('主要成分不能为空!', {
+//			skin : 'layui-layer-lan',
+//			closeBtn : 0,
+//			shift : 4
+//		// 动画类型
+//		});
+//		return;
+//	}
 	var use_type = $("#use_type").val();
 	if (use_type == "") {
 		layer.alert('用途不能为空!', {
@@ -547,10 +547,12 @@ function getFactTableDataColumns(){
     }, {
         field: "drug_name",
         title: "名称"
-    }, {
-        field: "use_unit",
-        title: "使用数量"
-    }, {
+    }
+//    , {
+//        field: "use_unit",
+//        title: "使用数量"
+//    }
+    , {
         field: "good_batch_no",
         title: "批号"
     }, {
@@ -575,6 +577,24 @@ function getFactTableDataColumns(){
         title: "负责人"
     }];
     return dataColumns;
+}
+
+function setUser(){
+	$.ajax({
+		type : "post",
+		url : path + "/drug/getUser",
+		data : {
+			"houseId" : $("#houseId").val()
+		},
+		dataType: "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#use_user_id option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#use_user_id").append("<option value=" + list[i].id + ">" + list[i].user_real_name+ "</option>");
+			}
+		}
+	});
 }
 
 

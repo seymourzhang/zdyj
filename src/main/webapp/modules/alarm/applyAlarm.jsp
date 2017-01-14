@@ -25,12 +25,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   
   function  applyAlarm(){
 		var param =$.serializeObject($('#applyAlarm_form'));
+		$("#reflushText").css("display", "");
 			$.ajax({
 				url: "<%=path%>/alarm/applyAlarm",
 				data: param,
 				type : "POST",
 				dataType: "json",
 				success: function(result) {
+					$("#reflushText").css("display", "none");
 					if(result.msg=='1'){
 // 						parent.location.reload();   
 						parent.layer.closeAll();
@@ -106,6 +108,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 											 <button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
 										  </div>
 									</div>
+									<div class="span6" id = "reflushText" style="display:none;float:right;"><font style="margin-left: 60px;" color="#FF0000">刷新中,请稍后...</font></div>
 								</div>
 								</form>
 								<!-- end from -->

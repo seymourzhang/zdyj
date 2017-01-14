@@ -6,6 +6,7 @@ var mid = "fhindex";
 $(document).ready(function() {
 	lo();
 	alarmIncoMsg();
+    remindIncoMsg();
 	if(menuId!="" && menuPid!=""){
 		$("#fhindex").removeClass();
 		$("#lm"+menuPid).attr("class","active");
@@ -14,6 +15,45 @@ $(document).ready(function() {
 		$("#op"+menuPid).attr("class","arrow open");
 	}
 });
+
+function remindIncoMsg(){
+        /**获取报警信息**/
+        $.ajax({
+            url: path+"/user/getRemindIncoMsg",
+            data: {
+            },
+            type : "POST",
+            dataType: "json",
+            cache: false,
+            success: function(result) {
+                var list = eval(result.obj);
+                var number=$("#head_msg_remind_currCount").html();
+                if(number!=list.length&&list.length!=0){
+                    $("#head_msg_remind_CurrList").empty();
+                    $('#head_msg_remind_currCount').html(list.length);
+                    var str="<li><p>有"+list.length+"条提醒信息</p></li>";
+                    for(var i=0;i<list.length;i++){
+                        str+="<li><a href='javascript:void(0);' onclick='siMenu(\"z302\",\"lm1\",\"se1\",\"op1\",\"物资管理\",\"/googs/googsView?tabId=3\")'> <span class='label label-success'><i class='icon-bolt'></i></span> ";
+                        str+=list[i].farm_name+" - " + list[i].good_name +" - "+list[i].aprrove_status_name +"</a></li>";
+                    }
+                    $("#head_msg_remind_CurrList").append(str);
+                    /**闪动效果**/
+                    $("#header_remind_bar").pulsate({
+                        color: "#66bce6",
+                        repeat: 5
+                    });
+
+                }
+                if(list.length==0){
+                    $('#head_msg_remind_currCount').html("");
+                    $("#head_msg_remind_CurrList").empty();
+                }
+            }
+        });
+        setTimeout("javascript:remindIncoMsg();",5000); //5s刷新一次
+}
+
+
 function  alarmIncoMsg(){
     /**获取报警信息**/
 	 $.ajax({
@@ -32,7 +72,7 @@ function  alarmIncoMsg(){
 		         var str="<li><p>有"+list.length+"条报警信息</p></li>";
 		         for(var i=0;i<list.length;i++){
 		        	 str+="<li><a href='javascript:void(0);' onclick='siMenu(\"z102\",\"lm1\",\"se1\",\"op1\",\"实时报警\",\"/alarmCurr/showAlarmCurr\")'> <span class='label label-success'><i class='icon-bolt'></i></span> ";
-		        	 str+=list[i].farm_name+"—— "+list[i].house_name+	"—— "+list[i].alarm_name +"</a></li>";
+		        	 str+=list[i].farm_name+" - "+list[i].house_name+	" - "+list[i].alarm_name +"</a></li>";
 		         }
 		         $("#head_msg_CurrList").append(str); 
 		        	 /**闪动效果**/
@@ -48,7 +88,7 @@ function  alarmIncoMsg(){
 	         }
 	     }
 	 });
-	 setTimeout("javascript:alarmIncoMsg();",5000); //1s刷新一次
+	 setTimeout("javascript:alarmIncoMsg();",5000); //5s刷新一次
 }
 
 
@@ -108,8 +148,16 @@ function siMenu(id,fid,seid,opid,MENU_NAME,MENU_URL,write_read){
 	//$("#"+fid).append("<span id="+oid+" class='arrow open'></span>");
 	$("#"+oid).attr("class","arrow open");
 	//MENU_URL=path+MENU_URL;
-	var murl=MENU_URL+"?write_read="+write_read;
-	
+
+    var murl=MENU_URL;
+	var paramWriteRead ="write_read=" + write_read;
+	if(murl.indexOf("?") != -1){
+		paramWriteRead = "&" + paramWriteRead;
+	} else{
+        paramWriteRead = "?" + paramWriteRead;
+	}
+    murl += paramWriteRead;
+
 	
 	top.mainFrame.tabAddHandler(id,MENU_NAME,murl);
 	

@@ -81,7 +81,7 @@ function showVariety(tabName, varietyList){
     for(var key in varietyList){
         document.getElementById(tabName + 'GoodSelect').add(new Option(varietyList[key].variety,varietyList[key].variety_id));
     }
-    showCorporation(tabName, getCorporation(tabName)); //显示来源下拉框
+    getCorporation(tabName);//showCorporation(tabName, getCorporation(tabName)); //显示来源下拉框
 };
 
 //获取品种id与名称
@@ -109,7 +109,7 @@ function getVariety(){
 
 //品种选择值变化事件
 function changeGoodSelect(){
-    showCorporation(currTabName, getCorporation(currTabName));
+	getCorporation(currTabName);//showCorporation(currTabName, getCorporation(currTabName));
 };
 
 //显示来源下拉框

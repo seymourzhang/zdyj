@@ -1,4 +1,4 @@
-package com.mtc.zljk.monitor.action;
+package com.mtc.zljk.alarm.action;
 
 import com.mtc.zljk.Alidayu.entity.SDUser;
 import com.mtc.zljk.alarm.action.AlarmAction;
@@ -54,16 +54,19 @@ public class AlarmSettingMobileAction extends BaseAction {
             JSONArray probes = new JSONArray();
             if (lpd.size() != 0) {
                 for (PageData pageData : lpd) {
+                    resJson.put("point_alarm", pageData.get("point_alarm"));
                     resJson.put("alarm_delay", pageData.get("alarm_delay"));
                     resJson.put("temp_cpsation", "1".equals(pageData.get("temp_cpsation")) ? true : false);
                     resJson.put("temp_cordon", pageData.get("temp_cordon"));
                     resJson.put("alarm_method", pageData.get("alarm_probe"));
                 }
+                resJson.put("Result", "Success");
             }else {
                 resJson.put("alarm_delay", "");
                 resJson.put("temp_cpsation", "");
                 resJson.put("temp_cordon", "");
                 resJson.put("alarm_method", "");
+                resJson.put("Result", "Success");
             }
             pd.put("code_type", "SENSOR_LOCATION");
             List<PageData> tem = alarmService.selectInsideTemp(pd);
@@ -77,9 +80,6 @@ public class AlarmSettingMobileAction extends BaseAction {
                 }
                 resJson.put("temp_probe", probes);
                 resJson.put("Result", "Success");
-            }else{
-                resJson.put("Error", "暂无设备绑定，请先绑定设备！");
-                resJson.put("Result", "Fail");
             }
             dealRes = Constants.RESULT_SUCCESS;
         }catch (Exception e){
@@ -112,24 +112,28 @@ public class AlarmSettingMobileAction extends BaseAction {
             String TempCpsation = "true".equals(tUserJson.optString("temp_cpsation")) ? "1" : "0";
             String TempCordon = tUserJson.optString("temp_cordon");
             String AlarmMethod = tUserJson.optString("alarm_method");
+            String pointAlarm = tUserJson.optString("point_alarm");
             JSONArray TempProbe = tUserJson.optJSONArray("temp_probe");
             PageData pageData = new PageData();
-            for (int i = 0; i < TempProbe.length(); ++i){
-                String ProbeName = TempProbe.getJSONObject(i).get("probe_name").toString();
-                String IsAlarm = TempProbe.getJSONObject(i).get("is_alarm").toString();
-                pageData.put("is_alarm", "true".equals(IsAlarm) ? "Y" : "N");
-                pageData.put("modify_person", userId);
-                pageData.put("modify_date", sdf.format(new Date()));
-                pageData.put("biz_code", ProbeName);
-                pageData.put("houseId", HouseId);
-                alarmService.updateDeviceSub(pageData);
+            if (TempProbe != null) {
+                for (int i = 0; i < TempProbe.length(); ++i) {
+                    String ProbeName = TempProbe.getJSONObject(i).get("probe_name").toString();
+                    String IsAlarm = TempProbe.getJSONObject(i).get("is_alarm").toString();
+                    pageData.put("is_alarm", "true".equals(IsAlarm) ? "Y" : "N");
+                    pageData.put("modify_person", userId);
+                    pageData.put("modify_date", sdf.format(new Date()));
+                    pageData.put("biz_code", ProbeName);
+                    pageData.put("houseId", HouseId);
+                    alarmService.updateDeviceSub(pageData);
+                }
             }
             pd.put("houseId", HouseId);
             pd.put("farmId", FarmId);
             pd.put("alarm_delay", AlarmDelay);
             pd.put("temp_cpsation", TempCpsation);
             pd.put("temp_cordon", TempCordon);
-            pd.put("alarm_probe", AlarmMethod);
+            pd.put("alarm_probe", AlarmMethod == null || AlarmMethod == "" ? "01" : AlarmMethod);
+            pd.put("point_alarm", pointAlarm);
             pd.put("alarm_way", "03");
             pd.put("modify_person", userId);
             pd.put("modify_date", sdf.format(new Date()));
@@ -157,7 +161,7 @@ public class AlarmSettingMobileAction extends BaseAction {
             aa = aa.substring(1, aa.length() - 2);
             JSONObject jsonObject = new JSONObject(aa);
 
-//          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
             int userId = jsonObject.optInt("id_spa");
             JSONObject tUserJson = jsonObject.getJSONObject("params");
@@ -185,8 +189,8 @@ public class AlarmSettingMobileAction extends BaseAction {
                         data.put("high_lux", pageData.get("high_lux"));
                         data.put("low_lux", pageData.get("low_lux"));
                         data.put("set_lux", pageData.get("set_lux"));
-                        data.put("start_time", pageData.get("start_time"));
-                        data.put("end_time", pageData.get("end_time"));
+                        data.put("start_time", sdf.format(sdf.parse(pageData.get("start_time").toString())));
+                        data.put("end_time", sdf.format(sdf.parse(pageData.get("end_time").toString())));
                         data.put("hours", pageData.get("hours"));
                         dataArray.put(data);
                     } else if ("3".equals(AlarmType)) {
@@ -230,26 +234,26 @@ public class AlarmSettingMobileAction extends BaseAction {
             JSONObject tUserJson = jsonObject.getJSONObject("params");
             String AlarmType = tUserJson.optString("alarm_type");
 
-            pd.put("farmId", tUserJson.get("farmId"));
-            pd.put("houseId", tUserJson.get("houseId"));
+            pd.put("farmId", tUserJson.getInt("farmId"));
+            pd.put("houseId", tUserJson.getInt("houseId"));
             pd.put("alarm_type", AlarmType);
             int pdID = 0;
             if ("1".equals(AlarmType)) {
-                pd.put("set_temp", tUserJson.get("set_temp"));
-                pd.put("day_age", tUserJson.get("day_age"));
-                pd.put("high_alarm_temp", tUserJson.get("high_alarm_temp"));
-                pd.put("low_alarm_temp", tUserJson.get("low_alarm_temp"));
+                pd.put("set_temp", tUserJson.optString("set_temp"));
+                pd.put("day_age", tUserJson.optString("day_age"));
+                pd.put("high_alarm_temp", tUserJson.optString("high_alarm_temp"));
+                pd.put("low_alarm_temp", tUserJson.optString("low_alarm_temp"));
             } else if ("2".equals(AlarmType)) {
                 pd.put("day_age", 7 * tUserJson.getInt("day_age"));
-                pd.put("high_lux", tUserJson.get("high_lux"));
-                pd.put("low_lux", tUserJson.get("low_lux"));
-                pd.put("set_lux", tUserJson.get("set_lux"));
-                pd.put("start_time", tUserJson.get("start_time"));
-                pd.put("end_time", tUserJson.get("end_time"));
+                pd.put("high_lux", tUserJson.optString("high_lux"));
+                pd.put("low_lux", tUserJson.optString("low_lux"));
+                pd.put("set_lux", tUserJson.optString("set_lux"));
+                pd.put("start_time", tUserJson.optString("start_time"));
+                pd.put("end_time", tUserJson.optString("end_time"));
             } else if ("3".equals(AlarmType)) {
-                pd.put("day_age", tUserJson.get("day_age"));
-                pd.put("high_alarm_co2", tUserJson.get("high_alarm_co2"));
-                pd.put("set_co2", tUserJson.get("set_co2"));
+                pd.put("day_age", tUserJson.optString("day_age"));
+                pd.put("high_alarm_co2", tUserJson.optString("high_alarm_co2"));
+                pd.put("set_co2", tUserJson.optString("set_co2"));
             }
             List<PageData> pageData5 = alarmService.selectByCondition3(pd);//主要条件：农场、栋舍、日龄
             if (pageData5.size() == 0) {

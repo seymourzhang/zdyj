@@ -141,7 +141,7 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
                 FileUtils.copyInputStreamToFile(file.getInputStream(), f);
                 Msg = "1";
                 j.setSuccess(true);
-            } else if (!(type.toLowerCase().equals("docx") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx"))) {
+            } else if (!(type.toLowerCase().equals("docx") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx")|| type.toLowerCase().equals("xls")|| type.toLowerCase().equals("doc"))) {
                 Msg = "当前上传只支持docx、pdf、xlsx文件类型！";
                 j.setSuccess(false);
             } else if (file.getSize() > uploadFileMaxSize) {

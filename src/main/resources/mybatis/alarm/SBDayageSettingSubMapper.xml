@@ -43,8 +43,13 @@
 		 ROUND(s.low_water_deprivation,1) low_water_deprivation ,
 		 s.super_high_water_deprivation ,
 		 s.super_low_water_deprivation ,
-		 s.alarm_type
+		 s.alarm_type,
+		 d.start_time,
+		 d.end_time
         FROM s_b_dayage_temp_sub s
+        left join 
+        s_b_dayage_setting_sub d
+        on d.uid_num = s.uid_num
         WHERE 1=1
         <if test="farmId != null "> 
         and s.farm_id = #{farmId} 
@@ -919,8 +924,13 @@
 		 s.low_water_deprivation ,
 		 s.super_high_water_deprivation ,
 		 s.super_low_water_deprivation ,
-		 s.alarm_type
+		 s.alarm_type,
+		 d.start_time,
+		 d.end_time
         FROM s_b_dayage_temp_sub s
+        left join 
+        s_b_dayage_setting_sub d
+        on d.uid_num = s.uid_num
         WHERE 1=1
         <if test="uid_num != null"> 
         and s.uid_num = #{uid_num}
@@ -1092,16 +1102,14 @@
 	</select>
 	<!-- 更新栋舍报警设置 -->
 	<update id="updateSBHouseAlarm" flushCache="false">
-	  UPDATE s_b_house_alarm SET alarm_delay = #{alarm_delay} , temp_cpsation = #{temp_cpsation} , 
+	  UPDATE s_b_house_alarm SET alarm_delay = #{alarm_delay} , temp_cpsation = #{temp_cpsation}
 	  <if test="temp_cordon != null and temp_cordon != '' ">
-	  temp_cordon = #{temp_cordon} , 
+	  ,temp_cordon = #{temp_cordon}
 	  </if>
-	  alarm_way = #{alarm_way}
-	  <if test="alarm_way == 1">
+	  , alarm_way = #{alarm_way}
 	  , alarm_probe = #{alarm_probe}
-	  </if>
 	  <if test="point_alarm != null and point_alarm != '' ">
-	  point_alarm = #{point_alarm} , 
+	  ,point_alarm = #{point_alarm}
 	  </if>
 	  ,modify_person = #{modify_person},modify_date = #{modify_date},modify_time = #{modify_time}
 	  WHERE farm_id = #{farmId} AND house_id = #{houseId}
@@ -1361,7 +1369,6 @@
     <!-- 温度 -->
 	   <if test="alarm_type == 1">
 		INSERT into s_b_dayage_setting_sub_his (
-		 uid_num,
 		 farm_id ,
 		 house_id ,
 		 day_age ,
@@ -1374,7 +1381,6 @@
 		 modify_date ,
 		 modify_time
 		) values (
-		    #{uid_num},
 			#{farmId},
 			#{houseId},
 			#{day_age},
@@ -1391,7 +1397,6 @@
 		<!-- 光照 -->
 	   <if test="alarm_type == 2">
 	   INSERT into s_b_dayage_setting_sub_his (
-		 uid_num,
 		 farm_id ,
 		 house_id ,
 		 day_age ,
@@ -1406,7 +1411,6 @@
 		 start_time,
 		 end_time
 		) values (
-		    #{uid_num},
 			#{farmId},
 			#{houseId},
 			#{day_age},
@@ -1425,7 +1429,6 @@
 	   <!-- 二氧化碳 -->
 	   <if test="alarm_type == 3"> 
 	   INSERT into s_b_dayage_setting_sub_his (
-		 uid_num,
 		 farm_id ,
 		 house_id ,
 		 day_age ,
@@ -1437,7 +1440,6 @@
 		 modify_date ,
 		 modify_time
 		) values (
-		    #{uid_num},
 			#{farmId},
 			#{houseId},
 			#{day_age},
@@ -1473,7 +1475,7 @@
 			#{alarm_delay},
 			#{temp_cpsation},
 			#{temp_cordon},
-			#{alarm_way},
+			'03',
 			#{alarm_probe},
 			#{point_alarm},
 			#{modify_person},
@@ -1484,31 +1486,35 @@
     <!-- 查询日龄目标温度历史设置 -->
     <select id="selectAlarmHisByCondition" resultType="pd" useCache="false">
         SELECT  s.uid_num ,
-		 s.farm_id ,
-		 s.house_id ,
-		 s.day_age ,
-		 s.alarm_type,
-		 IFNULL(ROUND(s.set_values,1),"") set_values ,
-		 IFNULL(ROUND(s.high_alarm_values,1),"") high_alarm_values ,
-		 IFNULL(ROUND(s.low_alarm_values,1),"") low_alarm_values ,
+		 max(s.farm_id) farm_id,
+		 max(s.house_id) house_id,
+		 max(s.day_age) day_age,
+		 max(s.alarm_type) alarm_type,
+		 IFNULL(ROUND(s.set_values,1),"-") set_values ,
+		 IFNULL(ROUND(s.high_alarm_values,1),"-") high_alarm_values ,
+		 IFNULL(ROUND(s.low_alarm_values,1),"-") low_alarm_values ,
 		 s.super_high_alarm_values ,
 		 s.super_low_alarm_values ,
 		 s.memo ,
 		 s.alarm_operation ,
 		 s.approve_status ,
-		 s.create_time ,
-		 s.modify_person ,
+		 u.user_real_name as modify_person ,
 		 s.modify_date ,
-		 s.modify_time ,
-		 s.start_time ,
-		 s.end_time 
+		 max(s.modify_time) modify_time,
+		 DATE_FORMAT(s.start_time,'%H:%i:%s') start_time ,
+		 DATE_FORMAT(s.end_time,'%H:%i:%s') end_time
         FROM s_b_dayage_setting_sub_his s
+        left join
+        s_d_user u
+        on u.id = s.modify_person
         WHERE 1=1
         and s.farm_id = #{farmId} 
         and s.house_id = #{houseId}
         and s.alarm_type = #{alarm_type}
-        and s.alarm_operation = '新增'
-        ORDER BY s.farm_id,s.house_id,s.day_age 
+        and DATEDIFF(DATE_FORMAT(s.modify_time,'%Y-%m-%d'),str_to_date(#{start_date},'%Y-%m-%d'))>=0
+        and DATEDIFF(str_to_date(#{end_date},'%Y-%m-%d'),DATE_FORMAT(s.modify_time,'%Y-%m-%d'))>=0
+        group by s.farm_id,s.house_id,s.alarm_type,s.day_age
+        ORDER BY s.modify_time desc,s.farm_id,s.house_id,s.day_age 
     </select>
     <!-- 查询日龄目标温度历史设置明细 -->
     <select id="selectAlarmHisDetailByCondition" resultType="pd" useCache="false">
@@ -1517,26 +1523,82 @@
 		 s.house_id ,
 		 s.day_age ,
 		 s.alarm_type,
-		 IFNULL(ROUND(s.set_values,1),"") set_values ,
-		 IFNULL(ROUND(s.high_alarm_values,1),"") high_alarm_values ,
-		 IFNULL(ROUND(s.low_alarm_values,1),"") low_alarm_values ,
+		 IFNULL(ROUND(s.set_values,1),"-") set_values ,
+		 IFNULL(ROUND(s.high_alarm_values,1),"-") high_alarm_values ,
+		 IFNULL(ROUND(s.low_alarm_values,1),"-") low_alarm_values ,
 		 s.super_high_alarm_values ,
 		 s.super_low_alarm_values ,
 		 s.memo ,
 		 s.alarm_operation ,
 		 s.approve_status ,
-		 s.create_time ,
-		 s.modify_person ,
+		 u.user_real_name as modify_person ,
 		 s.modify_date ,
 		 s.modify_time ,
-		 s.start_time ,
-		 s.end_time 
+		 DATE_FORMAT(s.start_time,'%H:%i:%s') start_time ,
+		 DATE_FORMAT(s.end_time,'%H:%i:%s') end_time
         FROM s_b_dayage_setting_sub_his s
+        left join
+        s_d_user u
+        on u.id = s.modify_person
         WHERE 1=1
         and s.farm_id = #{farmId} 
         and s.house_id = #{houseId}
         and s.alarm_type = #{alarm_type}
-        and s.uid_num = #{uid_num}
-        ORDER BY s.farm_id,s.house_id,s.day_age 
+        and s.day_age = #{day_age}
+        and DATEDIFF(DATE_FORMAT(s.modify_time,'%Y-%m-%d'),str_to_date(#{start_date},'%Y-%m-%d'))>=0
+        and DATEDIFF(str_to_date(#{end_date},'%Y-%m-%d'),DATE_FORMAT(s.modify_time,'%Y-%m-%d'))>=0
+        ORDER BY s.modify_time desc,s.farm_id,s.house_id,s.day_age 
+    </select>
+    <!-- 查询栋舍报警设置历史 -->
+    <select id="selectHouseAlarmHisByCondition" resultType="pd" useCache="false">
+        SELECT
+		 s.farm_id ,
+		 s.house_id ,
+		 s.alarm_type,
+		 alarm_delay ,
+		 temp_cpsation ,
+		 temp_cordon ,
+		 alarm_way ,
+		 alarm_probe ,
+		 point_alarm ,
+		 u.user_real_name as modify_person ,
+		 s.modify_date ,
+		 s.modify_time
+        FROM s_b_house_alarm_his s
+        left join
+        s_d_user u
+        on u.id = s.modify_person
+        WHERE 1=1
+        and s.farm_id = #{farmId}
+        and s.house_id = #{houseId}
+        and DATEDIFF(DATE_FORMAT(s.modify_time,'%Y-%m-%d'),str_to_date(#{start_date},'%Y-%m-%d'))>=0
+        and DATEDIFF(str_to_date(#{end_date},'%Y-%m-%d'),DATE_FORMAT(s.modify_time,'%Y-%m-%d'))>=0
+        ORDER BY s.modify_time desc,s.farm_id,s.house_id
+    </select>
+    <!-- 查询栋舍报警设置历史明细 -->
+    <select id="selectHouseAlarmHisDetailByCondition" resultType="pd" useCache="false">
+        SELECT
+		 s.farm_id ,
+		 s.house_id ,
+		 s.alarm_type,
+		 alarm_delay ,
+		 temp_cpsation ,
+		 temp_cordon ,
+		 alarm_way ,
+		 alarm_probe ,
+		 point_alarm ,
+		 u.user_real_name as modify_person ,
+		 s.modify_date ,
+		 s.modify_time
+        FROM s_b_house_alarm_his s
+        left join
+        s_d_user u
+        on u.id = s.modify_person
+        WHERE 1=1
+        and s.farm_id = #{farmId}
+        and s.house_id = #{houseId}
+        and DATEDIFF(DATE_FORMAT(s.modify_time,'%Y-%m-%d'),str_to_date(#{start_date},'%Y-%m-%d'))>=0
+        and DATEDIFF(str_to_date(#{end_date},'%Y-%m-%d'),DATE_FORMAT(s.modify_time,'%Y-%m-%d'))>=0
+        ORDER BY s.modify_time desc,s.farm_id,s.house_id
     </select>
 </mapper>

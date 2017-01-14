@@ -74,7 +74,7 @@
 			bak2,
 			code_desc
     FROM s_d_code WHERE code_type = 'ALARM_CODE' 
-    AND biz_code not in(0,9)
+    AND biz_code not in('0','9')
     ORDER BY biz_code
     </select>
     <select id="alarmHist" resultType="pd" useCache="false">
@@ -96,11 +96,10 @@
                         IFNULL(A3.alarm_num ,'-') as high_co2_num,
                         IFNULL(A5.alarm_code,'-') as high_lux_code,
              		       IFNULL(A5.alarm_name,'-') as high_lux,
-                        IFNULL(A5.alarm_num ,'-') as high_lux_num,
-                        IFNULL(A6.alarm_code,'-') as low_lux_code,
-             		       IFNULL(A6.alarm_name,'-') as low_lux,
-                        IFNULL(A6.alarm_num ,'-') as low_lux_num,
-                        IFNULL((A6.alarm_num + A5.alarm_num),'-') as high_low_lux_num
+                        IFNULL(A5.alarm_num ,'-') as high_low_lux_num,
+                        IFNULL(A6.alarm_code,'-') as no_ele_code,
+             		       IFNULL(A6.alarm_name,'-') as no_ele,
+                        IFNULL(A6.alarm_num ,'-') as no_ele_num
              FROM (SELECT  distinct farm_id, 
              		       house_id, 
              		       date,
@@ -124,9 +123,9 @@
              		       batch_no,
                         alarm_code,
              		       alarm_name,
-                        alarm_num
+                        sum(alarm_num) alarm_num
              	    FROM   rpt_alarm_daily
-             	   where alarm_code = 1
+             	   where alarm_name like '%高温'
               		 		<if test="farmId != null and farmId !=''"> 
                       and farm_id = #{farmId} 
                      </if> 
@@ -149,9 +148,9 @@
              		       batch_no,
                         alarm_code,
              		       alarm_name,
-                        alarm_num
+                        sum(alarm_num) alarm_num
              	    FROM   rpt_alarm_daily
-             	   where alarm_code = 2
+             	   where alarm_name like '%低温'
               		 		<if test="farmId != null and farmId !=''"> 
                       and farm_id = #{farmId} 
                      </if> 
@@ -226,7 +225,7 @@
              		       alarm_name,
                         alarm_num
              	    FROM   rpt_alarm_daily
-             	   where alarm_code = 6
+             	   where alarm_code = 2
               		 		<if test="farmId != null and farmId !=''"> 
                       and farm_id = #{farmId} 
                      </if> 
@@ -302,7 +301,7 @@
              a.farm_id,
              a.house_id,
              DATE_FORMAT(a.alarm_time,'%Y-%m-%d %H:%i:%s') as alarm_time,
-             DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr as date_age,
+             DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.grow_age as date_age,
             a.alarm_code,
             a.alarm_Name,
             IFNULL(CONCAT(round(a.set_value,0),a.value_unit),'-') as set_value,
@@ -315,20 +314,20 @@
             from s_b_alarm_done a
             left JOIN (select e.farm_id,
                                          e.house_code,
-                                         e.batch_no,
-                                         e.day_age_curr,
-                                         e.batch_date as BEGIN_date,
-                                         ifnull(b.batch_date,sysdate()) as end_date 
-                                  from s_d_batch e
-                                  left join s_d_batch b
-                                  on e.house_code = b.house_code
-                                  and e.farm_id = b.farm_id 
-                                  and e.batch_no = b.batch_no
-                                  and b.operation_type = 1
+                                         e.batch_id,
+                                         e.grow_age,
+                                         e.operation_date as BEGIN_date
+<!--                                          ifnull(b.operation_date,sysdate()) as end_date  -->
+                                  from s_b_batch_change e
+<!--                                   left join s_b_batch_change b -->
+<!--                                   on e.house_code = b.house_code -->
+<!--                                   and e.farm_id = b.farm_id  -->
+<!--                                   and e.batch_no = b.batch_no -->
                                   where e.operation_type = 2) c
             on a.farm_id = c.farm_id
                        and a.house_id = c.house_code
-                       and DATE_FORMAT(a.alarm_time,'%Y-%m-%d') between BEGIN_date and end_date
+<!--                        and c.batch_id = a.house_breed_id -->
+<!--                        and DATE_FORMAT(a.alarm_time,'%Y-%m-%d') between BEGIN_date and end_date -->
             where 1 = 1
               		 <if test="farmId2 != null and farmId2 !=''"> 
                       and a.farm_id = #{farmId2} 
@@ -337,7 +336,7 @@
                       and a.house_id = #{houseId2} 
                      </if> 
                       <if test="batchNo2 != null and batchNo2 !=''"> 
-                      and c.batch_no = #{batchNo2}
+                      and c.batch_id = #{batchNo2}
                      </if>
                      <if test="dateage != null and dateage !=''"> 
                       and DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr = #{dateage}
@@ -348,10 +347,10 @@
                      <if test="endTime != null and endTime !=''"> 
                       and DATEDIFF(str_to_date(#{endTime},'%Y-%m-%d'),DATE_FORMAT(a.alarm_time,'%Y-%m-%d'))>=0
                      </if>
-                     <if test="beginAge != null and beginAge !='' and endAge != null and endAge != ''">
-                      and ${beginAge} * 7 &lt; DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr
-                      and DATEDIFF(c.end_date, DATE_FORMAT(a.alarm_time,'%Y-%m-%d'))+ c.day_age_curr &lt; ${endAge} * 7
-                     </if>
+<!--                      <if test="beginAge != null and beginAge !='' and endAge != null and endAge != ''"> -->
+<!--                       and ${beginAge} * 7 &lt; DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr -->
+<!--                       and DATEDIFF(c.end_date, DATE_FORMAT(a.alarm_time,'%Y-%m-%d'))+ c.day_age_curr &lt; ${endAge} * 7 -->
+<!--                      </if> -->
                      <if test="bizCode != null and bizCode !=''"> 
                       and a.alarm_code LIKE #{bizCode}
                      </if>

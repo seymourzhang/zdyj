@@ -82,4 +82,8 @@ public class OrganServiceImpl implements OrganService {
 	public int setHouseMapping(PageData pd) throws Exception {
 		return (Integer) dao.save("SDOrganizationMapper.setHouseMapping", pd);
 	}
+
+	public List<PageData> getFarmUser(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDOrganizationMapper.getFarmUser", pd);
+	}
 }

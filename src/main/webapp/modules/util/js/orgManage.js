@@ -217,7 +217,7 @@ function addOrg(){
             str += '</div>';
             str += '<div class="row-fluid">';
                 str += '<div class="span4" align="left">';
-                    str += '机构层级';
+                    str += '层级名称';
                 str += '</div>';
                 str += '<div class="span4" align="left">';
                     if(orgLevelId == null){
@@ -510,6 +510,7 @@ function mappingFarmHouse(){
                                                         layer.close(index);
                                                         if(result.success){
                                                             layer.msg('成功绑定农场！', {});
+                                                            reflushOrgList();
                                                             reflushOrgData(orgId, orgLevelId);
                                                         } else{
                                                             layer.msg('绑定农场失败！(' + result.msg + ')', {});

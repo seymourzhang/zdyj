@@ -3,19 +3,19 @@ var objGoods = new Object();
 $(document).ready(function() {
 	initObjGoods();
 
-	$(".date-picker").datepicker({
-		language : 'zh-CN',
-		autoclose : true,
-		todayHighlight : true
-	});
-
-	$(".date-picker1").datepicker({
-		language : 'zh-CN',
-		autoclose : true,
-		defaultDate : new Date(),
-		todayHighlight : true
-	});
-	$(".date-picker1").datepicker('setDate', new Date());//
+//	$(".date-picker").datepicker({
+//		language : 'zh-CN',
+//		autoclose : true,
+//		todayHighlight : true
+//	});
+//
+//	$(".date-picker1").datepicker({
+//		language : 'zh-CN',
+//		autoclose : true,
+//		defaultDate : new Date(),
+//		todayHighlight : true
+//	});
+//	$(".date-picker1").datepicker('setDate', new Date());//
 	
 //	setCorporation();
 //	setFactory();
@@ -27,10 +27,10 @@ $(document).ready(function() {
 	initTableWithToolBar("goods",'goodsToolbar', getGoodsTableColumns(), dataJosn);
 	initTable("corporationGood", getCorporationGoodTableColumns(), dataJosn);
 
-	getCorporation();
-	getFactory();
-	queryGoods();
-	getCorporationGood();
+//	getCorporation();
+//	getFactory();
+//	queryGoods();
+//	getCorporationGood();
 	
 });
 
@@ -136,34 +136,34 @@ var str = '<br><div class="container-fluid" >';
 			str += '供应商:';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="corporation1" id="corporation1"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation1" id="corporation1"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '供应商负责人:' ;
+			str += '负责人:' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="corporation_person" id="corporation_person"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_person" id="corporation_person"/>' ;
 			str += '</div>';
-		str += '<div class="span2">';
-			str += '地址:';
-		str += '</div>';
 			str += '<div class="span2">';
-				str += '<input type="text" style="width: 70px;" name="corporation_address" id="corporation_address"/>' ;
-			str += '</div>';
-	str += '</div>';
-
-	str += '<div class="row-fluid">';
-		str += '<div class="span2">';
 			str += '联系电话:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="telphone" id="telphone"/>';
-			str += '</div>';
+			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone"/>';
+			str += '</div>';	
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+	str += '<div class="span2">';
+	str += '地址:';
+    str += '</div>';
+	str += '<div class="span2">';
+		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_address" id="corporation_address"/>' ;
+	str += '</div>';
 		str += '<div class="span2">';
 			str+='备注:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="bak" id="bak"/>';
+			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -259,34 +259,34 @@ var str = '<br><div class="container-fluid" >';
 			str += '厂家:';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="factory_name1" id="factory_name1"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_name1" id="factory_name1"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '厂家负责人:' ;
+			str += '负责人:' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="factory_person" id="factory_person"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_person" id="factory_person"/>' ;
 			str += '</div>';
-		str += '<div class="span2">';
-			str += '地址:';
-		str += '</div>';
 			str += '<div class="span2">';
-				str += '<input type="text" style="width: 70px;" name="factory_address" id="factory_address"/>' ;
-			str += '</div>';
-	str += '</div>';
-
-	str += '<div class="row-fluid">';
-		str += '<div class="span2">';
 			str += '联系电话:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="telphone" id="telphone"/>';
-			str += '</div>';
+			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone"/>';
+			str += '</div>';	
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+	str += '<div class="span2">';
+	str += '地址:';
+    str += '</div>';
+	str += '<div class="span2">';
+		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_address" id="factory_address"/>' ;
+	str += '</div>';
 		str += '<div class="span2">';
 			str+='备注:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="bak" id="bak"/>';
+			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -379,50 +379,27 @@ function openGoodsWin(){
 var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
+	str += '物资类别:';
+str += '</div>';
+	str += '<div class="span4">';
+		str += "<select id='good_type' style='width: 115px;' class='m-wrap span12' tabindex='1' name='good_type'>";
+     str+='</select>';
+	str += '</div>';	
+	str += '<div class="span2">';
 	str += '物资名称:' ;
 str += '</div>';
 	str += '<div class="span4" >';
 		str += '<input type="text" style="width: 70px;" name="good_name1" id="good_name1"/>' ;
 	str += '</div>';
-		str += '<div class="span2">';
-			str += '物资编码:';
-		str += '</div>';
-			str += '<div class="span4" >';
-				str += '<input type="text" style="width: 70px;" name="good_code" id="good_code"/>' ;
-			str += '</div>';
-//			str += '<div class="span1">';
-//			str += '供应商:' ;
-//			str += '</div>';
-//				str += '<div class="span1" >';
-//				str += "<select id='corporation' style='width: 115px;' class='m-wrap span12' tabindex='1' name='corporation'>";
-//				var myobj=corporation.split("=");
-//				for (var j = 0; j < myobj.length; j++) {
-//					if(myobj[j].indexOf("corporation_id") > 0 ){
-//						var tt = myobj[j+2];
-//						 str +="<option value=" + myobj[j+1].split(",")[0]+","+ tt.split(",")[0] +">" + tt.split(",")[0] + "</option>";
-//						 
-//					}
-//						
-//				}
-//		     str+='</select>';
-//				str += '</div>';	
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资类别:';
-str += '</div>';
-	str += '<div class="span4">';
-		str += "<select id='good_type' style='width: 115px;' class='m-wrap span12' tabindex='1' name='good_type'>";
-//		var myobj=goodTypeList.split("=");
-//		for (var j = 0; j < myobj.length; j++) {
-//			if(myobj[j].indexOf("code_name") > 0 ){
-//				 str +="<option value=" + myobj[j-1].split(",")[0] +">" + myobj[j+1].split(",")[0] + "</option>";
-//			}
-//				
-//		}
-     str+='</select>';
-	str += '</div>';	
+	str += '物资编码:';
+    str += '</div>';
+	str += '<div class="span4" >';
+		str += '<input type="text" style="width: 100px;" name="good_code" id="good_code"/>' ;
+	str += '</div>';
 		str += '<div class="span2">';
 			str += '备注:';
 		str += '</div>';
@@ -491,7 +468,7 @@ layer.open({
 	  }
 	  }
 	});
-setGoodsType();
+setGoodType();
 }
 
 function submitForm3(){
@@ -529,7 +506,7 @@ var str = '<br><div class="container-fluid" >';
 	str += '物资类别:';
     str += '</div>';
 	str += '<div class="span2">';
-		str += '<select id="good_type" style="width: 115px;" class="m-wrap span12" tabindex="1" name="good_type" onchange="setGoodName()">';
+		str += '<select id="good_type" style="width: 115px;margin-left: -45px;" class="m-wrap span12" tabindex="1" name="good_type" onchange="setGoodName()">';
 //		var myobj=goodTypeList.split("=");
 //		for (var j = 0; j < myobj.length; j++) {
 //			if(myobj[j].indexOf("code_name") > 0 ){
@@ -543,7 +520,7 @@ var str = '<br><div class="container-fluid" >';
 	str += '物资名称:' ;
 str += '</div>';
 	str += '<div class="span2" >';
-	str += "<select id='goods' style='width: 115px;' class='m-wrap span12' tabindex='1' name='goods'>";
+	str += "<select id='goods' style='width: 115px;margin-left: -45px;' class='m-wrap span12' tabindex='1' name='goods'>";
 //	var goods = setGoodName();
 //	var myobj=goods.split("=");
 //	for (var j = 0; j < goods.length; j++) {
@@ -560,7 +537,7 @@ str += '</div>';
 			str += '单价:';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="price" id="price"/>' ;
+				str += '<input type="text" style="width: 70px;margin-left: -45px;" name="price" id="price"/>' ;
 			str += '</div>';	
 	str += '</div>';
 
@@ -568,8 +545,8 @@ str += '</div>';
 	str += '<div class="span2">';
 	str += '规格:';
 	str += '</div>';
-	str += '<div class="span2" >';
-	str += "<select id='spec' style='width: 115px;' class='m-wrap span12' tabindex='1' name='spec'>";
+	str += '<div class="span2" style="margin-left: -30px;">';
+	str += "<select id='spec' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='spec'>";
 //	var myobj=spec.split("=");
 //	for (var j = 0; j < myobj.length; j++) {
 //		if(myobj[j].indexOf("code_name") > 0 ){
@@ -578,12 +555,13 @@ str += '</div>';
 //			
 //	}
  str+='</select>';
+ str+='<input type="text" id="spec_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入规格" autocomplete="off" onchange="empty()" />';
 	str += '</div>';
-	str += '<div class="span2">';
+	str += '<div class="span2" style="margin-left: 60px;">';
 	str += '单位:';
 	str += '</div>';
-	str += '<div class="span2">';
-	str += "<select id='unit' style='width: 115px;' class='m-wrap span12' tabindex='1' name='unit'>";
+	str += '<div class="span2" style="margin-left: -30px;">';
+	str += "<select id='unit' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='unit'>";
 //	var myobj=unit.split("=");
 //	for (var j = 0; j < myobj.length; j++) {
 //		if(myobj[j].indexOf("code_name") > 0 ){
@@ -592,11 +570,12 @@ str += '</div>';
 //			
 //	}
  str+='</select>';
+ str+='<input type="text" id="unit_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入单位" autocomplete="off" onchange="empty()" />';
 	str += '</div>';
-		str += '<div class="span2">';
+		str += '<div class="span2" style="margin-left: 63px;">';
 			str += '备注:';
 		str += '</div>';
-			str += '<div class="span2">';
+			str += '<div class="span2" style="margin-top: -30px;margin-left: 143px;">';
 			str += '<input type="text" style="width: 70px;" name="bak" id="bak"/>';
 			str += '</div>';	
 	str += '</div>';
@@ -604,8 +583,8 @@ str += '</div>';
 	str += '<div class="span2">';
 	str += '供应商:';
     str += '</div>';
-    str += '<div class="span2">';
-    str += "<select id='corporation1' style='width: 115px;' class='m-wrap span12' tabindex='1' name='corporation1'>";
+    str += '<div class="span2" style="margin-left: -30px;">';
+    str += "<select id='corporation1' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='corporation1'>";
 //	var myobj=corporation.split("=");
 //	for (var j = 0; j < myobj.length; j++) {
 //		if(myobj[j].indexOf("corporation_id") > 0 ){
@@ -616,12 +595,13 @@ str += '</div>';
 //			
 //	}
  str+='</select>';
+ str+='<input type="text" id="corporation1_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入供应商" autocomplete="off" onchange="empty()" />';
     str += '</div>';
-    str += '<div class="span2">';
+    str += '<div class="span2" style="margin-left: 61px;">';
 	str += '厂家:' ;
 	str += '</div>';
-		str += '<div class="span2">';
-		str += "<select id='factory' style='width: 115px;' class='m-wrap span12' tabindex='1' name='factory'>";
+		str += '<div class="span2" style="margin-left: -30px;">';
+		str += "<select id='factory' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='factory'>";
 //		var myobj=factory.split("=");
 //		for (var j = 0; j < myobj.length; j++) {
 //			if(myobj[j].indexOf("factory_id") > 0 ){
@@ -632,6 +612,7 @@ str += '</div>';
 //				
 //		}
      str+='</select>';
+     str+='<input type="text" id="factory_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入厂家" autocomplete="off" onchange="empty()" />';
 		str += '</div>';
     str += '</div>';
 	str+='<div class="span2"><label style="padding-left: 70px;color: red; width:450px; text-align: center;margin-top: 15px;" id="add_msg"></label></div>';
@@ -681,11 +662,11 @@ layer.open({
 		});
 	  }
 	});
-setGoodType();
 setSpec();
+setGoodType();
 setUnit();
 setFactory();
-setCorporation();
+setCorporation(); 
 }
 
 function setGoodName() {
@@ -759,7 +740,7 @@ function setUnit() {
 function setCorporation() {
 	$.ajax({
 		type : "post",
-		url : path + "/googs/getCorporation",
+		url : path + "/googs/getCorporation2",
 		data : {},
 		dataType : "json",
 		success : function(result) {
@@ -768,6 +749,8 @@ function setCorporation() {
 			for (var i = 0; i < list.length; i++) {
 				$("#corporation1").append('<option value="' + list[i].corporation_id+','+list[i].corporation + '">' + list[i].corporation + '</option>');
 			}
+			//初始化规格、单位、厂家、供应商
+			initSpecSelect();
 		}
 	});
 }
@@ -799,14 +782,21 @@ function getGoodsTableColumns(){
         title: "ID",
         visible: false
     },{
-        field: "good_name",
-        title: "物资名称"
-    },{
     	field: "good_code",
-        title: "物资编码"
+        title: "物资编码",
+        width: '15%'
+    },{
+        field: "good_name",
+        title: "物资名称",
+        width: '20%'
+    },{
+        field: "good_type",
+        title: "物资类型",
+        width: '20%'
     },{
     	field: "bak",
-        title: "备注"
+        title: "备注",
+        width: '40%'
     }];
 	return dataColumns;
 }
@@ -911,34 +901,34 @@ function updateCorporation(){
 			str += '供应商:';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="corporation1" id="corporation1" value="'+updateRow[0].corporation+'"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation1" id="corporation1" value="'+updateRow[0].corporation+'"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '供应商负责人:' ;
+			str += '负责人:' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="corporation_person" id="corporation_person" value="'+updateRow[0].corporation_person+'"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_person" id="corporation_person" value="'+updateRow[0].corporation_person+'"/>' ;
 			str += '</div>';
-		str += '<div class="span2">';
-			str += '地址:';
-		str += '</div>';
 			str += '<div class="span2">';
-				str += '<input type="text" style="width: 70px;" name="corporation_address" id="corporation_address" value="'+updateRow[0].corporation_address+'"/>' ;
-			str += '</div>';
-	str += '</div>';
-
-	str += '<div class="row-fluid">';
-		str += '<div class="span2">';
 			str += '联系电话:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
-			str += '</div>';
+			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
+			str += '</div>';	
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+	str += '<div class="span2">';
+	str += '地址:';
+str += '</div>';
+	str += '<div class="span2">';
+		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_address" id="corporation_address" value="'+updateRow[0].corporation_address+'"/>' ;
+	str += '</div>';
 		str += '<div class="span2">';
 			str+='备注:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
+			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -1033,34 +1023,34 @@ function updateFactory(){
 			str += '厂家:';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="factory_name1" id="factory_name1" value="'+updateRow[0].factory_name+'"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_name1" id="factory_name1" value="'+updateRow[0].factory_name+'"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '厂家负责人:' ;
+			str += '负责人:' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;" name="factory_person" id="factory_person" value="'+updateRow[0].factory_person+'"/>' ;
+				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_person" id="factory_person" value="'+updateRow[0].factory_person+'"/>' ;
 			str += '</div>';
-		str += '<div class="span2">';
-			str += '地址:';
-		str += '</div>';
 			str += '<div class="span2">';
-				str += '<input type="text" style="width: 70px;" name="factory_address" id="factory_address" value="'+updateRow[0].factory_address+'"/>' ;
-			str += '</div>';
-	str += '</div>';
-
-	str += '<div class="row-fluid">';
-		str += '<div class="span2">';
 			str += '联系电话:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
-			str += '</div>';
+			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
+			str += '</div>';	
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+	str += '<div class="span2">';
+	str += '地址:';
+    str += '</div>';
+	str += '<div class="span2">';
+		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_address" id="factory_address" value="'+updateRow[0].factory_address+'"/>' ;
+	str += '</div>';
 		str += '<div class="span2">';
 			str+='备注:';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="width: 70px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
+			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -1150,34 +1140,27 @@ function updateGoods(){
     var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资名称:' ;
-str += '</div>';
-	str += '<div class="span4" >';
-		str += '<input type="text" style="width: 70px;" name="good_name1" id="good_name1" value="'+updateRow[0].good_name+'"/>' ;
-	str += '</div>';
-		str += '<div class="span2">';
-			str += '物资编码:';
-		str += '</div>';
-			str += '<div class="span4" >';
-				str += '<input type="text" style="width: 70px;" name="good_code" id="good_code" value="'+updateRow[0].good_code+'"/>' ;
-			str += '</div>';	
-	str += '</div>';
-
-	str += '<div class="row-fluid">';
-	str += '<div class="span2">';
 	str += '物资类别:';
 str += '</div>';
 	str += '<div class="span4">';
 		str += '<select id="good_type" style="width: 115px;" class="m-wrap span12" tabindex="1" name="good_type" value="'+updateRow[0].good_type+'">';
-//		var myobj=goodTypeList.split("=");
-//		for (var j = 0; j < myobj.length; j++) {
-//			if(myobj[j].indexOf("code_name") > 0 ){
-//				 str +="<option value=" + myobj[j].split(",")[0] +">" + myobj[j+1].split(",")[0] + "</option>";
-//			}
-//				
-//		}
      str+='</select>';
+	str += '</div>';
+	str += '<div class="span2">';
+	str += '物资名称:' ;
+str += '</div>';
+	str += '<div class="span4" >';
+		str += '<input type="text" style="width: 70px;" name="good_name1" id="good_name1" value="'+updateRow[0].good_name+'"/>' ;
 	str += '</div>';	
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+	str += '<div class="span2">';
+	str += '物资编码:';
+str += '</div>';
+	str += '<div class="span4" >';
+		str += '<input type="text" style="width: 101px;" name="good_code" id="good_code" value="'+updateRow[0].good_code+'" disabled="disabled"/>' ;
+	str += '</div>';
 		str += '<div class="span2">';
 			str += '备注:';
 		str += '</div>';
@@ -1235,35 +1218,249 @@ setGoodType();
 }
 
 //切换标签页事件处理
-$(function(){
-	$('a[data-toggle="tab"]').on('shown', function (e) {
-		if("供应商" == $(e.target).text()){
-			getCorporation();
-			return;
-		}
-		if("厂家" == $(e.target).text()){
-			getFactory();
-			return;
-		}
-		if("物资" == $(e.target).text()){
-			queryGoods();
-			return;
-		}
-		if("物资关系" == $(e.target).text()){
-			queryGoods();
-			return;
-		}
-	});
-});
+//$(function(){
+//	$('a[data-toggle="tab"]').on('shown', function (e) {
+//		if("供应商" == $(e.target).text()){
+//			getCorporation();
+//			return;
+//		}
+//		if("厂家" == $(e.target).text()){
+//			getFactory();
+//			return;
+//		}
+//		if("物资" == $(e.target).text()){
+//			queryGoods();
+//			return;
+//		}
+//		if("物资关系" == $(e.target).text()){
+//			queryGoods();
+//			return;
+//		}
+//	});
+//});
 
 function initObjGoods(){
 	objGoods.farmId =  document.getElementById("farmId").value;
 	objGoods.farm =  document.getElementById("farm").value;
 
-	document.getElementById("corporationFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
-	document.getElementById("factoryFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
-	document.getElementById("goodsFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
-	document.getElementById("corporationGoodFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+//	document.getElementById("corporationFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+//	document.getElementById("factoryFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+//	document.getElementById("goodsFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+//	document.getElementById("corporationGoodFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+}
+
+function initSpecSelect(){
+    $.fn.typeahead.Constructor.prototype.blur = function() {
+        var that = this;
+        setTimeout(function () { that.hide(); }, 250);
+    };
+
+    //规格
+    $('#spec_select').typeahead({
+        source: function(query, process) {
+        	var results=null;
+        	if(query.length>=4){
+        	var goods = getSpecNameList('spec', query);
+            results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+        	}
+            if(results.length ==0){
+            	document.getElementById("spec").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getSpecNameList('spec', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getSpecNameList('spec', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getSpecNameList('spec', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setSpecInfo('spec', good.id);
+            return good.text;
+        }
+    });
+    
+    //供应商
+    $('#corporation1_select').typeahead({
+        source: function(query, process) {
+        	var goods = getSpecNameList('corporation1', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            if(results.length ==0){
+            	document.getElementById("corporation1").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getSpecNameList('corporation1', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getSpecNameList('corporation1', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getSpecNameList('corporation1', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setSpecInfo('corporation1', good.id);
+            return good.text;
+        }
+    });
+    
+     //单位
+    $('#unit_select').typeahead({
+        source: function(query, process) {
+        	var goods = getSpecNameList('unit', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            if(results.length ==0){
+            	document.getElementById("unit").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getSpecNameList('unit', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getSpecNameList('unit', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getSpecNameList('unit', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setSpecInfo('unit', good.id);
+            return good.text;
+        }
+    });
+    
+     //厂家
+    $('#factory_select').typeahead({
+        source: function(query, process) {
+        	var goods = getSpecNameList('factory', query);
+            var results = goods.map(function (item,index,input){
+                return item.id+"";
+			});
+            if(results.length ==0){
+            	document.getElementById("factory").value = null;
+            }
+            process(results);
+            // return goods;
+        }
+        ,matcher: function (item) {
+            var goods = getSpecNameList('factory', item);
+            var flag = false;
+            for(var key in goods){
+            	if(item == goods[key].id || item == goods[key].text){
+            		flag = true;
+				}
+			}
+            return flag;
+		}
+        ,highlighter: function (item) {
+            var goods = getSpecNameList('factory', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            return good.text;
+        }
+        ,updater: function (item) {
+            var goods = getSpecNameList('factory', item);
+            var good = goods.find(function (p) {
+                return p.id == item;
+            });
+            setSpecInfo('factory', good.id);
+            return good.text;
+        }
+    });
+    
+}  
+
+function setSpecInfo(selectName, goodId){
+    var select = document.getElementById(selectName);
+    var options = select.options;
+    for(var key in options){
+        if(goodId == options[key].value){
+        	options[key].selected = true;
+        }
+	}
+}
+
+function getSpecNameList(selectName, value){
+	var specNameList = [];
+    var select = document.getElementById(selectName);
+    var options = select.options;
+	var oValue = "";
+    var oText = "";
+	for(var key in options){
+        oValue = options[key].value;
+		oText = options[key].text;
+        var oTextFlag = new RegExp(value).test(oText);
+        var oValueFlag = new RegExp(value).test(oValue);
+		if(oTextFlag == true || oValueFlag == true){
+			specNameList.push({id:oValue, text:oText});
+		}
+	}
+	return specNameList;
+}
+
+function empty(){
+	if(document.getElementById("spec_select").value==""){
+		document.getElementById("spec").value = null;
+	}	
+	if(document.getElementById("corporation1_select").value==""){
+		document.getElementById("corporation1").value = null;
+	}
+	if(document.getElementById("unit_select").value==""){
+		document.getElementById("unit").value = null;
+	}
+	if(document.getElementById("factory_select").value==""){
+		document.getElementById("factory").value = null;
+	}
 }
 
 

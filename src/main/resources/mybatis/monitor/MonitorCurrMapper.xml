@@ -30,7 +30,7 @@
                 , mc.low_alarm_temp
                 , format(mc.outside_temp,1) outside_temp
                 , format(mc.inside_humidity,0) inside_humidity
-                , format((mc.inside_avg_temp-mc.inside_set_temp),1) point_temp_diff
+                , format(mc.point_temp_diff,1) point_temp_diff
                 , format(mc.target_humidity,0) target_humidity
                 , ifnull(truncate(mc.co2,1),"-") co2
                 , ifnull(truncate(mc.lux,1),"-") lux
@@ -51,6 +51,7 @@
                 , e.code_name fenestella_name
                 , f.farm_name_chs farm_name
                 , h.house_name house_name
+                ,  CONCAT(mc.farm_id,"-",mc.house_id,"-",mc.batch_no) batch_no
         FROM s_b_monitor_curr mc
         LEFT JOIN s_d_code c
         ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'
@@ -63,6 +64,9 @@
         LEFT JOIN s_d_house h
         ON mc.house_id= h.id
         WHERE mc.show_flag=1
+            <if test="user_id != null and user_id !=''">
+              AND EXISTS (select DISTINCT obj_id from v_user vu where vu.id=#{user_id} and vu.obj_type=2 and (vu.obj_id = mc.farm_id or vu.obj_id = mc.house_id))
+            </if>
         ORDER BY mc.collect_datetime DESC
     </select>
 
@@ -160,14 +164,15 @@
                 , e.code_name fenestella_name
                 , f.farm_name_chs farm_name
                 , h.house_name house_name
-                , IFNULL((SELECT (CASE WHEN alarm_code like 'QH%' THEN 'H' WHEN alarm_code like 'QL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('QH1','QL1') LIMIT 1),'N') AS temp_in1_alarm
-                , IFNULL((SELECT (CASE WHEN alarm_code like 'ZH%' THEN 'H' WHEN alarm_code like 'ZL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('ZH1','ZL1') LIMIT 1),'N') AS temp_in2_alarm
-                , IFNULL((SELECT (CASE WHEN alarm_code like 'HH%' THEN 'H' WHEN alarm_code like 'HL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('HH1','HL1') LIMIT 1),'N') AS temp_in3_alarm
-                , IFNULL((SELECT (CASE WHEN alarm_code like '%H' THEN 'H' WHEN alarm_code like '%L%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('B001H','B001L') LIMIT 1),'N') AS temp_avg_alarm
-                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0001' LIMIT 1) AS point_temp_alarm
-                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0002' LIMIT 1) AS power_status_alarm
-                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0003' LIMIT 1) AS co2_alarm
-                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = 'C0004' LIMIT 1) AS lux_alarm
+                , IFNULL((SELECT (CASE WHEN alarm_code like 'QH%' THEN 'H' WHEN alarm_code like 'QL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('QH1','QL1','QH2','QL2') LIMIT 1),'N') AS temp_in1_alarm
+                , IFNULL((SELECT (CASE WHEN alarm_code like 'ZH%' THEN 'H' WHEN alarm_code like 'ZL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('ZH1','ZL1','ZH2','ZL2') LIMIT 1),'N') AS temp_in2_alarm
+                , IFNULL((SELECT (CASE WHEN alarm_code like 'HH%' THEN 'H' WHEN alarm_code like 'HL%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('HH1','HL1','HH2','HL2') LIMIT 1),'N') AS temp_in3_alarm
+                , IFNULL((SELECT (CASE WHEN alarm_code like '%H' THEN 'H' WHEN alarm_code like '%L%' THEN 'L' ELSE 'N' END) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code IN ('PH','PL') LIMIT 1),'N') AS temp_avg_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = '6' LIMIT 1) AS point_temp_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = '2' LIMIT 1) AS power_status_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code in ('3','4') LIMIT 1) AS co2_alarm
+                , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = '5' LIMIT 1) AS lux_alarm
+                ,  CONCAT(mc.farm_id,"-",mc.house_id,"-",mc.batch_no) batch_no
         FROM s_b_monitor_curr mc
         LEFT JOIN s_d_code c
         ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'

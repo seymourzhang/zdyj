@@ -19,6 +19,7 @@
 <!-- ace styles -->
 <script src="<%=path %>/framework/jquery/jquery-1.11.2.min.js" type="text/javascript"></script>
 <script src="<%=path%>/framework/jquery/jquery.tips.js"  type="text/javascript" ></script>
+<script src="<%=path%>/framework/jquery/jquery.pulsate.min.js"  type="text/javascript" ></script>
 <script src="<%=path %>/framework/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="<%=path %>/framework/js/app.js" type="text/javascript"></script>
 <script src="<%=path%>/framework/js/extJquery.js" type="text/javascript" ></script>

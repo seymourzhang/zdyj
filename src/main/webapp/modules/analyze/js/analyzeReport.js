@@ -3,7 +3,11 @@
  */
 var urlPath = "../../../fr/ReportServer?reportlet=";
 // var urlPath = "http://localhost:8080/fr/ReportServer?reportlet=";
-var urlParam = "&org_id=";
+var urlParamOrgId = "&org_id=";
+var urlParamFarmId = "&farm_id=";
+var urlParamHouseId = "&house_id=";
+var urlParamUserId = "&user_id=";
+var urlParamBatchNo = "&batch_no=";
 var currTabId = "tab_1";
 var currFrameId = "iframe_" + currTabId;
 var tabList = {};
@@ -23,44 +27,72 @@ function getInstance(tabList, frameList){
 };
 
 //初始化农场工具栏
-function initToolBarFarm(){
+function initToolBarFarm(enableFlag){
     // farmList = [{farmId: 2, farmName: "新疆蛋种鸡育成场"},{farmId: 3, farmName: "新疆产蛋一场"}];
+    enableFlag = (null == arguments[0])?true:false;
     var divStr = "";
     var i =1;
 
-    $.ajax({
-        type : "post",
-        url : path + "/org/getOrgByUser",
-        data : {},
-        dataType : "json",
-        success : function(result) {
-            orgList = result.obj;
-            if(orgList.length > 0){
-                currOrgId = orgList[0].id;
+    if(enableFlag == true){
+        $.ajax({
+            type : "post",
+            url : path + "/org/getOrgByUser",
+            data : {},
+            dataType : "json",
+            success : function(result) {
+                orgList = result.obj;
+                if(orgList.length > 0){
+                    currOrgId = orgList[0].id;
+                }
+                divStr += "<div class='span12' align='left'>";
+                for(var key in orgList){
+                    divStr += "<a id='btn_" + i + "' value = '" + orgList[key].id + "' href='javascript:;' class='btn blue' onclick='openUrl(" + orgList[key].id + ");'></i>" + orgList[key].name_cn + "</a>&nbsp;&nbsp;";
+                    i+=1;
+                }
+                divStr += "</div>";
+                document.getElementById("toolBarFarm").innerHTML = divStr;
+                openUrl(currOrgId);
             }
-            divStr += "<div class='span12' align='left'>";
-            for(var key in orgList){
-                divStr += "<a id='btn_" + i + "' value = '" + orgList[key].id + "' href='javascript:;' class='btn blue' onclick='openUrl(" + orgList[key].id + ");'></i>" + orgList[key].name_cn + "</a>&nbsp;&nbsp;";
-                i+=1;
-            }
-            divStr += "</div>";
-            document.getElementById("toolBarFarm").innerHTML = divStr;
-            openUrl(currOrgId);
-        }
-    });
+        });
+    } else{
+        openUrl("");
+    }
 };
 
 //打开url
 function openUrl(orgId){
-    if(orgId != "" && orgId != null){
+    // if(orgId != "" && orgId != null){
         currOrgId = orgId ;
         openUrlByFramId(frameList[currFrameId], currOrgId);
-    }
+    // }
 };
 
 //通过farm id打开url
 function openUrlByFramId(reportName, paramValue){
-    openPath = urlPath + path.replace("/","") + "/" + reportName + urlParam + paramValue ;
+    var urlParam ="";
+    if(null != farm_id && "undefined" != typeof(farm_id) && "" != farm_id){
+        urlParam += urlParamFarmId + farm_id;
+        farm_id = null;
+    } else{
+        urlParam += urlParamOrgId + paramValue;
+        house_id =null;
+        batch_no =null;
+    }
+    if(null != house_id && "undefined" != typeof(house_id) && "" != house_id){
+        urlParam += urlParamHouseId + house_id;
+        house_id =null;
+    } else{
+        batch_no =null;
+    }
+    if(null != batch_no && "undefined" != typeof(batch_no) && "" != batch_no){
+        urlParam += urlParamBatchNo + batch_no;
+        batch_no =null;
+    }
+    if(null != userId && "undefined" != typeof(userId) && "" != userId){
+        urlParam += urlParamUserId + userId;
+    }
+    openPath = urlPath + path.replace("/","") + "/" + reportName + urlParam ;
+    // alert(openPath);
     document.getElementById(currFrameId).src = openPath;
 };
 

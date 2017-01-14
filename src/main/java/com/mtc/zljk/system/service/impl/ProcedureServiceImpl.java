@@ -40,6 +40,8 @@ public class ProcedureServiceImpl implements ProcedureService {
     String beginDate="beginDate";
     /*结束日期*/
     String endDate="endDate";
+    /*上一天日期*/
+    String lastDate="lastDate";
     /*时区值*/
     String timeZone="GMT+8:00";
 
@@ -71,10 +73,12 @@ public class ProcedureServiceImpl implements ProcedureService {
             PageData pd = new PageData();
             pd.put(beginDate,getDateTime(-24,0,0,true));
             pd.put(endDate,getDateTime(-24,59,59,true));
+            pd.put(lastDate,getDateTime(-24,59,59,true));
 //            System.out.println(pd.get(beginDate));
 //            System.out.println(pd.get(endDate));
             dao.save("ProcedureMapper.SP_MONITOR_MONTH",pd);
             dao.save("ProcedureMapper.SP_ALARM_MONTH",pd);
+            dao.save("ProcedureMapper.SP_LUX",pd);
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 var objGoods = new Object();
 
+
 $(document).ready(function() {
 	initObjGoods();
 
@@ -79,7 +80,13 @@ $(document).ready(function() {
 //    });
     initGoodsSelect();
 
+    initSelectTab(tabId);
+    initRights();
 });
+
+function initSelectTab(tabId){
+    $('#uiTab li:eq(' + tabId + ') a').tab('show');
+}
 
 function empty(){
 	if(document.getElementById("goods_id_select").value==""){
@@ -1054,6 +1061,10 @@ function getApprovalStockTableColumns(){
 }
 function getApprovalStockChangeTableColumns(){
 	var dataColumns = [{
+        field: "id",
+        title: "序号",
+        visible: false
+    },{
 		field: "operation_date",
 		title: "提交日期"
 	},{
@@ -1093,32 +1104,37 @@ function getApprovalStockChangeTableColumns(){
 	return dataColumns;
 };
 
+
+
+function initRights(){
+    if (isRead == 0 || isRead == 1) {
+        document.getElementById("stockToolbar_btn_edit").style.display = "none";
+        document.getElementById("approvalStockToolbar_btn_reject").style.display = "none";
+        document.getElementById("approvalStockToolbar_btn_pass").style.display = "none";
+        return;
+    }
+}
+
 //切换标签页事件处理
 $(function(){
 	$('a[data-toggle="tab"]').on('shown', function (e) {
 		if("入库" == $(e.target).text()){
+			tabId =1;
 			getInstock();
 			return;
 		}
 		if("耗用" == $(e.target).text()){
+            tabId =2;
 			getOutStock();
 			return;
 		}
 		if("库存调整" == $(e.target).text()){
+            tabId =3;
 			queryStock();
 			return;
 		}
 		if("库存调整审批" == $(e.target).text()){
-			if (isRead == 0 || isRead == 1) {
-				$(e.relatedTarget).tab('show');
-				layer.alert('无审批权限，请联系管理员!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-					// 动画类型
-				});
-				return;
-			}
+            tabId =4;
 			queryStockApproval();
 			queryStockApprovalChange();
 			return;
@@ -1144,7 +1160,7 @@ function rejectStockChange(remark) {
 		$.ajax({
 			url: path + "/googs/rejectStockChange",
 			data: {
-//				id: id,
+				id: param["id"],
 				good_id:param["good_id"],
 				good_type:param["good_type"],
 				spec:param["spec"],
@@ -1192,7 +1208,7 @@ function approvalStockChange(remark){
 		$.ajax({
 			url : path + "/googs/approvalStockChange",
 			data : {
-//				id: id,
+                id: param["id"],
 				good_id:param["good_id"],
 				good_type:param["good_type"],
 				spec:param["spec"],

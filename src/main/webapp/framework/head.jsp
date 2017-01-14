@@ -19,6 +19,15 @@
 				</div>
 				</li>
 
+				<li class="dropdown" id="header_remind_bar">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="margin-top:6px; ">
+						<img src="<%=path%>/framework/image/remind.png" style="width: 18px;height: 18px;">
+						<span class="badge"  style="margin-top:6px;" id="head_msg_remind_currCount"></span>
+					</a>
+					<ul class="dropdown-menu extended notification" style="margin-top:6px; " id="head_msg_remind_CurrList">
+					</ul>
+				</li>
+
 				<li class="dropdown" id="header_notification_bar">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="margin-top:6px; "> <img src="<%=path%>/framework/image/warn.png" style="width: 18px;height: 18px;"> <span class="badge"  style="margin-top:6px;" id="head_msg_currCount"></span>
 
