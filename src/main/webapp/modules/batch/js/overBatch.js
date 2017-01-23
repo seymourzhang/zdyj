@@ -127,11 +127,7 @@ function checkVarOverBatch(objBatch, dataList){
         }
     }
 
-    layer.msg(objBatch.resultMsg, {
-        skin: 'layui-layer-lan'
-        , closeBtn: 0
-        , shift: 4 //动画类型
-    });
+    layer.msg(objBatch.resultMsg);
 }
 
 //显示淘汰设置区域

@@ -30,12 +30,12 @@
 <script type="text/javascript">
 var isRead="1";//"${pd.write_read}";//菜单是否只读
 	jQuery(document).ready(function() {
-		App.init(); // initlayout and core plugins
-		var win_h = $(window).height() - 208;
-		$("#monitor_date_table").css("min-height", win_h);
-		$("#page-content").css("min-height", win_h);
-		 $("#user_date_table").css("min-height",win_h-80);
-		 $("#container").css("height",win_h-100);
+// 		App.init(); // initlayout and core plugins
+// 		var win_h = $(window).height() - 208;
+// 		$("#monitor_date_table").css("min-height", win_h);
+// 		$("#page-content").css("min-height", win_h);
+// 		 $("#user_date_table").css("min-height",win_h-80);
+// 		 $("#container").css("height",win_h-100);
 		 if(<%=request.getParameter("alarm_type")%>!='' && <%=request.getParameter("alarm_type")%>!=null){
 		  document.getElementById('alarmType').value=<%=request.getParameter("alarm_type")%>;
 		 }
@@ -196,14 +196,10 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 									  <span_customer>语音报警</span_customer>
 									  <a href="javascript:bindingUserUrl();" onclick="">上传报警通讯录</a>
 								  </div>
-								 </div>
-								 <div class="row-fluid" style="margin-top: -130px;margin-left: 120px;">
-                                <div class="span12">
-                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;" />
+								  <div class="span12">
+                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;margin-left: 60px;" />
                                 </div>
-                            </div>
-							<div class="row-fluid" style="margin-top: -100px;">
-							<div class="span3"></div>
+                                <div class="span3"></div>
                              <div class="span3" >
 									  <span_customer>温度补偿</span_customer>
 									  <select id="temp_cpsation" name="temp_cpsation" class="m-wrap span12" tabindex="1" onchange="tempCordon()" style="margin-left:60px;margin-top: -40px;">									                    
@@ -215,28 +211,24 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 									  <span_customer>补偿值</span_customer>
 									  <input  type="text" id="temp_cordon" class="span6 m-wrap" style="width: 100px;margin-left: -15px;margin-top: -4px;" name="temp_cordon">
 								  </div>
-								 </div>	
-								 <div class="row-fluid" style="margin-top: -130px;margin-left: 120px;">
-                                <div class="span12">
-                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;" />
+								  <div class="span12">
+                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;margin-left: 60px;" />
                                 </div>
-                            </div>
-                            <div class="row-fluid">
-								 <div class="span3"></div>
+                                 <div class="span3"></div>
 								 <div class="span3">
 									  设备信息
 									  <select id="device_code" name="device_code" class="m-wrap span12" tabindex="1" style="margin-left:59px;margin-top: -40px;width: 300px;">
 														                                                       
 									 </select>
 								 </div>
-								 </div>
-								 <div class="row-fluid">
 								 <div class="span3"></div>
-								 <div class="span3" style="width: 200px;margin-left: 0px;">
+								 <div class="span3"></div>
+								 <div class="span3"></div>
+								 <div class="span4">
 								  点温差报警
-								  <input  type="text" id="point_alarm" class="span6 m-wrap" style="width: 100px;margin-left: 3px;margin-top: -7px;" name="point_alarm">
+								  <input  type="text" id="point_alarm" class="span6 m-wrap" style="width: 100px;margin-left: 70px;margin-top: -30px;" name="point_alarm">
 								 </div>
-                             <div class="span3" style="width: 200px;">
+                             <div class="span4">
 									  <span_customer>报警形式</span_customer>
 									  <select id="yincang" name="alarm_probe" class="m-wrap span12" tabindex="1" style="width: 130px;margin-left: -2px;margin-top: -7px;">
 <!-- 														onchange="alarmHide();" -->
@@ -244,11 +236,11 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 														<option value="03">平均温度报警</option>                                                        
 														</select>
 								  </div>
-								  
-								  </div>
-								 
-								 <div class="row-fluid" id="yincang2" style="margin-left: 130px;width: 500px;">
+								  <div class="span12" id="yincang2" style="margin-left: 130px;width: 500px;">
 								 </div>
+								 </div>
+								 
+								 
 								
 						</div>
 
@@ -256,31 +248,31 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 						<button type="button" class="btn blue" onclick="openAdjustWin('${hourList}')" id="addData" style="display:">
 <!-- 						<i class="icon-ok"></i> -->
 <!-- 						<a href="javascript:addAlarmUrl();"><i class="icon-edit"></i> -->
-						&nbsp;&nbsp;&nbsp;&nbsp;新增&nbsp;&nbsp;&nbsp;&nbsp;
+						<i class="icon-plus"></i>新增
 <!-- 						</a> -->
 						</button>
 						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						&nbsp;&nbsp;
 						<button type="button" class="btn blue" onclick="batchChange()" id="delData" style="display:">
-                        &nbsp;&nbsp;&nbsp;&nbsp;删除&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class="icon-trash"></i> 删除
                          </button> 
                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                          &nbsp;&nbsp;
                          <button type="button" class="btn blue" onclick="update()" id="upData" style="display:">                                                          
 <!--                          <a href="javascript:update();"><i class="icon-edit"></i> -->
-                        &nbsp;&nbsp;&nbsp;&nbsp;保存&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class="icon-edit"></i>保存
 <!--                         </a> -->
                         </button>
                          <button type="button" class="btn blue" onclick="upAndAdd()" id="upData2" style="display:none;">                                                          
 <!--                          <a href="javascript:update();"><i class="icon-edit"></i> -->
-                        &nbsp;&nbsp;&nbsp;&nbsp;保存&nbsp;&nbsp;&nbsp;&nbsp;
+                        <i class="icon-edit"></i>保存
 <!--                         </a> -->
                         </button>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;
                          <button type="button" class="btn blue" onclick="applyAlarmUrl()" style="display:">
 <!--                          <a href="javascript:applyAlarmUrl();"><i class="icon-edit"></i> -->
-                             &nbsp;&nbsp;  应用至&nbsp;&nbsp;
+                             <i class="icon-share-alt"></i>  应用至
 <!--                          </a> -->
                          </button>
 						</div>

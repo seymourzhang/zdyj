@@ -49,7 +49,7 @@
           u.drug_name,
           u.good_batch_no,
           f.factory_name,
-          concat(round(u.use_unit,0),'(',(select c.code_name from s_d_code c where c.code_type = 'unit' and c.biz_code = s.unit),')') as use_unit,
+          round(u.use_unit,0) as use_unit,
 <!--           (select c.code_name from s_d_code c where c.code_type = 'use_type' and u.Instruction = c.biz_code) Instruction, -->
           u.use_type,
           u.main_constitute,

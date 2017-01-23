@@ -60,7 +60,7 @@
 
 								  </div>
 								  <div class="span3" align="left">
-									  <button type="button" class="btn green" onclick="addDrug();" id="add">新增</button>
+									  <button type="button" class="btn blue" onclick="addDrug();" id="add"><i class="icon-plus"></i>新增</button>
 								  </div>
 							 </div>
     
@@ -104,7 +104,7 @@
 								  <div class="span4" align="left">
 									  <div id="factToolbar" class="btn-group">
 										  <button id='factToolbar_btn_delete' type='button' class='btn blue' style="display: inline;" onclick="javascript:deleteDrug();">
-											  <span class='glyphicon glyphicon-plus' aria-hidden='true'></span>删除
+											  <span class='glyphicon glyphicon-plus' aria-hidden='true'></span><i class="icon-trash"></i>删除
 										  </button>
 									  </div>
 								  </div>

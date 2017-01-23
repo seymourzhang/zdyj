@@ -437,7 +437,7 @@
 	</insert>
 
 	<select id="getFarmUser" parameterType="pd" resultType="pd" flushCache="false">
-		SELECT u.*
+		SELECT u.*, rt.role_temp_id, rt.role_temp_name
         FROM s_d_organization o
           LEFT JOIN s_d_rights r
             ON r.obj_type = 2 AND r.obj_id = o.id
@@ -453,6 +453,32 @@
             ON rt.role_temp_id = urt.role_temp_id
         WHERE o.parent_id = ${farm_id} and rt.role_level >= 2
         GROUP BY u.id;
+	</select>
+
+	<select id="getAuthorityInfo" parameterType="pd" resultType="pd" flushCache="false">
+		SELECT aa.*
+			FROM s_b_app_authority aa
+ 			LEFT JOIN s_d_role_temp rt
+    			ON rt.role_temp_id = aa.role_temp_id
+  			LEFT JOIN s_d_user_role_temp urt
+    			ON urt.role_temp_id = rt.role_temp_id
+		where urt.user_id = ${user_id};
+	</select>
+
+	<select id="getUserRole" parameterType="pd" resultType="pd" flushCache="false">
+		SELECT
+		  rt.role_temp_id,
+		  rt.role_temp_name,
+		  u.user_mobile_1,
+		  u.user_code,
+		  u.id,
+		  u.user_real_name
+		FROM s_d_user_role_temp urt
+				LEFT JOIN s_d_role_temp rt
+				ON urt.role_temp_id = rt.role_temp_id
+				LEFT JOIN s_d_user u
+				ON u.id = urt.user_id
+		WHERE urt.user_id = ${user_id} limit 1;
 	</select>
 
 </mapper>

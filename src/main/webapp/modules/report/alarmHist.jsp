@@ -60,7 +60,7 @@
 												<div class="form-horizontal">
 													<div>
 													<%@ include file="../../framework/org.jsp"%>
-													 <div id="state2">
+													 <div id="state2" style="margin-left: 1000px;margin-top: -45px;">
 													  
 <!-- 													 <div class="span3" style="width: 250px;"> -->
 <!-- 															<div class="control-group"> -->
@@ -118,11 +118,13 @@
 
 <!-- 														</div> -->
 
-														<div class="span3">
-															<div class="control-group">
-																<label class="control-label" style="width: 30px;margin-left: 60px;">批次</label>
-																<div class="controls" style="margin-left: 95px;">
-																	<select id="batchId" class="m-wrap span12" tabindex="1" name="batchId" onchange="reflushAlarmHist3(1);">
+<!-- 														<div class="span3"> -->
+<!-- 															<div class="control-group"> -->
+																<span_customer>
+																批次
+																</span_customer>
+																<div >
+																	<select id="batchId" class="m-wrap span12" tabindex="1" name="batchId" onchange="reflushAlarmHist3(1);" style="width: 200px;margin-top: 10px;">
 <!-- 																		<c:if test="${!empty batchList}"> -->
 <!-- 																			<c:forEach var="batch" items="${batchList}"> -->
 <!-- 																				<option value="${batch.id }">${batch.id}</option> -->
@@ -130,12 +132,12 @@
 <!-- 																		</c:if> -->
 																	</select>
 																</div>
-															</div>
-														</div>
+<!-- 															</div> -->
+<!-- 														</div> -->
                                                         
                                                         </div>
                                                         
-                                                        <div id="detail2">
+                                                        <div id="detail2" class="span3" style="margin-left: 1000px;margin-top: -35px;">
                                                         <input type="hidden" name="dateage" id="dateage">
                                                          
 <!--                                                         <div class="span3" style="width: 250px;"> -->
@@ -193,26 +195,49 @@
 <!-- 															</div> -->
 
 <!-- 														</div> -->
-
-														<div class="span3" style="width: 220px;">
-															<div class="control-group">
-																<label class="control-label" style="width: 60px;">批次</label>
-																<div class="controls" style="margin-left: 65px;">
-																	<select id="batchId2" class="m-wrap span12" tabindex="1" name="batchId2" onchange="reflushAlarmHist3(2);">
+<!--                                                         <div> -->
+<!-- 															<div class="control-group"> -->
+																<span_customer>批次</span_customer>
+																<div>
+																	<select id="batchId2" class="m-wrap span12" tabindex="1" name="batchId2" onchange="reflushAlarmHist3(2);" style="width: 200px;margin-top: 0px;">
 <!-- 																		<c:if test="${!empty batchList}"> -->
 <!-- 																			<c:forEach var="batch" items="${batchList}"> -->
 <!-- 																				<option value="${batch.id }">${batch.id}</option> -->
 <!-- 																			</c:forEach> -->
 <!-- 																		</c:if> -->
 																	</select>
-																</div>
+<!-- 																</div> -->
+<!-- 															</div> -->
+														</div>
+                                                        <div class="span12"></div>
+														<div class="row-fluid">
+														<div class="span3" style="margin-left: -1310px;margin-top: 20px;">
+<!-- 															<div class="control-group"> -->
+																<span_customer>起始时间</span_customer>
+																<div style="margin-left: 62px;width: 143px;">
+														<div class="input-append date date-picker" data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
+															<input class="m-wrap  span11 m-ctrl-medium date-picker " readonly type="text" name="beginTime" id="beginTime" onchange="reflushAlarmHist4();" /><span class="add-on"><i class="icon-calendar"></i></span>			
+														</div>
+<!-- 													    </div> -->
 															</div>
 														</div>
-														<div class="span3" style="width: 220px;">
-															<div class="control-group">
-																<label class="control-label" style="width: 60px;">报警类型</label>
-																<div class="controls" style="margin-left: 65px;">
-																	<select id="bizCode" class="m-wrap span12" tabindex="1" name="bizCode" onchange="reflushAlarmHist4();">
+														
+														<div class="span3" style="margin-left: -980px;margin-top: 20px;">
+<!-- 															<div class="control-group"> -->
+																<span_customer>截止时间</span_customer>
+																<div style="margin-left: 62px;width: 143px;">
+														<div class="input-append date date-picker" data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
+															<input class="m-wrap  span11 m-ctrl-medium date-picker " readonly type="text" name="endTime" id="endTime" onchange="reflushAlarmHist4();" /><span class="add-on"><i class="icon-calendar"></i></span>			
+														</div>
+<!-- 													    </div> -->
+															</div>
+														</div>
+														
+														<div class="span3" style="margin-left: -650px;margin-top: 20px;">
+<!-- 															<div class="control-group"> -->
+																<span_customer>报警类型</span_customer>
+																<div>
+																	<select id="bizCode" class="m-wrap span12" tabindex="1" name="bizCode" onchange="reflushAlarmHist4();" style="width: 150px;margin-left: 66px;margin-top: -43px;width: 160px;">
 																		<option value="">全部</option>
 																		<c:if test="${!empty alarmNameList}">
 																			<c:forEach var="alarm" items="${alarmNameList}">
@@ -221,34 +246,9 @@
 																		</c:if>
 																	</select>
 																</div>
-															</div>
+<!-- 															</div> -->
 														</div>
-														<div class="row-fluid">
-														<div class="span12">
-														<div class="span3" style="width: 220px;">
-															<div class="control-group">
-																<label class="control-label" style="width: 60px;">起始时间</label>
-																<div class="controls" style="margin-left: 65px;">
-														<div class="input-append date date-picker" data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
-															<input class="m-wrap  span11 m-ctrl-medium date-picker " readonly type="text" name="beginTime" id="beginTime" onchange="reflushAlarmHist4();" /><span class="add-on"><i class="icon-calendar"></i></span>			
-														</div>
-													    </div>
-															</div>
-														</div>
-														
-														<div class="span3" style="width: 220px;">
-															<div class="control-group">
-																<label class="control-label" style="width: 60px;">截止时间</label>
-																<div class="controls" style="margin-left: 65px;">
-														<div class="input-append date date-picker" data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
-															<input class="m-wrap  span11 m-ctrl-medium date-picker " readonly type="text" name="endTime" id="endTime" onchange="reflushAlarmHist4();" /><span class="add-on"><i class="icon-calendar"></i></span>			
-														</div>
-													    </div>
-															</div>
-														</div>
-														
 												
-														</div>
 														</div>
                                                         </div>
                                                         

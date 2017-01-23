@@ -20,7 +20,7 @@
 				<form id="farmViewForm">
 				<div class="row-fluid">
 					<div class="span12" align="right">
-						<a href="javascript:;" class="btn green" onclick="addFarm();"><i class="icon-plus"></i> 新增</a>
+						<a href="javascript:;" class="btn blue" onclick="addFarm();"><i class="icon-plus"></i> 新增</a>
 					</div>
 				</div>
 

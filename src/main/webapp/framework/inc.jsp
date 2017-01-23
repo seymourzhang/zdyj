@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
 <meta charset="utf-8" />
 <script type="text/javascript">
 	var path="<%=path%>";
@@ -23,7 +24,7 @@
 <script src="<%=path %>/framework/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="<%=path %>/framework/js/app.js" type="text/javascript"></script>
 <script src="<%=path%>/framework/js/extJquery.js" type="text/javascript" ></script>
-
+<script src="<%=path %>/framework/js/head.js" type="text/javascript"></script>
 <!--引入弹窗组件start-->
 <script type="text/javascript" src="<%=path %>/framework/layer/layer.js"></script>
 <!--引入弹窗组件end-->
@@ -36,8 +37,8 @@
 <script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
 <link rel="stylesheet" href="<%=path%>/framework/css/datepicker.css" />
 
-<style type="text/css">
-    span_customer{padding-right:10px;width:4em;display:block;float:left;line-height:26px;}
-</style>
+<%--<style type="text/css">--%>
+    <%--span_customer{padding-right:10px;width:4em;display:block;float:left;line-height:26px;font-weight:bold;color:#4f0202}--%>
+<%--</style>--%>
 
 <link rel="stylesheet" href="<%=path%>/framework/css/system.css" />

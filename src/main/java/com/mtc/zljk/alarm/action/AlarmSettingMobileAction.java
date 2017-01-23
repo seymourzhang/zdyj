@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Seymour on 2016/12/27.
@@ -46,10 +46,8 @@ public class AlarmSettingMobileAction extends BaseAction {
             JSONObject tUserJson = jsonObject.getJSONObject("params");
             int HouseId = tUserJson.optInt("houseId");
             int FarmId = tUserJson.optInt("farmId");
-            String AlarmType = tUserJson.optString("alarm_type");
             pd.put("houseId", HouseId);
             pd.put("farmId", FarmId);
-            pd.put("AlarmType", AlarmType);
             List<PageData> lpd = alarmService.selectSBHouseAlarmByCondition(pd);
             JSONArray probes = new JSONArray();
             if (lpd.size() != 0) {
@@ -61,7 +59,7 @@ public class AlarmSettingMobileAction extends BaseAction {
                     resJson.put("alarm_method", pageData.get("alarm_probe"));
                 }
                 resJson.put("Result", "Success");
-            }else {
+            } else {
                 resJson.put("alarm_delay", "");
                 resJson.put("temp_cpsation", "");
                 resJson.put("temp_cordon", "");
@@ -315,7 +313,7 @@ public class AlarmSettingMobileAction extends BaseAction {
             pd.put("uid_num", tUserJson.get("uid_num"));
             pd.put("day_age", tUserJson.get("day_age"));
             pd.put("alarm_type", AlarmType);
-            int pdID = 0;
+            int pdID = 0, startTime = 0, endTime = 0;
             if ("1".equals(AlarmType)) {
                 pd.put("set_temp", tUserJson.get("set_temp"));
                 pd.put("high_alarm_temp", tUserJson.get("high_alarm_temp"));
@@ -324,8 +322,10 @@ public class AlarmSettingMobileAction extends BaseAction {
                 pd.put("high_lux", tUserJson.get("high_lux"));
                 pd.put("low_lux", tUserJson.get("low_lux"));
                 pd.put("set_lux", tUserJson.get("set_lux"));
-                pd.put("start_time", tUserJson.get("start_time"));
-                pd.put("end_time", tUserJson.get("end_time"));
+                startTime = tUserJson.getInt("start_time");
+                pd.put("start_time", startTime);
+                endTime = tUserJson.getInt("end_time");
+                pd.put("end_time", endTime);
             } else if ("3".equals(AlarmType)) {
                 pd.put("high_alarm_co2", tUserJson.get("high_alarm_co2"));
                 pd.put("set_co2", tUserJson.get("set_co2"));
@@ -341,7 +341,7 @@ public class AlarmSettingMobileAction extends BaseAction {
             pd1.put("houseId", pd.get("houseId"));
             pd1.put("day_age", pd.get("day_age"));
             pd1.put("alarm_type", pd.get("alarm_type"));
-            Json i = alarmAction.tempSubUpdate(pd1 ,pd, userId);
+            Json i = alarmAction.tempSubUpdate(pd1 ,pd, userId, startTime, endTime);
             pd.put("alarm_operation", "修改");
             alarmService.saveSbDayageSettingSubHis(pd);
             String temp = i.getMsg();
@@ -419,6 +419,60 @@ public class AlarmSettingMobileAction extends BaseAction {
             }
             resJson.put("Error", "");
             resJson.put("Result", "Success");
+            dealRes = Constants.RESULT_SUCCESS;
+        } catch (Exception e) {
+            e.printStackTrace();
+            resJson.put("Error", "程序处理错误，请联系管理员！");
+            resJson.put("Result", "Fail");
+            dealRes = Constants.RESULT_SUCCESS;
+        }
+        DealSuccOrFail.dealApp(request, response, dealRes, resJson);
+    }
+
+    @RequestMapping("/itemApplyOther")
+    public void itemApplyOther(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String dealRes = "";
+        JSONObject resJson = new JSONObject();
+        try {
+            PageData pd = this.getPageData();
+            String aa = pd.toString();
+            aa = aa.substring(1, aa.length() - 2);
+            JSONObject jsonObject = new JSONObject(aa);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+            int userId = jsonObject.optInt("id_spa");
+            JSONObject tUserJson = jsonObject.getJSONObject("params");
+            int FarmId = tUserJson.optInt("farmId");
+            int HouseId = tUserJson.optInt("houseId");
+//            JSONArray otherHouseIdArray = tUserJson.optJSONArray("otherHouseIdArray");
+            JSONArray otherHouseIdArray = tUserJson.getJSONArray("otherHouseIdArray");
+            String AlarmType = tUserJson.optString("alarm_type");
+            pd.put("farmId", FarmId);
+            pd.put("houseId", HouseId);
+            if ("0".equals(AlarmType)){
+                resJson.put("Result", "Success");
+                resJson.put("Error", "");
+            } else {
+                pd.put("alarm_type", AlarmType);
+                for (int i = 0; i < otherHouseIdArray.length(); ++i){
+                    pd.put("houseId2", otherHouseIdArray.getInt(i));
+
+                    PageData pd2 = new PageData();
+                    pd2.put("farmId", FarmId);
+                    pd2.put("houseId", otherHouseIdArray.getInt(i));
+                    pd2.put("alarm_type", AlarmType);
+                    Json json = alarmAction.tempSubApply(pd, pd2, userId);
+                    if (!json.getMsg().equals("1")) {
+                        resJson.put("Error", "程序处理错误，请联系管理员！");
+                        resJson.put("Result", "Fail");
+                        break;
+                    }else{
+                        resJson.put("Result", "Success");
+                        resJson.put("Error", "");
+                    }
+                }
+            }
             dealRes = Constants.RESULT_SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();

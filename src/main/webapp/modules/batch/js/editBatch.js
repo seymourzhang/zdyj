@@ -107,11 +107,7 @@ function checkVarEditBatch(objBatch, dataList){
         objBatch.resultMsg = "不能同一栋舍内调出调入，请重新选择栋舍!";
     }
 
-    layer.msg(objBatch.resultMsg, {
-        skin: 'layui-layer-lan'
-        , closeBtn: 0
-        , shift: 4 //动画类型
-    });
+    layer.msg(objBatch.resultMsg);
 }
 
 

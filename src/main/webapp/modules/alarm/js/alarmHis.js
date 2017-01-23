@@ -1,5 +1,5 @@
 var count0rg;
-var num;
+var num=2;
 
 jQuery(document).ready(function() {
 
@@ -188,8 +188,6 @@ InitSubTable = function (index, row, $detail) {
 	if(alarm_type =="1"){
 		url= path+"/alarmHis/selectAlarmHisDetailByCondition";
 		data = [{
-			checkbox: true
-		},{
 			field: 'modify_time',
 			title: '设置日期'
 			},{
@@ -208,8 +206,6 @@ InitSubTable = function (index, row, $detail) {
 	}else if(alarm_type =="2"){
 		url= path+"/alarmHis/selectAlarmHisDetailByCondition";
 		data = [{
-			checkbox: true
-		},{
 			field: 'modify_time',
 			title: '设置日期'
 			},{
@@ -234,8 +230,6 @@ InitSubTable = function (index, row, $detail) {
 	}else if(alarm_type =="3"){
 		url= path+"/alarmHis/selectAlarmHisDetailByCondition";
 		data = [{
-			checkbox: true
-		},{
 			field: 'modify_time',
 			title: '设置日期'
 			},{
@@ -248,8 +242,6 @@ InitSubTable = function (index, row, $detail) {
 	}else{
 		url= path+"/alarmHis/selectHouseAlarmHisDetailByCondition";
 		data = [{
-			checkbox: true
-		},{
 			field: 'modify_time',
 			title: '设置日期'
 			},{

@@ -87,19 +87,24 @@ function getFactoryTableColumns(){
         visible: false
     },{
         field: "factory_name",
-        title: "厂家名称"
+        title: "厂家名称",
+        width: '18%'
     },{
         field: "factory_person",
-        title: "厂家负责人"
+        title: "厂家负责人",
+        width: '8%'
     },{
     	field: "factory_address",
-        title: "地址"
+        title: "地址",
+        width: '20%'
     },{
     	field: "telphone",
-        title: "联系电话"
+        title: "联系电话",
+        width: '10%'
     },{
     	field: "bak",
-        title: "备注"
+        title: "备注",
+        width: '20%'
     }];
 	return dataColumns;
 }
@@ -395,7 +400,7 @@ str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资编码:';
+	str += '物资编号:';
     str += '</div>';
 	str += '<div class="span4" >';
 		str += '<input type="text" style="width: 100px;" name="good_code" id="good_code"/>' ;
@@ -783,7 +788,7 @@ function getGoodsTableColumns(){
         visible: false
     },{
     	field: "good_code",
-        title: "物资编码",
+        title: "物资编号",
         width: '15%'
     },{
         field: "good_name",
@@ -827,25 +832,32 @@ function getCorporationGoodTableColumns(){
         visible: false
     },{
         field: "good_name",
-        title: "物资名称"
+        title: "物资名称",
+        width: '10%'
     },{
     	field: "spec",
-        title: "规格"
+        title: "规格",
+        width: '10%'
     },{
     	field: "price",
-        title: "单价"
+        title: "单价",
+        width: '8%'
     },{
     	field: "unit",
-        title: "单位"
+        title: "单位",
+        width: '5%'
     },{
     	field: "factory_name",
-        title: "厂家"
+        title: "厂家",
+        width: '18%'
     },{
     	field: "corporation",
-        title: "供应商"
+        title: "供应商",
+        width: '18%'
     },{
     	field: "bak",
-        title: "备注"
+        title: "备注",
+        width: '20%'
     }];
 	return dataColumns;
 }

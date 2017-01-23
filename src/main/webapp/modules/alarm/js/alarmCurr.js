@@ -1,5 +1,5 @@
 var count0rg;
-var num;
+var num=2;
 
 function OrgSearch(count0rg,num){
 		reflushAlarmCurr();	
@@ -45,8 +45,8 @@ function reflushAlarmCurr(){
 //         	 }
         
               str+="<td style='height:30px;text-align: center;'>"+ list[i]["alarm_name"]+"</td>";
-              str+="<td style='height:30px;text-align: center;'>"+ list[i]["set_value"]+" "+list[i]["value_unit"]+"</td>";
-              str+="<td style='height:30px;text-align: center;'>"+ list[i]["actual_value"]+" "+list[i]["value_unit"]+"</td>";
+              str+="<td style='height:30px;text-align: center;'>"+ list[i]["set_value"].replace(".00","")+" "+list[i]["value_unit"]+"</td>";
+              str+="<td style='height:30px;text-align: center;'>"+ list[i]["actual_value"].replace(".00","")+" "+list[i]["value_unit"]+"</td>";
 //              if(list[i]["deal_status_name"]=='处理中'){
 //            	  str+="<td style='color:#FF6600;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
 //              }else if(list[i]["deal_status_name"]=='已处理'){
@@ -63,6 +63,7 @@ function reflushAlarmCurr(){
               }
               
               str+="<td style='height:30px;text-align: center;'>"+(list[i]["user_name"] != null ? list[i]["user_name"]:'' )+"</td>";
+              str+="<td style='height:30px;text-align: center;'>"+list[i]["continue_time"] +"</td>";
 //            str+="<td style='height:30px;text-align: center;'>"+ list[i]["deal_time"]+"</td>";
 //            str+="<td style='height:30px;text-align: center;'>"+ list[i]["user_name"]+"</td>";
               $("#tbodyAlarmCurrList").append(str);    

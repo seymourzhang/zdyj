@@ -21,6 +21,10 @@ public class AlarmCurrServiceImpl implements AlarmCurrService {
 		return (List<PageData>) dao.findForList("AlarmCurrMapper.selectAll", null);
 	}
 
+	public List<PageData> selectImeiByHouseId(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("AlarmCurrMapper.selectImeiByHouseId", pd);
+	}
+
 	public List<PageData> selectByCondition(PageData pd) throws Exception {
 		
 		return (List<PageData>) dao.findForList("AlarmCurrMapper.selectByCondition", pd);
@@ -30,7 +34,11 @@ public class AlarmCurrServiceImpl implements AlarmCurrService {
 	public int updateAlarm(PageData pd) throws Exception{
 		return (Integer) dao.update("AlarmCurrMapper.updateAlarm", pd);
 	}
-	
+
+	@Override
+	public int insertPushLog(PageData pd) throws Exception{
+		return (Integer) dao.update("AlarmCurrMapper.insertPushLog", pd);
+	}
 
 	public void run() {
 		try{

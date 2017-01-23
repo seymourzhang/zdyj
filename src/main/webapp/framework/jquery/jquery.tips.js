@@ -20,7 +20,7 @@
             side:1,
             msg:'',
             color:'#FFF',
-            bg:'#F00',
+            bg:'#FF0400',
             time:2,
             x:0,
             y:0

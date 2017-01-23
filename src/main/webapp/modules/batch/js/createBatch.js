@@ -205,11 +205,7 @@ function checkVarCreateBatch(objBatch, dataList){
         objBatch.resultMsg = "必须指定来源，请重新输入!";
     }
 
-    layer.msg(objBatch.resultMsg, {
-        skin: 'layui-layer-lan'
-        , closeBtn: 0
-        , shift: 4 //动画类型
-    });
+    layer.msg(objBatch.resultMsg);
 }
 
 //创建批次

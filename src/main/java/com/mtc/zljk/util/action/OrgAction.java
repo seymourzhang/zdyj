@@ -219,7 +219,7 @@ public class OrgAction extends BaseAction{
 			paramPd.put("freeze_status",0);
 			paramPd.put("create_person", user.getId());
 		} else{
-			int maxOrgLevel = maxPd.getInteger("max_level_id");
+			int maxOrgLevel = Integer.valueOf(String.valueOf(maxPd.get("max_level_id"))) ;
 			int maxOrganizationId = 0;
 			for(PageData tmpPd : organizationList){
 				if(maxOrgLevel < tmpPd.getInteger("org_level") ){
@@ -240,7 +240,7 @@ public class OrgAction extends BaseAction{
 					}
 				}
 			}
-			if(orgLevelId >= (maxOrgLevel-1) && maxOrgLevel != 0 ){
+			if(orgLevelId >= (maxOrgLevel) && maxOrgLevel != 0 ){
 				flag = false;
 				msg = "不能新建机构层级为" + orgLevelId.toString() + "的机构";
 			} else{

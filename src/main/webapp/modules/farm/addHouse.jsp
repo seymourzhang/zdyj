@@ -16,7 +16,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <%--<link rel="stylesheet" href="<%=path %>/framework/css/style.css"/>--%>
     <%--<link rel="stylesheet" href="<%=path %>/framework/css/bootstrap-fileupload.css" />--%>
     <%--<link rel="stylesheet" href="<%=path %>/framework/css/uniform.default.css" />--%>
-	<%--<script type="text/javascript" src="<%=path %>/framework/jquery/jquery-1.11.2.min.js"></script>--%>
+	<%--<script type="text/javascript" src="<%=path %>/framework/jquery/jquery.min.js"></script>--%>
 	<%--<script type="text/javascript" src="<%=path%>/framework/js/extJquery.js"></script>--%>
 
 	<script type="text/javascript">

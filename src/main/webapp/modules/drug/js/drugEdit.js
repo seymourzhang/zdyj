@@ -316,10 +316,12 @@ function getPlanTableDataColumns(){
         visible: false
     }, {
         field: "grow_week_age",
-        title: "生长周龄"
+        title: "生长周龄",
+        width: '8%'
     }, {
         field: "drug_name",
-        title: "疫苗名称"
+        title: "疫苗名称",
+        width: '18%'
     }, 
 //    {
 //        field: "Instruction",
@@ -327,10 +329,12 @@ function getPlanTableDataColumns(){
 //    }, 
     {
         field: "use_unit",
-        title: "使用数量"
+        title: "使用数量",
+        width: '12%'
     }, {
         field: "use_type",
-        title: "用途"
+        title: "用途",
+        width: '25%'
     }];
     return dataColumns;
 }

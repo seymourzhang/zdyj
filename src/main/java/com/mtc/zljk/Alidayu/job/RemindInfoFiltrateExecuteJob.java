@@ -53,7 +53,9 @@ public class RemindInfoFiltrateExecuteJob{
 	
 	@Autowired
 	private SDUserService userService;
-	
+
+	private String configMinNum = "2";
+
 	private String tempId = "";
 	
 	
@@ -74,46 +76,22 @@ public class RemindInfoFiltrateExecuteJob{
 			conf= ResourceBundle.getBundle("pro/alidayu");
 		}
 		String value= conf.getString(keyName);
+		configMinNum = conf.getString("MinNum");
 		return value;
 	}
-	
-	/**
-	 * 
-	 */
-	private double minDistance = -1;
-	private double maxDistance = 1;
-	
-	
-	public double getMinDistance() {
-		return minDistance;
-	}
-
-
-	public void setMinDistance(double minDistance) {
-		this.minDistance = minDistance;
-	}
-
-
-	public double getMaxDistance() {
-		return maxDistance;
-	}
-
-
-	public void setMaxDistance(double maxDistance) {
-		this.maxDistance = maxDistance;
-	}
-
 
 	/**
 	 * 获取报警信息
 	 */
 	public void doGetRemindAlarms(){
-		
+
 		if(!IPUtil.needRunTask()){
 			mLogger.info("本机不启用RemindInfoFiltrateExecuteJob");
 			return ;
 		}
-		
+
+		mLogger.info("语音提醒开始生成s_b_call_main的相关数据！");
+
 		int alarmType = 0;// 报警类型
 		String dealStatus = "01";// 报警处理状态
 		int interval = 5;// 5分钟之前
@@ -121,27 +99,26 @@ public class RemindInfoFiltrateExecuteJob{
 		
 		try {
 			tempId = getPropertyValue("tempId");
+			mLogger.info("语音模板Id:" + tempId);
 		} catch (Exception e) {
-			e.printStackTrace();
-			mLogger.error("未配置tempId",e);
+//			e.printStackTrace();
+			mLogger.error("请在Properties文件中配置语音模板Id",e);
 			return;
 		}
-		
-		mLogger.info("default tempId:" + tempId);
+
 		// 查询需要报警的记录
 		List<HashMap<String,Object>> alarms = getAlarmInfo(alarmType, dealStatus, interval);
-		
-		
-		SDTtsTemplate template = alidayuTTSManager.getSDTtsTemplate(tempId);
-		if(template == null){
-			mLogger.error("can not find template info!");
-			return;
-		}
-		// 模板ID
-		String tempId = template.getTempId();
-		
-		mLogger.info("alarms：" + alarms.size());
+
+		mLogger.info("需要语音提醒的报警个数 ：" + alarms.size());
 		if(alarms != null && !alarms.isEmpty()){
+			SDTtsTemplate template = alidayuTTSManager.getSDTtsTemplate(tempId);
+			if(template == null){
+				mLogger.error("请在数据库中配置" + tempId + "的模板信息。");
+				return;
+			}
+			// 模板ID
+			String tempId = template.getTempId();
+
 			// 保存每一个栋舍的报警信息  key:farmId_houseId
 			HashMap<String, List<SBAlarmInfoTemp>> alarmInfoTemps = new HashMap<>();
 			// 保存农场的报警设置
@@ -161,28 +138,15 @@ public class RemindInfoFiltrateExecuteJob{
 					int houseId = temps.get(0).getHouseId();
 					String farmName = temps.get(0).getFarmName();
 					String houseName = temps.get(0).getHouseName();
-					mLogger.info("开始处理农场的报警信息：farmId:" + farmId + ",houseId:" + houseId);
+					mLogger.info("开始处理：farmId=" + farmId + ",houseId=" + houseId);
 					// 农场的报警设置信息
 					SBAlarmInfoTemp alarmSet = farmAlarmSettings.get(farmId);
 					mLogger.info("农场配置信息:" + JSONObject.fromObject(alarmSet));
-					/*// 查询农场饲养员
-					List<SBFarmAlarmerTemp> alarmers1 = getFarmSiAlarmers(farmId, alarmSet.getPersonStatus(),1, alarmType);
-					
-					// 查询农场报警人
-					List<SBFarmAlarmerTemp> alarmers2 = getFarmNormalAlarmer(farmId, alarmSet.getPersonStatus(), 0, alarmType);
-					if(alarmers1 != null && !alarmers1.isEmpty()){
-						if(alarmers1.size() == 1){
-							alarmers2.addAll(alarmers1);
-						}else{
-							int roundIndex = (int) (Math.random()*alarmers1.size());
-							alarmers2.add(alarmers1.get(roundIndex));
-						}
-					}*/
+
 					// 查询农场报警人
 					List<SBFarmAlarmerTemp> alarmers2 = getFarmNormalAlarmer(farmId, alarmSet.getPersonStatus(), 0, alarmType, houseId);
 					
 					Collections.sort(alarmers2, new Comparator<SBFarmAlarmerTemp>() {
-
 						@Override
 						public int compare(SBFarmAlarmerTemp o1,
 								SBFarmAlarmerTemp o2) {
@@ -262,7 +226,7 @@ public class RemindInfoFiltrateExecuteJob{
 			}
 		}
 		
-		String sql = "select code_name from s_d_code where biz_code in  " + codeStr;
+		String sql = "select code_name from s_d_code where 1=1 and and code_type = 'ALARM_CODE' biz_code in  " + codeStr;
 		mLogger.info("query codename sql:" + sql);
 		List<HashMap<String,Object>> codes = baseQueryService.selectMapByAny(sql);
 		
@@ -328,9 +292,9 @@ public class RemindInfoFiltrateExecuteJob{
 			String alarmName = "";//map.get("alarm_Name").toString();
 			int farmId = Integer.parseInt(map.get("farm_id").toString());
 			int houseId = Integer.parseInt(map.get("house_id").toString());
-			int farmBreedId = Integer.parseInt(map.get("farm_breed_id").toString());
-			int houseBreedId = Integer.parseInt(map.get("house_breed_id").toString());
-			int monitorId = Integer.parseInt(map.get("monitor_id").toString());
+			String farmBreedId = map.get("farm_breed_id").toString();
+			String houseBreedId = map.get("house_breed_id").toString();
+			String monitorId = map.get("monitor_id").toString();
 			BigDecimal actualValue = new BigDecimal(0);
 			if(map.get("actual_value") != null){
 				actualValue = new BigDecimal(map.get("actual_value").toString());
@@ -691,18 +655,17 @@ public class RemindInfoFiltrateExecuteJob{
 				" AND alarmInfo.farm_id = h.farm_id AND alarmInfo.farm_id = alarmEnabled.farm_Id  " + 
 				" AND alarmSet.farm_Id = alarmInfo.farm_id AND alarmEnabled.remind_method = alarmCodeSet.remind_method " + 
 				" AND alarmEnabled.remind_method = alarmSet.remind_method AND alarmEnabled.remind_method =  " + alarmType  + 
-				" AND CASE WHEN alarmSet.alarm_rele_house = 'Y' THEN alarmInfo.house_id = alarmEnabled.house_Id AND alarmEnabled.house_Id > 0  " + 
-				" ELSE alarmEnabled.house_Id = 0 END " + 
-				" AND CASE WHEN alarmSet.switch_rele_house = 'Y' THEN alarmEnabled.house_id = alarmCodeSet.house_Id AND alarmCodeSet.house_Id > 0  " + 
-				" ELSE alarmCodeSet.house_Id = 0 END  " + 
+				" AND CASE WHEN alarmSet.switch_rele_house = 'Y' THEN alarmInfo.house_id = alarmEnabled.house_Id AND alarmEnabled.house_Id > 0  " +
+						" ELSE alarmEnabled.house_Id = 0 END " +
+				" AND CASE WHEN alarmSet.alarm_rele_house = 'Y' THEN alarmInfo.house_id = alarmCodeSet.house_Id AND alarmCodeSet.house_Id > 0  " +
+						" ELSE alarmCodeSet.house_Id = 0 END  " +
 				" AND alarmEnabled.status = 'Y' AND alarmCodeSet.farm_Id = alarmInfo.farm_id  " + 
 				" AND alarmInfo.alarm_code = alarmCodeSet.alarm_code AND alarmInfo.deal_status =  '" + dealStatus + "'" + 
 				" AND alarmInfo.alarm_time < DATE_SUB(NOW(),INTERVAL " + interval + " MINUTE) " +
-//				" AND alarmInfo.alarm_time >= DATE_FORMAT(NOW(),'%Y-%m-%d') " +
-				" AND (alarmInfo.actual_value - alarmInfo.set_value >= " + maxDistance + " OR alarmInfo.actual_value - alarmInfo.set_value <= " + minDistance + ") " + 
-				" AND alarmInfo.id NOT IN (SELECT callalarm.alarm_id FROM s_b_call_alarm callalarm); " ;
+				" AND CASE when alarmInfo.alarm_code like '%H%' OR alarmInfo.alarm_code like '%L%' then abs(alarmInfo.actual_value - alarmInfo.set_value) > "+configMinNum+" else 1=1 end " +
+				" AND not exists(SELECT 1 FROM s_b_call_alarm sbc where sbc.alarm_id = alarmInfo.id) " ;
 		
-		mLogger.info("queryAlarmSql:" + queryAlarmSql);
+		mLogger.info("是否有需要语音提醒的报警SQL:" + queryAlarmSql);
 		// 查询到的报警信息
 		List<HashMap<String,Object>> alarms = baseQueryService.selectMapByAny(queryAlarmSql);
 		

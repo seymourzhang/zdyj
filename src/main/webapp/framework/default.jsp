@@ -1,33 +1,23 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%
-	String path = request.getContextPath();
-	String basePath = request.getScheme() + "://"
-			+ request.getServerName() + ":" + request.getServerPort()
-			+ path + "/";
-%>
+﻿<%--
+  Created by IntelliJ IDEA.
+  User: Raymon
+  Date: 1/17/2017
+  Time: 15:41
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<base href="<%=basePath%>">
-
-<!-- jsp文件头和头部 -->
-<%@ include file="inc.jsp"%>
-
+	<%@ include file="inc/system.jsp"%>
 </head>
-<body  id="wodder">
-<div style="background-color: #fff;" id="wodder2">
- 欢迎访问正大鸡场管理系统
-</div>
-<!-- END CONTAINER -->
-	<script>
-		jQuery(document).ready(function() {
-			var win_h = $(window).height();
-			 $("#wodder").css("height",win_h);
-			 $("#wodder2").css("height",win_h);
-		});
-	</script>
+<body background="<%=path %>/framework/image/bg.jpg">
+	<%@ include file="region_top.jsp"%>
+
+
+
+	<%@ include file="inc/framework.jsp"%>
+	<script src="<%=path %>/framework/js/default.js"></script>
 </body>
 </html>

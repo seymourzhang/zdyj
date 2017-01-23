@@ -357,7 +357,7 @@ function addDrug(){
                
             }
         });
-        layer.msg(false, {
+        layer.alert('保存成功!',  {
             skin: 'layui-layer-lan'
             , closeBtn: 0
             , shift: 4 //动画类型
@@ -406,7 +406,7 @@ function deleteDrug(){
                     } else{
                         initTableRow("fact", getTableEmptyRow("fact"));
                     }
-                    layer.msg(false, {
+                    layer.alert('删除成功!',  {
                         skin: 'layui-layer-lan'
                         , closeBtn: 0
                         , shift: 4 //动画类型
@@ -514,7 +514,8 @@ function getPlanTableDataColumns(){
 		width: '5%'
     }, {
         field: "drug_name",
-        title: "疫苗名称"
+        title: "疫苗名称",
+        width: '18%'
     }, 
 //    {
 //        field: "Instruction",
@@ -522,10 +523,12 @@ function getPlanTableDataColumns(){
 //    }, 
     {
         field: "use_unit",
-        title: "使用数量"
+        title: "使用数量",
+        width: '10%'
     }, {
         field: "use_type",
-        title: "用途"
+        title: "用途",
+        width: '25%'
     }];
     return dataColumns;
 }
@@ -540,13 +543,16 @@ function getFactTableDataColumns(){
         visible: false
     }, {
         field: "use_date",
-        title: "日期"
+        title: "日期",
+        width: '10%'
     }, {
         field: "house_name",
-        title: "栋舍"
+        title: "栋舍",
+        width: '8%'
     }, {
         field: "drug_name",
-        title: "名称"
+        title: "名称",
+        width: '18%'
     }
 //    , {
 //        field: "use_unit",
@@ -554,13 +560,16 @@ function getFactTableDataColumns(){
 //    }
     , {
         field: "good_batch_no",
-        title: "批号"
+        title: "批号",
+        width: '10%'
     }, {
         field: "factory_name",
-        title: "厂家"
+        title: "厂家",
+        width: '18%'
     }, {
         field: "use_unit",
-        title: "使用数量"
+        title: "使用数量",
+        width: '8%'
     }, 
 //    {
 //        field: "Instruction",
@@ -568,13 +577,16 @@ function getFactTableDataColumns(){
 //    }, 
     {
         field: "use_type",
-        title: "用途"
+        title: "用途",
+        width: '8%'
     }, {
         field: "main_constitute",
-        title: "主要成分"
+        title: "主要成分",
+        width: '18%'
     }, {
         field: "user_real_name",
-        title: "负责人"
+        title: "负责人",
+        width: '8%'
     }];
     return dataColumns;
 }

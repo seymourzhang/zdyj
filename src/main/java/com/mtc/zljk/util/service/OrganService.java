@@ -47,4 +47,8 @@ public interface OrganService {
 	List<PageData> getFarmForMapping(PageData pd) throws Exception;
 
 	List<PageData> getFarmUser(PageData pd) throws Exception;
+
+	List<PageData> getAuthorityInfo(PageData pd) throws Exception;
+
+	PageData getUserRole(PageData pd) throws Exception;
 }

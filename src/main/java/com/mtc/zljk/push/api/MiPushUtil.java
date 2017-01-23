@@ -121,7 +121,7 @@ public class MiPushUtil {
 		Date today = new Date();
 		String tString = df.format(today);
 		messageInfo.put("messageId", tString);
-		messageInfo.put("MessageTitle", "智慧鸡场报警");
+		messageInfo.put("MessageTitle", "正大养鸡报警");
 		
 		List<String> tagNames = new ArrayList<String>();
 		

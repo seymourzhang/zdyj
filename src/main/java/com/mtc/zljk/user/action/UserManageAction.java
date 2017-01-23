@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mtc.zljk.goods.service.GoogsService;
+import com.mtc.zljk.util.common.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
@@ -30,10 +31,6 @@ import com.mtc.zljk.system.service.SDMenuService;
 import com.mtc.zljk.user.entity.SDUser;
 import com.mtc.zljk.user.service.SDUserService;
 import com.mtc.zljk.util.action.BaseAction;
-import com.mtc.zljk.util.common.Const;
-import com.mtc.zljk.util.common.Json;
-import com.mtc.zljk.util.common.Page;
-import com.mtc.zljk.util.common.PageData;
 import com.mtc.zljk.util.service.ModuleService;
 
 @Controller
@@ -98,8 +95,8 @@ public class UserManageAction extends BaseAction {
 			mv.setViewName("modules/user/login");
 			logger.error(e.getMessage(), e);
 		}
-		
-		mv.setViewName("framework/index");
+
+		mv.setViewName("framework/" + PubFun.getPropertyValue("DefaultPage.Name"));
 		return mv;
 	}
 	

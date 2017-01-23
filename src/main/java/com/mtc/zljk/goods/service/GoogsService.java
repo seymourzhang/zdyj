@@ -17,6 +17,10 @@ public interface GoogsService {
 	
 	public List<PageData> getCorporationGood(PageData pd) throws Exception;
 	
+	public List<PageData> getSpec(PageData pd) throws Exception;
+	
+	public List<PageData> getUnit(PageData pd) throws Exception;
+	
 	public List<PageData> getCorporation(PageData pd) throws Exception;
 	
 	public List<PageData> getCorporation2(PageData pd) throws Exception;

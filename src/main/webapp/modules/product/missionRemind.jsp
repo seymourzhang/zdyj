@@ -77,7 +77,7 @@
                 </div>
             </div>
             <div class="span4" align="left">
-                <button class="btn green"  onclick="addMissionRemind();">增加</button>
+                <button class="btn blue"  onclick="addMissionRemind();"><i class="icon-plus"></i>增加</button>
             </div>
         </div>
 
@@ -91,7 +91,7 @@
             <div class="span4" align="left">
                 <div id="taskReminderToolbar" class="btn-group">
                     <button id='taskReminderToolbar_btn_delete' type='button' class='btn blue' style="display: inline;" onclick="javascript:deleteTask();">
-                        <span class='glyphicon glyphicon-plus' aria-hidden='true'></span>删除
+                        <span class='glyphicon glyphicon-plus' aria-hidden='true'></span><i class="icon-trash"></i> 删除
                     </button>
                 </div>
 

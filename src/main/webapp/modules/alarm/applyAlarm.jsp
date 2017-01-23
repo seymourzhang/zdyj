@@ -83,11 +83,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 										  	<c:forEach var="houselist" items="${houseList}">
 		                                     <c:if test="${houselist.org_code!=houseId }"> 
 		                                  <div class="controls" style="margin-left: 300px;margin-top: 5px;">
-		                                  <input type="checkbox" id="house<%=i %>" name="house<%=i %>" value="${houselist.org_code }" onclick="xuanze();" style="margin-top: 0px;"/>
+		                                  <input type="radio" id="house<%=i %>" name="house" value="${houselist.org_code }" onclick="xuanze<%=i %>();" style="margin-top: 0px;"/>
                                            ${houselist.org_name }
 										  </div>
 										  <script>
-               function xuanze(){
+               function xuanze<%=i %>(){
             			  document.getElementById("houseId2").value = $("#house"+<%=i %>).val();
             	  }
                </script>                                     

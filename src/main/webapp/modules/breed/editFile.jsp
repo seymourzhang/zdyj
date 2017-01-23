@@ -104,11 +104,7 @@
                         fileName = fileName.replace(/\\/g, "");
                         list[i]["file_name"] = fileName;
                     }
-                    layer.alert('上传成功', {
-                        skin: 'layui-layer-lan'
-                        , closeBtn: 0
-                        , shift: 4 //动画类型
-                    }, function () {
+                    layer.msg('上传成功', function () {
 //                    parent.parent.document.getElementById("stockTable").bootstrapTable("load", list);
                         parent.reflush(list);
                         parent.layer.closeAll();

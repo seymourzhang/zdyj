@@ -1,7 +1,7 @@
 /**
  * Created by LeLe on 11/10/2016.
  */
-var urlPath = "../../../fr/ReportServer?reportlet=";
+var urlPath = "/fr/ReportServer?reportlet=";
 // var urlPath = "http://localhost:8080/fr/ReportServer?reportlet=";
 var urlParamOrgId = "&org_id=";
 var urlParamFarmId = "&farm_id=";
@@ -16,6 +16,7 @@ var orgList = [];
 var currOrgId = "";
 var path = "";
 var userId = "";
+
 
 //获取对象实例
 function getInstance(tabList, frameList){
@@ -91,7 +92,7 @@ function openUrlByFramId(reportName, paramValue){
     if(null != userId && "undefined" != typeof(userId) && "" != userId){
         urlParam += urlParamUserId + userId;
     }
-    openPath = urlPath + path.replace("/","") + "/" + reportName + urlParam ;
+    openPath = "http://" + report_ip + ":" + report_port + urlPath + path.replace("/","") + "/" + reportName + urlParam ;
     // alert(openPath);
     document.getElementById(currFrameId).src = openPath;
 };

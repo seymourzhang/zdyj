@@ -86,4 +86,11 @@ public class OrganServiceImpl implements OrganService {
 	public List<PageData> getFarmUser(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDOrganizationMapper.getFarmUser", pd);
 	}
+
+	public List<PageData> getAuthorityInfo(PageData pd) throws Exception{
+		return (List<PageData>) dao.findForList("SDOrganizationMapper.getAuthorityInfo", pd);
+	}
+	public PageData getUserRole(PageData pd) throws Exception{
+		return (PageData) dao.findForObject("SDOrganizationMapper.getUserRole", pd);
+	}
 }

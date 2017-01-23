@@ -33,7 +33,11 @@
                 , format(mc.point_temp_diff,1) point_temp_diff
                 , format(mc.target_humidity,0) target_humidity
                 , ifnull(truncate(mc.co2,1),"-") co2
+                , ifnull(if(truncate(mc.high_alarm_co2, 1)=-99, '-', truncate(mc.high_alarm_co2, 1)),"-") high_alarm_co2
                 , ifnull(truncate(mc.lux,1),"-") lux
+                , ifnull(if(truncate(mc.high_lux, 1)=-99, '-', truncate(mc.high_lux, 1)),"-") high_lux
+                , ifnull(if(truncate(mc.low_lux, 1)=-99, '-', truncate(mc.low_lux, 1)),"-") low_lux
+                , ifnull(if(truncate(mc.is_lux, 1)=-99, '-', truncate(mc.is_lux, 1)),"-") is_lux
                 , mc.power_status
                 , mc.update_datetime
                 , mc.small_fan
@@ -52,6 +56,7 @@
                 , f.farm_name_chs farm_name
                 , h.house_name house_name
                 ,  CONCAT(mc.farm_id,"-",mc.house_id,"-",mc.batch_no) batch_no
+                , p.point_alarm
         FROM s_b_monitor_curr mc
         LEFT JOIN s_d_code c
         ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'
@@ -63,11 +68,14 @@
         ON mc.farm_id= f.id
         LEFT JOIN s_d_house h
         ON mc.house_id= h.id
+        LEFT JOIN (select farm_id,house_id,max(point_alarm) point_alarm from s_b_house_alarm group by farm_id,house_id) p
+        ON mc.farm_id = p.farm_id
+        and mc.house_id = p.house_id
         WHERE mc.show_flag=1
             <if test="user_id != null and user_id !=''">
               AND EXISTS (select DISTINCT obj_id from v_user vu where vu.id=#{user_id} and vu.obj_type=2 and (vu.obj_id = mc.farm_id or vu.obj_id = mc.house_id))
             </if>
-        ORDER BY mc.collect_datetime DESC
+        ORDER BY f.farm_name_chs,h.house_name
     </select>
 
     <select id="selectAllForMobile" resultType="pd" useCache="false">
@@ -109,7 +117,7 @@
         LEFT JOIN s_d_house h
         ON mc.house_id= h.id
         WHERE mc.show_flag=1
-        ORDER BY mc.update_datetime DESC
+        ORDER BY f.farm_name_chs,h.house_name
     </select>
 
     <select id="selectByCondition" resultType="pd" useCache="false">
@@ -146,7 +154,11 @@
                 , ifnull(if(truncate(mc.point_temp_diff, 1)=-99, '-', truncate(mc.point_temp_diff, 1)),"-") point_temp_diff
                 , ifnull(if(truncate(mc.target_humidity, 1)=-99, '-', truncate(mc.target_humidity, 1)),"-") target_humidity
                 , ifnull(if(truncate(mc.co2, 1)=-99, '-', truncate(mc.co2, 1)),"-") co2
+                , ifnull(if(truncate(mc.high_alarm_co2, 1)=-99, '-', truncate(mc.high_alarm_co2, 1)),"-") high_alarm_co2
                 , ifnull(if(truncate(mc.lux, 1)=-99, '-', truncate(mc.lux, 1)),"-") lux
+                , ifnull(if(truncate(mc.high_lux, 1)=-99, '-', truncate(mc.high_lux, 1)),"-") high_lux
+                , ifnull(if(truncate(mc.low_lux, 1)=-99, '-', truncate(mc.low_lux, 1)),"-") low_lux
+                , ifnull(if(truncate(mc.is_lux, 1)=-99, '-', truncate(mc.is_lux, 1)),"-") is_lux
                 , ifnull(mc.power_status, "-") power_status
                 , mc.update_datetime
                 , mc.small_fan
@@ -173,6 +185,7 @@
                 , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code in ('3','4') LIMIT 1) AS co2_alarm
                 , (SELECT COUNT(1) FROM s_b_alarm_inco al WHERE al.house_id = mc.house_id AND al.alarm_code = '5' LIMIT 1) AS lux_alarm
                 ,  CONCAT(mc.farm_id,"-",mc.house_id,"-",mc.batch_no) batch_no
+                , p.point_alarm
         FROM s_b_monitor_curr mc
         LEFT JOIN s_d_code c
         ON mc.refrigeration= c.biz_code and c.code_type = 'KGZT'
@@ -186,6 +199,9 @@
         ON mc.farm_id= f.id
         LEFT JOIN s_d_house h
         ON mc.house_id= h.id
+        LEFT JOIN (select farm_id,house_id,max(point_alarm) point_alarm from s_b_house_alarm group by farm_id,house_id) p
+        ON mc.farm_id = p.farm_id
+        and mc.house_id = p.house_id
         WHERE mc.show_flag=1
         <if test="farmId != null">
         AND mc.farm_id IN (
@@ -201,11 +217,17 @@
             </foreach>
             )
         </if>
-        ORDER BY mc.collect_datetime DESC
+        ORDER BY f.farm_name_chs,h.house_name
     </select>
 
     <select id="selectAlarmCounts" resultType="pd" useCache="false">
-      select count(*) as num from s_b_monitor_curr where farm_id = ${farmId} and house_id in (${houseId})
+      select count(*) as num
+      from s_b_alarm_inco
+      where farm_id = ${farmId}
+      and house_id in (${houseId})
+      <if test="deal_status != null and deal_status != ''">
+        and deal_status = #{deal_status}
+      </if>
     </select>
 
     <select id="SP_MONITOR" useCache="false">

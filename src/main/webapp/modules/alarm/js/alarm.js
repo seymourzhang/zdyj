@@ -454,7 +454,7 @@ function createChar(suffixName,yName,xNames,alarmType5) {
 	            x: -20 //center
 	        },
 	        xAxis: {
-	        	tickInterval: 6,      	
+	        	tickInterval: 7,      	
 	            categories: xNames,
 	            title: {
 	                text: '单位：周龄'
@@ -969,18 +969,10 @@ function update(){
             $("#reflushText").css("display", "none");
         	if(result.success==false){
                 // alert("保存失败！"+result.msg);
-                layer.alert('保存失败！'+result.msg, {
-                    skin: 'layui-layer-lan'
-                    ,closeBtn: 0
-                    ,shift: 4 //动画类型
-                });
+                layer.msg('保存失败！'+result.msg, function(index) {});
             } else {
                 // var list = eval(result.obj);
-                layer.alert('保存成功！', {
-                    skin: 'layui-layer-lan'
-                    ,closeBtn: 0
-                    ,shift: 4 //动画类型
-                });
+                layer.msg('保存成功！', function(index) {});
             }
         
         }
@@ -1181,15 +1173,15 @@ function getTempTableDataColumns(){
     }, {
         field: "day_age",
         title: "日龄",
-        editable: {
-            type: 'text',
-            title: '日龄',
-            mode: 'inline',
-            setValue: null,
-            validate: function (v) {
-                if (!v) return '日龄不能为空';
-            }
-        },
+//        editable: {
+//            type: 'text',
+//            title: '日龄',
+//            mode: 'inline',
+//            setValue: null,
+//            validate: function (v) {
+//                if (!v) return '日龄不能为空';
+//            }
+//        },
         width: '5%'
     }, {
         field: "set_temp",
@@ -1242,19 +1234,19 @@ function getNegaTableDataColumns(){
     }, {
         field: "day_age",
         title: "周龄",
-        editable: {
-            type: 'text',
-            title: '周龄',
-            mode: 'inline',
-            setValue: null,
-            validate: function (v) {
-                if (!v) return '周龄不能为空';
-            }
-        },
+//        editable: {
+//            type: 'text',
+//            title: '周龄',
+//            mode: 'inline',
+//            setValue: null,
+//            validate: function (v) {
+//                if (!v) return '周龄不能为空';
+//            }
+//        },
         width: '5%'
     }, {
         field: "high_lux",
-        title: "光照上限制",
+        title: "光照上限制(Lux)",
         editable: {
             type: 'text',
             title: '光照上限制',
@@ -1266,7 +1258,7 @@ function getNegaTableDataColumns(){
         width: '18%'
     }, {
         field: "low_lux",
-        title: "光照下限制",
+        title: "光照下限制(Lux)",
         editable: {
             type: 'text',
             title: '光照下限制',
@@ -1278,7 +1270,7 @@ function getNegaTableDataColumns(){
         width: '18%'
     }, {
         field: "set_lux",
-        title: "光照参考值",
+        title: "光照参考值(Lux)",
         editable: {
             type: 'text',
             title: '光照参考值',
@@ -1469,19 +1461,9 @@ function upAndAdd(){
 			search();
 			layer.close(index); 
 			if(result.msg=="1") {
-				layer.alert('操作成功!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
+				layer.msg('操作成功!');
 			}else{
-				layer.alert('操作失败!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
+				layer.msg('操作失败!');
 			}
 		}
 	});
@@ -1609,19 +1591,9 @@ function openAdjustWin(hourList){
 					search();
 					layer.close(index); 
 					if(result.msg=="1") {
-						layer.alert('操作成功!', {
-							skin : 'layui-layer-lan',
-							closeBtn : 0,
-							shift : 4
-						// 动画类型
-						});
+						layer.msg('操作成功!', function(index) {});
 					}else{
-						layer.alert('操作失败!', {
-							skin : 'layui-layer-lan',
-							closeBtn : 0,
-							shift : 4
-						// 动画类型
-						});
+						layer.msg('操作失败!', function(index) {});
 					}
 				}
 			});

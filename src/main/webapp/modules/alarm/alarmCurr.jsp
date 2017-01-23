@@ -129,12 +129,13 @@
 										<th style="text-align: center;">农场</th>
 										<th style="text-align: center;">舍号</th>
 										<th style="text-align: center;">报警类型</th>
-										<th style="text-align: center;">目标值</th>
+										<th style="text-align: center;">报警值</th>
 										<th style="text-align: center;">实际值</th>
 <!-- 										<th style="text-align: center;">警报状态</th> -->
 										<th style="text-align: center;">警报时间</th>
-										<th style="text-align: center;">响应时间/分钟</th>
+										<th style="text-align: center;">响应时间</th>
 										<th style="text-align: center;">响应人员</th>
+										<th style="text-align: center;">持续时间</th>
 									</tr>
 
 								</thead>

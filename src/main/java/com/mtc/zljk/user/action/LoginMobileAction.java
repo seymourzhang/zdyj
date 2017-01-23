@@ -108,6 +108,7 @@ public class LoginMobileAction extends BaseAction{
                     pageData.put("model", model);
                     pageData.put("sys_version", sysVersion);
                     pageData.put("platform", platForm);
+                    pageData.put("create_person", pd.getInteger("id"));
                     pageData.put("create_date", new Date());
                     pageData.put("create_time", new Date());
                     int i = sbUserImeiService.insert(pageData);
@@ -126,6 +127,17 @@ public class LoginMobileAction extends BaseAction{
                 user.setFreeze_status(pd.getString("freeze_status"));
                 session.setAttribute(Const.SESSION_USER, user);
                 JSONObject userInfo = getUserInfo(user);
+                PageData userPar = new PageData();
+                userPar.put("user_id", user.getId());
+                PageData temp = organService.getUserRole(userPar);
+                if (temp != null){
+                    userInfo.put("userId", temp.get("id"));
+                    userInfo.put("userName", temp.get("user_real_name"));
+                    userInfo.put("userCode", temp.get("user_code"));
+                    userInfo.put("roleId", temp.get("role_temp_id"));
+                    userInfo.put("roleName", temp.get("role_temp_name"));
+                    userInfo.put("tele", temp.get("user_mobile_1"));
+                }
                 resJson.put("userinfo", userInfo);
                 //shiro加入身份验证
                 Subject subject = SecurityUtils.getSubject();
@@ -150,7 +162,14 @@ public class LoginMobileAction extends BaseAction{
                 } else {
                     pd.put("user_id", pd.getInteger("id"));
                     List<PageData> lpd = organService.getFarmListByUserId(pd);
-                    resJson.put("FarmList", lpd);
+                    JSONArray farms = new JSONArray();
+                    for (PageData data : lpd) {
+                        JSONObject farm = new JSONObject();
+                        farm.put("farmId", data.get("org_id"));
+                        farm.put("farmName", data.get("org_name"));
+                        farms.put(farm);
+                    }
+                    resJson.put("FarmList", farms);
                     resJson.put("Result", "Success");
                     resJson.put("LoginResult", 1);
                     dealRes = Constants.RESULT_SUCCESS;
@@ -163,6 +182,9 @@ public class LoginMobileAction extends BaseAction{
             }
         } catch (Exception e){
             e.printStackTrace();
+            resJson.put("Result", "Fail");
+            resJson.put("Error", "程序处理错误，请联系管理员！");
+            dealRes = Constants.RESULT_SUCCESS;
         }
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }
@@ -170,25 +192,26 @@ public class LoginMobileAction extends BaseAction{
     @RequestMapping("/queryDetail")
     public void queryDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //shiro管理的session
-        Subject currentUser = SecurityUtils.getSubject();
-        Session session = currentUser.getSession();
-
         JSONObject resJson = new JSONObject();
-        PageData pd = new PageData();
-        pd = this.getPageData();
         String dealRes = null;
-        String aa = pd.toString();
-        aa = aa.substring(1, aa.length() - 2);
-        JSONObject jsonObject = new JSONObject(aa);
+        try {
+            Subject currentUser = SecurityUtils.getSubject();
+            Session session = currentUser.getSession();
 
-        JSONObject tUserJson = jsonObject.getJSONObject("params");
-        Integer userId = tUserJson.optInt("userId");
-        Integer farmId = tUserJson.optInt("farmId");
+            PageData pd = new PageData();
+            pd = this.getPageData();
+            String aa = pd.toString();
+            aa = aa.substring(1, aa.length() - 2);
+            JSONObject jsonObject = new JSONObject(aa);
 
-        pd.put("id", userId);
-        PageData ui = userService.findUserInfo(pd);
+            JSONObject tUserJson = jsonObject.getJSONObject("params");
+            Integer userId = tUserJson.optInt("userId");
+            Integer farmId = tUserJson.optInt("farmId");
 
-        JSONObject userInfo = new JSONObject();
+            pd.put("id", userId);
+            PageData ui = userService.findUserInfo(pd);
+
+        /*JSONObject userInfo = new JSONObject();
         userInfo.put("id", ui.getInteger("id"));
         userInfo.put("name", ui.getString("user_real_name"));
         userInfo.put("flag", "场长");
@@ -196,76 +219,94 @@ public class LoginMobileAction extends BaseAction{
 
 //        JSONObject userInfo = getUserInfo(user);
         resJson.put("Result", "Success");
-        resJson.put("UserInfo", userInfo);
+        resJson.put("UserInfo", userInfo);*/
 
-        List houses = new ArrayList();
-        pd.put("user_id", userId);
-        pd.put("parent_id", farmId);
-        List<PageData> ll = organService.getOrgList(pd);
-        pd.put("farm_id", farmId);
-        JSONArray ja = new JSONArray();
-        for (PageData pageData : ll) {
-            pd.put("house_code", pageData.get("id"));
-            pd.put("house_id", pageData.get("organization_id"));
-            List<PageData> device = farmService.findDevice(pd);
-            PageData lpd = batchManageService.selectBatchDataForMobile(pd);
-            JSONObject o = new JSONObject();
-            o.put("id", pageData.get("id"));
-            o.put("house_org_id", pageData.get("organization_id"));
-            o.put("name", pageData.get("name_cn"));
-            if (lpd == null) {
-                o.put("deviceCode", "");
-                o.put("BreedBatchId", 0);
-                o.put("BreedBatchStatus", 0);
-            } else {
-                o.put("BreedBatchId", lpd.get("batch_id") == null ? 0 : lpd.get("batch_id"));
-                o.put("BreedBatchStatus", lpd.get("status").equals(0) ? 2 : 1);
+            List houses = new ArrayList();
+            pd.put("user_id", userId);
+            pd.put("parent_id", farmId);
+            List<PageData> ll = organService.getOrgList(pd);
+            pd.put("farm_id", farmId);
+            JSONArray ja = new JSONArray();
+            for (PageData pageData : ll) {
+                pd.put("house_code", pageData.get("id"));
+                pd.put("house_id", pageData.get("organization_id"));
+                List<PageData> device = farmService.findDevice(pd);
+                PageData lpd = batchManageService.selectBatchDataForMobile(pd);
+                JSONObject o = new JSONObject();
+                o.put("id", pageData.get("id"));
+                o.put("house_org_id", pageData.get("organization_id"));
+                o.put("name", pageData.get("name_cn"));
+                if (lpd == null) {
+                    o.put("deviceCode", "");
+                    o.put("BreedBatchId", 0);
+                    o.put("BreedBatchStatus", 0);
+                } else {
+                    o.put("BreedBatchId", lpd.get("batch_id") == null ? 0 : lpd.get("batch_id"));
+                    o.put("BreedBatchStatus", lpd.get("status").equals(0) ? 2 : 1);
+                }
+                o.put("houseTypeName", pageData.get("code_name"));
+                o.put("deviceCode", device.size() == 0 ? "" : device.get(0).get("device_code"));
+                ja.put(o);
             }
-            o.put("houseTypeName", pageData.get("code_name"));
-            o.put("deviceCode", device.size() == 0 ? "" : device.get(0).get("device_code"));
-            ja.put(o);
-        }
-        resJson.put("HouseInfos", ja);
+            resJson.put("HouseInfos", ja);
 
-        JSONArray EmploeeInfos = new JSONArray();
-        List<PageData> emploee = organService.getFarmUser(pd);
-        if (emploee.size() != 0){
-            for (PageData pageData : emploee) {
-                JSONObject jo = new JSONObject();
-                jo.put("userId", pageData.get("id"));
-                jo.put("userName", pageData.get("user_real_name"));
-                jo.put("userCode", pageData.get("user_code"));
-                EmploeeInfos.put(jo);
+            JSONArray EmploeeInfos = new JSONArray();
+            List<PageData> emploee = organService.getFarmUser(pd);
+            if (emploee.size() != 0) {
+                for (PageData pageData : emploee) {
+                    JSONObject jo = new JSONObject();
+                    jo.put("userId", pageData.get("id"));
+                    jo.put("userName", pageData.get("user_real_name"));
+                    jo.put("userCode", pageData.get("user_code"));
+                    jo.put("roleId", pageData.get("role_temp_id"));
+                    jo.put("roleName", pageData.get("role_temp_name"));
+                    jo.put("tele", pageData.get("user_monile_1"));
+                    EmploeeInfos.put(jo);
+                }
             }
+            resJson.put("EmploeeInfos", EmploeeInfos);
+
+            PageData pa = new PageData();
+            pa.put("id", farmId);
+            List<PageData> llpd = organService.getOrgListById(pa);
+            if (llpd.size() != 0) {
+                JSONObject farmInfo = new JSONObject();
+                farmInfo.put("id", llpd.get(0).get("id"));
+                farmInfo.put("name", llpd.get(0).get("name_cn"));
+                String feedMethod = llpd.get(0).getString("feed_method");
+                String feedType = llpd.get(0).getString("feed_type");
+                PageData temp = new PageData();
+                temp.put("code_type", "FEED_METHOD");
+                temp.put("biz_code", feedMethod);
+                List<PageData> temp1 = farmService.findCode(temp);
+                farmInfo.put("feedMethod", temp1.get(0).get("code_name"));
+                temp.put("code_type", "FEED_TYPE");
+                temp.put("biz_code", feedType);
+                List<PageData> temp2 = farmService.findCode(temp);
+                farmInfo.put("feedType", temp2.get(0).get("code_name"));
+                pa.put("id", llpd.get(0).get("parent_id"));
+                List<PageData> llpd_parent = organService.getOrgListById(pa);
+                farmInfo.put("CompanyName", llpd_parent.get(0).get("name_cn"));
+                farmInfo.put("address1", llpd.get(0).get("level1"));
+                farmInfo.put("address2", llpd.get(0).get("level2"));
+                farmInfo.put("address3", llpd.get(0).get("level3"));
+                farmInfo.put("pinyin", llpd.get(0).get("pinyin_name"));
+                resJson.put("FarmInfo", farmInfo);
+            }
+
+            JSONObject info = new JSONObject();
+            List<PageData> AuthorityInfo = organService.getAuthorityInfo(pd);
+            for (PageData data : AuthorityInfo) {
+                info.put(data.getString("app_menu_code"), data.getString("authority_value"));
+            }
+            resJson.put("AuthorityInfo", info);
+            resJson.put("Result", "Success");
+            resJson.put("Error", "");
+        }catch (Exception e){
+            e.printStackTrace();
+            resJson.put("Result", "Fail");
+            resJson.put("Error", "程序处理错误，请联系管理员！");
         }
-        resJson.put("EmploeeInfos", EmploeeInfos);
-
-        PageData pa = new PageData();
-        pa.put("id", farmId);
-        List<PageData> llpd = organService.getOrgListById(pa);
-        JSONObject farmInfo = new JSONObject();
-        farmInfo.put("id", llpd.get(0).get("id"));
-        farmInfo.put("name", llpd.get(0).get("name_cn"));
-        String feedMethod = llpd.get(0).getString("feed_method");
-        String feedType = llpd.get(0).getString("feed_type");
-        PageData temp = new PageData();
-        temp.put("code_type", "FEED_METHOD");
-        temp.put("biz_code", feedMethod);
-        List<PageData> temp1 = farmService.findCode(temp);
-        farmInfo.put("feedMethod", temp1.get(0).get("code_name"));
-        temp.put("code_type", "FEED_TYPE");
-        temp.put("biz_code", feedType);
-        List<PageData> temp2 = farmService.findCode(temp);
-        farmInfo.put("feedType", temp2.get(0).get("code_name"));
-        pa.put("id", llpd.get(0).get("parent_id"));
-        List<PageData> llpd_parent = organService.getOrgListById(pa);
-        farmInfo.put("CompanyName", llpd_parent.get(0).get("name_cn"));
-        farmInfo.put("address1", llpd.get(0).get("level1"));
-        farmInfo.put("address2", llpd.get(0).get("level2"));
-        farmInfo.put("address3", llpd.get(0).get("level3"));
-        farmInfo.put("pinyin", llpd.get(0).get("pinyin_name"));
-        resJson.put("FarmInfo", farmInfo);
-
         dealRes = Constants.RESULT_SUCCESS;
         DealSuccOrFail.dealApp(request, response, dealRes, resJson);
     }

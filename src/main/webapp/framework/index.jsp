@@ -26,7 +26,7 @@
 		<!-- END SIDEBAR -->
 		<!-- BEGIN PAGE -->
 
-		<div class="page-content" style="padding-top: 20px; ">
+		<div class="page-content" style="padding-top: 4px; ">
 
 			<!-- BEGIN PAGE CONTAINER-->
 			<iframe name="mainFrame" id="mainFrame" frameborder="0"  scrolling="yes"  marginheight="0" marginwidth="0" src="<%=path%>/login/tab" style="background-color: #fff;margin:0 auto;width:100%;"></iframe>

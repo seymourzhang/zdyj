@@ -41,27 +41,33 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 <!-- 						<input type="hidden" name="alarm_type" value="1" id="alarmType">  -->
 						
 				<div class="container-fluid">
-				 <div class="row-fluid">
-				 <div class="form-horizontal" style="height: 40px;">
-										<div style="height: 20px;">
-										<%@ include file="../../framework/org.jsp"%>
+				 <%--<div class="row-fluid">--%>
+				 <%--<div class="form-horizontal" style="height: 40px;">--%>
+										<%--<div style="height: 20px;">--%>
+					 <%--<div class="span12">--%>
+						 <%@ include file="../../framework/org.jsp"%>
+					 <%--</div>--%>
 
-										</div>	
-										<div class="span3" style="margin-left: 60px;margin-top: -15px;">
-												报警类别
-												<select id="alarm_type" style="width: 200px;margin-top: -5px;" name="alarm_type" tabindex="1" >
-														<option value="1">温度设置</option>
-                                                        <option value="2">光照设置</option>
-                                                        <option value="3">二氧化碳设置</option>
-                                                        <option value="4">基础设置</option>
-												</select>
-											</div>									
-									</div>
+
+										<%--</div>	--%>
+										<%--<div class="span3">--%>
+												<%----%>
+											<%--</div>									--%>
+									<%--</div>--%>
 									
-				 </div>
+				 <%--</div>--%>
 								<div class="row-fluid">
-								
-									<div class="span3" style="margin-left: 7px;">
+									<div class="span3">
+										<span_customer>报警类别</span_customer>
+										<select id="alarm_type"  name="alarm_type" tabindex="1" >
+											<option value="1">温度设置</option>
+											<option value="2">光照设置</option>
+											<option value="3">二氧化碳设置</option>
+											<option value="4">基础设置</option>
+										</select>
+									</div>
+
+									<div class="span3" >
 									 <span_customer>开始时间</span_customer>
 											<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
 												<input class="m-wrap span11 m-ctrl-medium  date-picker1 "   readonly type="text" name="start_date" id="start_date" />
@@ -75,9 +81,11 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 												<span class="add-on"><i class="icon-calendar"></i></span>
 											</div>		
 									</div>
+
 									<div class="span3">
-									<button type="button" class="btn blue" onclick="searchData();" ><i class="icon-search"></i>查 询</button>
+										<button type="button" class="btn blue" onclick="searchData();" ><i class="icon-search"></i>查询</button>
 									</div>
+
 									</div>
                             <div class="row-fluid" >
                                 <div class="span12" style="margin-top: -20px;">

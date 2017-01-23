@@ -30,26 +30,34 @@ $(document).ready(function() {
 
 	/** *****耗用*************************************************** */
 
-	$("#good_id").change(function() {
+	$("#goods_id_select").change(function() {
 //		setGoodId();
 		setCorporation();
 		setFactory();
+		setSpec();
+		setUnit();
 	});
 	/****************************/
 	$("#good_type_stock").change(function() {
 		setGoodNameStock();
 	});
-	$("#good_id_stock").change(function() {
+	$("#good_id_stock_select").change(function() {
 		setCorporationStock();
 		setFactoryStock();
+		setSpecStock();
+		setUnitStock();
 	});
 	setGoodName();
 	setGoodNameOut();
 	setGoodNameStock();
 	
 	
-	setCorporationStock();
-	setFactoryStock();
+//	setCorporationStock();
+//	setFactoryStock();
+//	setSpec();
+//	setUnit();
+//	setSpecStock();
+//	setUnitStock();
 	
 	var dataJosn;
 	initTable("inStock", getInStockTableColumns(), dataJosn);
@@ -59,10 +67,10 @@ $(document).ready(function() {
 	initTable("approvalStockChange", getApprovalStockChangeTableColumns(), dataJosn);
 
 	getInstock();
-	getOutStock();
-	queryStock();
-	queryStockApproval();
-	queryStockApprovalChange();
+	// getOutStock();
+	// queryStock();
+	// queryStockApproval();
+	// queryStockApprovalChange();
 	
 //	$('#sssasdPrice').typeahead({
 //        source: [
@@ -86,6 +94,8 @@ $(document).ready(function() {
 
 function initSelectTab(tabId){
     $('#uiTab li:eq(' + tabId + ') a').tab('show');
+    queryStockApproval();
+    queryStockApprovalChange();
 }
 
 function empty(){
@@ -293,8 +303,8 @@ function setGoodName() {
 				$("#good_id").append("<option value=" + list[i].good_id + ">" + list[i].good_name + "</option>");
 			}
 //			setGoodId();
-			setCorporation();
-			setFactory();
+//			setCorporation();
+//			setFactory();
 		}
 	})
 }
@@ -325,6 +335,7 @@ function setCorporation() {
 		type : "post",
 		url : path + "/googs/getCorporation",
 		data : {
+//			"good_type" : $("#good_type").val(),
 			"good_id" : $("#good_id").val()
 		},
 		dataType : "json",
@@ -343,6 +354,7 @@ function setFactory() {
 		type : "post",
 		url : path + "/googs/getFactory",
 		data : {
+//			"good_type" : $("#good_type").val(),
 			"good_id" : $("#good_id").val()
 		},
 		dataType : "json",
@@ -351,6 +363,44 @@ function setFactory() {
 			$("#factory_id option").remove();
 			for (var i = 0; i < list.length; i++) {
 				$("#factory_id").append("<option value=" + list[i].factory_id + ">" + list[i].factory_name + "</option>");
+			}
+		}
+	})
+}
+
+function setSpec() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getSpec2",
+		data : {
+//			"good_type" : $("#good_type").val(),
+			"good_id" : $("#good_id").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#spec option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#spec").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
+			}
+		}
+	})
+}
+
+function setUnit() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getUnit2",
+		data : {
+//			"good_type" : $("#good_type").val(),
+			"good_id" : $("#good_id").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#unit option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#unit").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
 			}
 		}
 	})
@@ -391,6 +441,26 @@ function inStock() {
 		});
 		return;
 	}
+	var good_id = $("#good_id").val();
+	if (good_id == "" || good_id ==null) {
+		layer.alert('品名不能为空且一定要合法!', {
+			skin : 'layui-layer-lan',
+			closeBtn : 0,
+			shift : 4
+		// 动画类型
+		});
+		return;
+	}
+//	var corporation_id = $("#corporation_id").val();
+//	if (corporation_id == "") {
+//		layer.alert('供应商不能为空!', {
+//			skin : 'layui-layer-lan',
+//			closeBtn : 0,
+//			shift : 4
+//		// 动画类型
+//		});
+//		return;
+//	}
 	var exp = $("input[name='exp']").val();
 	if (exp == "" && ($("#good_type option:selected").text() == "药品" || $("#good_type option:selected").text() == "疫苗") ) {
 		layer.alert('保质期不能为空!', {
@@ -406,7 +476,21 @@ function inStock() {
 		, closeBtn: 0
 		, shift: 4 //动画类型
 	}, function ok() {
-		var param = $.serializeObject($('#inStockForm'));
+		//$.serializeObject($('#inStockForm'));
+		var param = {
+				"good_type":$("#good_type").val(),
+				"good_id":$("#good_id").val(),
+				"spec":$("#spec").val(),
+				"unit":$("#unit").val(),
+				"corporation_id":$("#corporation_id").val(),
+				"factory_id":$("#factory_id").val(),
+				"count":$("#sssasd").val(),
+				"price":$("#sssasdPrice").val(),
+				"exp":$("#exp").val(),
+				"operation_date":$("#operation_date").val(),
+				"farmId":$("#farmId").val(),
+				"farm":$("#farm").val()
+		};
 		param["approve_status"] = 2;
 		$.ajax({
 			url : path + "/googs/inStock",
@@ -439,34 +523,44 @@ function inStock() {
 function getInStockTableColumns(){
 	var dataColumns = [{
         field: "type_name",
-        title: "类型"
+        title: "类型",
+        width: '5%'
     },{
     	field: "good_name",
-        title: "品名"
+        title: "品名",
+        width: '18%'
     },{
     	field: "spec_name",
-        title: "规格"
+        title: "规格",
+        width: '10%'
     },{
     	field: "unit_name",
-        title: "单位"
+        title: "单位",
+        width: '5%'
     },{
     	field: "count",
-        title: "入库量"
+        title: "入库量",
+        width: '8%'
     },{
     	field: "operation_date",
-        title: "入库日期"
+        title: "入库日期",
+        width: '10%'
     },{
     	field: "corporation",
-    	title: "供应方"
+    	title: "供应方",
+    	width: '18%'
     },{
     	field: "factory_name",
-        title: "生产厂家"
+        title: "生产厂家",
+        width: '18%'
     },{
     	field: "exp",
-        title: "保质期"
+        title: "保质期",
+        width: '10%'
     },{
     	field: "price",
-        title: "单价"
+        title: "单价",
+        width: '5%'
     }];
 	return dataColumns;
 }
@@ -598,25 +692,32 @@ function outStock() {
 function getOutStockTableColumns(){
 	var dataColumns = [{
         field: "house_name",
-        title: "栋"
+        title: "栋",
+        width: '8%'
     },{
         field: "type_name",
-        title: "类型"
+        title: "类型",
+        width: '10%'
     },{
     	field: "good_name",
-        title: "品名"
+        title: "品名",
+        width: '25%'
     },{
     	field: "spec_name",
-        title: "规格"
+        title: "规格",
+        width: '10%'
     },{
     	field: "unit_name",
-        title: "单位"
+        title: "单位",
+        width: '5%'
     },{
     	field: "count",
-        title: "耗用数量"
+        title: "耗用数量",
+        width: '8%'
     },{
     	field: "operation_date",
-        title: "耗用日期"
+        title: "耗用日期",
+        width: '18%'
     }];
 	return dataColumns;
 }
@@ -665,8 +766,10 @@ function setGoodNameStock() {
 			for (var i = 0; i < list.length; i++) {
 				$("#good_id_stock").append("<option value=" + list[i].good_id + ">" + list[i].good_name + "</option>");
 			}
-			setCorporationStock();
-			setFactoryStock();
+//			setCorporationStock();
+//			setFactoryStock();
+//			setSpec();
+//			setUnit();
 		}
 	})
 }
@@ -706,6 +809,46 @@ function setFactoryStock() {
 			$("#factory_id_stock").append("<option value=''>全部</option>");
 			for (var i = 0; i < list.length; i++) {
 				$("#factory_id_stock").append("<option value=" + list[i].factory_id + ">" + list[i].factory_name + "</option>");
+			}
+		}
+	})
+}
+
+function setSpecStock() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getSpec2",
+		data : {
+//			"good_type" : $("#good_type").val(),
+			"good_id" : $("#good_id_stock").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#spec_stock option").remove();
+			$("#spec_stock").append("<option value=''>全部</option>");
+			for (var i = 0; i < list.length; i++) {
+				$("#spec_stock").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
+			}
+		}
+	})
+}
+
+function setUnitStock() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getUnit2",
+		data : {
+//			"good_type" : $("#good_type").val(),
+			"good_id" : $("#good_id_stock").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#unit_stock option").remove();
+			$("#unit_stock").append("<option value=''>全部</option>");
+			for (var i = 0; i < list.length; i++) {
+				$("#unit_stock").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
 			}
 		}
 	})
@@ -817,7 +960,7 @@ var str = '<br><div class="container-fluid" >';
 				str += '<input type="text" style="width: 70px;" name="count" id="adjustValue"/>';
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '调整后库存量:;';
+			str += '调整后库存量:';
 		str += '</div>';
 			str += '<div class="span2">';
 				str += '<span id="adjustNum">' + getRow[0].stockCount+'</span>';
@@ -928,29 +1071,37 @@ function getStockTableColumns(){
         width: '5%'
     },{
         field: "type_name",
-        title: "类型"
+        title: "类型",
+        width: '8%'
     },{
     	field: "good_name",
-        title: "品名"
+        title: "品名",
+        width: '18%'
     },{
     	field: "spec_name",
-        title: "规格"
+        title: "规格",
+        width: '10%'
     },{
     	field: "unit_name",
-        title: "单位"
+        title: "单位",
+        width: '8%'
     },{
     	field: "corporation",
-    	title: "供应方"
+    	title: "供应方",
+    	width: '20%'
     },{
     	field: "factory_name",
-        title: "生产厂家"
+        title: "生产厂家",
+        width: '18%'
     },{
     	field: "stockCount",
-        title: "库存量"
+        title: "库存量",
+        width: '8%'
     }
     ,{
     	field: "waitCount",
-        title: "待审批量"
+        title: "待审批量",
+        width: '8%'
     }   
     ];
 	return dataColumns;
@@ -1034,28 +1185,36 @@ function getApprovalStockTableColumns(){
 		width: '5%'
 	},{
 		field: "type_name",
-		title: "类型"
+		title: "类型",
+		width: '8%'
 	},{
 		field: "good_name",
-		title: "品名"
+		title: "品名",
+		width: '18%'
 	},{
 		field: "spec_name",
-		title: "规格"
+		title: "规格",
+		width: '10%'
 	},{
 		field: "unit_name",
-		title: "单位"
+		title: "单位",
+		width: '8%'
 	},{
 		field: "corporation",
-		title: "供应方"
+		title: "供应方",
+		width: '18%'
 	},{
 		field: "factory_name",
-		title: "生产厂家"
+		title: "生产厂家",
+		width: '18%'
 	},{
 		field: "count",
-		title: "库存调整量"
+		title: "库存调整量",
+		width: '8%'
 	},{
 		field: "bak",
-		title: "备注"
+		title: "备注",
+		width: '20%'
 	}];
 	return dataColumns;
 }
@@ -1063,43 +1222,56 @@ function getApprovalStockChangeTableColumns(){
 	var dataColumns = [{
         field: "id",
         title: "序号",
-        visible: false
+        visible: false,
+        width: '3%'
     },{
 		field: "operation_date",
-		title: "提交日期"
+		title: "提交日期",
+		width: '10%'
 	},{
 		field: "farm_name",
-		title: "农场"
+		title: "农场",
+		width: '10%'
 	},{
 		field: "type_name",
-		title: "类型"
+		title: "类型",
+		width: '8%'
 	},{
 		field: "good_name",
-		title: "品名"
+		title: "品名",
+		width: '18%'
 	},{
 		field: "spec_name",
-		title: "规格"
+		title: "规格",
+		width: '10%'
 	},{
 		field: "unit_name",
-		title: "单位"
+		title: "单位",
+		width: '8%'
 	},{
 		field: "corporation",
-		title: "供应方"
+		title: "供应方",
+		width: '18%'
 	},{
 		field: "factory_name",
-		title: "生产厂家"
+		title: "生产厂家",
+		width: '18%'
 	},{
 		field: "count",
-		title: "变更内容"
+		title: "变更内容",
+		width: '18%'
 	},{
 		field: "state",
-		title: "审批状态"
+		title: "审批状态",
+		width: '3%'
 	},{
 		field: "create_person",
-		title: "提交人"
+		title: "提交人",
+		width: '6%'
 	},{
 		field: "bak",
-		title: "备注"
+		title: "备注",
+		width: '18%'
 	}];
 	return dataColumns;
 };
@@ -1119,22 +1291,22 @@ function initRights(){
 $(function(){
 	$('a[data-toggle="tab"]').on('shown', function (e) {
 		if("入库" == $(e.target).text()){
-			tabId =1;
+			tabId =0;
 			getInstock();
 			return;
 		}
 		if("耗用" == $(e.target).text()){
-            tabId =2;
+            tabId =1;
 			getOutStock();
 			return;
 		}
 		if("库存调整" == $(e.target).text()){
-            tabId =3;
+            tabId =2;
 			queryStock();
 			return;
 		}
 		if("库存调整审批" == $(e.target).text()){
-            tabId =4;
+            tabId =3;
 			queryStockApproval();
 			queryStockApprovalChange();
 			return;

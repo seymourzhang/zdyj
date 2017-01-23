@@ -24,9 +24,9 @@
             <input id="toolBarFarmParmUserId" type="hidden" value="${pd.user_id}">
             <input id="toolBarFarmParmPath" type="hidden" value="<%=path%>">
             <div id = "toolBarFarm" class="row-fluid">
-
+                <%--allowtransparency="yes"--%>
             </div>
-            <iframe id="iframe_tab_1" name="inStockForm" width="99.8%" height="700" frameborder="no" allowtransparency="yes" src="">
+            <iframe id="iframe_tab_1" name="inStockForm" width="300%" height="710px" frameborder="no" allowtransparency="yes" src="">
             </iframe>
         </div>
 
@@ -37,6 +37,8 @@
     var farm_id = "${pd.farm_id}";
     var house_id = "${pd.house_id}";
     var batch_no = "${pd.batch_no}";
+    var report_ip = "${pd.report_ip}";
+    var report_port = "${pd.report_port}";
 </script>
 <!-- #main-content -->
 <script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>

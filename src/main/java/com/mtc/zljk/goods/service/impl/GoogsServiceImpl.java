@@ -29,6 +29,14 @@ public class GoogsServiceImpl implements GoogsService {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getCorporationGood", pd);
 	}
 	
+	public List<PageData> getSpec(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getSpec", pd);
+	}
+	
+	public List<PageData> getUnit(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDGoodsMapper.getUnit", pd);
+	}
+	
 	public List<PageData> getCorporation(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDGoodsMapper.getCorporation", pd);
 	}

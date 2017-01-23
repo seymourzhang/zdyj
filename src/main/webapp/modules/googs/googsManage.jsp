@@ -72,7 +72,7 @@
 
 										</div>
 										<div class="span3" align="left">
-											<button type="button" class="btn blue" onclick="getCorporation()">查询</button>
+											<button type="button" class="btn blue" onclick="getCorporation()"><i class="icon-search"></i>查询</button>
 										</div>
 <!-- 										</div> -->
 									</div>
@@ -89,12 +89,12 @@
 							   <div class="span4" align="left">
 									<div id="goodsToolbar" class="btn-group">
 										<button id='goodsToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:openCorporationWin();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>新增
+											<i class="icon-plus"></i>新增
 										</button>
 									</div>
 									<div id="goodsToolbar" class="btn-group">
 										<button id='goodsToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:updateCorporation();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>修改
+											<i class="icon-edit"></i>修改
 										</button>
 									</div>
 								</div>
@@ -146,7 +146,7 @@
 
 										</div>
 										<div class="span3" align="left">
-                                        <button type="button" class="btn blue" onclick="getFactory()">查询</button>
+                                        <button type="button" class="btn blue" onclick="getFactory()"><i class="icon-search"></i>查询</button>
 										</div>
 <!-- 										</div> -->
 									</div>
@@ -163,12 +163,12 @@
 							<div class="span4" align="left">
 									<div id="goodsToolbar" class="btn-group">
 										<button id='goodsToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:openFactoryWin();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>新增
+											<i class="icon-plus"></i>新增
 										</button>
 									</div>
 									<div id="goodsToolbar" class="btn-group">
 										<button id='goodsToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:updateFactory();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>修改
+											<i class="icon-edit"></i>修改
 										</button>
 									</div>
 								</div>
@@ -222,7 +222,7 @@
 										
 										</div>
 										<div class="span3" align="left">
-											<button type="button" class="btn blue" onclick="queryGoods()" >查 询</button>
+											<button type="button" class="btn blue" onclick="queryGoods()" ><i class="icon-search"></i>查 询</button>
 										</div>
 <!-- 										</div> -->
 									</div>
@@ -240,12 +240,12 @@
 								<div class="span4" align="left">
 									<div id="goodsToolbar" class="btn-group">
 										<button id='goodsToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:openGoodsWin();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>新增
+											<i class="icon-plus"></i>新增
 										</button>
 									</div>
 									<div id="goodsToolbar" class="btn-group">
 										<button id='goodsToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:updateGoods();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>修改
+											<i class="icon-edit"></i>修改
 										</button>
 									</div>
 								</div>
@@ -291,7 +291,7 @@
 											<input type="text" value="" placeholder="请输入厂家名称" name="factory_name" id="factory_name">
 										</div>
 										<div class="span3" align="left">
-											<button type="button" class="btn blue" onclick="getCorporationGood()" >查 询</button>
+											<button type="button" class="btn blue" onclick="getCorporationGood()" ><i class="icon-search"></i>查 询</button>
 										</div>
 <!-- 										</div> -->
 									</div>
@@ -309,7 +309,7 @@
 								<div class="span4" align="left">
 									<div id="corporationGoodToolbar" class="btn-group">
 										<button id='corporationGoodToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:opencorporationGoodWin();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>新增
+											<i class="icon-plus"></i>新增
 										</button>
 									</div>
 <!-- 									<div id="corporationGoodToolbar" class="btn-group"> -->

@@ -61,22 +61,37 @@
 											</select>
 										</div>
 										<div class="span3" align="left">
-											<span_customer>单位</span_customer>
-											<select id="unit"   tabindex="1"  name="unit"  >
-												<c:if test="${!empty unit}">
-													<c:forEach var="unit" items="${unit}">
-														<option value="${unit.biz_code}">${unit.code_name}</option>
-													</c:forEach>
-												</c:if>
+											<span_customer>品名</span_customer>
+											<select id="good_id"  name="good_id" style="display: none;" >
+												<%--style="display: none"--%>
+												<!-- 											<option value="1">cow</option>   -->
+												<!--                                             <option value="2">bull</option>   -->
+												<!--                                             <option value="3">ox</option>   class="form-control selectpicker" data-live-search="true"  class="js-example-basic-single"-->
+											</select>
+											<input type="text" id="goods_id_select" data-provide="typeahead" placeholder="请输入品名或物资编号" autocomplete="off" onchange="empty()" />
+											<!-- 											<input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
+										</div>
+
+										<div class="span3" align="left">
+											<span_customer>规格</span_customer>
+											<select id="spec" tabindex="1"  name="spec" >
+<!-- 												<c:if test="${!empty spec}"> -->
+<!-- 													<c:forEach var="spec" items="${spec}"> -->
+<!-- 														<option value="${spec.biz_code}">${spec.code_name}</option> -->
+<!-- 													</c:forEach> -->
+<!-- 												</c:if> -->
 											</select>
 										</div>
+
 										<div class="span3" align="left">
-											<span_customer>入库数量</span_customer>
-											<input type="text"  name="count"  id="sssasd" value="0" />
-										</div>
-										<div class="span3" align="left">
-											<span_customer>单价</span_customer>
-											<input type="text"  name="price" id="sssasdPrice" value="0"/>
+											<span_customer>单位</span_customer>
+											<select id="unit"   tabindex="1"  name="unit"  >
+<!-- 												<c:if test="${!empty unit}"> -->
+<!-- 													<c:forEach var="unit" items="${unit}"> -->
+<!-- 														<option value="${unit.biz_code}">${unit.code_name}</option> -->
+<!-- 													</c:forEach> -->
+<!-- 												</c:if> -->
+											</select>
 										</div>
 									</div>
 
@@ -87,40 +102,28 @@
 											</select>
 										</div>
 										<div class="span3" align="left">
+											<span_customer>厂家</span_customer>
+											<select id="factory_id" tabindex="1"  name="factory_id">
+											</select>
+										</div>
+										<div class="span3" align="left">
+											<span_customer>入库数量</span_customer>
+											<input type="text"  name="count"  id="sssasd" value="0" />
+										</div>
+										<div class="span3" align="left">
+											<span_customer>单价</span_customer>
+											<input type="text"  name="price" id="sssasdPrice" value="0"/>
+										</div>
+
+									</div>
+				
+									<div class="row-fluid">
+										<div class="span3" align="left">
 											<span_customer>保质期</span_customer>
 											<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
 												<input class="m-wrap span11 m-ctrl-medium date-picker " readonly type="text" name="exp" id="exp" />
 												<span class="add-on"><i class="icon-calendar"></i></span>
 											</div>
-										</div>
-										<div class="span3" align="left">
-											<span_customer>品名</span_customer>
-											<select id="good_id"  name="good_id" style="display: none;" >
-												<%--style="display: none"--%>
-<!-- 											<option value="1">cow</option>   -->
-<!--                                             <option value="2">bull</option>   -->
-<!--                                             <option value="3">ox</option>   class="form-control selectpicker" data-live-search="true"  class="js-example-basic-single"-->
-											</select>
-											<input type="text" id="goods_id_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onchange="empty()" />
-												<!-- 											<input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
-										</div>
-										<div class="span3" align="left">
-											<span_customer>规格</span_customer>
-											<select id="spec" tabindex="1"  name="spec" >
-												<c:if test="${!empty spec}">
-													<c:forEach var="spec" items="${spec}">
-														<option value="${spec.biz_code}">${spec.code_name}</option>
-													</c:forEach>
-												</c:if>
-											</select>
-										</div>
-									</div>
-				
-									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>厂家</span_customer>
-											<select id="factory_id" tabindex="1"  name="factory_id">
-											</select>
 										</div>
 										<div class="span3" align="left">
 											<span_customer>入库日期</span_customer>
@@ -164,6 +167,14 @@
 								<div class="container-fluid">
 									<div class="row-fluid">
 										<div class="span3" align="left">
+											<span_customer>耗用日期</span_customer>
+											<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months" style="margin-left: 62px;margin-top: -35px;width: 180px;">
+												<input class="m-wrap  date-picker1 " readonly type="text" name="operation_date" id="operation_date_out" style="width: 180px;"/>
+												<span class="add-on"><i class="icon-calendar"></i></span>
+											</div>
+										</div>
+
+										<div class="span3" align="left">
 											<span_customer>栋</span_customer>
 											<select id="house_id"  tabindex="1"  name="house_id" >
 												<c:if test="${!empty houseList}">
@@ -189,22 +200,16 @@
 											<span_customer>品名</span_customer>
 											<select id="good_id_out" name="good_id" style="display: none;">
 											</select>
-											<input type="text" id="goods_id_out_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onblur="empty();" />
+											<input type="text" id="goods_id_out_select" data-provide="typeahead" placeholder="请输入品名或物资编号" autocomplete="off" onblur="empty();" />
 <!--                                                 <input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
 										</div>
-										<div class="span3" align="left">
-											<span_customer>耗用数量</span_customer>
-											<input type="text" name="count" id="count_out" value="0"/>
-										</div>
+
 									</div>
 
 									<div class="row-fluid">
 										<div class="span3" align="left">
-											<span_customer>耗用日期</span_customer>
-											<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
-												<input class="m-wrap  date-picker1 " readonly type="text" name="operation_date" id="operation_date_out" />
-												<span class="add-on"><i class="icon-calendar"></i></span>
-											</div>
+											<span_customer>耗用数量</span_customer>
+											<input type="text" name="count" id="count_out" value="0"/>
 										</div>
 										<div class="span3" align="left">
 
@@ -263,15 +268,24 @@
 										<div class="span3" align="left">
 											<span_customer>规格</span_customer>
 											<select id="spec_stock" tabindex="1"  name="spec">
-												<option value="">全部</option>
-												<c:if test="${!empty spec}">
-													<c:forEach var="spec" items="${spec}">
-														<option value="${spec.biz_code}">${spec.code_name}</option>
-													</c:forEach>
-												</c:if>
+<!-- 												<option value="">全部</option> -->
+<!-- 												<c:if test="${!empty spec}"> -->
+<!-- 													<c:forEach var="spec" items="${spec}"> -->
+<!-- 														<option value="${spec.biz_code}">${spec.code_name}</option> -->
+<!-- 													</c:forEach> -->
+<!-- 												</c:if> -->
 											</select>
 										</div>
 										<div class="span3" align="left">
+											<span_customer>单位</span_customer>
+											<select id="unit_stock"  tabindex="1"  name="unit">
+<!-- 												<option value="">全部</option> -->
+<!-- 												<c:if test="${!empty unit}"> -->
+<!-- 													<c:forEach var="unit" items="${unit}"> -->
+<!-- 														<option value="${unit.biz_code}">${unit.code_name}</option> -->
+<!-- 													</c:forEach> -->
+<!-- 												</c:if> -->
+											</select>
 										</div>
 									</div>
 
@@ -287,15 +301,7 @@
 											</select>
 										</div>
 										<div class="span3" align="left">
-											<span_customer>单位</span_customer>
-											<select id="unit_stock"  tabindex="1"  name="unit">
-												<option value="">全部</option>
-												<c:if test="${!empty unit}">
-													<c:forEach var="unit" items="${unit}">
-														<option value="${unit.biz_code}">${unit.code_name}</option>
-													</c:forEach>
-												</c:if>
-											</select>
+
 										</div>
 										<div class="span3" align="left">
 											<button type="button" class="btn blue" onclick="queryStock()" ><i class="icon-search"></i>查 询</button>
@@ -346,10 +352,10 @@
 									<div id="approvalStockFrame" align="left">
 										<div id="approvalStockToolbar" class="btn-group">
 											<button id='approvalStockToolbar_btn_reject' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(0);">
-												<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>驳回
-											</button>
+												<i class="icon-remove"></i><span class='glyphicon glyphicon-plus' ></span>驳回
+											</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 											<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(1);">
-												&nbsp;&nbsp;&nbsp;<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>通过
+												<i class="icon-ok"></i><span class='glyphicon glyphicon-plus'></span>通过
 											</button>
 										</div>
 									</div>

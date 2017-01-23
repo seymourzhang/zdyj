@@ -32,7 +32,7 @@
 										  <div class="row-fluid">
 											  <div class="span3" align="left">
 												  <span_customer>生长周龄</span_customer>
-												  <input type="text" id="grow_week_age" name="grow_week_age" value="0">
+												  <input type="text" id="grow_week_age" name="grow_week_age">
 											  </div>
 											  <div class="span3" align="left">
 												  <span_customer>类型</span_customer>
@@ -70,7 +70,7 @@
 <!-- 											  </div> -->
                                            
 											  <div class="span3" align="left">
-												  <button type="button" class="btn blue" onclick="searchData('plan');" id="qued">查询</button>
+												  <button type="button" class="btn blue" onclick="searchData('plan');" id="qued"><i class="icon-search"></i>查询</button>
 											  </div>
 										  </div>
 										  </div>
@@ -78,11 +78,11 @@
 										  <div class="row-fluid">
 											  <div class="span3" align="left" style="margin-left: 20px;">
 											  <span_customer>起始周龄</span_customer>
-												  <input type="text" id="start_grow_week_age" name="start_grow_week_age" value="0">
+												  <input type="text" id="start_grow_week_age" name="start_grow_week_age">
 											  </div>
 											  <div class="span3" align="left" style="margin-left: 17px;">
 											  <span_customer>结束周龄</span_customer>
-												  <input type="text" id="end_grow_week_age" name="end_grow_week_age" value="0">
+												  <input type="text" id="end_grow_week_age" name="end_grow_week_age">
 											  </div>
 										  </div>
 
@@ -182,7 +182,7 @@
 											  <input type="text" id="good_batch_no" name="good_batch_no" value="0">
 										  </div>
 										  <div class="span3" align="left">
-											  <button type="button" class="btn green" onclick="addDrug();" id="add">确认</button>
+											  <button type="button" class="btn blue" onclick="addDrug();" id="add"><i class="icon-ok"></i>确认</button>
 										  </div>
 									  </div>
 
@@ -220,7 +220,7 @@
 										  <div class="span4" align="left">
 											  <div id="factToolbar" class="btn-group">
 												  <button id='factToolbar_btn_delete' type='button' class='btn blue' style="display: inline;" onclick="javascript:deleteDrug();">
-													  <span class='glyphicon glyphicon-plus' aria-hidden='true'></span>删除
+													  <i class="icon-trash"></i><span class='glyphicon glyphicon-plus' aria-hidden='true'></span>删除
 												  </button>
 											  </div>
 

@@ -39,7 +39,7 @@
 										<input type="text" value="${pd.user_mobile_1 }" placeholder="请输入用户手机号码" name="user_mobile_1">
 									</div>
 									<div class="span3" align="left">
-										<a href="javascript:search();" class="btn green"><i class="icon-search"></i> 查询</a>
+										<a href="javascript:search();" class="btn blue"><i class="icon-search"></i> 查询</a>
 									</div>
 									<div class="span3" align="left">
 									</div>

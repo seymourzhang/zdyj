@@ -71,6 +71,8 @@
         var farm_id = "${pd.farm_id}";
         var house_id = "${pd.house_id}";
         var batch_no = "${pd.batch_no}";
+        var report_ip = "${pd.report_ip}";
+        var report_port = "${pd.report_port}";
 	</script>
 	<!-- #main-content -->
 	<script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>

@@ -103,8 +103,8 @@
     <p></p>
     <div class="row-fluid">
         <div class="span6" align="left">
-            <button type="button" class="btn green" onclick="uploadConfirm();">上传</button>
-            <button type="button" class="btn green" onclick="deleteRecord();">删除</button>
+            <button type="button" class="btn blue" onclick="uploadConfirm();"><i class="icon-arrow-up"></i>上传</button>
+            <button type="button" class="btn blue" onclick="deleteRecord();"><i class="icon-trash"></i> 删除</button>
         </div>
         <div class="span6" align="right">
 

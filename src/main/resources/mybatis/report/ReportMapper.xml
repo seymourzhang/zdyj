@@ -70,59 +70,55 @@
 
 	<select id="selectTemForMobileDay" parameterType="pd" resultType="pd" useCache="false">
 	/*温度曲线：在日龄情况下；*/
-	SELECT
-	(CASE WHEN a.growth_date > curdate()
-	THEN 'N'
-	ELSE 'Y' END)                                               AS dataflag,
-	a.age                                                        AS data_age,
-	a.growth_date                                                AS data_date,
-	concat(date_format(a.growth_date, '%m-%d'), '(', a.age, ')') AS x_axis,
-	tData2.avgtempLeft1,
-	tData2.avgtempLeft2,
-	tData2.avgtempMiddle1,
-	tData2.avgtempMiddle2,
-	tData2.avgtempRight1,
-	tData2.avgtempRight2,
-	tData2.avgoutsidetemp,
-	tData2.highAlarmTemp,
-	tData2.lowAlarmTemp,
-	tData2.insideSetTemp,
-  	tData2.insideHumidity
-	FROM s_b_breed_detail a
-	LEFT JOIN s_b_batch_curr sbbc ON sbbc.batch_id = a.batch_id
-	LEFT JOIN (SELECT
-	tData.timeId,
-	truncate(avg(if(tData.inside_temp1=-99, null, tData.inside_temp1)), 1)    AS avgtempLeft1,
-	truncate(avg(if(tData.inside_temp2=-99, null, tData.inside_temp2)), 1)    AS avgtempLeft2,
-	truncate(avg(if(tData.inside_temp10=-99, null, tData.inside_temp10)), 1)       AS avgtempMiddle1,
-	truncate(avg(if(tData.inside_temp11=-99, null, tData.inside_temp11)), 1)    AS avgtempMiddle2,
-	truncate(avg(if(tData.inside_temp19=-99, null, tData.inside_temp19)), 1)    AS avgtempRight1,
-	truncate(avg(if(tData.inside_temp20=-99, null, tData.inside_temp20)), 1)    AS avgtempRight2,
-	truncate(AVG(if(tData.outside_temp=-99, null, tData.outside_temp)), 1)    AS avgoutsidetemp,
-	truncate(AVG(if(tData.high_alarm_temp=-99, null, tData.high_alarm_temp)), 1) AS highAlarmTemp,
-	truncate(AVG(if(tData.low_alarm_temp=-99, null, tData.low_alarm_temp)), 1)  AS lowAlarmTemp,
-	truncate(AVG(if(tData.inside_set_temp=-99, null, tData.inside_set_temp)), 1) AS insideSetTemp,
-    truncate(AVG(if(tData.inside_humidity=-99, null, tData.inside_humidity)), 1) AS insideHumidity
-	FROM (SELECT
-	date_format(update_datetime, '%Y-%m-%d') AS timeId,
-	a.*
-	FROM s_b_monitor_hist a
-	WHERE 1 = 1
-	AND a.house_id = ${HouseId}
-	AND exists(SELECT 1
-	FROM s_b_batch_curr sbb
-	WHERE sbb.batch_id = #{BreedBatchId}
-	AND sbb.house_code = a.house_id
-	)
-	) tData
-	GROUP BY tData.timeId
-	ORDER BY tData.timeId
-	) AS tData2 ON tData2.timeId = date_format(a.growth_date, '%Y-%m-%d')
-	WHERE 1 = 1
-	AND a.growth_date BETWEEN date_sub(curdate(), INTERVAL 60 DAY) AND curdate()
-	AND a.batch_id = #{BreedBatchId}
-	AND a.house_code = ${HouseId};
-</select>
+		SELECT
+		(CASE WHEN tData1.dateId > curdate()
+		THEN 'N'
+		ELSE 'Y' END)                                               AS dataflag,
+		tData1.data_age AS data_age,
+		tData1.dateId                                                AS data_date,
+		concat(date_format(tData1.dateId, '%m-%d'), '(', tData1.data_age, ')') AS x_axis,
+		tData2.avgtempLeft1,
+		tData2.avgtempLeft2,
+		tData2.avgtempMiddle1,
+		tData2.avgtempMiddle2,
+		tData2.avgtempRight1,
+		tData2.avgtempRight2,
+		tData2.avgoutsidetemp,
+		tData2.highAlarmTemp,
+		tData2.lowAlarmTemp,
+		tData2.insideSetTemp,
+		tData2.insideHumidity
+		FROM ( SELECT date_sub(#{SpecialDate},INTERVAL biz_code -1 DAY) as dateId,
+    				  (select DATEDIFF(date_sub(#{SpecialDate},INTERVAL biz_code -1 DAY),sbb.operation_date)+ sbb.grow_age AS date_age
+                       		from s_b_batch_curr sbb where sbb.status = 1 and sbb.house_code = ${HouseId}) AS data_age
+   				from s_d_code where code_type in ('PerMinute1','PerMinute2')
+   			) as tData1
+		LEFT JOIN
+		(SELECT
+		tData.timeId,
+		tData.date_age,
+		truncate(avg(if(tData.inside_temp1 = -99, NULL, tData.inside_temp1)), 1)       AS avgtempLeft1,
+		truncate(avg(if(tData.inside_temp2 = -99, NULL, tData.inside_temp2)), 1)       AS avgtempLeft2,
+		truncate(avg(if(tData.inside_temp10 = -99, NULL, tData.inside_temp10)), 1)     AS avgtempMiddle1,
+		truncate(avg(if(tData.inside_temp11 = -99, NULL, tData.inside_temp11)), 1)     AS avgtempMiddle2,
+		truncate(avg(if(tData.inside_temp19 = -99, NULL, tData.inside_temp19)), 1)     AS avgtempRight1,
+		truncate(avg(if(tData.inside_temp20 = -99, NULL, tData.inside_temp20)), 1)     AS avgtempRight2,
+		truncate(AVG(if(tData.outside_temp = -99, NULL, tData.outside_temp)), 1)       AS avgoutsidetemp,
+		truncate(AVG(if(tData.high_alarm_temp = -99, NULL, tData.high_alarm_temp)), 1) AS highAlarmTemp,
+		truncate(AVG(if(tData.low_alarm_temp = -99, NULL, tData.low_alarm_temp)), 1)   AS lowAlarmTemp,
+		truncate(AVG(if(tData.inside_set_temp = -99, NULL, tData.inside_set_temp)), 1) AS insideSetTemp,
+		truncate(AVG(if(tData.inside_humidity = -99, NULL, tData.inside_humidity)), 1) AS insideHumidity
+		FROM (SELECT
+		date_format(update_datetime, '%Y-%m-%d') AS timeId,
+		a.*
+		FROM s_b_monitor_hist a
+		WHERE 1 = 1 AND a.house_id = ${HouseId}
+		AND a.update_datetime BETWEEN date_sub(#{SpecialDate}, INTERVAL 60 DAY) AND date_add(#{SpecialDate}, INTERVAL 1 DAY)
+		) tData
+		GROUP BY tData.timeId
+		ORDER BY tData.timeId) AS tData2 on tData1.dateId = tData2.timeId
+		WHERE 1=1  ORDER BY data_age
+	</select>
 
 	<select id="selectTemForMobileHour" parameterType="pd" resultType="pd" useCache="false">
 		/*在小时情况下*/
@@ -246,7 +242,7 @@
 	</select>
 
 	<select id="selectLCForMobileDay" parameterType="pd" resultType="pd" useCache="false">
-		/*温度曲线：在日龄情况下；*/
+		/*二氧化碳和光照曲线：在日龄情况下；*/
 		SELECT
 		(CASE WHEN a.growth_date > curdate()
 		THEN 'N'
@@ -278,7 +274,7 @@
 		ORDER BY tData.timeId
 		) AS tData2 ON tData2.timeId = date_format(a.growth_date, '%Y-%m-%d')
 		WHERE 1 = 1
-		AND a.growth_date BETWEEN date_sub(curdate(), INTERVAL 60 DAY) AND curdate()
+		AND a.growth_date BETWEEN date_sub(#{SpecialDate}, INTERVAL 58 DAY) AND #{SpecialDate}
 		AND a.batch_id = #{BreedBatchId}
 		AND a.house_code = ${HouseId};
 	</select>

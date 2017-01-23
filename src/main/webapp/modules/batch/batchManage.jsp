@@ -85,7 +85,7 @@
                                         <input id="createBatchRemark" type="text" style="width: 82%" maxlength="40" placeholder="请填写备注">
                                 </div>
                                 <div class="span3" align="left">
-                                        <a id="createBatchBtnSave" href="javascript:;" class="btn green" onclick="saveData();"></i>确认</a>
+                                        <a id="createBatchBtnSave" href="javascript:;" class="btn blue" onclick="saveData();"><i class="icon-ok"></i>确认</a>
                                 </div>
                             </div>
                             <div class="row-fluid">
@@ -159,7 +159,7 @@
                                     <input id="editBatchRemark" type="text" maxlength="40" placeholder="请填写备注">
                                 </div>
                                 <div class="span1" align="left">
-                                    <a id="editBatchBtnSave" href="javascript:;" class="btn green" onclick="saveData();"></i>确认</a>
+                                    <a id="editBatchBtnSave" href="javascript:;" class="btn blue" onclick="saveData();"><i class="icon-ok"></i>确认</a>
                                 </div>
                             </div>
 
@@ -255,7 +255,7 @@
                                     <input id="overBatchAvgPriceSum" type="text" value="0" style="width:60px;" disabled="disabled">&nbsp;元
                                 </div>
                                 <div class="span2" align="left">
-                                    <a id="overBatchBtnSave" href="javascript:;" class="btn green" onclick="saveData();"></i>确认</a>
+                                    <a id="overBatchBtnSave" href="javascript:;" class="btn blue" onclick="saveData();"><i class="icon-ok"></i>确认</a>
                                 </div>
                             </div>
 

@@ -52,15 +52,15 @@ public class GoogsAction extends BaseAction {
 		List<PageData> goodType= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
 		mv.addObject("goodType",goodType);
 		
-		PageData pd1 = new PageData();
-		pd1.put("code_type", "unit");
-		List<PageData> unit= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd1});
-		mv.addObject("unit",unit);
-		
-		PageData pd2 = new PageData();
-		pd2.put("code_type", "spec");
-		List<PageData> spec= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd2});
-		mv.addObject("spec",spec);
+//		PageData pd1 = new PageData();
+//		pd1.put("code_type", "unit");
+//		List<PageData> unit= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd1});
+//		mv.addObject("unit",unit);
+//		
+//		PageData pd2 = new PageData();
+//		pd2.put("code_type", "spec");
+//		List<PageData> spec= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd2});
+//		mv.addObject("spec",spec);
 
 		List<PageData> farmList = getFarm();
 		mv.addObject("farmList",farmList);
@@ -163,12 +163,32 @@ public class GoogsAction extends BaseAction {
 		super.writeJson(j, response);
 	}
 	
+	@RequestMapping("/getSpec2")
+	public void getSpec2(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		List<PageData> spec = googsService.getSpec(pd);
+		j.setSuccess(true);
+		j.setObj(spec);
+		super.writeJson(j, response);
+	}
+	
 	@RequestMapping("/getUnit")
 	public void getUnit(HttpServletResponse response) throws Exception{
 		Json j=new Json();
 		PageData pd = this.getPageData();
 		pd.put("code_type", "unit");
 		List<PageData> unit= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
+		j.setSuccess(true);
+		j.setObj(unit);
+		super.writeJson(j, response);
+	}
+	
+	@RequestMapping("/getUnit2")
+	public void getUnit2(HttpServletResponse response) throws Exception{
+		Json j=new Json();
+		PageData pd = this.getPageData();
+		List<PageData> unit = googsService.getUnit(pd);
 		j.setSuccess(true);
 		j.setObj(unit);
 		super.writeJson(j, response);

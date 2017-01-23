@@ -23,6 +23,7 @@ import com.mtc.zljk.Alidayu.service.BaseQueryService;
 import com.mtc.zljk.Alidayu.service.SDUserService;
 import com.mtc.zljk.Alidayu.service.SLAlidayuTTSService;
 import com.mtc.zljk.util.common.IPUtil;
+import com.mtc.zljk.util.common.PubFun;
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,16 +78,10 @@ public class CallAlarmerExecuteJob{
 	}
 	
 	public void doCallAlarmers(){
-		
-		if(!IPUtil.needRunTask()){
-			mLogger.info("本机不启用CallAlarmerExecuteJob");
-			return ;
-		}
-		
+
 		try {
 			noResponseTime = Integer.parseInt(getPropertyValue("noResponseTime"));
 		} catch (Exception e) {
-			// TODO: handle exception
 			mLogger.error("没有配置有效noResponseTime，noResponseTime设置为默认值5分钟",e);
 			noResponseTime = 5;
 		}
@@ -224,8 +219,10 @@ public class CallAlarmerExecuteJob{
 								while(count < 4){
 									mLogger.info("第" + count + "次拨打电话，号码：" + callNum);
 									try {
-										
-										String bizId = ttsService.ttsNumSingleCell(callNum, params, tempId);
+										String bizId = null;
+										if(!PubFun.isNull(callNum)){
+											bizId = ttsService.ttsNumSingleCell(callNum, params, tempId);
+										}
 										detail.setBizId(bizId);
 										Date callTime = new Date(System.currentTimeMillis());
 										detail.setCallResult("02");
@@ -238,7 +235,7 @@ public class CallAlarmerExecuteJob{
 										alarmReqManager.updateSBCallMainAndDetail(main, detail);
 										mLogger.info("电话拨打成功...");
 										break;
-									} catch (ApiException e) {
+									} catch (Exception e) {
 										e.printStackTrace();
 										mLogger.error("拨打电话失败",e);
 										if(count == 3){
@@ -278,7 +275,7 @@ public class CallAlarmerExecuteJob{
 	 */
 	private String getLastAlarmCodeName(int mainId){
 		String sql = "SELECT co.code_name FROM s_b_call_alarm alarm , s_d_code co "
-				+ "WHERE alarm.alarm_code = co.biz_code AND alarm.var_bak1 = '01' AND alarm.main_id = " + mainId;
+				+ "WHERE alarm.alarm_code = co.biz_code and co.code_type = 'ALARM_CODE' AND alarm.var_bak1 = '01' AND alarm.main_id = " + mainId;
 		
 		List<HashMap<String,Object>> codes = baseQueryService.selectMapByAny(sql);
 		

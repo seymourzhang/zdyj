@@ -12,13 +12,15 @@ $(document).ready(function() {
 			var str = '';
 			var pid=0;
 			count0rg=list.length;
+			// str += "<div class='row-fluid'>";
 			for (var i = 0; i < list.length; i++) {
 				if(i==0){
-					str += "<div class='span3' style='width: 180px;'>";
-					str += "<div class='control-group'>";
-					str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
-					str += "<div class='controls' style='margin-left: 65px;'>";
-					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;' onchange='getOrgList("+(list[i].level_id+1)+")' class='m-wrap span12' tabindex='1' name='orgId"+list[i].level_id+"'>";
+					// str += "<div class='span3'>";
+					// str += "<div class='control-group'>";
+					// str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
+					str += "<span_customer2>" + list[i].level_name + "</span_customer2>&nbsp;";
+					// str += "<div class='controls' style='margin-left: 65px;'>";
+					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;' onchange='getOrgList("+(list[i].level_id+1)+")' tabindex='1' name='orgId"+list[i].level_id+"'>";
 					if(typeof(allSearch)!="undefined"){
 					if(allSearch=="true"){
 					str +='<option value="">全部</option>'; 
@@ -31,11 +33,12 @@ $(document).ready(function() {
 					}
 				
 				}else{
-					str += "<div class='span3' style='width: 180px;'>";
-					str += "<div class='control-group'>";
-					str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
-					str += "<div class='controls' style='margin-left: 65px;'>";
-					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;' onchange='getOrgList("+(list[i].level_id+1)+")' class='m-wrap span12' tabindex='1' name='orgId"+list[i].level_id+"'>";
+					// str += "<div class='span3'>";
+					// str += "<div class='control-group'>";
+					// str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
+					str += "<span_customer2>" + list[i].level_name + "</span_customer2>&nbsp;";
+					// str += "<div class='controls' style='margin-left: 65px;'>";
+					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;' onchange='getOrgList("+(list[i].level_id+1)+")' tabindex='1' name='orgId"+list[i].level_id+"'>";
 					if(typeof(allSearch)!="undefined"){
 					if(allSearch=="true"){
 						str +='<option value=""> 全部</option>' ;
@@ -50,8 +53,13 @@ $(document).ready(function() {
 //					}
 //				}
 				
-				str +="</select></div></div></div>";
+				str +="</select>" ;
+				str += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				// str += "</div>";
+				// str += "</div>";
+                // str += "</div>";
 			}
+			// str += "</div>";
 			$("#getOrg").append(str);
 			getOrgList(list[0].level_id+1);
 		}

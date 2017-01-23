@@ -63,6 +63,10 @@ public class MonitorMobileAction extends BaseAction {
             List house = new ArrayList();
             house.add(a.getInteger("id"));
             pd.put("houseId", house);
+            PageData hou = new PageData();
+            hou.put("farmId", FarmId);
+            hou.put("houseId", a.getInteger("id"));
+            PageData temp = monitorService.selectAlarmCounts(hou);
             mcl = monitorService.selectByCondition(pd);
             if (mcl.size() != 0) {
                 for (PageData data : mcl) {
@@ -97,6 +101,7 @@ public class MonitorMobileAction extends BaseAction {
                         jo.put("temp_avg_alarm", data.get("temp_avg_alarm"));
                         jo.put("point_temp_alarm", data.get("point_temp_alarm"));
                         jo.put("power_status_alarm", data.get("power_status_alarm"));
+                        jo.put("title_ted", Integer.parseInt(temp.get("num").toString()) > 0 ? 1 : 0);
                         jo.put("co2_alarm", data.get("co2_alarm"));
                         jo.put("lux_alarm", data.get("lux_alarm"));
                         monitor.put(jo);
@@ -127,6 +132,7 @@ public class MonitorMobileAction extends BaseAction {
                         show_n.put("temp_avg_alarm", "-");
                         show_n.put("point_temp_alarm", "-");
                         show_n.put("power_status_alarm", "-");
+                        show_n.put("title_red", Integer.parseInt(temp.get("num").toString()) > 0 ? 1 : 0);
                         show_n.put("co2_alarm", "-");
                         show_n.put("lux_alarm", "-");
                         monitor.put(show_n);
@@ -159,6 +165,7 @@ public class MonitorMobileAction extends BaseAction {
                 jo.put("temp_avg_alarm", "-");
                 jo.put("point_temp_alarm", "-");
                 jo.put("power_status_alarm", "-");
+                jo.put("title_ted", Integer.parseInt(temp.get("num").toString()) > 0 ? 1 : 0);
                 jo.put("co2_alarm", "-");
                 jo.put("lux_alarm", "-");
                 monitor.put(jo);
@@ -195,6 +202,7 @@ public class MonitorMobileAction extends BaseAction {
             house.add(pageData.get("id").toString());
         }
         pd.put("houseId", MonitorAction.listToString(house));
+        pd.put("deal_status", "01");
         PageData mcl = monitorService.selectAlarmCounts(pd);
         if ("0".equals(mcl.get("num").toString())){
             resJson.put("AlarmStatus", "N");

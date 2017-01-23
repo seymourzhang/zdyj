@@ -286,11 +286,7 @@ function checkConfirm(objBatch){
         if(objBatch.resultFlag){
             reFlushData(currTabName);
         }
-        layer.msg(objBatch.resultMsg, {
-            skin: 'layui-layer-lan'
-            , closeBtn: 0
-            , shift: 4 //动画类型
-        });
+        layer.msg(objBatch.resultMsg);
     });
 };
 

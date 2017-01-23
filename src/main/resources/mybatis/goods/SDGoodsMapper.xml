@@ -274,11 +274,55 @@
 				and factory_id = #{factory_id}
 				</if>
 	</update>
+    <!-- 查询规格 -->
+    <select id="getSpec" resultType="pd" useCache="false">  
+		SELECT  c.code_type, 
+		       c.biz_code,
+		       c.code_name, 
+		       c.bak1, 
+		       c.bak2, 
+		       c.code_desc 
+		FROM  s_d_code c
+		, s_b_corporation_good cg 
+		where 1=1 and cg.spec=c.biz_code
+		and c.code_type = 'spec'
+		
+		<if test="good_id != null and good_id != ''">
+			and cg.good_id = #{good_id}
+		</if>
+		<if test="good_type != null and good_type != ''">
+			and cg.good_type = #{good_type}
+		</if>
+		group by c.biz_code
+		order by c.biz_code		
+		limit 0,100
+    </select> 
+    
+    <!-- 查询单位 -->
+    <select id="getUnit" resultType="pd" useCache="false">  
+		SELECT  c.code_type, 
+		       c.biz_code,
+		       c.code_name, 
+		       c.bak1, 
+		       c.bak2, 
+		       c.code_desc 
+		FROM  s_d_code c
+		, s_b_corporation_good  cg where cg.unit=c.biz_code
+		and c.code_type = 'unit'
+		<if test="good_id != null and good_id != ''">
+			and cg.good_id = #{good_id}
+		</if>
+		<if test="good_type != null and good_type != ''">
+			and cg.good_type = #{good_type}
+		</if>
+		group by c.code_name
+		order by c.biz_code		
+    </select> 
     
     <!-- 查询供应商 -->
     <select id="getCorporation" resultType="pd" useCache="false">  
 		SELECT  c.corporation_id, 
-		        c.corporation, 
+		        max(c.corporation) corporation, 
 		        IFNULL(c.corporation_person,'') corporation_person, 
 		        IFNULL(c.corporation_address,'') corporation_address, 
 		        IFNULL(c.telphone,'') telphone, 
@@ -301,7 +345,8 @@
 		<if test="good_type != null and good_type != ''">
 			and cg.good_type = #{good_type}
 		</if>
-		order by c.corporation_id
+		group by c.corporation
+		order by c.corporation_id		
     </select> 
     
     <!-- 查询供应商主数据 -->
@@ -528,7 +573,9 @@
 			operation_date,
 			bak,
 			corporation_id,
+			<if test="factory_id != null and factory_id != ''">
 			factory_id,
+			</if>
 			create_person,
 			create_date,
 			create_time,
@@ -548,7 +595,9 @@
 			#{operation_date},
 			#{bak},
 			#{corporation_id},
+			<if test="factory_id != null and factory_id != ''">
 			#{factory_id},
+			</if>
 			#{create_person},
 			#{create_date},
 			#{create_time},
@@ -580,7 +629,9 @@
 			stock_batch_no,
 			approve_status,
 			corporation_id,
+			<if test="factory_id != null and factory_id != ''">
 			factory_id,
+			</if>
 			create_person,
 			create_date,
 			create_time,
@@ -608,7 +659,9 @@
 			#{stock_batch_no},
 			#{approve_status},
 			#{corporation_id},
+			<if test="factory_id != null and factory_id != ''">
 			#{factory_id},
+			</if>
 			#{create_person},
 			#{create_date},
 			#{create_time},

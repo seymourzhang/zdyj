@@ -33,8 +33,26 @@ function initTableWithSubTable(tableName,dataColumns,dataJosn, functionExpandRow
     initOthers(tableName, oTable);
 };
 
-function table(tableName,toolBar,dataColumns,dataJosn, functionExpandRow) {
+function initTableColumns(dataColumns, isAllSortable){
+    if(isAllSortable == true){
+//        for(var i=0;i<dataColumns.length;i++){
+//        	if(i != 0){
+//        		dataColumns[i].sortable = isAllSortable;	
+//        	}
+//        }
+    	for(var dataColum in dataColumns){
+    		if(typeof(dataColumns[dataColum].checkbox) !="undefined" || typeof(dataColumns[dataColum].radio) !="undefined"){
+    			dataColumns[dataColum].sortable = false;
+    		}else{
+    			dataColumns[dataColum].sortable = true;
+    		}
+    	}
+    }
+    return dataColumns;
+}
 
+function table(tableName,toolBar,dataColumns,dataJosn, functionExpandRow) {
+    dataColumns = initTableColumns(dataColumns, true);
     var oTableInit = new Object();
 
     //初始化Table

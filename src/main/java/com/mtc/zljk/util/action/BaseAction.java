@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 
 
 import com.mtc.zljk.user.entity.SDUser;
-import com.mtc.zljk.util.common.Const;
+import com.mtc.zljk.util.common.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,9 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
-import com.mtc.zljk.util.common.Logger;
-import com.mtc.zljk.util.common.Page;
-import com.mtc.zljk.util.common.PageData;
 
 
 @Controller
@@ -43,7 +40,13 @@ public class BaseAction {
 	 * 得到PageData
 	 */
 	public PageData getPageData(){
-		return new PageData(this.getRequest());
+		PageData pd = new PageData(this.getRequest());
+		if (this.getRequest().getRequestURL().indexOf("Mobile/") > 0){
+		} else {
+			pd.put("report_ip", PubFun.getPropertyValue("Report.Ip"));
+			pd.put("report_port", PubFun.getPropertyValue("Report.Port"));
+		}
+		return pd;
 	}
 	
 	/**

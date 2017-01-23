@@ -167,13 +167,13 @@ public class JPushUtil {
 		Date today = new Date();
 		String tString = df.format(today);
 		messageInfo.put("messageId", tString);
-		messageInfo.put("MessageTitle", "智慧鸡场报警");
+		messageInfo.put("MessageTitle", "正大养鸡报警");
 		
 		List<String> aliasNames = new ArrayList<String>();
 		
-//		String imei1 = "868719029712243"; // 华为测试
-		String imei2 = "869336020181952"; // 伟佳机器
-		aliasNames.add(imei2);
+		String imei1 = "868719029712243"; // 华为测试
+//		String imei2 = "869336020181952"; // 伟佳机器
+		aliasNames.add(imei1);
 		
 		System.out.print(pushMessageByAliasName(messageInfo,aliasNames));
 	}

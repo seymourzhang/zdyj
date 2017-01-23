@@ -23,22 +23,16 @@ public class AutoRun {
     @Autowired
     SLAlidayuTMCService slAlidayuTMCService;
 
-//    @Scheduled(cron="0/60 * * * * ? ") //每5分钟执行一次
+    @Scheduled(cron="0/60 * * * * ? ") //每5分钟执行一次
     public void run() {
         if(!IPUtil.needRunTask()){
-            mLogger.info("本机不启用callAlarmerExcecuteJob");
+            mLogger.info("本机不启用Alidayu的服务");
             return ;
         }
+        // 先生成语音提醒任务
         rifej.doGetRemindAlarms();
-        mLogger.info("从报警提醒表(当前表)结合农场报警设置，获取符合规则的提醒记录，计入语音报警模块，供报警提醒处理服务处理！");
 
-        mLogger.info("开始出来打电话处理逻辑！");
+        // 再根据语音提醒任务实际拨打电话
         caej.doCallAlarmers();
-        /*try {
-            slAlidayuTMCService.afterPropertiesSet();
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
     }
-
 }
