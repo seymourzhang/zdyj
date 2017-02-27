@@ -18,7 +18,7 @@
 </head>
 
 <body style="background-color: #ffffff;">
-<div id="page-content" class="clearfix" style="padding-top: 10px;">
+<div id="page-content" class="clearfix" style="padding-top: 0px;background:#e7e5e5;">
     <div class="row-fluid">
         <div class="span12">
             <input id="toolBarFarmParmUserId" type="hidden" value="${pd.user_id}">
@@ -26,7 +26,7 @@
             <div id = "toolBarFarm" class="row-fluid">
 
             </div>
-            <iframe id="iframe_tab_1" name="inStockForm" width="300%" height="710px" frameborder="no" allowtransparency="yes" src="">
+            <iframe id="iframe_tab_1" name="inStockForm" width="300%" height="720px" frameborder="no" allowtransparency="yes" src="">
             </iframe>
         </div>
 

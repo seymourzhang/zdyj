@@ -1,23 +1,14 @@
-//菜单状态切换
-var fmid = "fhindex";
-var oid="fhindex";
-var sid="fhindex";
-var mid = "fhindex";
+var remindStatusList = [];
+
+
 $(document).ready(function() {
 	lo();
 	alarmIncoMsg();
     remindIncoMsg();
-	if(menuId!="" && menuPid!=""){
-		$("#fhindex").removeClass();
-		$("#lm"+menuPid).attr("class","active");
-		$("#se"+menuPid).attr("class","selected");
-		$("#z"+menuId).attr("class","active");
-		$("#op"+menuPid).attr("class","arrow open");
-	}
 });
 
 function remindIncoMsg(){
-        /**获取报警信息**/
+        /**获取提醒信息**/
         $.ajax({
             url: path+"/user/getRemindIncoMsg",
             data: {
@@ -28,13 +19,29 @@ function remindIncoMsg(){
             success: function(result) {
                 var list = eval(result.obj);
                 var number=$("#head_msg_remind_currCount").html();
-                if(number!=list.length&&list.length!=0){
+                var flag = false;
+                if(remindStatusList.length != 0 && list.length!=0 && list.length == remindStatusList.length){
+                	var m=0;
+                	for(var k in remindStatusList){
+                		if(remindStatusList[k].id == list[k].id && remindStatusList[k].status == list[k].approve_status){
+                			m += 1;
+						}
+					}
+					if(m!=remindStatusList.length){
+                		flag = true;
+					}
+				}
+                if((number!=list.length && list.length!=0) || (flag==true)){
                     $("#head_msg_remind_CurrList").empty();
                     $('#head_msg_remind_currCount').html(list.length);
                     var str="<li><p>有"+list.length+"条提醒信息</p></li>";
+                    remindStatusList = [];
                     for(var i=0;i<list.length;i++){
                         str+="<li><a href='javascript:void(0);' onclick='siMenu(\"z302\",\"lm1\",\"se1\",\"op1\",\"物资管理\",\"/googs/googsView?tabId=3\")'> <span class='label label-success'><i class='icon-bolt'></i></span> ";
                         str+=list[i].farm_name+" - " + list[i].good_name +" - "+list[i].aprrove_status_name +"</a></li>";
+                        var idValue = list[i].id;
+                        var statusValue = list[i].approve_status;
+                        remindStatusList.push({id: idValue, status:statusValue});
                     }
                     $("#head_msg_remind_CurrList").append(str);
                     /**闪动效果**/
@@ -47,6 +54,7 @@ function remindIncoMsg(){
                 if(list.length==0){
                     $('#head_msg_remind_currCount').html("");
                     $("#head_msg_remind_CurrList").empty();
+                    remindStatusList = [];
                 }
             }
         });
@@ -114,59 +122,3 @@ function lo(){
 	//document.getElementById('dateMassage').innerHTML =year+"-"+month+"-"+date+"</br> "+week;
 }
 
-
-function siMenu(id,fid,seid,opid,MENU_NAME,MENU_URL,write_read){
-	
-	jQuery('.page-sidebar ul').children('li.active').children('ul.sub-menu').css("display","none");
-	jQuery('.page-sidebar ul').each(function () {
-		 var menuContainer = jQuery('.page-sidebar ul');
-	       menuContainer.children('li.active').removeClass('active');
-	       menuContainer.children('arrow.open').removeClass('open');
-    });
-	
-	if(id != mid){
-		$("#"+mid).removeClass();
-		mid = id;
-	}
-	if(fid != fmid){
-		$("#"+fmid).removeClass();
-		fmid = fid;
-	}
-	if(seid!=sid){
-		$("#"+sid).removeClass();
-		$("#"+sid).attr("class","arrow");
-		sid = seid;
-	}
-	if(opid!=oid){
-		$("#"+oid).removeClass();
-		oid = opid;
-	}
-	$("#"+fid).children('ul.sub-menu').css("display","");
-	$("#"+fid).attr("class","active");
-	$("#"+sid).attr("class","selected");
-	$("#"+id).attr("class","active");
-	//$("#"+fid).append("<span id="+oid+" class='arrow open'></span>");
-	$("#"+oid).attr("class","arrow open");
-	//MENU_URL=path+MENU_URL;
-
-    var murl=MENU_URL;
-	var paramWriteRead ="write_read=" + write_read;
-	if(murl.indexOf("?") != -1){
-		paramWriteRead = "&" + paramWriteRead;
-	} else{
-        paramWriteRead = "?" + paramWriteRead;
-	}
-    murl += paramWriteRead;
-
-	
-	top.mainFrame.tabAddHandler(id,MENU_NAME,murl);
-	
-	//activateUrl(id,fid,MENU_NAME,MENU_URL);
-}
-
-function activateUrl(mid,pid,mtitle,murl,write_read){
-	mid = mid.substring(1);   // 取子字符串。
-	pid = pid.substring(2);  
-	alert(path+murl+"?id="+mid+"&pid="+pid+"&write_read"+write_read)
-	window.location.href=path+murl+"?id="+mid+"&pid="+pid+"&write_read"+write_read;
-}

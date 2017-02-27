@@ -14,13 +14,13 @@
 <%@ include file="../../framework/inc.jsp"%>
 <link rel="stylesheet" href="<%=path %>/framework/css/datepicker.css" />
 
-<script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
-<link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
-<script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>
+<!-- <script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script> -->
+<!-- <link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" /> -->
+<!-- <script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script> -->
 
-<link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">
-<script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
-<script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
+<!-- <link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css"> -->
+<!-- <script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script> -->
+<!-- <script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script> -->
 
 <!-- <script type="text/javascript" src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script> -->
 <!-- <script type="text/javascript" src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script> -->
@@ -28,7 +28,13 @@
 <script type="text/javascript" src="<%=path%>/framework/js/charts/highcharts.js"></script>
 <!-- <script type="text/javascript" src="<%=path%>/framework/js/charts/exporting.src.js"></script> -->
 <script type="text/javascript">
-var isRead="1";//"${pd.write_read}";//菜单是否只读
+	var isRead= "${pd.write_read}";
+	var menuId = "${pd.menu_id}";
+	var corporation_id = "${corporation_id}";
+    var farm_id = "${farm_id}";
+    var house_id = "${house_id}";
+    var at = "${alarm_type}";
+
 	jQuery(document).ready(function() {
 // 		App.init(); // initlayout and core plugins
 // 		var win_h = $(window).height() - 208;
@@ -36,292 +42,438 @@ var isRead="1";//"${pd.write_read}";//菜单是否只读
 // 		$("#page-content").css("min-height", win_h);
 // 		 $("#user_date_table").css("min-height",win_h-80);
 // 		 $("#container").css("height",win_h-100);
-		 if(<%=request.getParameter("alarm_type")%>!='' && <%=request.getParameter("alarm_type")%>!=null){
-		  document.getElementById('alarmType').value=<%=request.getParameter("alarm_type")%>;
-		 }
+		 <%--if(<%=request.getParameter("alarm_type")%> != '' && <%=request.getParameter("alarm_type")%> != null){--%>
+		  <%--document.getElementById('alarmType').value = <%=request.getParameter("alarm_type")%>;--%>
+		 <%--}--%>
+        if(at != '' && at != null){
+            document.getElementById('alarmType').value = at;
+        }
 
-		 if(document.getElementById('alarmType').value != 1){
-			 $("#alarm_delay").attr("disabled",true);
-			 $("#temp_cpsation").attr("disabled",true);
-			 $("#yincang").attr("disabled",true);
-			 $("#temp_cordon").attr("disabled",true);
-		 }
+//		 if(document.getElementById('alarmType').value != 1){
+//			 $("#alarm_delay").attr("disabled",true);
+//			 $("#temp_cpsation").attr("disabled",true);
+//			 $("#yincang").attr("disabled",true);
+//			 $("#temp_cordon").attr("disabled",true);
+//		 }
 		 		 
-		 $("#temperature").click(function () {
-			 document.getElementById('alarmType').value= "1";
+//		 $("#temperature").click(function () {
+//			 document.getElementById('alarmType').value= "1";
 // 			 $("#anniu").css("margin-left","0");
-			 $("#alarmParam").css("display", "block");
+//			 $("#alarmParam").css("display", "block");
 			 
-			 search();
+//			 search();
 	    });
-		 $("#negativePressure").click(function () {
-			 document.getElementById('alarmType').value= "2";
-			 $("#alarmParam").css("display", "none");
-			 search();
-	    });
-		 $("#carbon").click(function () {
-			 document.getElementById('alarmType').value= "3";		 
-			 $("#alarmParam").css("display", "none");
-			 search();
-	    });
+//		 $("#negativePressure").click(function () {
+//			 document.getElementById('alarmType').value= "2";
+//			 $("#alarmParam").css("display", "none");
+//			 search();
+//	    });
+//		 $("#carbon").click(function () {
+//			 document.getElementById('alarmType').value= "3";
+//			 $("#alarmParam").css("display", "none");
+//			 search();
+//	    });
 		 
-		 tempCordon();
+//		 tempCordon();
 // 		 search();
 // 		 querySBDayageSettingSub();
-	});
+//	});
 	
-	function tempCordon(){
-		if($("#temp_cpsation").val()==0){
-			$("#temp_cordon").attr("disabled",true);
-		}else {
-			$("#temp_cordon").attr("disabled",false);
-		}
-	}
+//	function tempCordon(){
+//		if($("#temp_cpsation").val()==0){
+//			$("#temp_cordon").attr("disabled",true);
+//		}else {
+//			$("#temp_cordon").attr("disabled",false);
+//		}
+//	}
 	
 </script>
 
 </head>
 <body style="background-color: #ffffff;">
 	<!--  <div class="container-fluid" id="main-container" style="background-color: #ffffff;"> -->
-	<div id="page-content" class="clearfix" style="padding-top: 10px;width: 1288px;">
-		<div class="row-fluid" style="background-color: #ffffff;">
-			<form action="" method="post" style="background-color: #ffffff;" id="alarmForm">
-				<%-- <input type="hidden" name="id" value="${pd.id}">--%>
-						<input type="hidden" name="alarm_type" value="1" id="alarmType"> 
-				<div class="span12" style="margin-left: 0px;">
-					<!-- BEGIN PORTLET-->
-<!-- 					<div class="portlet box blue1"> -->
-<!-- 								<div class="portlet-title"> -->
-<!-- 									<div class="caption"> -->
-<!-- 										<i class="icon-reorder"></i>检索条件 -->
-<!-- 									</div> -->
-<!-- 								</div> -->
-                        <ul class="nav nav-pills">
-                    <li  class="active" id="createBatch" style="text-align: center;width:33%;background-color: #BFBFBF;" >
-                        <a href="#tabCreateBatch" data-toggle="tab" id="temperature">温度报警设置</a>
-                    </li>
-                    <li  id="overBatch" style="text-align: center;width:33%;background-color: #BFBFBF; " >
-                        <a href="#tabOverBatch" data-toggle="tab" id="carbon">CO2报警设置</a>
-                    </li>
-                    <li  id="editBatch" style="text-align: center;width:34%;background-color: #BFBFBF; " >
-                        <a href="#tabEditBatch" data-toggle="tab" id="negativePressure">光照报警设置</a>
-                    </li>
-                </ul>
 
-								<div class="portlet-body form1">
-									<!-- BEGIN FORM-->
-									<div class="form-horizontal" style="height: 40px;">
-										<div style="height: 20px;">
-                                     <%@ include file="../../framework/org.jsp"%>
+		<div id="page-content" class="clearfix">
+			<form action="" method="post" id="alarmForm">
+			<%--标签菜单--%>
+			<input type="hidden" name="alarm_type" value="1" id="alarmType">
+			<input type="hidden" name="buttonValue" id="buttonValue">
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="tabbable tabbable-custom boxless" >
+						<div class="row-fluid">
+							<%--标签菜单栏--%>
+							<div class="span12" style="margin-left: 0px;height: 10px">
+								<ul class="nav nav-pills row-fluid" style="margin-bottom: 0px; ">
+									<li  class="active" id="createBatch" style="text-align: center;width:33.2%;background-color: #BFBFBF;border-right: 1px solid #E0DFDF;">
+										<a href="#tabCreateBatch" data-toggle="tab" id="temperature">温度</a>
+									</li>
+									<li  id="overBatch" style="text-align: center;width:33.4%;background-color: #BFBFBF;border-right: 1px solid #E0DFDF; " >
+										<a href="#tabOverBatch" data-toggle="tab" id="carbon">二氧化碳</a>
+									</li>
+									<li  id="editBatch" style="text-align: center;width:33.2%;background-color: #BFBFBF;" >
+										<a href="#tabEditBatch" data-toggle="tab" id="negativePressure">光照</a>
+									</li>
+								</ul>
+							</div>
+						</div>
 
-<!-- 											<div class="span2" style="width: 250px;"> -->
+						<%--功能栏--%>
+						<div class="row-fluid" style="background:#e7e5e5;padding-top: 10px; ">
+							<div class="span11">
+								<div style="padding-left: 10px;">
+									<%@ include file="../../framework/org.jsp"%>
+									&nbsp;&nbsp;&nbsp;&nbsp;
+									<button id="btnApply" type="button" class="btn blue" style="text-align: center;vertical-align: middle;display:none;" onclick="applyAlarmUrl()">
+										<i class="icon-share-alt">&nbsp;应用至</i>
+									</button>
+									&nbsp;&nbsp;
+									<button type="button" class="btn blue" style="text-align: center;vertical-align: middle;display:none;" onclick="update()" id="upData">
+										<i class="icon-save">&nbsp;保存</i>
+									</button>
+									<button type="button" class="btn blue" onclick="upAndAdd()" id="upData2" style="display:none;">
+										<i class="icon-save">&nbsp;保存</i>
+									</button>
+									&nbsp;&nbsp;
+									<p id="btnDesc" class="font" style="color: brown;display:none;font-weight: bolder">新增或修改内容后请点击保存按钮！</p>
+								</div>
+							</div>
+							<div class="span1" align="right">
+								<%@ include file="../../framework/help/help.jsp"%>
+								<div id="helpContext" style="display: none;">
+									<table id = "helpTable" class="table">
+										<thead>
+										<tr>
+											<td style="font-weight:bold;text-align: left;">图例</td>
+											<td style="font-weight:bold;text-align: left;">说明</td>
+										</tr>
+										</thead>
+										<tbody>
+											<tr >
+												<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpAlarmAdd.png" style="width: 200px;height: 45px;"></td>
+												<td style="text-align: left;">鼠标点击新增按钮，可新增1条空白的报警设置记录，用于设置新的报警</td>
+											</tr>
+											<tr>
+												<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpAlarmEdit.png" style="width: 200px;height: 45px;"></td>
+												<td style="text-align: left;">鼠标点击带有虚线下划线的文字，可对该报警值进行修改，按回车键确认修改完毕</td>
+											</tr>
+											<tr>
+												<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpAlarmApply.png" style="width: 200px;height: 80px;"></td>
+												<td style="text-align: left;">鼠标点击应用至按钮，可在弹出窗口选择需要应用至的栋舍</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							<%--<div class="span7" id="toolbarButton" style="display: none;">--%>
+								<%----%>
+							<%--</div>--%>
+						</div>
+						<div class="row-fluid" id="msgLoad" style="text-align: center">
+							<div class="span12">
+								<span_customer2 style="vertical-align: middle">正在加载报警设置数据,请稍等...</span_customer2>
+							</div>
+						</div>
 
-<!-- 												<div class="control-group"> -->
-
-<!-- 													<label class="control-label" style="width: 90px;">报警类别</label> -->
-
-<!-- 													<div class="controls" style="margin-left: 95px;"> -->
-<!--                                                       <select id="alarmType" class="m-wrap span12" name="alarm_type" tabindex="1" onchange="search();"> -->
-<!-- 														<option value="1">温度设置</option> -->
-<!--                                                         <option value="2">负压设置</option> -->
-<!--                                                         <option value="3">二氧化碳设置</option> -->
-<!--                                                         <option value="4">饮水量设置</option> -->
-<!-- 														</select> -->
-<!-- 													</div> -->
-
-<!-- 												</div> -->
-
-<!-- 											</div> -->
-
-											<!--/span-->
+						<%--报警设置--%>
+						<div class="row-fluid" style="padding-top: 5px;">
+							<div class="span12">
+								<%--温度报警设置--%>
+								<div id="TemperatureCurveFrame" style="display:none;">
+									<div class="row-fluid">
+										<div class="span8">
+													<div class="row-fluid">
+														<div class="span12" style="text-align: left;align: left;">
+															<button type="button" class="btn blue" style="text-align: center;vertical-align: middle;" onclick="openAdjustWin('${hourList}');" id="addData">
+																<i class="icon-plus">&nbsp;新增</i>
+															</button>
+														</div>
+													</div>
+													<div style="height:315px; overflow:auto;">
+														<table id="TemperatureCurveTable"></table>
+													</div>
+										</div>
+										<div class="span4" id="TemperatureCurveTableBasic">
+											<%--class="table table-striped table-bordered table-hover"--%>
+												<div class="row-fluid" style="padding-top: 4px;">
+													<div class="span12" style="text-align: right;align: right;">
+													</div>
+												</div>
+											<table class="bootstrap-table table-striped table-bordered table-hover" style="text-align: center;align: center;width: 100%;">
+												<thead >
+													<tr style="width: 100%;height: 40px;background-color: #2586C4;color: white;font-weight:bold;">
+														<td >
+															设置项
+														</td>
+														<td >
+															设置值
+														</td>
+													</tr>
+												</thead>
+												<tbody>
+													<tr style="border-top: 1px solid">
+														<td style="width: 30%;">
+															<span_customer2 >设备信息</span_customer2>
+														</td>
+														<td style="width: 70%;">
+															<div class="row-fluid">
+																<div class="span1">
+																</div>
+																<div class="span9">
+																	<select id="device_code" name="device_code" tabindex="1" style="width:100%;height: 33px;margin-bottom: 2px">
+																	</select>
+																</div>
+																<div class="span2">
+																	<script>
+                                                                        var msg ="栋舍绑定的设备";
+                                                                        help.showHelpIcon("device_code", msg);
+																	</script>
+																</div>
+															</div>
+														</td>
+													</tr>
+													<tr style="border-top: 1px solid">
+														<td style="width: 30%;">
+															<span_customer2>报警形式</span_customer2>
+														</td>
+														<td style="width: 70%">
+															<div class="row-fluid">
+																<div class="span1">
+																</div>
+																<div class="span9">
+																	<select id="yincang" name="alarm_probe" tabindex="1" style="width:100%;height: 33px;margin-bottom: 2px">
+																		<!-- 																<option value="02">独立探头报警</option> -->
+																		<!-- 																<option value="03">平均温度报警</option> -->
+																		<c:if test="${!empty alarm_probe}">
+																			<c:forEach var="alarmProbe" items="${alarm_probe}">
+																				<option value="${alarmProbe.biz_code }">${alarmProbe.code_name }</option>
+																			</c:forEach>
+																		</c:if>
+																	</select>
+																</div>
+																<div class="span2">
+																	<script>
+                                                                        var msg ="<font style='color: #C43C57;'>独立温度报警：</font>在报警传感器中勾选的传感器，将各自分别报警<br>";
+                                                                        msg += "<font style='color: #C43C57;'>平均传感器报警：</font>在报警传感器中勾选的传感器，将以它们的平均值进行报警";
+                                                                        help.showHelpIcon("yincang", msg);
+																	</script>
+																</div>
+															</div>
+														</td>
+													</tr>
+													<tr style="border-top: 1px solid;height: 37px;">
+														<td style="width: 30%;">
+															<span_customer2>报警传感器</span_customer2>
+														</td>
+														<td style="width: 70%;text-align: center;">
+															<div class="row-fluid">
+																<div class="span1">
+																</div>
+																<div class="span9">
+																	<div class="span12" id="yincang2" style="width:100%;padding-top: 8px;text-align: center;"></div>
+																</div>
+																<div class="span2">
+																</div>
+															</div>
+														</td>
+													</tr>
+													<tr style="border-top: 1px solid">
+														<td style="width: 30%;">
+															<span_customer2>点温差报警</span_customer2>
+														</td>
+														<td style="width: 70%">
+															<div class="row-fluid">
+																<div class="span1">
+																</div>
+																<div class="span9">
+																	<input  type="text" id="point_alarm" name="point_alarm"  style="width:95%;height: 23px;margin-bottom: 2px">
+																</div>
+																<div class="span2">
+																	<script>
+                                                                        var msg ="<font style='color: #C43C57;'>1）</font>表示各勾选的传感器中温度最大值与最小值的差值超过点温差报警值时报警<br>";
+																			msg += "<font style='color: #C43C57;'>2）</font>当该值为0时，表示禁用点温差报警";
+                                                                        help.showHelpIcon("point_alarm", msg);
+																	</script>
+																</div>
+															</div>
+														</td>
+													</tr>
+													<tr style="border-top: 1px solid">
+														<td style="width: 30%;">
+															<span_customer2>温度补偿</span_customer2>
+														</td>
+														<td style="width: 70%">
+															<div class="row-fluid">
+																<div class="span1">
+																</div>
+																<div class="span9">
+																	<input  type="text" id="temp_cordon" name="temp_cordon" style="width:95%;height: 23px;margin-bottom: 2px">
+															<select id="temp_cpsation" name="temp_cpsation" tabindex="1" onchange="tempCordon()" style="width:80%;display: none">
+																<option value="1">是</option>
+																<option value="0">否</option>
+															</select>
+																</div>
+																<div class="span2">
+																	<script>
+                                                                        var msg ="<font style='color: #C43C57;'>1）</font>表示仅当实际检测到的温度值与温度补偿值之和超过高报温度时才会触发报警<br>";
+																				msg += "<font style='color: #C43C57;'>2）</font>当报警形式为平均温度报警时，报警将是对平均温度进行温度补偿<br>";
+                                                                       			msg += "<font style='color: #C43C57;'>3）</font>当报警形式为独立探头报警时，报警将是对启用的报警传感器进行温度补偿<br>";
+                                                                        		msg += "<font style='color: #C43C57;'>4）</font>当该值为0时，表示禁用温度补偿";
+                                                                        help.showHelpIcon("temp_cordon", msg);
+																	</script>
+																</div>
+															</div>
+														</td>
+													</tr>
+													<tr style="border-top: 1px solid">
+														<td style="width: 30%;">
+															<span_customer2>报警延迟</span_customer2>
+														</td>
+														<td style="width: 70%">
+															<div class="row-fluid">
+																<div class="span1">
+																</div>
+																<div class="span9">
+																	<select id="alarm_delay" name="alarm_delay" tabindex="1" onchange="" style="width:100%;height: 33px;margin-bottom: 2px">
+																<c:if test="${!empty alarm_delay}">
+																	<c:forEach var="alarmDelay" items="${alarm_delay}">
+																		<option value="${alarmDelay.biz_code }">${alarmDelay.code_name }</option>
+																	</c:forEach>
+																</c:if>
+															</select>
+																</div>
+																<div class="span2">
+																	<script>
+                                                                        var msg ="当实际监测值高于或低于设置的阈值时，延迟多少分钟才发出报警";
+                                                                        help.showHelpIcon("alarm_delay", msg);
+																	</script>
+																</div>
+															</div>
+														</td>
+													</tr>
+													<tr style="border-top: 1px solid;height: 37px;">
+														<td style="width: 30%;">
+															<span_customer2>语音报警</span_customer2>
+														</td>
+														<td style="width: 70%">
+															<div class="row-fluid">
+																<div class="span1">
+																</div>
+																<div class="span9" style="padding-top: 10px;">
+																	<a href="javascript:bindingUserUrl();" onclick="" style="width:100%;" id="bindingUser">设置报警通知人员</a>
+																</div>
+																<div class="span2">
+																	<script>
+                                                                        var msg ="设置报警发生时通知哪些人员，并且在人员未能及时接受通知时，系统将按设定的1、2、3顺序依次通知人员";
+                                                                        help.showHelpIcon("bindingUser", msg);
+																	</script>
+																</div>
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
 										</div>
 									</div>
-									<!-- END FORM-->
+									<%--<div class="row-fluid">--%>
+										<%--<div class="span12">--%>
+										<%--</div>--%>
+									<%--</div>--%>
 								</div>
-
-<!-- 							</div> -->
-                            <div class="row-fluid" >
-                                <div class="span12" style="margin-top: -20px;">
-                                    <hr style="height:1px;border:none;border-top:1px solid #555555;" />
-                                </div>
-                            </div>
-
-					<!-- END PORTLET-->
-
-<!-- 					<div class="portlet box blue1"> -->
-
-<!-- 						<div class="portlet-title"> -->
-
-<!-- 							<div class="caption"> -->
-<!-- 								<i class="icon-globe"></i>报警设置列表 -->
-<!-- 							</div> -->
-
-<!-- 						</div> -->
-						<div class="portlet-body" style="overflow-x: auto; overflow-y: auto;margin-top: -10px;" >
-<!-- 							<table class="table table-striped table-bordered table-hover" id="monitor_date_table"   -->
-<!-- 							style="margin-left: 30px;float: left;width: 500px;" data-options="singleSelect:true,collapsible:true,method:'POST'">                               -->
-<!-- 							</table> -->
-                        <div id = "reflushText" style="display:none;float:right;"><font color="#FF0000">刷新中,请稍后...</font></div>
-                            <div id="TemperatureCurveFrame" style="display: block;margin-left: 20px;float: left;width: 503px;margin-top: -20px;">
-                                <table id="TemperatureCurveTable" style="margin-left: 0px;float: left;width: 500px;"></table>
-                            </div>
-
-                            <div id="CarbonFrame" style="display: none;margin-left: 20px;float: left;width: 503px;margin-top: -20px;" >
-                                <table id="CarbonTable" style="margin-left: 0px;float: left;width: 500px;"></table>
-                            </div>
-                            
-                            <div id="NegativePressureFrame" style="display: none;margin-left: 20px;float: left;width: 1203px;margin-top: -20px;" >
-                                <table id="NegativePressureTable" style="margin-left: 0px;float: left;width: 1200px;"></table>
-                            </div>
-
-                            <div id="WaterFrame" style="display: none;margin-left: 20px;float: left;width: 500px;" >
-                                <table id="WaterTable" style="margin-left: 0px;float: left;width: 500px;"></table>
-                            </div>
-        
-                            <div style="margin-left: 550px;height: 10px;width: 610px;margin-top: 0px;" id="alarmParam">
-                             <div class="row-fluid">
-                             <div class="span3"></div>
-                             <div class="span3">
-									  <span_customer>报警延迟</span_customer>
-									  <select id="alarm_delay" name="alarm_delay" class="m-wrap span12" tabindex="1" onchange=""  style="margin-left:60px;margin-top: -40px;">													
-														<c:if test="${!empty alarm_delay}">
-		                                                 <c:forEach var="alarmDelay" items="${alarm_delay}">
-		                                                 <option value="${alarmDelay.biz_code }">${alarmDelay.code_name }</option>
-		                                                 </c:forEach>
-		                                                 </c:if>
-														</select>
-								  </div>
-<!-- 								  <div class="span3"></div> -->
-								  <div class="span3" style="width:180px;margin-left: 70px; ">
-									  <span_customer>语音报警</span_customer>
-									  <a href="javascript:bindingUserUrl();" onclick="">上传报警通讯录</a>
-								  </div>
-								  <div class="span12">
-                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;margin-left: 60px;" />
-                                </div>
-                                <div class="span3"></div>
-                             <div class="span3" >
-									  <span_customer>温度补偿</span_customer>
-									  <select id="temp_cpsation" name="temp_cpsation" class="m-wrap span12" tabindex="1" onchange="tempCordon()" style="margin-left:60px;margin-top: -40px;">									                    
-														<option value="1">是</option>
-														<option value="0">否</option>                                                        
-														</select>
-								  </div>
-								  <div class="span3" style="width:180px;margin-left: 70px; ">
-									  <span_customer>补偿值</span_customer>
-									  <input  type="text" id="temp_cordon" class="span6 m-wrap" style="width: 100px;margin-left: -15px;margin-top: -4px;" name="temp_cordon">
-								  </div>
-								  <div class="span12">
-                                    <hr style="height:0px;border:none;border-top:1px solid #555555;width: 550px;margin-left: 60px;" />
-                                </div>
-                                 <div class="span3"></div>
-								 <div class="span3">
-									  设备信息
-									  <select id="device_code" name="device_code" class="m-wrap span12" tabindex="1" style="margin-left:59px;margin-top: -40px;width: 300px;">
-														                                                       
-									 </select>
-								 </div>
-								 <div class="span3"></div>
-								 <div class="span3"></div>
-								 <div class="span3"></div>
-								 <div class="span4">
-								  点温差报警
-								  <input  type="text" id="point_alarm" class="span6 m-wrap" style="width: 100px;margin-left: 70px;margin-top: -30px;" name="point_alarm">
-								 </div>
-                             <div class="span4">
-									  <span_customer>报警形式</span_customer>
-									  <select id="yincang" name="alarm_probe" class="m-wrap span12" tabindex="1" style="width: 130px;margin-left: -2px;margin-top: -7px;">
-<!-- 														onchange="alarmHide();" -->
-														<option value="02">独立探头报警</option> 
-														<option value="03">平均温度报警</option>                                                        
-														</select>
-								  </div>
-								  <div class="span12" id="yincang2" style="margin-left: 130px;width: 500px;">
-								 </div>
-								 </div>
-								 
-								 
-								
-						</div>
-
-						<div class="portlet-body" style="margin-left: 25px;float:left; id="anniu">
-						<button type="button" class="btn blue" onclick="openAdjustWin('${hourList}')" id="addData" style="display:">
-<!-- 						<i class="icon-ok"></i> -->
-<!-- 						<a href="javascript:addAlarmUrl();"><i class="icon-edit"></i> -->
-						<i class="icon-plus"></i>新增
-<!-- 						</a> -->
-						</button>
-						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						&nbsp;&nbsp;
-						<button type="button" class="btn blue" onclick="batchChange()" id="delData" style="display:">
-                        <i class="icon-trash"></i> 删除
-                         </button> 
-                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                         &nbsp;&nbsp;
-                         <button type="button" class="btn blue" onclick="update()" id="upData" style="display:">                                                          
-<!--                          <a href="javascript:update();"><i class="icon-edit"></i> -->
-                        <i class="icon-edit"></i>保存
-<!--                         </a> -->
-                        </button>
-                         <button type="button" class="btn blue" onclick="upAndAdd()" id="upData2" style="display:none;">                                                          
-<!--                          <a href="javascript:update();"><i class="icon-edit"></i> -->
-                        <i class="icon-edit"></i>保存
-<!--                         </a> -->
-                        </button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        &nbsp;&nbsp;
-                         <button type="button" class="btn blue" onclick="applyAlarmUrl()" style="display:">
-<!--                          <a href="javascript:applyAlarmUrl();"><i class="icon-edit"></i> -->
-                             <i class="icon-share-alt"></i>  应用至
-<!--                          </a> -->
-                         </button>
-						</div>
-						</div>
-                        
-                       
-					<br/>
-					<div class="portlet box blue1">
-								<div class="portlet-title">
-									<div class="caption">
-										<i class="icon-globe"></i>报警曲线图
+								<%--二氧化碳报警设置--%>
+									<div id="CarbonFrame" style="display: none;" >
+										<div class="row-fluid">
+											<div class="span12">
+												<table id="CarbonTable" ></table>
+											</div>
+										</div>
+										<div class="row-fluid">
+											<div class="span12">
+											</div>
+										</div>
 									</div>
-								</div>
 
-								<div class="portlet-body" id="user_date_table">
-									<input type="hidden" name="buttonValue" id="buttonValue">
-									<div id="container" class="form-horizontal" ></div>
-									
-									<div class="span12"> 
-										<div class="span3">
-											<div class="control-group" style="padding-left: 100px;">
-												<input type="button"  style="width: 80px;display:none;" value="0-16周" onclick="javascript:querySBDayageSettingSub(16);" id="one">
-											</div>
-										</div>
-										<div class="span3">
-											<div class="control-group" style="padding-left: 100px;">
-												<input type="button"  style="width: 80px;display:none;" value="17-36周" onclick="javascript:querySBDayageSettingSub(36);" id="two">
-											</div>
-										</div>
-										<div class="span3">
-											<div class="control-group" style="padding-left: 50px;">
-												<input type="button"  style="width: 80px;display:none;" value="37-60周" onclick="javascript:querySBDayageSettingSub(60);" id="three">
-											</div>
-										</div>
-										<div class="span3">
-											<div class="control-group" style="padding-left: 50px;">
-												<input type="button"  style="width: 80px;display:none;" value="61周以后" onclick="javascript:querySBDayageSettingSub(80);" id="fine">
-											</div>
+								<%--光照报警设置--%>
+								<div id="NegativePressureFrame" style="display: none;" >
+													<div class="row-fluid">
+														<div class="span6" style="text-align: left;align: left;">
+															<button type="button" class="btn blue" style="text-align: center;vertical-align: middle;" onclick="openAdjustWin('${hourList}');" id="addData2">
+																<i class="icon-plus">&nbsp;新增</i>
+															</button>
+														</div>
+														<div class="span6" style="text-align: right;align: right;">
+														</div>
+													</div>
+													<div style="height:315px; overflow:auto;">
+														<table id="NegativePressureTable" ></table>
+													</div>
+										<%--<div class="row-fluid">--%>
+											<%--<div class="span12">--%>
+											<%--</div>--%>
+										<%--</div>--%>
+								</div>
+								<%--耗水量报警设置--%>
+								<div id="WaterFrame" style="display: none;" >
+									<div class="row-fluid">
+										<div class="span12">
+											<table id="WaterTable"></table>
 										</div>
 									</div>
 								</div>
 							</div>
+						</div>
+
+						<%--报警设置曲线图--%>
+						<div class="row-fluid" id="user_date_table" style="display: none;">
+							<div class="span6">
+								<!-- 								<div class="control-group" style="padding-left: 0px;"> -->
+								<button type="button" class="btn blue" style="width: 90px;display:none;" onclick="javascript:querySBDayageSettingSub(20);" id="one">
+									1-20周
+								</button>&nbsp;&nbsp;
+								<!-- 								</div> -->
+								<!-- 							</div> -->
+								<!-- 							<div class="span3"> -->
+								<!-- 								<div class="control-group" style="padding-left: 5px;"> -->
+								<button type="button" class="btn blue" style="width: 90px;display:none;" onclick="javascript:querySBDayageSettingSub(40);" id="two">
+									21-40周
+								</button>&nbsp;&nbsp;
+								<!-- 								</div> -->
+								<!-- 							</div> -->
+								<!-- 							<div class="span3"> -->
+								<!-- 								<div class="control-group" style="padding-left: 5px;"> -->
+								<button type="button" class="btn blue" style="width: 90px;display:none;" onclick="javascript:querySBDayageSettingSub(60);" id="three">
+									41-60周
+								</button>&nbsp;&nbsp;
+								<!-- 								</div> -->
+								<!-- 							</div> -->
+								<!-- 							<div class="span3"> -->
+								<!-- 								<div class="control-group" style="padding-left: 5px;"> -->
+								<button type="button" class="btn blue" style="width: 90px;display:none;" onclick="javascript:querySBDayageSettingSub(80);" id="fine">
+									61周以后
+								</button>
+								<!-- 								</div> -->
+							</div>
+							<div class="span6">
+							</div>
+						</div>
+						<div class="row-fluid" >
+							<div class="span12">
+								<div id="container"></div>
+<!-- 								<div id="colorCard" style="display: none;" > -->
+<!-- 								<img src="<%=path%>/modules/monitor/image/123.jpg" style="width: 600px; height: 50px;text-align: center;margin-left: 350px;"/> -->
+<!-- 								</div> -->
+							</div>
+						</div>
+						
+					</div>
 				</div>
+			</div>
 			</form>
 		</div>
-	</div>
+
 	<script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>
-	<script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.zh-CN.js"></script>
+	<%--<script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.js"></script>--%>
+<%--<script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.zh-CN.js"></script>--%>
 
 <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
 <script type="text/javascript" src="<%=path%>/modules/alarm/js/alarm.js"></script>

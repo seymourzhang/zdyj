@@ -46,6 +46,8 @@ public class AlarmCurrAction extends BaseAction{
 		List<PageData> mcl = getList(pd);
 		mv.setViewName("/modules/alarm/alarmCurr");
 		mv.addObject(alarmCurrList,mcl);
+		mv.addObject("farm_id",pd.get("farm_id"));
+		mv.addObject("corporation_id",pd.get("corporation_id"));
 		mv.addObject("farmList",getFarmList());
 		mv.addObject("houseList",getHouseList(pd));
 		return mv;
@@ -172,7 +174,6 @@ public class AlarmCurrAction extends BaseAction{
 	
 	/**
 	 * 获取农场信息
-	 * @param pd 数据对象
 	 * @return 数据列表
      */
 	List<PageData> getFarmList() throws Exception {

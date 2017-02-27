@@ -4,7 +4,7 @@
   <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
   <select id="selectByCondition2" resultType="pd" useCache="false">
         SELECT  distinct s.day_age ,
-         s.uid_num ,
+         s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.record_datetime,
@@ -69,7 +69,7 @@
     </select>
   <select id="selectByCondition1" resultType="pd" useCache="false">
   <if test="alarm_type == 1"> 
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -130,7 +130,7 @@
         </if>
         
         <if test="alarm_type == 2"> 
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -191,7 +191,7 @@
         </if>
         
         <if test="alarm_type == 3"> 
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -252,7 +252,7 @@
         </if>
         
         <if test="alarm_type == 4"> 
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -314,7 +314,7 @@
         
     </select>
     <select id="selectByCondition3" resultType="pd" useCache="false">
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -375,7 +375,7 @@
     <!-- 查询日龄目标温度设置 -->
     <select id="selectByCondition" resultType="pd" useCache="false">
     <if test="alarm_type == 1">
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -430,7 +430,7 @@
         </if>
         
         <if test="alarm_type == 2">
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 (s.day_age DIV 7) day_age,
@@ -485,7 +485,7 @@
         </if>
         
         <if test="alarm_type == 3">
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -540,7 +540,7 @@
         </if>
         
         <if test="alarm_type == 4">
-        SELECT  s.uid_num ,
+        SELECT  s.uid_num id,
 		 s.farm_id ,
 		 s.house_id ,
 		 s.day_age ,
@@ -980,7 +980,7 @@
 			alarm_type,
 			is_start
 		) values 
-		<foreach collection="list" index="index" item="item"  open="" separator="," close="" >  
+		<foreach collection="list" index="index" item="item"  open="" separator="," close="" >
 	        (#{item.uid_num},
 				#{item.farmId},
 				#{item.houseId},
@@ -1061,6 +1061,12 @@
 	<delete id="deleteSBDayageTempSub" flushCache="false">
 		delete from s_b_dayage_temp_sub 
 		WHERE uid_num = #{uid_num} and alarm_type = #{alarm_type}
+		 <if test="day_age1 != null"> 
+        and day_age > #{day_age1}
+        </if>
+        <if test="day_age2 != null"> 
+        and #{day_age2} >= day_age 
+        </if>
 	</delete>
 	
 	<delete id="deleteSBDayageTempSub2" flushCache="false">
@@ -1266,30 +1272,15 @@
     </insert>
     
     <select id="findUserAll" resultType="pd" useCache="false">
-		select id,
-			user_code,
-			user_real_name,
-			user_real_name_en,
-			user_password,
-			user_mobile_1,
-			user_mobile_2,
-			user_tel_1,
-			user_tel_2,
-			user_email,
-			user_status,
-			freeze_status,
-			memo_1,
-			memo_2,
-			memo_3,
-			memo_4,
-			create_person,
-			create_date,
-			create_time,
-			modify_person,
-			modify_date,
-			modify_time 
-		from s_d_user 
-		where  user_status =1
+		select distinct u.id,u.user_real_name from v_user u
+	 where 
+	 u.obj_id in(SELECT distinct obj_id FROM v_user 
+	where obj_type =2
+	and id = #{user_id})
+<!-- 	<if test="houseId != null and houseId != ''">  -->
+<!--         and u.obj_id = #{houseId} -->
+<!--         </if> -->
+    order by u.obj_id
 	</select>
 	
 	<update id="updateDeviceSub" flushCache="false">
@@ -1341,6 +1332,7 @@
 	<if test="device_code != null and device_code != ''">
 		and d.device_code = #{device_code}
 	</if>
+	order by c.bak1
 	</select>
 	
 	<select id="selectDevice" resultType="pd" useCache="false">
@@ -1362,7 +1354,7 @@
 			bak2,
 			code_desc
     FROM s_d_code WHERE code_type = #{code_type} 
-    ORDER BY biz_code
+    ORDER BY CAST(biz_code AS SIGNED)
     </select>
     <!-- 新增历史日龄目标温度设置--> 
     <insert id="saveSbDayageSettingSubHis" parameterType="pd"  flushCache="false">
@@ -1464,6 +1456,7 @@
 		 temp_cordon ,
 		 alarm_way ,
 		 alarm_probe,
+		 alarm_sensor_no,
 		 point_alarm,
 		 modify_person ,
 		 modify_date ,
@@ -1477,6 +1470,7 @@
 			#{temp_cordon},
 			'03',
 			#{alarm_probe},
+			#{alarm_sensor_no},
 			#{point_alarm},
 			#{modify_person},
 			#{modify_date},
@@ -1508,8 +1502,12 @@
         s_d_user u
         on u.id = s.modify_person
         WHERE 1=1
+        <if test="farmId != null and farmId != ''"> 
         and s.farm_id = #{farmId} 
+        </if> 
+        <if test="houseId != null and houseId != ''"> 
         and s.house_id = #{houseId}
+        </if>
         and s.alarm_type = #{alarm_type}
         and DATEDIFF(DATE_FORMAT(s.modify_time,'%Y-%m-%d'),str_to_date(#{start_date},'%Y-%m-%d'))>=0
         and DATEDIFF(str_to_date(#{end_date},'%Y-%m-%d'),DATE_FORMAT(s.modify_time,'%Y-%m-%d'))>=0
@@ -1555,12 +1553,13 @@
 		 s.farm_id ,
 		 s.house_id ,
 		 s.alarm_type,
-		 alarm_delay ,
-		 temp_cpsation ,
-		 temp_cordon ,
-		 alarm_way ,
-		 alarm_probe ,
-		 point_alarm ,
+		 s.alarm_delay ,
+		 s.temp_cpsation ,
+		 s.temp_cordon ,
+		 s.alarm_way ,
+		 c.code_name as alarm_probe ,
+		 s.alarm_sensor_no,
+		 s.point_alarm ,
 		 u.user_real_name as modify_person ,
 		 s.modify_date ,
 		 s.modify_time
@@ -1568,6 +1567,10 @@
         left join
         s_d_user u
         on u.id = s.modify_person
+        left join 
+        s_d_code c
+        on c.biz_code = s.alarm_probe and
+        c.code_type = 'alarm_probe'
         WHERE 1=1
         and s.farm_id = #{farmId}
         and s.house_id = #{houseId}

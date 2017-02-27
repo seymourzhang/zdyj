@@ -31,48 +31,55 @@
 </head>
 <script>
     $(function () {
-        getColums();
-        function getColums() {
-            var dataColumns = [{
-                field: "grow_week_age",
-                title: "生长<br>周龄",
-                width: "5%",
-            }, {
-                title: "母鸡死淘率%",
-            }, {
-                field: "female_life",
-                title: "母鸡成活率%",
-            }, {
-                title: "平均体重（克）",
-            }, {
-                title: "饲料消耗（克/只）",
-            }, {
-                field: "evenness",
-                title: "均匀度%",
-            }, {
-                title: "母鸡体重范围（克）",
-            }];
-            return dataColumns;
-        }
-        initTable("breedSTD1", getColums(), ${standards});
+        <%--getColums();--%>
+        <%--function getColums() {--%>
+            <%--var dataColumns = [{--%>
+                <%--field: "grow_week_age",--%>
+                <%--title: "生长<br>周龄",--%>
+                <%--width: "5%",--%>
+            <%--}, {--%>
+                <%--title: "母鸡死淘率%",--%>
+            <%--}, {--%>
+                <%--field: "female_life",--%>
+                <%--title: "母鸡成活率%",--%>
+            <%--}, {--%>
+                <%--title: "平均体重（克）",--%>
+            <%--}, {--%>
+                <%--title: "饲料消耗（克/只）",--%>
+            <%--}, {--%>
+                <%--field: "evenness",--%>
+                <%--title: "均匀度%",--%>
+            <%--}, {--%>
+                <%--title: "母鸡体重范围（克）",--%>
+            <%--}];--%>
+            <%--return dataColumns;--%>
+        <%--}--%>
+        <%--initTable("breedSTD1", getColums(), ${standards});--%>
+        BroilerHlh(1);
     });
 </script>
-<body>
-    <div id="page-content" class="clearfix" style="padding-top: 10px;">
+<body style="background-color: #ffffff;">
+    <div id="page-content" class="clearfix">
         <div class="row-fluid">
             <div class="span12">
                 <div class="tabbable tabbable-custom boxless">
-                    <ul class="nav nav-pills" style="margin-bottom: 0px;" id = "uiTab">
-                        <li  class="active" style="text-align: center; width:33%; background-color: #BFBFBF;border-right: 1px solid #E0DFDF;" >
-                            <a href="#tab_1" data-toggle="tab" onclick="BroilerHlh(1);">海兰褐父母代育成</a>
-                        </li>
-                        <li  style="text-align: center; width:33%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF;" >
-                            <a href="#tab_2" data-toggle="tab" onclick="BroilerHlh(2);">罗曼褐父母代育成</a>
-                        </li>
-                        <li  style="text-align: center; width:33%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF; " >
-                            <a href="#tab_3" data-toggle="tab" onclick="BroilerHlh(3);">罗曼褐父母代产蛋</a>
-                        </li>
-                    </ul>
+                    <div class="row-fluid">
+                        <%--标签菜单栏--%>
+                        <div class="span12" style="margin-left: 0px;height: 10px">
+                            <ul class="nav nav-pills" style="margin-bottom: 0px;" id = "uiTab">
+                                <li  class="active" style="text-align: center; width:33.2%; background-color: #BFBFBF;border-right: 1px solid #E0DFDF;" >
+                                    <a href="#tab_1" data-toggle="tab" onclick="BroilerHlh(1);">海兰褐父母代育成</a>
+                                </li>
+                                <li  style="text-align: center; width:33.3%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF;" >
+                                    <a href="#tab_2" data-toggle="tab" onclick="BroilerHlh(2);">罗曼褐父母代育成</a>
+                                </li>
+                                <li  style="text-align: center; width:33.2%; background-color: #BFBFBF; border-right: 1px solid #E0DFDF; " >
+                                    <a href="#tab_3" data-toggle="tab" onclick="BroilerHlh(3);">罗曼褐父母代产蛋</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div class="tab-content" style="border:none">
                         <%-- 海兰褐父母代育成 --%>
                         <div class="tab-pane active" id="tab_1">

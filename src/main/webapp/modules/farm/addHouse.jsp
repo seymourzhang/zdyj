@@ -36,31 +36,15 @@ function  addHouse(){
 	 /*  var dk=$("#deviceKey").val(); */
 		if(hn==""){
 //			$('#addHouse_msg').html("栋舍名称不能为空！");
-            layer.msg("栋舍名称不能为空", {
-                skin: 'layui-layer-lan'
-                , closeBtn: 0
-                , shift: 4 //动画类型
-            });
+            layer.msg("栋舍名称不能为空");
 		}else if(fid==""||fid==null){
-            layer.msg("请选择农场", {
-                skin: 'layui-layer-lan'
-                , closeBtn: 0
-                , shift: 4 //动画类型
-            });
+            layer.msg("请选择农场");
 		}else if(ht==""||ht==null){
-            layer.msg("请选择栋舍类型", {
-                skin: 'layui-layer-lan'
-                , closeBtn: 0
-                , shift: 4 //动画类型
-            });
+            layer.msg("请选择栋舍类型");
 		/* }else if(dk==""){
 			$('#addHouse_msg').html("请选择对应设备！"); */
 		}else if(restHouseName(hn,fid)){
-            layer.msg("栋舍名称已经存在", {
-                skin: 'layui-layer-lan'
-                , closeBtn: 0
-                , shift: 4 //动画类型
-            });
+            layer.msg("栋舍名称已经存在");
 		}else{
 			var param =$.serializeObject($('#addHouse_form'));
 			 $.ajax({
@@ -75,7 +59,7 @@ function  addHouse(){
                         parent.location.reload();
                         parent.layer.closeAll();
 					}else{
-						alert("添加失败！");
+                        layer.msg("添加失败");
 					}
 				}
 			});  
@@ -112,50 +96,71 @@ function closeB(){
   </head>
   
   <body>
-   <div class="portlet-body form" style="padding-top: 15px;margin-left: -30px;">
+   <div class="portlet-body form">
 	<!-- BEGIN FORM-->
     <form id="addHouse_form" class="form-horizontal"   >
-    		<input type="hidden" name="deviceKey" id="deviceKey" />
-			<div class="control-group" style="clear:both;">
-				<label class="control-label" style="width: 100px;">栋舍名称</label>
-				<div class="controls" style="margin-left: 110px;">
-					<input type="text" class="span6 m-wrap" style="width: 230px;" name="house_name" placeholder="请输入栋舍的名称">
-				</div>
+		<input type="hidden" name="deviceKey" id="deviceKey" />
+		<div class="row-fluid">
+			<div class="span12">
 			</div>
-
-
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 100px;">所属农场</label>
-				<div class="controls" style="margin-left: 110px;">
-					<select id="farm_id" class="m-wrap"  name="farm_id" style="width: 230px;">
-					 <option value="">请选择</option>
-                      <c:if test="${!empty farmList}">
-                      <c:forEach var="farm" items="${farmList}">
-                      <option value="${farm.id }">${farm.farm_name_chs }</option>
-                      </c:forEach>
-                     </c:if>
-				  	</select>
-				</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span1">
 			</div>
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 100px;">栋舍类型</label>
-				<div class="controls" style="margin-left: 110px;">
-					<select id="house_type" class="m-wrap"  name="house_type"  style="width: 220px;">
-					 <option value="">请选择</option>
-                      <c:if test="${!empty houseType}">
-                      <c:forEach var="ht" items="${houseType}">
-                      <option value="${ht.biz_code}">${ht.code_name }</option>
-                      </c:forEach>
-                     </c:if>
-				  	</select>
-				</div>
+			<div class="span5">
+				<span_customer2>栋舍名称</span_customer2>
+				&nbsp;&nbsp;
+				<input type="text" style="width: 180px;" name="house_name" placeholder="请输入栋舍的名称">
 			</div>
+			<div class="span5">
+			</div>
+			<div class="span1">
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span12">
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span5">
+				<span_customer2>所属农场</span_customer2>
+				&nbsp;&nbsp;
+				<select id="farm_id" name="farm_id" style="width: 200px;">
+					<option value="">请选择</option>
+					<c:if test="${!empty farmList}">
+						<c:forEach var="farm" items="${farmList}">
+							<option value="${farm.id }">${farm.farm_name_chs }</option>
+						</c:forEach>
+					</c:if>
+				</select>
+			</div>
+			<div class="span5">
+				<span_customer2>栋舍类型</span_customer2>
+				&nbsp;&nbsp;
+				<select id="house_type" name="house_type"  style="width: 200px;">
+					<option value="">请选择</option>
+					<c:if test="${!empty houseType}">
+						<c:forEach var="ht" items="${houseType}">
+							<option value="${ht.biz_code}">${ht.code_name }</option>
+						</c:forEach>
+					</c:if>
+				</select>
+			</div>
+			<div class="span1">
+			</div>
+		</div>
 
 			<%--<div class="form-actions" style="padding-left: 290px;" >--%>
 				<%--<button type="button" class="btn blue" onclick="addHouse()">确 定</button>--%>
 					<%--&nbsp;&nbsp;&nbsp;&nbsp;--%>
 				<%--<button type="button" class="btn" onclick="closeB()">取 消</button>--%>
 			<%--</div>--%>
+		<div class="row-fluid">
+			<div class="span12">
+			</div>
+		</div>
 			<div class="row-fluid">
 				<div class="span3" align="center">
 				</div>

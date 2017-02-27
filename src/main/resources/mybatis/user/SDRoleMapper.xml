@@ -172,7 +172,7 @@
 	</update>
 
 	<!-- 新增权限对象 -->
-	<insert id="insertRightsObj" parameterType="pd" flushCache="false">
+	<insert id="insertRightsObj" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="rights_id">
 		INSERT INTO s_d_rights(obj_id
 								  ,obj_type
 								  ,create_person
@@ -184,6 +184,31 @@
 								  ,CURRENT_DATE
 								  ,CURRENT_TIMESTAMP
 			)
+	</insert>
+
+	<!-- 新增权限对象 -->
+	<insert id="insertRoleRightsByUserId" parameterType="pd" flushCache="false" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO s_d_role_rights(role_id
+										,rights_id
+										,write_read
+										,create_person
+										,create_date
+										,create_time
+										,modify_person
+										,modify_date
+										,modify_time)
+										select
+										  	  (select distinct role_id from v_user WHERE id = #{user_id})
+											  ,r.rights_id
+											  ,1
+											  ,#{user_id}
+											  ,current_date
+											  ,current_time
+											  ,#{user_id}
+											  ,current_date
+											  ,current_time
+										from s_d_rights r
+										where r.rights_id = #{rights_id}
 	</insert>
 
 	<!-- 删除用户所属角色模板 -->

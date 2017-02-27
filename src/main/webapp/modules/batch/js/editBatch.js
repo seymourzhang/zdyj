@@ -54,13 +54,13 @@ function showHouseTarget(tabName, houseList){
 }
 
 //获取栋舍id与名称
-function getHouseTarget(){
+function getHouseTarget(farm_id){
     var rt = new Array();
     $.ajax({
         type: "post",
         url: path + "/org/getOrgByPid",
         data: {
-            parent_id: objBatch.farm_id
+            parent_id: farm_id
         },
         dataType: "json",
         success: function (result) {
@@ -88,18 +88,32 @@ function checkVarEditBatch(objBatch, dataList){
     objBatch.resultFlag = true;
     objBatch.resultMsg = "检测通过";
 
-    test = parseInt(objBatch.female_count);
-    if (isNaN(test))
+    test = objBatch.male_count;
+    if (parseInt(objBatch.male_count)+parseInt(objBatch.female_count)<=0)
     {
         objBatch.resultFlag = false;
-        objBatch.resultMsg = "母鸡数必须是数字，请重新输入!";
+        objBatch.resultMsg = "公、母鸡和必须大于0，请重新输入!";
+    }
+    if(test<0 && test>=document.getElementById("currStock2").value){
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "公鸡数必须大于等于0并且小于存量，请重新输入!";
+    }
+    if (parseInt(test)!=test)
+    {
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "公鸡数必须是整数，请重新输入!";
     }
 
-    test = parseInt(objBatch.male_count);
-    if (isNaN(test))
+    
+    test = objBatch.female_count;
+    if(test<0 && test>=document.getElementById("currStock1").value){
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "母鸡数必须大于等于0并且小于存量，请重新输入!";
+    }
+    if (parseInt(test)!=test)
     {
         objBatch.resultFlag = false;
-        objBatch.resultMsg = "公鸡数必须是数字，请重新输入!";
+        objBatch.resultMsg = "母鸡数必须是整数，请重新输入!";
     }
 
     if(objBatch.house_code == objBatch.house_code_target){

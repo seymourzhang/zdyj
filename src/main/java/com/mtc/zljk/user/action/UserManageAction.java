@@ -50,9 +50,29 @@ public class UserManageAction extends BaseAction {
 
 	@Autowired
 	private GoogsService googsService;
-	
-	
-	
+
+
+
+	/**
+	 * 获取权限
+	 * @return
+	 */
+	@RequestMapping("/getRights")
+	public void getRights(HttpServletResponse response,HttpServletRequest request,HttpSession session) throws Exception {
+		Json j = new Json();
+		SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
+		PageData pd = this.getPageData();
+		pd.put("pass",0);
+		pd.put("user_id",user.getId());
+		List<PageData> list = userService.getUserRights(pd);
+		if(list.size()==1){
+			pd.put("pass",1);
+		}
+		j.setSuccess(true);
+		j.setObj(pd);
+		super.writeJson(j, response);
+	}
+
 	/**
 	 * 访问系统首页
 	 */
@@ -123,29 +143,29 @@ public class UserManageAction extends BaseAction {
 		pd.put("freeze_status",0);
 		pd.put("listFlag",1);
 
-		List<PageData> list=userService.getUserInfo(pd);
-		List<PageData> userlist=new ArrayList<PageData>();
-		for (PageData pageData : list) {
-			PageData paDate = new PageData();
-			paDate.put("user_id", pageData.getInteger("id"));
-			paDate.put("farm_id", pageData.getInteger("farm_id"));
-			List<PageData> houseList=userService.findUserHouseCode(paDate);
-			String houseID ="";
-			String houseName ="";
-			for (int i = 0; i < houseList.size(); i++) {
-				if((i+1)==houseList.size()){
-					houseID+=houseList.get(i).getString("house_code");
-					houseName+=houseList.get(i).getString("house_name");
-				}else{
-					houseID+=houseList.get(i).getString("house_code")+",";
-					houseName+=houseList.get(i).getString("house_name")+",";
-				}
-			}
-			pageData.put("house_code", houseID);
-			pageData.put("house_name", houseName);
-			userlist.add(pageData);
-		}
-		mv.addObject("listUser",userlist);
+//		List<PageData> list=userService.getUserInfo(pd);
+//		List<PageData> userlist=new ArrayList<PageData>();
+//		for (PageData pageData : list) {
+//			PageData paDate = new PageData();
+//			paDate.put("user_id", pageData.getInteger("id"));
+//			paDate.put("farm_id", pageData.getInteger("farm_id"));
+//			List<PageData> houseList=userService.findUserHouseCode(paDate);
+//			String houseID ="";
+//			String houseName ="";
+//			for (int i = 0; i < houseList.size(); i++) {
+//				if((i+1)==houseList.size()){
+//					houseID+=houseList.get(i).getString("house_code");
+//					houseName+=houseList.get(i).getString("house_name");
+//				}else{
+//					houseID+=houseList.get(i).getString("house_code")+",";
+//					houseName+=houseList.get(i).getString("house_name")+",";
+//				}
+//			}
+//			pageData.put("house_code", houseID);
+//			pageData.put("house_name", houseName);
+//			userlist.add(pageData);
+//		}
+		mv.addObject("listUser",userService.getUserList(pd));
 		mv.setViewName("modules/user/userManage");
 		mv.addObject("pd",getUserRights(pd, session));
 		return mv;

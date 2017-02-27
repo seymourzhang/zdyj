@@ -17,6 +17,12 @@ $(document).ready(function(){
 	  $("#good_type").change(function() {
 		  setDrugId();
 		 });
+	  
+	  $("#drug_id_select").change(function() {
+			setCorporation();
+			setSpec();
+			setUnit();
+		});
 
       searchData();
       initDrugsSelect();
@@ -125,53 +131,38 @@ function setDrugId(){
 
 function addDrug(){
 	var grow_week_age = $("#grow_week_age").val();
-	if (parseInt(grow_week_age)<0) {
-		layer.alert('生长周龄必须大于0!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+	 if (parseInt(grow_week_age)!=grow_week_age)
+	    {
+		 layer.msg('生长周龄必须是整数，请重新输入!');
+	        return;
+	    }
+	if (parseInt(grow_week_age)<=0 || parseInt(grow_week_age)>dage) {
+		layer.msg('生长周龄必须大于0且小于'+dage+'!');
 		return;
 	}
 	var drug_id = $("#drug_id").val(); 
 	if (drug_id == "") {
-		layer.alert('药品不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('品名不能为空!');
 		return;
 	}
 	var use_unit = $("#use_unit").val();
-	if (use_unit<0) {
-		layer.alert('使用数量必须大于0!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+	if (parseInt(use_unit)!=use_unit)
+    {
+        layer.msg('使用数量必须是整数，请重新输入!');
+        return;
+    }
+	if (use_unit<=0) {
+		layer.msg('使用数量必须大于0!');
 		return;
 	}
 	var good_type = $("#good_type").val();
 	if (good_type == "") {
-		layer.alert('类型不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('类型不能为空!');
 		return;
 	}
 	var use_type = $("#use_type").val();
 	if (use_type == "") {
-		layer.alert('用途不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('用途不能为空!');
 		return;
 	}
 //	var instruction = $("#instruction").val();
@@ -193,7 +184,10 @@ function addDrug(){
 			"good_type":good_type,
 			"use_type": use_type,
 //			"instruction": instruction,
-			"grow_week_age":$("#grow_week_age").val()
+			"grow_week_age":$("#grow_week_age").val(),
+			"spec":$("#spec").val(),
+			"unit":$("#unit").val(),
+			"corporation_id":$("#corporation_id").val()
 	    };
 	// document.getElementById("reflushText").style.display="inline";
 	$.ajax({
@@ -213,7 +207,10 @@ function addDrug(){
                 } else{
                     initTableRow("plan", getTableEmptyRow("plan"));
                 }
-           
+           document.getElementById("drug_id_select").value=null;
+           document.getElementById("use_unit").value=0;
+           document.getElementById("grow_week_age").value=0;
+           document.getElementById("use_type").value=null;
         }
     });
 	// document.getElementById("reflushText").style.display="none";
@@ -236,10 +233,15 @@ function deleteDrug(){
     	deleteRow2 = deleteRow2+deleteRow[i].id+";";
     }
     // document.getElementById("reflushText").style.display="inline";
+    layer.confirm('是否确认删除？', {
+        skin: 'layui-layer-lan'
+        , closeBtn: 0
+        , shift: 4 //动画类型
+    }, function ok() {
 	$.ajax({
         // async: true,
         url: path+"/drug/deletePlanData",
-        data: {"deleteRow":deleteRow2},
+        data: {"deleteRow":deleteRow2,"farmId":$("#farmId").val(),"good_type":$("#good_type").val()},
         type : "POST",
         dataType: "json",
         cache: false,
@@ -253,15 +255,16 @@ function deleteDrug(){
                 } else{
                     initTableRow("plan", getTableEmptyRow("plan"));
                 }
-           
+                layer.msg('删除成功!');
         }
+    });
     });
 	// document.getElementById("reflushText").style.display="none";
 }
 
 function searchData(){
 //    var dataJosn;
-    var p= {"paramTypeSelectValue":"plan2"};  
+    var p= {"paramTypeSelectValue":"plan2","good_type":$("#good_type").val(),"farmId":$("#farmId").val(),"ord":1};  
     	// document.getElementById("reflushText").style.display="inline";
     $.ajax({
         // async: true,
@@ -280,11 +283,32 @@ function searchData(){
                 } else{
                     initTableRow("plan", getTableEmptyRow("plan"));
                 }
-           
+                
+                getHouseType();
         }
     });
     // document.getElementById("reflushText").style.display="none";
 };
+
+function getHouseType(){
+	$.ajax({
+		type : "post",
+		url : path + "/drug/getHouseType",
+		data : {
+			"farmId" : $("#farmId").val()
+		},
+		dataType: "json",
+		success : function(result) {
+			var list = result.obj;
+			houseType = list[0].house_type;
+			if(houseType=="1"){
+				dage = 25;
+			}else{
+				dage = 65;
+			}
+		}
+	});
+}
 
 function getTableEmptyRow(tableName){
     var count = $('#' + tableName + 'Table').bootstrapTable('getData').length;
@@ -309,7 +333,7 @@ function getTableDataColumns(){
 function getPlanTableDataColumns(){
     var dataColumns = [{
         checkbox: true,
-        width: '5%'
+        width: '2%'
     }, {
         field: "id",
         title: "ID",
@@ -317,11 +341,19 @@ function getPlanTableDataColumns(){
     }, {
         field: "grow_week_age",
         title: "生长周龄",
-        width: '8%'
+        width: '3%'
     }, {
         field: "drug_name",
-        title: "疫苗名称",
-        width: '18%'
+        title: "名称",
+        width: '25%'
+    }, {
+        field: "spec",
+        title: "规格",
+        width: '10%'
+    }, {
+        field: "unit",
+        title: "单位",
+        width: '5%'
     }, 
 //    {
 //        field: "Instruction",
@@ -330,12 +362,70 @@ function getPlanTableDataColumns(){
     {
         field: "use_unit",
         title: "使用数量",
-        width: '12%'
+        width: '3%'
+    }, {
+        field: "corporation",
+        title: "供应商",
+        width: '10%'
     }, {
         field: "use_type",
         title: "用途",
-        width: '25%'
+        width: '11%'
     }];
     return dataColumns;
+}
+
+function setCorporation() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getCorporation",
+		data : {
+			"good_id" : $("#drug_id").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#corporation_id option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#corporation_id").append("<option value=" + list[i].corporation_id + ">" + list[i].corporation + "</option>");
+			}
+		}
+	});
+}
+
+function setSpec() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getSpec2",
+		data : {
+			"good_id" : $("#drug_id").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#spec option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#spec").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
+			}
+		}
+	});
+}
+
+function setUnit() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getUnit2",
+		data : {
+			"good_id" : $("#drug_id").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#unit option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#unit").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
+			}
+		}
+	});
 }
 

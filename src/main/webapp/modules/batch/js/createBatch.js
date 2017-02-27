@@ -81,6 +81,9 @@ function showVariety(tabName, varietyList){
     for(var key in varietyList){
         document.getElementById(tabName + 'GoodSelect').add(new Option(varietyList[key].variety,varietyList[key].variety_id));
     }
+//    alert($("#createBatchGoodSelect").val());
+    document.getElementById("createBatchGoodSelect").value = objBatch.feed_type;
+//    alert($("#createBatchGoodSelect").val());
     getCorporation(tabName);//showCorporation(tabName, getCorporation(tabName)); //显示来源下拉框
 };
 
@@ -151,36 +154,12 @@ function checkVarCreateBatch(objBatch, dataList){
     objBatch.resultFlag = true;
     objBatch.resultMsg = "检测通过";
 
-    var test = parseInt(objBatch.grow_age);
-    if (isNaN(test))
-    {
+    if(objBatch.batch_no == '' || objBatch.batch_no == null){
         objBatch.resultFlag = false;
-        objBatch.resultMsg = "生长日龄必须是数字，请重新输入!";
-    }
-
-    test = parseInt(objBatch.female_count);
-    if (isNaN(test))
-    {
-        objBatch.resultFlag = false;
-        objBatch.resultMsg = "母鸡数必须是数字，请重新输入!";
-    }
-
-    test = parseInt(objBatch.male_count);
-    if (isNaN(test))
-    {
-        objBatch.resultFlag = false;
-        objBatch.resultMsg = "公鸡数必须是数字，请重新输入!";
+        objBatch.resultMsg = "必须指定批次号，请重新输入!";
     }
 
     for(var key in dataList){
-        if(objBatch.batch_no == '' || objBatch.batch_no == null){
-            objBatch.resultFlag = false;
-            objBatch.resultMsg = "必须指定批次号，请重新输入!";
-        }
-        if(typeof dataList[key].batchNo != 'undefined' && dataList[key].batchNo != objBatch.batch_no){
-            objBatch.resultFlag = false;
-            objBatch.resultMsg = "同一农场内批次号必须相同，请重新输入!";
-        }
         if((dataList[key].houseId == objBatch.house_code) && (dataList[key].batchId != '')  && (dataList[key].batchId != null)){
             objBatch.resultFlag = false;
             objBatch.resultMsg = "该栋舍已进鸡，请重新输入!";
@@ -204,6 +183,50 @@ function checkVarCreateBatch(objBatch, dataList){
         objBatch.resultFlag = false;
         objBatch.resultMsg = "必须指定来源，请重新输入!";
     }
+    
+    var test = objBatch.male_count;
+    if (parseInt(test)!=test)
+    {
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "公鸡数必须是整数，请重新输入!";
+    }
+    if (test<0)
+    {
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "公鸡数必须大于等于0，请重新输入!";
+    }
+    
+    test = objBatch.female_count;
+    if (parseInt(test)!=test)
+    {
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "母鸡数必须是整数，请重新输入!";
+    }
+    if (test<=0)
+    {
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "母鸡数必须大于0，请重新输入!";
+    }
+    
+    test = objBatch.grow_age;
+    if (parseInt(test)!=test)
+    {
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "生长日龄必须是整数，请重新输入!";
+    }
+    if (test<=0)
+    {
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "生长日龄必须大于0，请重新输入!";
+    }
+
+    for(var key in dataList){
+        if(typeof dataList[key].batchNo != 'undefined' && dataList[key].batchNo != objBatch.batch_no){
+            objBatch.resultFlag = false;
+            objBatch.resultMsg = "同一农场内批次号必须相同，请重新输入!";
+        }
+    }
+
 
     layer.msg(objBatch.resultMsg);
 }

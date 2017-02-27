@@ -18,6 +18,7 @@ var path = "";
 var userId = "";
 
 
+
 //获取对象实例
 function getInstance(tabList, frameList){
     this.tabList = tabList;
@@ -26,6 +27,16 @@ function getInstance(tabList, frameList){
     userId = document.getElementById("toolBarFarmParmUserId").value;
     return this;
 };
+
+//设置当前机构ID
+function setCurrOrgId(orgId){
+    currOrgId = orgId;
+}
+
+function setCurrTabId(id){
+    currTabId = "tab_" + id;
+    currFrameId = "iframe_" + currTabId;
+}
 
 //初始化农场工具栏
 function initToolBarFarm(enableFlag){
@@ -42,7 +53,7 @@ function initToolBarFarm(enableFlag){
             dataType : "json",
             success : function(result) {
                 orgList = result.obj;
-                if(orgList.length > 0){
+                if(orgList.length > 0 && ""==currOrgId){
                     currOrgId = orgList[0].id;
                 }
                 divStr += "<div class='span12' align='left'>";
@@ -70,15 +81,22 @@ function openUrl(orgId){
 
 //通过farm id打开url
 function openUrlByFramId(reportName, paramValue){
-    var urlParam ="";
-    if(null != farm_id && "undefined" != typeof(farm_id) && "" != farm_id){
+    var urlParam = "";
+
+    if("undefined" != typeof(extendReportParam) && null != extendReportParam && "" != extendReportParam){
+        urlParam += extendReportParam;
+    }
+
+    urlParam += urlParamOrgId + currOrgId;
+    if(null != farm_id && "undefined" != typeof(farm_id) && "" != farm_id) {
         urlParam += urlParamFarmId + farm_id;
         farm_id = null;
-    } else{
-        urlParam += urlParamOrgId + paramValue;
-        house_id =null;
-        batch_no =null;
     }
+    // } else{
+    //     urlParam += urlParamOrgId + paramValue;
+    //     house_id =null;
+    //     batch_no =null;
+    // }
     if(null != house_id && "undefined" != typeof(house_id) && "" != house_id){
         urlParam += urlParamHouseId + house_id;
         house_id =null;
@@ -92,8 +110,10 @@ function openUrlByFramId(reportName, paramValue){
     if(null != userId && "undefined" != typeof(userId) && "" != userId){
         urlParam += urlParamUserId + userId;
     }
+
     openPath = "http://" + report_ip + ":" + report_port + urlPath + path.replace("/","") + "/" + reportName + urlParam ;
     // alert(openPath);
+    document.getElementById(currFrameId).style.height = window.parent.mainFrameHeight;
     document.getElementById(currFrameId).src = openPath;
 };
 

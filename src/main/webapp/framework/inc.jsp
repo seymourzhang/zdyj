@@ -24,7 +24,8 @@
 <script src="<%=path %>/framework/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="<%=path %>/framework/js/app.js" type="text/javascript"></script>
 <script src="<%=path%>/framework/js/extJquery.js" type="text/javascript" ></script>
-<script src="<%=path %>/framework/js/head.js" type="text/javascript"></script>
+<script src="<%=path %>/framework/js/menu.js" type="text/javascript"></script>
+<script src="<%=path %>/framework/js/common.js" type="text/javascript"></script>
 <!--引入弹窗组件start-->
 <script type="text/javascript" src="<%=path %>/framework/layer/layer.js"></script>
 <!--引入弹窗组件end-->

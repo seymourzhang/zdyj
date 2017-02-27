@@ -32,119 +32,172 @@
     <!-- The basic File Upload plugin -->
     <script src="<%=path%>/framework/jquery/jquery.fileupload.js"></script>
     <!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
-    <script src="<%=path%>/framework/js/bootstrap.min.js"></script>
+    <%--<script src="<%=path%>/framework/js/bootstrap.min.js"></script>--%>
 
-    <script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
-    <link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
-    <script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>
+    <%--<script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>--%>
+    <%--<link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />--%>
+    <%--<script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>--%>
 
-    <link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">
-    <script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
-    <script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
-    <script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
+    <%--<link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">--%>
+    <%--<script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>--%>
+    <%--<script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>--%>
+    <%--<script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>--%>
 
 </head>
-<script>
-    $(function () {
-        'use strict';
-        var url = "<%=path%>/breed/newUpload";
-        $('#fileupload').fileupload({
-            url: url,
-            autoUpload: true,
-            done: function (e, data) {
-                var json = eval('(' + data.result + ')');
-                if (json.msg == "1") {
-                    $.each(data.files, function (index, file) {
-                        $("#files > p").remove();
-                        $('<p/>').text(file.name).appendTo('#files');
-                    });
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
-                    $('#progress .progress-bar').css(
-                            'width',
-                            progress + '%'
-                    );
-                } else {
-                    $("#files > p").remove();
-                    $('#progress .progress-bar').css(
-                            'width',
-                            0 + '%'
-                    );
-                    layer.alert(json.msg, {
-                        skin: 'layui-layer-lan'
-                        , closeBtn: 0
-                        , shift: 4 //动画类型
-                    });
-                    return;
-                }
-            },
-            fail:function (e, data) {
-                console.log(data);
-            }
-        });
-    });
-    function uploadSubm() {
-        var tips = document.getElementById("tips").value;
-        var fileName = $("#files > p")[0].textContent;
-        if ($("#files > p").isEmpty) {
-            layer.alert('请上传文件！', {
-                skin: 'layui-layer-lan'
-                , closeBtn: 0
-                , shift: 4 //动画类型
-            })
-            return;
-        } else {
-            $.ajax({
-                url: path + "/breed/saveTips",
-                data: {"bak": tips, "file_name": fileName, "ISENABLED": "1"},
-                dataType: "json",
-                success: function (result) {
-                    var list = result.obj;
-                    for (var i = 0; i < list.length; ++i) {
-                        var fileName = list[i]["file_name"];
-                        fileName = fileName.replace(/\\/g, "");
-                        list[i]["file_name"] = fileName;
-                    }
-                    layer.msg('上传成功', function () {
-//                    parent.parent.document.getElementById("stockTable").bootstrapTable("load", list);
-                        parent.reflush(list);
-                        parent.layer.closeAll();
-                    });
-                },
-                error: function (result) {
-                    console.info("保存失败！");
-                }
-            })
-        }
-    }
-    function uploadCanc() {
-        parent.layer.closeAll();
-    }
-</script>
+
 <body>
-    <span class="btn btn-success fileinput-button" style="left: 460px; height: 35px;top: 20px">
-            <span>浏览</span>
-        <!-- The file input field used as target for the file upload widget -->
-            <input id="fileupload" type="file" name="eFiles" multiple>
-    </span>
 
-    <div id="files" class="files" style="position: absolute;top: 28px;width: 513px;text-align: center;margin: 0 0 0px"></div>
-    <div id="progress" class="progress" style="position: relative; height: 5px; width: 509px; left: 5px; top: 20px;">
-        <div class="progress-bar progress-bar-success"></div>
-    </div>
-    <!-- The container for the uploaded files -->
-
-    <div class="control-group">
-        <label class="control-label" style="width: 100px; left: 5px; position: relative;top: 45px;">备注:</label>
-        <div class="controls" style="margin-left: 45px;position: relative;top: 20px;">
-            <input id="tips" type="text" style="width: 460px; margin-bottom: 0px" name="user_code" value="">
+    <div class="row-fluid">
+        <div class="span7">
+            <div style="padding-top: 5px;">
+                <p>
+                    <span_customer2>文件列表</span_customer2>
+                </p>
+                <div id="files" class="files" style="border: 1px solid #808080"></div>
+            </div>
+        </div>
+        <div class="span5">
+            <%--浏览文件--%>
+            <div class="row-fluid">
+                <div class="span12" align="right">
+                        <span class="btn btn-success fileinput-button">
+                            <span>浏览</span>
+                            <input id="fileupload" type="file" name="eFiles" multiple >
+                        </span>
+                    <%--备注--%>
+                    <textarea id="tips" name="user_code" style="width: 100%;height: 200px" placeholder="备注"></textarea>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="form-actions" style="position: relative; padding-left: 120px; float: left; margin-bottom: 0px;margin-top: 0px;top: 20px;">
-        <button type="button" class="btn blue" onclick="uploadSubm()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button type="button" class="btn" style="position: relative; left: 60px;" onclick="uploadCanc()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
+    <div class="row-fluid">
+        <div class="span12">
+            <%--进度条--%>
+            <div id="progress" class="progress" style="height: 10px;">
+                <div class="progress-bar progress-bar-success" ></div>
+            </div>
+        </div>
     </div>
 
+    <div class="row-fluid">
+        <div class="span12" align="center">
+            <button id="uploadOk" type="button" class="btn blue" onclick="uploadSubm()">
+                <i class="icon-ok"></i>&nbsp;确定
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn blue" onclick="uploadReset()">
+                <i class="icon-undo"></i>&nbsp;重置
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn" onclick="uploadCanc()">
+                取消
+            </button>
+        </div>
+    </div>
+
+    <%--</div>--%>
+    <!-- The container for the uploaded files -->
+
+    <%--<div class="control-group">--%>
+        <%--<label class="control-label" style="width: 100px; left: 5px; position: relative;top: 45px;">备注:</label>--%>
+        <%--<div class="controls" style="margin-left: 45px;position: relative;top: 20px;">--%>
+            <%--<input id="tips" type="text" style="width: 460px; margin-bottom: 0px" name="user_code" value="">--%>
+        <%--</div>--%>
+    <%--</div>--%>
+    <script>
+        var fileList = [];
+        $(function () {
+            'use strict';
+            var url = "<%=path%>/breed/newUpload";
+            $('#fileupload').fileupload({
+                url: url,
+                autoUpload: true,
+                done: function (e, data) {
+                    var json = eval('(' + data.result + ')');
+                    if (json.msg == "1") {
+//                        $("#files > p").remove();
+                        $.each(data.files, function (index, file) {
+                            $('<p/>').text(file.name).appendTo('#files');
+                            fileList.push(file.name);
+                        });
+
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $('#progress .progress-bar').css(
+                            'width',
+                            progress + '%'
+                        );
+                    } else {
+                        $("#files > p").remove();
+                        $('#progress .progress-bar').css(
+                            'width',
+                            0 + '%'
+                        );
+                        layer.msg(json.msg);
+                        return;
+                    }
+                },
+                fail:function (e, data) {
+                    layer.msg(data);
+                    console.log(data);
+                }
+            });
+        });
+
+        function uploadReset(){
+            $("#files > p").remove();
+            $('#progress .progress-bar').css(
+                'width',
+                0 + '%'
+            );
+            fileList=[];
+        }
+
+        function uploadSubm() {
+            var tips = document.getElementById("tips").value;
+//            var fileName = $("#files > p")[0].textContent;
+            if ($("#files > p").isEmpty) {
+                layer.alert('请点击浏览按钮，选择文件！', {
+                    skin: 'layui-layer-lan'
+                    , closeBtn: 0
+                    , shift: 4 //动画类型
+                })
+                return;
+            } else {
+                document.getElementById("uploadOk").disabled = true;
+                layer.msg('正在上传文件，请稍后...');
+                for(var key in fileList){
+                    var fileName = fileList[key];
+                    $.ajax({
+                        url: path + "/breed/saveTips",
+                        data: {"bak": tips, "file_name": fileName, "ISENABLED": "1"},
+                        dataType: "json",
+                        success: function (result) {
+                            var list = result.obj;
+                            for (var i = 0; i < list.length; ++i) {
+                                var fileName = list[i]["file_name"];
+                                fileName = fileName.replace(/\\/g, "");
+                                list[i]["file_name"] = fileName;
+                            }
+                            layer.msg('上传成功', function () {
+//                    parent.parent.document.getElementById("stockTable").bootstrapTable("load", list);
+                                parent.reflush(list);
+                                parent.layer.closeAll();
+                            });
+                        },
+                        error: function (result) {
+                            layer.msg('上传失败！');
+                            console.info("上传失败！");
+                        }
+                    })
+                }
+
+                document.getElementById("uploadOk").disabled = false;
+            }
+        }
+        function uploadCanc() {
+            parent.layer.closeAll();
+        }
+    </script>
 </body>
 </html>

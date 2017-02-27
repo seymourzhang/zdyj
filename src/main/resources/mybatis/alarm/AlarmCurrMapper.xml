@@ -18,7 +18,7 @@
 				, f.farm_name_chs farm_name
 				, h.house_name house_name
 				, u.user_real_name user_name
-				, (CASE WHEN ac.is_remove='Y' THEN TIMESTAMPDIFF(MINUTE,ac.remove_time,ac.alarm_time) ELSE TIMESTAMPDIFF(MINUTE,ac.deal_time,ac.alarm_time)+ac.deal_delay END) continue_time
+				,(TIMESTAMPDIFF(MINUTE,ac.alarm_time,current_timestamp)) continue_time
 		FROM s_b_alarm_inco ac
 				LEFT JOIN s_d_code c
 				ON ac.deal_status= c.biz_code AND c.code_type = 'DEAL_STATUS'
@@ -51,7 +51,7 @@
 				, h.house_name house_name
 				, u.user_real_name user_name
 				, (to_days(curdate()) - to_days(bc.operation_date) + bc.grow_age) day_age
-				, (CASE WHEN ac.is_remove='Y' THEN TIMESTAMPDIFF(MINUTE,ac.remove_time,ac.alarm_time) ELSE TIMESTAMPDIFF(MINUTE,ac.deal_time,ac.alarm_time)+ac.deal_delay END) continue_time
+				, (TIMESTAMPDIFF(MINUTE,ac.alarm_time,current_timestamp)) continue_time
 		FROM s_b_alarm_inco ac
 				LEFT JOIN s_d_code c
 				ON ac.deal_status= c.biz_code AND c.code_type = 'DEAL_STATUS'

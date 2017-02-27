@@ -11,6 +11,13 @@
 <head>
 <meta charset="utf-8" />
 <%@ include file="../../framework/inc.jsp"%>
+<script src="<%=path%>/framework/js/bootstrap_table/bootstrap-table.js"></script>
+<link href="<%=path%>/framework/js/bootstrap_table/bootstrap-table.css" rel="stylesheet" />
+<script src="<%=path%>/framework/js/bootstrap_table/locale/bootstrap-table-zh-CN.js"></script>
+
+<link rel="stylesheet" href="<%=path%>/framework/js/bootstrap_editable/1.5.1/css/bootstrap-editable.css">
+<script src="<%=path%>/framework/js/bootstrap_editable/1.5.1/js/bootstrap-editable.js"></script>
+<script src="<%=path%>/framework/js/bootstrap_table/extensions/editable/bootstrap-table-editable.js"></script>
 <%--<script type="text/javascript" src="<%=path%>/framework/js/extJquery.js"></script>--%>
 <script type="text/javascript" src="<%=path%>/modules/monitor/js/monitor.js"></script>
 <%--<!--图标样式-->--%>
@@ -110,15 +117,52 @@
 	<div id="page-content"  class="clearfix">
 		<%--<div id="page-content"  class="clearfix" style="padding-top: 10px;">--%>
 			<div class="row-fluid" style="background:#e7e5e5;padding-top: 10px;">
+				<div class="span11" >
 					<div style="padding-left: 10px;">
-						<%--<span_customer2>分公司</span_customer2>--%>
-						<%--<select style="width: 160px;"></select>--%>
-						<%--&nbsp;&nbsp;&nbsp;&nbsp;--%>
-						<%--<span_customer2>农场</span_customer2>--%>
-						<%--<select style="width: 160px;"></select>--%>
-						<%@ include file="../../framework/org.jsp"%>
-						<input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 1px;display: none">
+							<%--<span_customer2>分公司</span_customer2>--%>
+							<%--<select style="width: 160px;"></select>--%>
+							<%--&nbsp;&nbsp;&nbsp;&nbsp;--%>
+							<%--<span_customer2>农场</span_customer2>--%>
+							<%--<select style="width: 160px;"></select>--%>
+							<%@ include file="../../framework/org.jsp"%>
+							<input id="enableMonitorSet" class="reload" type="checkbox" value="checked"  style="width: 1px;display: none">
 					</div>
+				</div>
+				<div class="span1" align="right" style="padding-top: 5px; ">
+					<%@ include file="../../framework/help/help.jsp"%>
+					<div id="helpContext" style="display: none;">
+						<table id = "helpTable" class="table">
+							<thead>
+								<tr>
+									<td style="font-weight:bold;text-align: left;">图例</td>
+									<td style="font-weight:bold;text-align: left;">说明</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr >
+									<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpOrgSelect.png" style="width: 200px;height: 45px;"></td>
+									<td style="text-align: left;">通过鼠标点选，可选择分公司或农场</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpSort.png" style="width: 200px;height: 45px;"></td>
+									<td style="text-align: left;">鼠标点击表头箭头处，可进行顺、倒排序</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpStatus.png" style="width: 200px;height: 80px;"></td>
+									<td style="text-align: left;">鼠标点击蓝色字体处，可跳转至相应的功能界面</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpAlarmYerrow.png" style="width: 200px;height: 45px;"></td>
+									<td style="text-align: left;">黄色字体处，表示实际监测值接近低报或高报值的10%以内</td>
+								</tr>
+								<tr>
+									<td style="text-align: left;"><img src="<%=path%>/framework/help/image/helpAlarmRed.png" style="width: 200px;height: 45px;"></td>
+									<td style="text-align: left;">红色字体处，表示实际监测值高于高报值或低于低报值</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
 			</div>
 
 
@@ -126,44 +170,44 @@
 			<form id="farmData" method="post" >
 				<div class="row-fluid">
 					<div class="span12">
-							<table class="table table-striped table-bordered table-hover"  id="monitor_date_table">
-								<thead style="color: #fff; background-color: #2586C4;">
-									<tr>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/farm.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Shape.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 203.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/goal.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/out.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/avg.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/pointTemp.png" style="width: 25px; height: 25px;" /></th>
-										<th colspan="5" style="text-align: center;">舍内温度&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" style="height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/humidity.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/light.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/co2.png" style="width: 25px; height: 25px;" /></th>
-										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 166.png" style="width: 25px; height: 25px;" /></th>
-									</tr>
-									<tr>
-										<th style="text-align: center; border-right:12px solid #2586C4;">农场</th>
-										<th style="text-align: center;">栋舍</th>
-										<th style="text-align: center;">日龄</th>
-										<th style="text-align: center;">状态</th>
-										<th style="text-align: center;">目标</th>
-										<th style="text-align: center;">室外</th>
-										<th style="text-align: center;">平均</th>
-										<th style="text-align: center;">点温差</th>
-										<th style="text-align: center;">前区1</th>
-										<th style="text-align: center;">前区2</th>
-										<th style="text-align: center;">中区</th>
-										<th style="text-align: center;">后区1</th>
-										<th style="text-align: center;">后区2</th>
-										<th style="text-align: center;">湿度</th>
-										<th style="text-align: center;">光照</th>
-										<th style="text-align: center;"><span>CO</span><span style="font-size: 8px;">2</span></th>
-										<th style="text-align: center;">时间</th>
-									</tr>
-								</thead>
-								<tbody id="tbodyMonitorCurList" style="overflow:auto;"></tbody>
+							<table class="table table-striped table-bordered table-hover"  id="tbodyMonitorCurListTable">
+<!-- 								<thead style="color: #fff; background-color: #2586C4;"> -->
+<!-- 									<tr> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/farm.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Shape.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 203.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Group 9.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/goal.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/out.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/avg.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/pointTemp.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th colspan="5" style="text-align: center;">舍内温度&nbsp;&nbsp;&nbsp;<img src="<%=path %>/modules/monitor/image/Group 11.png" style="height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/humidity.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/light.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/co2.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 										<th style="text-align: center;"><img src="<%=path %>/modules/monitor/image/Fill 166.png" style="width: 25px; height: 25px;" /></th> -->
+<!-- 									</tr> -->
+<!-- 									<tr> -->
+<!-- 										<th style="text-align: center; border-right:12px solid #2586C4;">农场</th> -->
+<!-- 										<th style="text-align: center;">栋舍</th> -->
+<!-- 										<th style="text-align: center;">日龄</th> -->
+<!-- 										<th style="text-align: center;">状态</th> -->
+<!-- 										<th style="text-align: center;">目标</th> -->
+<!-- 										<th style="text-align: center;">室外</th> -->
+<!-- 										<th style="text-align: center;">平均</th> -->
+<!-- 										<th style="text-align: center;">点温差</th> -->
+<!-- 										<th style="text-align: center;">前区1</th> -->
+<!-- 										<th style="text-align: center;">前区2</th> -->
+<!-- 										<th style="text-align: center;">中区</th> -->
+<!-- 										<th style="text-align: center;">后区1</th> -->
+<!-- 										<th style="text-align: center;">后区2</th> -->
+<!-- 										<th style="text-align: center;">湿度</th> -->
+<!-- 										<th style="text-align: center;">光照</th> -->
+<!-- 										<th style="text-align: center;"><span>CO</span><span style="font-size: 8px;">2</span></th> -->
+<!-- 										<th style="text-align: center;">时间</th> -->
+<!-- 									</tr> -->
+<!-- 								</thead> -->
+<!-- 								<tbody id="tbodyMonitorCurListTable" style="overflow:auto;"></tbody> -->
 							</table>
 						<%--</div>--%>
 					</div>
@@ -173,6 +217,10 @@
 
 
 	<script type="text/javascript" src="<%=path%>/js/bootbox.min.js"></script>
+	<script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="<%=path %>/framework/js/bootstrap-datepicker.zh-CN.js"></script>
+
+<script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>
 	<!-- 确认窗口 -->
 </body>
 </html>

@@ -26,8 +26,8 @@ function initOrgListTree() {
             fontCss: { 'color': 'blue', 'font-family': '微软雅黑', 'font-size': '18px' }
         },
         check: {
-            enable: true,
-            chkDisabledInherit: true
+            enable: false,
+            chkDisabledInherit: false
         },
         data: {
             simpleData: {
@@ -171,15 +171,16 @@ function addOrg(){
     var orgLevelName = "" ;
 
     //设置父级机构信息
-    if(nodes.length == 1){
-        parentOrgId = nodes[0].id;
-        parentOrgName = nodes[0].name;
-        parentOrgLevelId = nodes[0].org_level;
-        parentOrgLevelName = nodes[0].org_level_name;
-    } else{
-        layer.msg('请选择新建机构的上级机构!', {});
-        return;
-    }
+    // if(nodes.length == 1){
+    //     parentOrgId = nodes[0].id;
+    //     parentOrgName = nodes[0].name;
+    //     parentOrgLevelId = nodes[0].org_level;
+    //     parentOrgLevelName = nodes[0].org_level_name;
+    // }
+    // else{
+        // layer.msg('请选择新建机构的上级机构!', {});
+        // return;
+    // }
 
 
     //设置新建机构层级
@@ -304,7 +305,7 @@ function editOrg(){
     var str ='<br><div class="container-fluid" >';
             str += '<div class="row-fluid">';
                 str += '<div class="span4" align="left">';
-                    str += '修改前机构';
+                    str += '修改前机构名';
                 str += '</div>';
                 str += '<div class="span4" align="right">';
                     str += '<input type="text" id="orgName" name="orgName" value="' + orgName + '" disabled="true">';
@@ -313,7 +314,7 @@ function editOrg(){
             str += '</div>';
             str += '<div class="row-fluid">';
                 str += '<div class="span4" align="left">';
-                    str += '修改后机构';
+                    str += '修改后机构名';
                 str += '</div>';
                 str += '<div class="span4" align="right">';
                     str += '<input type="text" id="orgNameUpdated" name="orgNameUpdated" value="' + orgNameUpdated + '" placeholder="请输入修改机构名称">';

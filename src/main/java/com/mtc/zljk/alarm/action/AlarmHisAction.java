@@ -1,7 +1,10 @@
 package com.mtc.zljk.alarm.action;
 
 import com.mtc.zljk.alarm.service.AlarmHisService;
+import com.mtc.zljk.user.entity.SDUser;
+import com.mtc.zljk.user.service.SDUserService;
 import com.mtc.zljk.util.action.BaseAction;
+import com.mtc.zljk.util.common.Const;
 import com.mtc.zljk.util.common.Constants;
 import com.mtc.zljk.util.common.DealSuccOrFail;
 import com.mtc.zljk.util.common.Json;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.util.Date;
 import java.util.List;
@@ -33,11 +37,23 @@ import java.util.List;
 public class AlarmHisAction extends BaseAction{
     @Autowired 
 	private AlarmHisService alarmHisService;
+    
+    @Autowired
+	private SDUserService userService;
 
 	@RequestMapping("/showAlarmHis")
-	public ModelAndView showAlarmHis() throws Exception {
+	public ModelAndView showAlarmHis(HttpSession session) throws Exception {
 		ModelAndView mv = this.getModelAndView();
 		mv.setViewName("/modules/alarm/alarmHis");
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
+		PageData pd = new PageData();
+		//设置人员
+		pd.put("id",user.getId());
+		pd.put("obj_type",2);
+		pd.put("user_status",1);
+		pd.put("freeze_status",0);
+		pd.put("listFlag",1);
+		mv.addObject("userList",userService.getUserList(pd));
 		return mv;
 	}
 	

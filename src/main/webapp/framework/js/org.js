@@ -5,6 +5,7 @@ $(document).ready(function() {
 		url : path + "/org/getOrg",
 		data : {},
 		dataType : "json",
+        async: (typeof(asyncFlag)!="undefined")?asyncFlag:true,
 		success : function(result) {
 			$("#getOrg option").remove();
 			var orglist = result.obj1;
@@ -18,9 +19,9 @@ $(document).ready(function() {
 					// str += "<div class='span3'>";
 					// str += "<div class='control-group'>";
 					// str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
-					str += "<span_customer2>" + list[i].level_name + "</span_customer2>&nbsp;";
+					str += "<span_customer2 style='" + setDisplay(list[i].level_id) + "'>" + list[i].level_name + "</span_customer2>&nbsp;";
 					// str += "<div class='controls' style='margin-left: 65px;'>";
-					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;' onchange='getOrgList("+(list[i].level_id+1)+")' tabindex='1' name='orgId"+list[i].level_id+"'>";
+					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;" + setDisplay(list[i].level_id) + "' onchange='getOrgList("+(list[i].level_id+1)+")' tabindex='1' name='orgId"+list[i].level_id+"'>";
 					if(typeof(allSearch)!="undefined"){
 					if(allSearch=="true"){
 					str +='<option value="">全部</option>'; 
@@ -36,9 +37,9 @@ $(document).ready(function() {
 					// str += "<div class='span3'>";
 					// str += "<div class='control-group'>";
 					// str += "<label class='control-label' style='width: 60px;'>" + list[i].level_name + "</label>";
-					str += "<span_customer2>" + list[i].level_name + "</span_customer2>&nbsp;";
+					str += "<span_customer2 style='" + setDisplay(list[i].level_id) + "'>" + list[i].level_name + "</span_customer2>&nbsp;";
 					// str += "<div class='controls' style='margin-left: 65px;'>";
-					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;' onchange='getOrgList("+(list[i].level_id+1)+")' tabindex='1' name='orgId"+list[i].level_id+"'>";
+					str += "<select id='orgId"+list[i].level_id+"' style='width: 160px;" + setDisplay(list[i].level_id) + "' onchange='getOrgList("+(list[i].level_id+1)+")' tabindex='1' name='orgId"+list[i].level_id+"'>";
 					if(typeof(allSearch)!="undefined"){
 					if(allSearch=="true"){
 						str +='<option value=""> 全部</option>' ;
@@ -62,10 +63,22 @@ $(document).ready(function() {
 			// str += "</div>";
 			$("#getOrg").append(str);
 			getOrgList(list[0].level_id+1);
+
 		}
-	})
-})
-	
+	});
+
+});
+
+function setDisplay(levelId){
+	var rt = "";
+    if(typeof(orgLevel) != "undefined"){
+    	if(orgLevel < levelId){
+			rt = "display: none;";
+		}
+	}
+	return rt;
+}
+
 function getChildList(em){
 	$.ajaxSetup({ async: false  });
 	var str='';
@@ -81,27 +94,34 @@ function getChildList(em){
 	
 function getOrgList(id){
 		if(id==5){
-			$.ajax({
-				type : "post",
-				url : path + "/temProfile/getBatch",
-				data : {
-					"farmId" : $("#orgId"+(count0rg-1)).val().split(",")[1] ,
-					"houseId" :$("#orgId"+count0rg).val().split(",")[1]
-				},
-				dataType: "json",
-				success : function(result) {
-					var list = result.obj;
-					$("#batchId option").remove();
-					for (var i = 0; i < list.length; i++) {
-						$("#batchId").append("<option value=" + list[i].batch_no+ ">" + list[i].batch_no + "</option>");
-					}
-//					$("#batchId").val(list[0].batch_no);
-					OrgSearch(count0rg,num);
-				}
-			});
+// 			$.ajax({
+// 				type : "post",
+// 				url : path + "/temProfile/getBatch",
+// 				data : {
+// 					"farmId" : $("#orgId"+(count0rg-1)).val().split(",")[1] ,
+// 					"houseId" :$("#orgId"+count0rg).val().split(",")[1]
+// 				},
+// 				dataType: "json",
+//                 async: (typeof(asyncFlag)!="undefined")?asyncFlag:true,
+// 				success : function(result) {
+// 					var list = result.obj;
+// 					$("#batchId option").remove();
+// 					for (var i = 0; i < list.length; i++) {
+// 						$("#batchId").append("<option value=" + list[i].batch_no+ ">" + list[i].batch_no + "</option>");
+// 					}
+// //					$("#batchId").val(list[0].batch_no);
+// 					OrgSearch(count0rg,num);
+// 				}
+// 			});
 		}else{
 			if(typeof(allSearch)!="undefined"){
-			if(allSearch=="true" &&($("#orgId"+(id-1)).val().split(",")[0]=="" || $("#orgId"+(id-1)).val().split(",")[0]==null)){
+				var orgValue = $("#orgId"+(id-1)).val();
+				if("" == orgValue || null == orgValue){
+                    orgValue=orgValue;
+				} else{
+                    orgValue=orgValue.split(",")[0];
+				}
+			if(allSearch=="true" && (orgValue=="" || orgValue==null)){
 				$("#orgId"+id+" option").remove();
 				$("#orgId"+id).append('<option value="">全部</option>');
 				getOrgList(id+1);
@@ -114,6 +134,7 @@ function getOrgList(id){
         					"parent_id" : $("#orgId"+(id-1)).val().split(",")[0]
         				},
         				dataType: "json",
+                        async: (typeof(asyncFlag)!="undefined")?asyncFlag:true,
         				success : function(result) {
         					var list = result.obj;
         					$("#orgId"+id+" option").remove();
@@ -133,6 +154,7 @@ function getOrgList(id){
     					"parent_id" : $("#orgId"+(id-1)).val().split(",")[0]
     				},
     				dataType: "json",
+                    async: (typeof(asyncFlag)!="undefined")?asyncFlag:true,
     				success : function(result) {
     					var list = result.obj;
     					$("#orgId"+id+" option").remove();

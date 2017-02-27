@@ -166,8 +166,8 @@
 	<!-- 查询农场栋舍批次 -->
 	<select id="selectBatchByCondition" parameterType="pd" resultType="pd" useCache="false">
 		SELECT distinct batch_no
-		FROM   s_d_batch
-	    where 1=1
+		FROM   s_b_batch_curr
+	    where status =1
  		<if test="farmId != null and farmId !='' "> 
          and farm_id = #{farmId} 
         </if> 
@@ -177,10 +177,7 @@
          <if test="batch_no != null and batch_no !=''"> 
          and batch_no = #{batch_no} 
         </if> 
-         <if test="operation_type != null and operation_type !=''"> 
-         and operation_type = #{operation_type} 
-        </if>
-        order by id desc
+        order by batch_id desc
 	</select>
 	
 	
@@ -191,13 +188,15 @@
 		       a2.name as city,
 		       a3.name as area,
 		       c1.code_name,
-		       c2.code_name as code_name1
+		       c2.code_name as code_name1,
+			   org.parent_id
 		FROM s_d_farm
 		left join s_d_area_china a1 on a1.id=s_d_farm.farm_add1
 		left join s_d_area_china a2 on a2.id=s_d_farm.farm_add2
 		left join s_d_area_china a3 on a3.id=s_d_farm.farm_add3
 		left join s_d_code as c1 on c1.biz_code=s_d_farm.feed_method and c1.code_type='FEED_METHOD' 
-		left join s_d_code as c2 on c2.biz_code=s_d_farm.feed_type and c2.code_type='FEED_TYPE' 
+		left join s_d_code as c2 on c2.biz_code=s_d_farm.feed_type and c2.code_type='FEED_TYPE'
+		left join s_d_organization org on org.id = s_d_farm.id
 		where s_d_farm.freeze_status='0'
 		<if test="id != null and id != ''">
 			and s_d_farm.id = #{id}
@@ -254,6 +253,9 @@
 		<if test="id != null and id !='' ">
 			and s_d_house.id = #{id}
 		</if>
+		<if test="farmId != null and farmId !='' ">
+			and s_d_house.farm_id = #{farmId}
+		</if>
 	</select>
 	
 	<!-- 查询批次信息 -->
@@ -299,6 +301,7 @@
 	<insert id="saveFarm" parameterType="pd"  flushCache="false" keyProperty="id">
 		insert into s_d_farm (
 			id,
+			farm_code,
 			farm_name_chs,
 			farm_name_en,
 			feed_method,
@@ -315,6 +318,7 @@
 			modify_time
 		) values (
 			get_organization_id(TRUE),
+			get_organization_id(FALSE),
 			#{farm_name_chs},
 			#{farm_name_en},
 			#{feed_method},
@@ -462,7 +466,7 @@
 				</if>
 			WHERE c.code_type='SENSOR_LOCATION'
 -- 			ORDER BY c.bak1, dds.main_id, dds.sensor_code
-	  		ORDER BY dds.sensor_no
+	  		ORDER BY sensor_no
 	</select>
 
 	<!-- 绑定栋舍与设备 -->
@@ -521,7 +525,7 @@
 					,#{sensor_no}
 					,#{show_column}
 					,#{create_person}
-					,CURRENT_DATE )
+					,now() )
 	</insert>
 
 	<!-- 新增栋舍 Varro -->
@@ -603,6 +607,43 @@
 			#{modify_time}
 		)
 	</insert>
+
+	<!-- 初始化栋舍警报历史（基础设置） raymon -->
+	<insert id="initHouseAlarmBasicHis" parameterType="pd"  flushCache="false" keyProperty="id">
+		insert into s_b_house_alarm_his (farm_id
+											,house_id
+											,alarm_type
+											,alarm_delay
+											,temp_cpsation
+											,temp_cordon
+											,alarm_way
+											,alarm_probe
+											,alarm_sensor_no
+											,point_alarm
+											,modify_person
+											,modify_date
+											,modify_time)
+			select
+				farm_id
+				,house_id
+				,alarm_type
+				,alarm_delay
+				,temp_cpsation
+				,temp_cordon
+				,alarm_way
+				,alarm_probe
+				,c.sensor
+				,point_alarm
+				,create_person
+				,create_date
+				,create_time
+			from s_b_house_alarm
+				join (select GROUP_CONCAT(t.biz_code separator ',') sensor from (select a.* from s_d_code a  where a.code_type = 'SENSOR_LOCATION' order by a.bak1) t) c
+				on 1=1
+			where farm_id = #{farm_id}
+				and house_id =#{house_id}
+				and alarm_type = #{alarm_type}
+	</insert>
 	
 	<!-- 新增栋舍和设备关系 Varro -->
 	<insert id="saveDeviHouse" parameterType="pd"  flushCache="false" keyProperty="id">
@@ -663,5 +704,26 @@
 		SELECT * from s_d_batch t
 		where   id = (SELECT MAX(id) from s_d_batch where house_code = #{house_code}  )
 	</select>
+	
+	<select id="selectOganizationList" parameterType="pd" resultType="pd" useCache="false">
+		SELECT
+			  o.id,
+			  o.organization_id,
+			  o.name_cn,
+			  o.parent_id,
+			  o.level_id,
+			  o.level_name,
+			  o.create_person,
+			  o.create_date,
+			  o.create_time
+		FROM s_d_organization o
+		WHERE 1=1
+			  AND level_id = ${level_id}
+			  AND (select 1 from v_user u
+						  where u.id = #{user_id}
+								and u.obj_type=2
+								and u.obj_id = o.id
+					)
+    </select>
 	
 </mapper>

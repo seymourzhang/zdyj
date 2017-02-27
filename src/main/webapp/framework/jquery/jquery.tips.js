@@ -23,7 +23,8 @@
             bg:'#FF0400',
             time:2,
             x:0,
-            y:0
+            y:0,
+            maxWidth: '300px'
         }
         var options = $.extend(defaults, options);
         if (!options.msg||isNaN(options.side)) {
@@ -37,7 +38,7 @@
         style+='.jq_tips_left{border-top:10px solid transparent;right:0px;top:18px;}';
         style+='.jq_tips_bottom{border-left:10px solid transparent;left:20px;top:0px;}';
         style+='.jq_tips_right{border-top:10px solid transparent;left:0px;top:18px;}';
-        style+='.jq_tips_info{word-wrap: break-word;word-break:normal;border-radius:4px;padding:5px 8px;max-width:180px;overflow:hidden;box-shadow:1px 1px 1px #999;font-size:12px;cursor:pointer;}';
+        style+='.jq_tips_info{word-wrap: break-word;word-break:normal;border-radius:4px;padding:5px 8px;max-width:' + options.maxWidth + ';overflow:hidden;box-shadow:1px 1px 1px #999;font-size:12px;cursor:pointer;}';
         style+='</style>';
         $(document.body).append(style);
     }

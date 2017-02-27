@@ -150,7 +150,7 @@ public class BatchManageServiceImpl implements BatchManageService {
                 }
             } else{
                 rt.put("result",false);
-                rt.put("msg","批次数据异常，请联系管理员！");
+                rt.put("msg","调出栋或调入栋没有批次，请先进鸡！");
             }
 
         } else{
@@ -197,10 +197,12 @@ public class BatchManageServiceImpl implements BatchManageService {
 
 
         if( (currMaleCount + currFemaleCount) == (maleCount + femaleCount + weed_out_total_count)) {
-                if((currMaleCount*maleWeight + currFemaleCount*femaleWeight) == (maleCount*maleWeight + femaleCount*femaleWeight + weed_out_total_weight)){
+//                if((currMaleCount*maleWeight + currFemaleCount*femaleWeight) == (maleCount*maleWeight + femaleCount*femaleWeight + weed_out_total_weight)){
                     int i = 0;
+                    pd.put("batch_no",getBatchId(pd));
                     i = (Integer) dao.save("BatchManageMapper.insertOverBatchDataToHis", pd);
                     i *= (Integer) dao.update("BatchManageMapper.updateOverBatchDataToCurr", pd);
+                    i *= (Integer) dao.update("BatchManageMapper.updateOverBatchDataToDetail", pd);
                     if(i == 1){
                         rt.put("result",true);
                         rt.put("msg","出栏批次成功！");
@@ -208,10 +210,10 @@ public class BatchManageServiceImpl implements BatchManageService {
                         rt.put("result",false);
                         rt.put("msg","未知错误，请联系管理员！");
                     }
-                } else{
-                    rt.put("result",false);
-                    rt.put("msg","出栏重量及淘汰重量不等于存栏重量，请重新输入重量！");
-                }
+//                } else{
+//                    rt.put("result",false);
+//                    rt.put("msg","出栏重量及淘汰重量不等于存栏重量，请重新输入重量！");
+//                }
         } else{
             rt.put("result",false);
             rt.put("msg","出栏数量及淘汰数量不等于存栏数量，请重新输入数量！");

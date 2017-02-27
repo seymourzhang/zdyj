@@ -128,8 +128,8 @@ public class AlarmServiceImpl implements AlarmService {
 		dao.save("SBDayageSettingSubMapper.saveSBRemindSetting", pd);
 	}
 	
-	public List<PageData> findUserAll() throws Exception {
-		return (List<PageData>) dao.findForList("SBDayageSettingSubMapper.findUserAll", null);
+	public List<PageData> findUserAll(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SBDayageSettingSubMapper.findUserAll", pd);
 	}
 	
 	public List<PageData> selectSBCode(PageData pd)throws Exception{

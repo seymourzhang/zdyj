@@ -242,5 +242,50 @@
 			where 
 				id = #{id}
 	</update>
+
+	<!-- 根据用户ID获取权限 -->
+	<select id="getUserRights" parameterType="pd" resultType="pd" useCache="false">
+	select
+		  id,
+		  user_code,
+		  user_real_name,
+		  user_real_name_en,
+		  user_password,
+		  user_mobile_1,
+		  user_mobile_2,
+		  user_tel_1,
+		  user_tel_2,
+		  user_email,
+		  user_status,
+		  freeze_status,
+		  memo_1,
+		  memo_2,
+		  memo_3,
+		  memo_4,
+		  create_person,
+		  create_date,
+		  create_time,
+		  modify_person,
+		  modify_date,
+		  modify_time,
+		  role_id,
+		  rights_id,
+		  write_read,
+		  obj_type,
+		  obj_id,
+		  role_level,
+		  role_temp_id
+	  from v_user
+	  where 1=1
+		<if test="obj_type != null and obj_type != ''">
+			and obj_type = ${obj_type}
+		</if>
+		<if test="user_id != null and user_id != ''">
+			and id = ${user_id}
+		</if>
+		<if test="menu_id != null and menu_id != ''">
+			and obj_id = ${menu_id}
+		</if>
+	</select>
 	
 </mapper>

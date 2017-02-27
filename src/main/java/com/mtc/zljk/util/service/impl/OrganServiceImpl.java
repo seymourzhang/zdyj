@@ -1,9 +1,12 @@
 package com.mtc.zljk.util.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mtc.zljk.user.service.RoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mtc.zljk.util.common.PageData;
@@ -14,7 +17,10 @@ import com.mtc.zljk.util.service.OrganService;
 public class OrganServiceImpl implements OrganService {
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
-	
+
+	@Autowired
+	private RoleService roleService;
+
 	public List<PageData> getOrgList(PageData pd) throws Exception{
 		return (List<PageData>) dao.findForList("SDOrganizationMapper.getOrgList", pd);
 	}
@@ -77,6 +83,56 @@ public class OrganServiceImpl implements OrganService {
 
 	public int setFarmMapping(PageData pd) throws Exception {
 		return (Integer) dao.save("SDOrganizationMapper.setFarmMapping", pd);
+	}
+
+	public PageData saveFarmMapping(PageData pd) throws Exception {
+		PageData rt = new PageData();
+		int orgLevelId = Integer.valueOf(pd.getString("level_id"));
+		String success ="success";
+		String msg ="msg";
+
+		List<PageData> maxLevelList = getMaxOrgLevelId(null);
+		int maxOrgLevelId = Integer.valueOf(String.valueOf(maxLevelList.get(0).get("max_level_id")))  ;
+
+		if((maxOrgLevelId-1) == orgLevelId){
+			String orgStr = pd.getString("org");
+			List<Integer> orgList = new ArrayList<>();
+
+			if(orgStr.length()>1) {
+				String[] tmpOrgs = orgStr.substring(0, orgStr.length()).split(",");
+				for (String tmp : tmpOrgs) {
+					orgList.add(Integer.valueOf(tmp));
+				}
+				pd.put("orgList",orgList);
+				int i = setFarmMapping(pd);
+
+				if(i > 0){
+					for(int k=0; k<i; k++){
+						PageData paramPd = new PageData();
+//						Long objId = (Long)pd.get("id");
+						paramPd.put("obj_id",orgList.get(k));
+						paramPd.put("obj_type",2);
+						paramPd.put("create_person",pd.get("user_id"));
+						paramPd.put("user_id",pd.get("user_id"));
+						roleService.insertRightsObj(paramPd);
+					}
+					rt.put(success,true);
+					rt.put(msg,"");
+				} else{
+					rt.put(success,false);
+					rt.put(msg,"系统内部错误");
+				}
+			} else{
+				rt.put(success,false);
+				rt.put(msg,"没有选择需要绑定的农场");
+			}
+		} else{
+			rt.put(success,false);
+			rt.put(msg,"该机构下不能直接绑定农场");
+		}
+
+
+		return rt;
 	}
 
 	public int setHouseMapping(PageData pd) throws Exception {

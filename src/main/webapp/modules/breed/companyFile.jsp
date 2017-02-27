@@ -29,27 +29,28 @@
 
 </head>
 <script>
-    $(function () {
-        getColumns();
-        initTable("breed", getColumns(), ${files});
-    });
+    var isRead="${pd.write_read}";//菜单是否只读
+
     function getColumns() {
         var dataColumns = [{
             checkbox: true,
             title: "选择",
-            width: '5%',
+            width: '2%',
         }, {
             field: "file_name",
             title: "文件名",
+            width: '30%',
             formatter: function(value, row, index){
                 return "<a href=download?direct=" + row.file_path + "&id=" + row.id + "&dirName=upload&fileName=" + (value) + ">" + value + "</a>";
             }
         }, {
-            field: "bak",
-            title: "备注"
-        }, {
             field: "create_time",
-            title: "上传时间"
+            title: "上传时间",
+            width: '8%'
+        }, {
+            field: "bak",
+            title: "备注",
+            width: '50%',
         }];
         return dataColumns;
     }
@@ -68,52 +69,93 @@
     function deleteRecord() {
         var temps = $("#breedTable").bootstrapTable("getSelections");
         var array = new Array();
-        for(var aa=0; aa<temps.length; ++aa){
-            array.push(temps[aa]["id"]);
-        }
-        $.ajax({
-            url: path + "/breed/deleteRecord",
-            data:{"id":array.toString()},
-            dataType: "json",
-            type: "post",
-            async:false,
-            success:function (result) {
-                var list = result.obj;
-                for (var i=0; i<list.length; ++i){
-                    var fileName = list[i]["file_name"];
-                    fileName = fileName.replace(/\\/g, "");
-                    list[i]["file_name"] = fileName;
-                }
-                if (result.msg == "1") {
-                    layer.msg('删除成功！');
-                    $("#breedTable").bootstrapTable("load", list);
-                }
-            },
-            error:function (result) {
-                console.info("delete failed!");
+
+        layer.confirm('是否确认删除？', {
+            skin: 'layui-layer-lan'
+            , closeBtn: 0
+            , shift: 4 //动画类型
+        }, function ok() {
+            for(var aa=0; aa<temps.length; ++aa){
+                array.push(temps[aa]["id"]);
             }
+            $.ajax({
+                url: path + "/breed/deleteRecord",
+                data:{"id":array.toString()},
+                dataType: "json",
+                type: "post",
+                async:false,
+                success:function (result) {
+                    var list = result.obj;
+                    for (var i=0; i<list.length; ++i){
+                        var fileName = list[i]["file_name"];
+                        fileName = fileName.replace(/\\/g, "");
+                        list[i]["file_name"] = fileName;
+                    }
+                    if (result.msg == "1") {
+                        layer.msg('删除成功！');
+                        $("#breedTable").bootstrapTable("load", list);
+                    }
+                },
+                error:function (result) {
+                    console.info("delete failed!");
+                }
+            });
         });
+
+
+
 
     }
     function reflush(list) {
         $("#breedTable").bootstrapTable("load", list);
     }
 </script>
-<body>
-    <p></p>
-    <div class="row-fluid">
-        <div class="span6" align="left">
-            <button type="button" class="btn blue" onclick="uploadConfirm();"><i class="icon-arrow-up"></i>上传</button>
-            <button type="button" class="btn blue" onclick="deleteRecord();"><i class="icon-trash"></i> 删除</button>
+<body style="background-color: #ffffff;">
+    <div id="page-content"  class="clearfix">
+        <div id="toolsBar" class="row-fluid" style="background:#e7e5e5;padding-top: 10px;height: 40px;">
+            <div style="padding-left: 10px;">
+                <div class="span12">
+                    <button type="button" class="btn blue" onclick="uploadConfirm();">
+                        <i class="icon-arrow-up"></i>上传文件</button>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn blue" onclick="deleteRecord();"><i class="icon-trash"></i> 删除</button>
+                </div>
+            </div>
         </div>
-        <div class="span6" align="right">
 
+        <div class="row-fluid">
+            <div class="span12" align="left">
+                <table id="breedTable"></table>
+            </div>
         </div>
     </div>
-    <div class="row-fluid">
-        <div class="span12" align="left">
-            <table id="breedTable"></table>
-        </div>
-    </div>
+
+
+
+
+
+<script>
+    $(function () {
+        getColumns();
+        initTable("breed", getColumns(), ${files});
+        if(!checkRights()){
+            document.getElementById("toolsBar").style.display = "none";
+        }
+    });
+    //    alert(isRead);
+    //检查权限
+    function checkRights(){
+        if(isRead==0){
+            return false;
+        } else {
+            return true;
+        };
+    };
+
+
+
+</script>
+
+
 </body>
 </html>

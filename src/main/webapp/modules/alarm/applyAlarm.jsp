@@ -9,6 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
+    <%@ include file="../../framework/inc.jsp"%>
     <link rel="stylesheet" href="<%=path %>/framework/css/bootstrap.min.css" />
     <link rel="stylesheet" href="<%=path %>/framework/css/style-metro.css" />
     <link rel="stylesheet" href="<%=path %>/framework/css/style.css"/>
@@ -54,62 +55,66 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<div class="portlet-body form1">
 							<!-- BEGIN FORM-->
 								<form id="applyAlarm_form">
-		<input type="hidden" name="farmId" id="farmId"  value="${farmId}"/>							
-		<input type="hidden" name="houseId" id="houseId"  value="${houseId}"/>	
-		<input type="hidden" name="houseId2" id="houseId2" />		
-		<input type="hidden" name="alarm_type" id="alarm_type" value="${alarm_type}"/>
-								<div class="form-horizontal" style="height: 40px;">
-									<div class="span6" style="width: 300px;">
-										<div class="control-group">
-										  <label class="control-label" style="width: 60px;">当前农场:</label>
-										  <div class="controls" style="margin-left: 70px;width: 150px;margin-top: 7px;">
+									<input type="hidden" name="farmId" id="farmId"  value="${farmId}"/>
+									<input type="hidden" name="houseId" id="houseId"  value="${houseId}"/>
+									<input type="hidden" name="houseId2" id="houseId2" />
+									<input type="hidden" name="alarm_type" id="alarm_type" value="${alarm_type}"/>
+									<input type="hidden" name="dage" id="dage" value="${dage}"/>
+									<div class="row-fluid">
+										<div class="span12">
+										</div>
+									</div>
+									<div class="row-fluid">
+										<div class="span1">
+										</div>
+										<div class="span6">
+											<span_customer2>当前农场:</span_customer2>
 											${farm}
-										  </div>
+										</div>
+										<div class="span4">
+											<span_customer2>当前栋舍:</span_customer2>
+											${house}
+										</div>
+										<div class="span1">
 										</div>
 									</div>
-									<div class="span6" style="width: 150px;">
-										<div class="control-group">
-										  <label class="control-label" style="width: 60px;margin-left: -30px;">当前栋舍:</label>
-										  <div class="controls" style="margin-left: 40px;margin-top: 7px;">
-										  	 ${house }
-										  </div>
+
+									<div class="row-fluid">
+										<div class="span1">
+										</div>
+										<div class="span10">
+											<c:if test="${!empty houseList}">
+												<%int i=1; %>
+												<span_customer2>应用至:</span_customer2>
+												<c:forEach var="houselist" items="${houseList}">
+													<c:if test="${houselist.org_code!=houseId }">
+														<input type="radio" id="house<%=i %>" name="house" value="${houselist.org_code }" onclick="xuanze<%=i %>();" style="margin-top: 0px;"/>
+														${houselist.org_name }
+														<script>
+                                                            function xuanze<%=i %>(){
+                                                                document.getElementById("houseId2").value = $("#house"+<%=i %>).val();
+                                                            }
+														</script>
+													</c:if>
+													<%i++; %>
+												</c:forEach>
+											</c:if>
+										</div>
+										<div class="span1">
 										</div>
 									</div>
-									<c:if test="${!empty houseList}">
-                                     <%int i=1; %>
-									<div class="span12" style="width: 550px;">
-										<div class="control-group">
-										  <label class="control-label" style="width: 100px;margin-left: 70px;"> 应用至:</label>										  
-										  	<c:forEach var="houselist" items="${houseList}">
-		                                     <c:if test="${houselist.org_code!=houseId }"> 
-		                                  <div class="controls" style="margin-left: 300px;margin-top: 5px;">
-		                                  <input type="radio" id="house<%=i %>" name="house" value="${houselist.org_code }" onclick="xuanze<%=i %>();" style="margin-top: 0px;"/>
-                                           ${houselist.org_name }
-										  </div>
-										  <script>
-               function xuanze<%=i %>(){
-            			  document.getElementById("houseId2").value = $("#house"+<%=i %>).val();
-            	  }
-               </script>                                     
-               </c:if>
-               <%i++; %>
-               </c:forEach> 
+
+
+									<div class="row-fluid">
+										<div class="span12" align="center">
+											<div id = "reflushText" style="display:none;float:right;"><font style="margin-left: 60px;" color="#FF0000">刷新中,请稍后...</font></div>
+											<button type="button" class="btn blue" onclick="applyAlarm()"><i class="icon-ok"></i>&nbsp;确 定</button>
+											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<button type="button" class="btn" onclick="closeB()">&nbsp;取 消</button>
 										</div>
 									</div>
-									</c:if>
-									
-									<div class="span6" style="width: 220px;">
-										  <div class="controls" style="margin-left: 100px;width: 520px;">
-											 <button type="button" class="btn blue" onclick="applyAlarm()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
-										  </div>
-									</div>
-									<div class="span6" style="width: 220px;">
-										  <div class="controls" style="margin-left: 60px;">
-											 <button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
-										  </div>
-									</div>
-									<div class="span6" id = "reflushText" style="display:none;float:right;"><font style="margin-left: 60px;" color="#FF0000">刷新中,请稍后...</font></div>
-								</div>
+
+
 								</form>
 								<!-- end from -->
 							</div>

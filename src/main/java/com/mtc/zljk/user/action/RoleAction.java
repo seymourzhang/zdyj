@@ -59,9 +59,15 @@ public class RoleAction extends BaseAction {
 			String flag = pd.getString("checkedFlag");
 			data.put("checked", "false");
 
+			if(data.getString("id").equals("147")){
+				String a = "1";
+			}
+
 				for (PageData pageData2 : orgList) {
 					if(null != flag && "1".equals(flag)) {
-						if (null != pageData2.get("role_level") && pageData2.getInteger("id") == pageData.getInteger("id")) {
+						int id2 = pageData2.getInteger("id");
+						int id = pageData.getInteger("id");
+						if (null != pageData2.get("role_level") && id2 == id) {
 							data.put("checked", "true");
 						}
 					}

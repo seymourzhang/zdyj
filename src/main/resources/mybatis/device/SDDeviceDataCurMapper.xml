@@ -62,6 +62,9 @@
         <if test="humidity != null and humidity != ''">
             , humidity				= #{humidity}
         </if>
+        <if test="outside_temp != null and outside_temp != ''">
+            , outside_temp				= #{outside_temp}
+        </if>
         <if test="lux != null and lux != ''">
             , lux				= #{lux}
         </if>

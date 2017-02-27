@@ -517,6 +517,21 @@ a:hover{
     height: 22px;
 }
 
-/*过渡文字标签*/
+/*过渡标签*/
 span_customer{padding-right:10px;width:4em;display:block;float:left;line-height:26px;font-weight:bold;font-family: 'Microsoft YaHei','微软雅黑',SimHei,Arial,'Times New Roman' ;color:#073763}
 span_customer2{font-weight:bold;font-family: 'Microsoft YaHei','微软雅黑',SimHei,Arial,'Times New Roman' ;color:#073763}
+.editable-buttons {
+    display: none; /* should be inline to take effect of parent's white-space: nowrap */
+    vertical-align: top;
+    margin-left: 7px;
+    /* inline-block emulation for IE7*/
+    zoom: 1;
+    *display: inline;
+}
+.input-medium {
+    width: 40%;
+}
+.editable-unsaved {
+    font-weight: bold;
+    color: red;
+}

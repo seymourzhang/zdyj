@@ -113,7 +113,7 @@
 					type: 2, 
 					title: "新增农场",
 					skin: 'layui-layer-lan',
-					area: ['670px', '430px'],
+					area: ['680px', '315px'],
 				    content: '<%=path%>/farm/addFarmUrl'
 			    });
 		}
@@ -127,7 +127,7 @@
 				type: 2, 
 				title: "修改农场",
 				skin: 'layui-layer-lan',
-				area: ['670px', '430px'],
+				area: ['680px', '315px'],
 			    content: "<%=path%>/farm/editFarmUrl?id=" + id
 			});
 		}

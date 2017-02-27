@@ -2137,11 +2137,11 @@ input.spinbox-active.spinbox-down {
 	background-image: url(tab/close.gif);
 	background-repeat: no-repeat;
 	position: relative;
-	top: -6px;
-	height: 12px;
-	width: 12px;
-	font-size: 8px;
-	right: -5px;
+	/*top: -6px;*/
+	height: 14px;
+	width: 14px;
+	/*font-size: 8px;*/
+	/*right: -5px;*/
 }
 .benma_ui_tab .tab_item1_bottom {
 	background-image: url(tab/tab1_bottom.gif);

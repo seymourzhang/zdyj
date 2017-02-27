@@ -21,69 +21,66 @@
         });
 </script>
 <body style="background-color: #ffffff;">
-<div id="page-content" class="clearfix" style="padding-top: 10px;">
-    <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span4" align="left">
-                <span_customer>任务类别</span_customer>
-                <select id="taskType" onchange="queryNext();">
-                    <c:if test="${!empty task_type}">
-                        <c:forEach var="type" items="${task_type}">
-                            <option value="${type.task_type}">${type.code_name}</option>
-                        </c:forEach>
-                    </c:if>
-                </select>
-            </div>
-            <div class="span4" align="left">
-                <select id="wd" onchange="checkDate(this);" style="width: 80px; height: 30px;" disabled="false">
-                    <c:if test="${!empty date_type}">
-                        <c:forEach var="type" items="${date_type}">
-                            <option value="${type.biz_code}">${type.code_name}</option>
-                        </c:forEach>
-                    </c:if>
-                </select>
-                <input id="dateValues" style="width: 320px; height: 30px" placeholder="请按周龄或日龄输入"/>
-            </div>
-            <div class="span4" align="left">
+<div id="page-content" class="clearfix" >
 
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span4" align="left">
-                <span_customer>任务项</span_customer>
-                <select id="taskCode" >
-                    <c:if test="${!empty task_code}">
-                        <c:forEach var="code" items="${task_code}">
-                            <option value="${code.task_id}">${code.task_name}</option>
-                        </c:forEach>
-                    </c:if>
-                </select>
-            </div>
-            <div class="span4" align="left">
-                <span_customer>提醒日期</span_customer>
-                <div id="weeks">
-                    <table>
-                        <tr>
-                            <td><input name="week" type="checkbox" value="1"/>周一</td>
-                            <td><input name="week" type="checkbox" value="2"/>周二</td>
-                            <td><input name="week" type="checkbox" value="3"/>周三</td>
-                            <td><input name="week" type="checkbox" value="4"/>周四</td>
-                            <td><input name="week" type="checkbox" value="5"/>周五</td>
-                            <td><input name="week" type="checkbox" value="6"/>周六</td>
-                            <td><input name="week" type="checkbox" value="7"/>周日</td>
-                        </tr>
-                    </table>
+        <%--功能栏--%>
+        <div class="row-fluid" style="background:#e7e5e5;padding-top: 10px;">
+            <div style="padding-left: 10px;">
+                <div class="row-fluid">
+                    <div class="span2" align="left">
+                        <span_customer2>任务类别</span_customer2>
+                        <select id="taskType" onchange="queryNext();" style="width: 90px;">
+                            <c:if test="${!empty task_type}">
+                                <c:forEach var="type" items="${task_type}">
+                                    <option value="${type.task_type}">${type.code_name}</option>
+                                </c:forEach>
+                            </c:if>
+                        </select>
+                    </div>
+                    <div class="span2" align="left">
+                        <span_customer2>任务项</span_customer2>
+                        <select id="taskCode" style="width: 90px;">
+                            <c:if test="${!empty task_code}">
+                                <c:forEach var="code" items="${task_code}">
+                                    <option value="${code.task_id}">${code.task_name}</option>
+                                </c:forEach>
+                            </c:if>
+                        </select>
+                    </div>
+                    <div class="span8" align="left">
+                        <select id="wd" onchange="checkDate(this);" style="display: none" disabled="false">
+                            <c:if test="${!empty date_type}">
+                                <c:forEach var="type" items="${date_type}">
+                                    <option value="${type.biz_code}">${type.code_name}</option>
+                                </c:forEach>
+                            </c:if>
+                        </select>
+                        <span_customer2>按周龄</span_customer2>
+                        <input id="dateValues" style="width: 600px;" placeholder="请填写周龄，多个周龄以逗号隔开，例如：1,3,6,11..."/>
+                    </div>
                 </div>
-            </div>
-            <div class="span4" align="left">
-                <button class="btn blue"  onclick="addMissionRemind();"><i class="icon-plus"></i>增加</button>
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span12">
-                <hr style="height:10px;border:none;border-top:1px solid #555555;" />
+                <div class="row-fluid" style="height: 40px;">
+                    <div class="span4" align="left">
+                        <span_customer2>提醒日期</span_customer2>
+                        <div id="weeks" style="display: inline-block;vertical-align: middle;">
+                            <table>
+                                <tr>
+                                    <td><input name="week" type="checkbox" value="1"/>周一</td>
+                                    <td><input name="week" type="checkbox" value="2"/>周二</td>
+                                    <td><input name="week" type="checkbox" value="3"/>周三</td>
+                                    <td><input name="week" type="checkbox" value="4"/>周四</td>
+                                    <td><input name="week" type="checkbox" value="5"/>周五</td>
+                                    <td><input name="week" type="checkbox" value="6"/>周六</td>
+                                    <td><input name="week" type="checkbox" value="7"/>周日</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="span8" align="left">
+                        <button class="btn blue"  onclick="addMissionRemind();">
+                            <i class="icon-plus"></i>&nbsp;确认新增</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -111,7 +108,6 @@
                 <table id="stockTable"></table>
             </div>
         </div>
-    </div>
 </div>
 <script type="text/javascript">
     var isRead="${pd.write_read}";//菜单是否只读

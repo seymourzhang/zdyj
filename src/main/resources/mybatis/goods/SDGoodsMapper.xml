@@ -739,7 +739,12 @@
 		<if test="approve_status != null and approve_status != ''">
 			and c.approve_status = #{approve_status}
 		</if>
-		order by c.id desc
+	    <if test="farm_id != null and farm_id != ''">
+			and farm_id = #{farm_id}
+		</if>
+	  	and date_format(c.operation_date,'%Y-%m-%d') >=  DATE_SUB(date_format(current_date,'%Y-%m-%d') ,INTERVAL 30 DAY)
+	  	and date_format(c.operation_date,'%Y-%m-%d') &lt;= date_format(current_date,'%Y-%m-%d')
+		order by c.operation_date , c.farm_id, c.house_id,c.good_type,c.good_code  desc
     </select>   
     
     
@@ -791,6 +796,8 @@
 			       s.unit,
 			       s.corporation_id,
 			       s.factory_id
+	   order by s.operation_date
+		limit 0,30		       
     </select>
 
 	<select id="getStockApproval" resultType="pd" useCache="false">
@@ -855,6 +862,8 @@
 			and sc.factory_id = #{factory_id}
 		</if>
 		        AND sc.farm_id = #{farm_id}
+		order by sc.operation_date
+		limit 0,30        
 	</select>
 	
 	<select id="getStockApproval2" resultType="pd" useCache="false">
@@ -904,6 +913,8 @@
 			       sc.unit,
 			       sc.corporation_id,
 			       sc.factory_id
+	   order by sc.operation_date
+		limit 0,30 		       
 	</select>
 
 	<!-- 审批 -->

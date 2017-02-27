@@ -12,14 +12,18 @@
 	<head>
 		<%@ include file="../../framework/inc/system.jsp"%>
 	</head>
-<body background="<%=path %>/modules/user/image/background.jpg">
+<body>
 
-	<%@ include file="../../framework/region_top.jsp"%>
+	<div id="layerBackground" style="position:absolute; width:100%; height:100%; z-index:-1">
+		<img src="<%=path %>/modules/user/image/background.jpg" height="100%" width="100%"/>
+	</div>
+
+<%@ include file="../../framework/region_top.jsp"%>
 
 	<%--用户登录区域--%>
 	<div class="font s13"
 		 id="center"
-		 style="border:solid #c5c5c5 1px;width:350px ;height:320px;align:center;position: absolute;top:30%;right:5%;">
+		 style="border:solid #c5c5c5 1px;width:350px ;height:320px;align:center;position: absolute;top:30%;right:8%;">
 		<form class="bd" id="loginForm"  method="POST" >
 			<p class="font s32 blue bold"
 			   style="height:80px; line-height:80px; overflow:hidden;text-align: center ">

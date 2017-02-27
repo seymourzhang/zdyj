@@ -9,7 +9,7 @@
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
-    String systemName ="正大鸡场管理系统";
+    String systemName ="智慧鸡场管理系统";
     String systemVersion = "2017";
     String systemRightsInfo = "上海农汇信息科技有限公司版权所有  沪ICP备13027505  Copyright©2006-2017 All Rights Reserved";
 %>

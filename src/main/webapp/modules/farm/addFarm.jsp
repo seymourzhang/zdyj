@@ -9,6 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
   <head>
     <base href="<%=basePath%>">
+	<%@ include file="../../framework/inc.jsp"%>
     <link rel="stylesheet" href="<%=path %>/framework/css/bootstrap.min.css" />
     <link rel="stylesheet" href="<%=path %>/framework/css/style-metro.css" />
     <link rel="stylesheet" href="<%=path %>/framework/css/style.css"/>
@@ -22,11 +23,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		 $("input[name='farm_name_chs']").blur(function(){
 				var ac=$("input[name='farm_name_chs']").val();
 				if(ac==""){
-					$('#addfarm_msg').html("农场不能为空！");
+					layer.msg("农场名不能为空！");
 				}else if(restFarmName(ac)){
-					$('#addfarm_msg').html("农场已经存在！");
+					layer.msg("农场名已经存在！");
 				}else{
-					$('#addfarm_msg').html("");
+//					layer.msg("");
 				}
 			  });
 		 
@@ -49,12 +50,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						setAreaId();
 					}
 				})
-				$('#addfarm_msg').html("");
+// 				layer.msg("");
 		});
 		$("#city_id").change(function() {
 			setAreaId();
 		});
-		
+         $("#feed_type").change(function() {
+             $('#editfarm_msg').html("");
+         });
 	})
 	
 	
@@ -80,29 +83,38 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	}	
 	
 function  addFarm(){
+    var ft = $("#feed_type").val();
+    var orgSelect = $("#orgSelect").val();
 	var ac=$("input[name='farm_name_chs']").val();
 	if(ac==""){
-		$('#addfarm_msg').html("农场不能为空！");
+		layer.msg("农场名不能为空！");
 	}else if(restFarmName(ac)){
-		$('#addfarm_msg').html("农场已经存在！");
+		layer.msg("农场名已经存在！");
 	}else{
-		var param =$.serializeObject($('#addfarm_form'));
-		$.ajax({
-			url: "<%=path%>/farm/addFarm",
-			data: param,
-			type : "POST",
-			dataType: "json",
-			success: function(result) {
-				if(result.msg=='1'){
-					$("#tab_fag",window.parent.document).val(2);
-					$("#farmViewForm",window.parent.document).submit();
-					/* parent.location.reload();  */ 
-					parent.layer.closeAll(); 
-				}else{
-					alert("添加失败！");
-				}
-			}
-		});
+	    if(ft==""){
+	    	layer.msg("养殖品种不能为空！");
+		}else if(orgSelect==""){
+	    	layer.msg("上级机构不能为空！");
+		} else{
+            var param =$.serializeObject($('#addfarm_form'));
+            $.ajax({
+                url: "<%=path%>/farm/addFarm",
+                data: param,
+                type : "POST",
+                dataType: "json",
+                success: function(result) {
+                    if(result.msg=='1'){
+                        $("#tab_fag",window.parent.document).val(2);
+                        $("#farmViewForm",window.parent.document).submit();
+						/* parent.location.reload();  */
+                        parent.layer.closeAll();
+                    }else{
+//                        alert("添加失败！");
+                        layer.msg("添加失败！");
+                    }
+                }
+            });
+		}
 	}
 	
 }
@@ -132,81 +144,114 @@ function closeB(){
   </head>
   
   <body>
-   <div class="portlet-body form" style="padding-top: 25px;margin-left: -30px;">
+   <div class="portlet-body form">
 	<!-- BEGIN FORM-->
-    <form id="addfarm_form" class="form-horizontal"   >
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 100px;">农场名:</label>
-				<div class="controls" style="margin-left: 110px;">
-					<input type="text" class="span6 m-wrap" style="width: 230px;" name="farm_name_chs">
-				</div>
+    <form id="addfarm_form" class="form-horizontal" >
+        &nbsp;
+		<div class="row-fluid">
+			<div class="span1" >
 			</div>
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 100px;">英文名:</label>
-				<div class="controls" style="margin-left: 110px;">
-					<input type="text" class="span6 m-wrap" style="width: 230px;" name="farm_name_en">
-				</div>
+			<div class="span5" >
+				<span_customer2>农场名</span_customer2>
+				&nbsp;&nbsp;&nbsp;
+				<input type="text" style="width: 180px;" name="farm_name_chs">
 			</div>
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 100px;">所在省份:</label>
-				<div class="controls" style="margin-left: 110px;">
-					<select id="province_id" class="medium m-wrap"  name="farm_add1">
-					 <option value="">请选择</option>
-                      <c:if test="${!empty prlist}">
-                      <c:forEach var="prl" items="${prlist}">
-                      <option value="${prl.id }">${prl.short_name }</option>
-                      </c:forEach>
-                     </c:if>
-				  	</select>
-				</div>
+			<div class="span5" >
+				<span_customer2>英文名</span_customer2>
+				&nbsp;&nbsp;&nbsp;
+				<input type="text" style="width: 180px;" name="farm_name_en">
 			</div>
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 110px;">所在市:</label>
-				<div class="controls" style="margin-left: 120px;">
-					<select id="city_id" class="medium m-wrap"  name="farm_add2" style="width: 350px;">
-					 <option value="">请选择</option>
-				  	</select>
-				</div>
+<!-- 			<div class="span1" > -->
+<!-- 			</div> -->
+		</div>
+        &nbsp;
+		<div class="row-fluid">
+			<div class="span1" >
 			</div>
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 100px;">所在区/县:</label>
-				<div class="controls" style="margin-left: 110px;">
-					<select id="area_id" class="medium m-wrap"  name="farm_add3" style="width: 350px;">
-					 <option value="">请选择</option>
-				  	</select>
-				</div>
+			<div class="span5" >
+					<%--<label style="margin-left: -17px;">--%>
+						<span_customer2>上级机构</span_customer2>
+					<%--</label>--%>
+						<select id="orgSelect"  name="organizationId" style="margin-left: 59px;margin-top:-30px;width: 180px;">
+							<option value="">请选择</option>
+							<c:if test="${!empty corporationList}">
+								<c:forEach var="cl" items="${corporationList}">
+									<option value="${cl.organization_id },${cl.level_id}">${cl.name_cn }</option>
+								</c:forEach>
+							</c:if>
+						</select>
 			</div>
-			<div class="control-group" style="float: left;display:inline; ">
-				<label class="control-label" style="width: 110px;">养殖方式:</label>
-				<div class="controls" style="margin-left: 120px;">
-					<select id="feed_method" class="medium m-wrap"  name="feed_method" style="width: 350px;">
-					 <option value="">请选择</option>
-                      <c:if test="${!empty feedMethod}">
-                      <c:forEach var="fm" items="${feedMethod}">
-                      <option value="${fm.biz_code}">${fm.code_name }</option>
-                      </c:forEach>
-                     </c:if>
-				  	</select>
-				</div>
+			<div class="span5" >
+					<%--<label style="margin-left: -17px;">--%>
+						<span_customer2>所在省份</span_customer2>
+					<%--</label>--%>
+						<select id="province_id"  name="farm_add1" style="margin-left: 59px;margin-top:-30px;width: 180px;">
+							<option value="">请选择</option>
+							<c:if test="${!empty prlist}">
+								<c:forEach var="prl" items="${prlist}">
+									<option value="${prl.id }">${prl.short_name }</option>
+								</c:forEach>
+							</c:if>
+						</select>
 			</div>
-			
-			<div class="control-group" style="clear:both;">
-				<label class="control-label" style="width: 100px;">养殖品种:</label>
-				<div class="controls" style="margin-left: 110px;">
-					<select id="feed_type" class="medium m-wrap"  name="feed_type" style="width: 350px;">
-					 <option value="">请选择</option>
-                      <c:if test="${!empty feedType}">
-                      <c:forEach var="ft" items="${feedType}">
-                     	 <option value="${ft.biz_code}">${ft.code_name }</option>
-                      </c:forEach>
-                     </c:if>
-				  	</select>
-				</div>
+			<div class="span1" >
 			</div>
-			<div class="control-group" style="clear:both;height: 30px;text-align: center;">
-				<label class="control-label" style="padding-left: 140px;color: red; width:500px; text-align: center;" id="addfarm_msg"></label>
+		</div>
+        &nbsp;
+		<div class="row-fluid">
+		<div class="span1" >
 			</div>
-			<div class="form-actions" style="padding-left: 290px;" >
+			<div class="span5" >
+				<%--<label style="margin-left: -17px;">--%>
+					<span_customer2>养殖品种</span_customer2>
+				<%--</label>--%>
+					<select id="feed_type" name="feed_type" style="margin-left: 59px;margin-top:-30px;width: 180px;">
+						<option value="">请选择</option>
+						<c:if test="${!empty feedType}">
+							<c:forEach var="ft" items="${feedType}">
+								<option value="${ft.biz_code}">${ft.code_name }</option>
+							</c:forEach>
+						</c:if>
+					</select>
+			</div>
+			<div class="span5" >
+				<%--<label>--%>
+					<span_customer2>所在市</span_customer2>
+				<%--</label>--%>
+					<select id="city_id" name="farm_add2" style="margin-left: 59px;margin-top:-30px;width: 180px;">
+						<option value="">请选择</option>
+					</select>
+			</div>
+		</div>
+        &nbsp;
+		<div class="row-fluid">
+		<div class="span1" >
+			</div>
+			<div class="span5" >
+				<%--<label style="margin-left: -17px;">--%>
+					<span_customer2>养殖方式</span_customer2>
+				<%--</label>--%>
+					<select id="feed_method" name="feed_method" style="margin-left: 59px;margin-top:-30px;width: 180px;">
+						<option value="">请选择</option>
+						<c:if test="${!empty feedMethod}">
+							<c:forEach var="fm" items="${feedMethod}">
+								<option value="${fm.biz_code}">${fm.code_name }</option>
+							</c:forEach>
+						</c:if>
+					</select>
+			</div>
+			<div class="span5" >
+				<%--<label style="margin-left: -17px;">--%>
+					<span_customer2>所在区/县</span_customer2>
+				<%--</label>--%>
+					<select id="area_id" name="farm_add3" style="margin-left: 59px;margin-top:-30px;width: 180px;">
+						<option value="">请选择</option>
+					</select>
+			</div>
+		</div>
+
+            &nbsp;
+			<div align="center">
 				<button type="button" class="btn blue" onclick="addFarm()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				<button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>

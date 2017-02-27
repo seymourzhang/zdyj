@@ -57,11 +57,14 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
     private String[] needReplaceChar = {"[", "]", "{", "}"};
 
     @RequestMapping("/companyFileView")
-    public ModelAndView missionRemindView(Page page, HttpSession session) throws Exception {
+    public ModelAndView companyFileView(Page page, HttpSession session) throws Exception {
         ModelAndView mav = this.getModelAndView();
+        SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
         PageData pd = new PageData();
         pd = this.getPageData();
+        pd = getUserRights(pd,session);
         pd.put("ISENABLED", "1");
+        pd.put("user_id",user.getId());
         List<PageData> lol = sdFileService.selectByStatus(pd);
         JSONArray a = new JSONArray();
         for (PageData task : lol) {
@@ -71,6 +74,7 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
             a.put(task);
         }
         mav.addObject("files", a);
+        mav.addObject("pd",pd);
         mav.setViewName("modules/breed/companyFile");
         return mav;
     }
@@ -126,7 +130,7 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
     @RequestMapping("/newUpload")
     public void upload(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "eFiles", required = false) MultipartFile file) {
         Json j = new Json();
-        String realpath = request.getSession().getServletContext().getRealPath(tempPath);
+        String realpath = request.getSession().getServletContext().getRealPath("") + tempPath;
         String fileName = file.getOriginalFilename();
         File f = new File(realpath + "/" + fileName);
         String Msg = "";
@@ -136,16 +140,19 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
             String type = ichoose > 1 ? typechoose[ichoose - 1] : "";
             if ((type.toLowerCase().equals("docx")
                     || type.toLowerCase().equals("pdf")
-                    || type.toLowerCase().equals("xlsx")) && file.getSize() <= uploadFileMaxSize) {
-                SimpleDateFormat smat = new SimpleDateFormat("yyyyMMddHHmmss");
+                    || type.toLowerCase().equals("xlsx")
+                    || type.toLowerCase().equals("xls")
+                    || type.toLowerCase().equals("doc")
+                    ) && file.getSize() <= uploadFileMaxSize) {
+//                SimpleDateFormat smat = new SimpleDateFormat("yyyyMMddHHmmss");
                 FileUtils.copyInputStreamToFile(file.getInputStream(), f);
                 Msg = "1";
                 j.setSuccess(true);
             } else if (!(type.toLowerCase().equals("docx") || type.toLowerCase().equals("pdf") || type.toLowerCase().equals("xlsx")|| type.toLowerCase().equals("xls")|| type.toLowerCase().equals("doc"))) {
-                Msg = "当前上传只支持docx、pdf、xlsx文件类型！";
+                Msg = "上传文件仅支持doc、docx、xls、xlsx、pdf格式！";
                 j.setSuccess(false);
             } else if (file.getSize() > uploadFileMaxSize) {
-                Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "M ！";
+                Msg = "您上传文件大于 " + uploadFileMaxSize / 1024 / 1024 + "MB ！";
                 j.setSuccess(false);
             }
         } catch (IOException e) {
@@ -162,8 +169,8 @@ public class BreedValueBook extends BaseAction implements ServletContextAware {
         Json j = new Json();
         PageData pd = this.getPageData();
         SDUser user = (SDUser) session.getAttribute(Const.SESSION_USER);
-        String realpath = request.getSession().getServletContext().getRealPath(filePath);
-        String tPath = request.getSession().getServletContext().getRealPath(tempPath);
+        String realpath = request.getSession().getServletContext().getRealPath("") + filePath;
+        String tPath = request.getSession().getServletContext().getRealPath("") + tempPath;
         String escapePath = StringUtils.replace(realpath, "\\", "\\\\");
         String fileName = pd.get("file_name").toString();
         File f = new File(tPath + "/" + fileName);

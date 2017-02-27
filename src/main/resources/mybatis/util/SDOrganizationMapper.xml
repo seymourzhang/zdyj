@@ -65,7 +65,7 @@
 				  AND ((tmp.role_level is not null AND (d.level_id > tmp.role_level or d.id = tmp.obj_id))
 				  			OR (tmp.role_level is null AND tmp2.role_level=1))
 				  AND tmp.id is not null
-				  OR (d.create_person = #{user_id})
+				  OR ((case when #{user_id}=1 then 1 else d.create_person end) = #{user_id})
 		ORDER BY d.id
     </select>
 
@@ -166,6 +166,7 @@
 				,org.name_cn org_name
 				,org.parent_id org_parent_id
 				,org.level_id org_level_id
+				,f.feed_type
 		from s_d_user u
 		left join s_d_user_role ur
 		on u.id = ur.user_id
@@ -175,6 +176,8 @@
 		on rr.rights_id = r.rights_id
 		left join s_d_organization org
 		on r.obj_id = org.id
+		left join s_d_farm f
+		on f.id = org.organization_id
 		where r.obj_type = 2
 			and org.level_id = (select max(level_id)-1 from s_d_organization)
 			and u.id = #{user_id}
@@ -281,7 +284,9 @@
 			,farm_id
 		FROM s_d_house
 		WHERE farm_id = #{farmId}
+		<if test="houseId != null and houseId !=''"> 
 			AND id = #{houseId}
+		</if>	
 			AND freeze_status=0
 	</select>
 
@@ -301,7 +306,7 @@
 		FROM  s_d_organization sdo
 		LEFT JOIN (SELECT bb.id, bb.name_cn FROM s_d_organization bb) sdo2
 		ON sdo.parent_id = sdo2.id
-		WHERE  sdo.level_id &lt;= (select max(aa.level_id) - 2 from s_d_organization aa)
+		WHERE  (sdo.level_id &lt;= (select max(aa.level_id) - 2 from s_d_organization aa) or sdo.level_id=1)
 				AND sdo.freeze_status=0
 				<if test="user_id != null">
 					AND (sdo.id in (select obj_id from v_user where id = #{user_id} and obj_type=2)
@@ -366,7 +371,8 @@
 			id
 			,farm_name_chs name_cn
 		FROM s_d_farm
-		WHERE farm_code NOT IN (SELECT organization_id FROM s_d_organization WHERE freeze_status=0);
+		WHERE farm_code NOT IN (SELECT organization_id FROM s_d_organization WHERE freeze_status=0)
+			AND farm_code IN (SELECT DISTINCT farm_id FROM s_d_house WHERE freeze_status=0);
 	</select>
 
 	<!-- 绑定农场与机构 -->

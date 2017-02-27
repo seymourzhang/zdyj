@@ -10,34 +10,49 @@
              d.grow_week_age,
              d.drug_name,
              round(d.use_unit,0) as use_unit,
-             d.use_type
+             d.use_type,
+             a.corporation,
+             c1.code_name spec,
+             c2.code_name unit
        from s_b_use_drug_plan d
             left join
             s_d_goods g
             on g.good_id = d.drug_id
+            left join s_d_corporation a
+		on a.corporation_id = d.corporation_id
+		LEFT JOIN s_d_code c1 on c1.biz_code=d.spec and c1.code_type='spec'
+		LEFT JOIN s_d_code c2 on c2.biz_code=d.unit and c2.code_type='unit'
        where 1 = 1
-        <if test="grow_week_age != null and grow_week_age !=''">
-        and d.grow_week_age in
-        <foreach collection="grow_week_age" index="index" item="item"  open="(" separator="," close=")" >  
-           #{item}
-           </foreach> 
-        </if> 
+<!--         <if test="grow_week_age != null and grow_week_age !=''"> -->
+<!--         and d.grow_week_age in -->
+<!--         <foreach collection="grow_week_age" index="index" item="item"  open="(" separator="," close=")" >   -->
+<!--            #{item} -->
+<!--            </foreach>  -->
+<!--         </if>  -->
         <if test="good_type != null and good_type !=''"> 
            and g.good_type = #{good_type} 
         </if>
-        <if test="drug_id != null and drug_id !=''"> 
-           and d.drug_id = #{drug_id} 
-        </if>
+<!--          <if test="drug_id != null and drug_id !=''">   -->
+<!--             and d.drug_id = #{drug_id}  -->
+<!--          </if> -->
+         <if test="farmId != null and farmId !=''">  
+            and d.farm_id = #{farmId} 
+         </if>
 <!--         <if test="instruction != null and instruction !=''">  -->
 <!--            and d.Instruction = #{instruction}  -->
 <!--         </if>  -->
-        <if test="start_grow_week_age != null and start_grow_week_age !=''"> 
-           and d.grow_week_age >= #{start_grow_week_age} 
-        </if> 
-        <if test="end_grow_week_age != null and end_grow_week_age !=''"> 
-           and #{end_grow_week_age} >=d.grow_week_age  
-        </if> 
+<!--         <if test="start_grow_week_age != null and start_grow_week_age !=''">  -->
+<!--            and d.grow_week_age >= #{start_grow_week_age}  -->
+<!--         </if>  -->
+<!--         <if test="end_grow_week_age != null and end_grow_week_age !=''">  -->
+<!--            and #{end_grow_week_age} >=d.grow_week_age   -->
+<!--         </if>  -->
+        <if test="ord == 1">
         order by d.modify_time desc,d.create_time desc
+        </if>
+        <if test="ord == 2">
+        order by d.grow_week_age
+        </if>
     </select>
     <!-- 查询药品疫苗使用表 -->
    <select id="selectDrugFact" resultType="pd" useCache="false">
@@ -53,7 +68,10 @@
 <!--           (select c.code_name from s_d_code c where c.code_type = 'use_type' and u.Instruction = c.biz_code) Instruction, -->
           u.use_type,
           u.main_constitute,
-          d.user_real_name
+          d.user_real_name,
+          a.corporation,
+          c1.code_name spec,
+          c2.code_name unit
    from s_b_use_drug u
         left join 
         s_d_goods g
@@ -67,6 +85,20 @@
         left join 
         s_d_user d
         on u.use_user_id = d.id
+        left join s_d_corporation a
+		on a.corporation_id = u.corporation_id
+		LEFT JOIN s_d_code c1 on c1.biz_code=u.spec and c1.code_type='spec'
+		LEFT JOIN s_d_code c2 on c2.biz_code=u.unit and c2.code_type='unit'
+        where 1=1
+        <if test="houseId != null and houseId !=''"> 
+           and u.house_id = #{houseId} 
+        </if>
+        <if test="use_date != null and use_date !=''"> 
+           and u.use_date = #{use_date} 
+        </if>
+        <if test="good_type1 != null and good_type1 !=''"> 
+           and u.good_type = #{good_type1} 
+        </if>
     </select>
     <!-- 新增药品疫苗计划 -->
     <insert id="saveDrugPlan" parameterType="pd"  flushCache="false">
@@ -81,6 +113,9 @@
 							   use_unit,
 							   use_type,
 <!-- 							   Instruction, -->
+                               spec,
+                               unit,
+                               corporation_id,
 							   status,
 							   create_person,
 							   create_date,
@@ -102,6 +137,9 @@
 										#{use_unit},
 										#{use_type},
 <!-- 										#{instruction}, -->
+                                        #{spec},
+                                        #{unit},
+                                        #{corporation_id},
 										#{status},
 										#{create_person},
 										#{create_date},
@@ -136,6 +174,9 @@
 							   main_constitute,
 							   use_type,
 <!-- 							   Instruction, -->
+                               spec,
+                               unit,
+                               corporation_id,
 							   good_type,
 							   status,
 							   create_person,
@@ -143,7 +184,8 @@
 							   create_time,
 							   modify_person,
 							   modify_date,
-							   modify_time )value(
+							   modify_time,
+							   stock_change_id )value(
 										#{farmId},
 										#{farm_name},
 										#{houseId},
@@ -161,6 +203,9 @@
 										#{main_constitute},
 										#{use_type},
 <!-- 										#{instruction}, -->
+                                        #{spec},
+                                        #{unit},
+                                        #{corporation_id},
 										#{good_type},
 										#{status},
 										#{create_person},
@@ -168,7 +213,8 @@
 										#{create_time},
 										#{modify_person},
 										#{modify_date},
-										#{modify_time})
+										#{modify_time},
+										0)
     </insert>
     <!-- 删除药品疫苗使用 -->
     <delete id="deleteDrugFact" flushCache="false">

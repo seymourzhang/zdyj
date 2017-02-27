@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mtc.zljk.drug.service.DrugService;
+import com.mtc.zljk.goods.service.GoogsService;
 import com.mtc.zljk.user.entity.SDUser;
+import com.mtc.zljk.user.service.SDUserService;
 import com.mtc.zljk.util.action.BaseAction;
 import com.mtc.zljk.util.common.Const;
 import com.mtc.zljk.util.common.DateUtil;
@@ -42,6 +44,9 @@ public class DrugAction extends BaseAction {
 	@Autowired
 	private ModuleService moduleService;
 	
+	@Autowired
+	private SDUserService userService;
+	
 	@RequestMapping("/showDrug")
 	public ModelAndView showDrug(HttpSession session) throws Exception {
 		ModelAndView mv = this.getModelAndView();
@@ -56,7 +61,6 @@ public class DrugAction extends BaseAction {
 		pd.put("farm_id", farm.get(0).get("org_id"));
 		pd.put("farm_name", farm.get(0).get("org_name"));
 		mv.addObject("houseList",moduleService.service("organServiceImpl", "getHouseListByUserId", new Object[]{pd}));
-		mv.addObject("userList",drugService.selectUser(pd));
 		pd.put("good_type", null);
 		mv.addObject("goodsList",drugService.selectGoods(pd));	
 		pd.put("code_desc", "使用方法");
@@ -68,7 +72,14 @@ public class DrugAction extends BaseAction {
 		mv.setViewName("/modules/drug/drugView");
 		mv.addObject("pd",pd);	
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-		mv.addObject("systemDate",df.format(new Date()).toString());	
+		mv.addObject("systemDate",df.format(new Date()).toString());
+		//负责人
+		pd.put("id",user.getId());
+		pd.put("obj_type",2);
+		pd.put("user_status",1);
+		pd.put("freeze_status",0);
+		pd.put("listFlag",1);
+		mv.addObject("userList",userService.getUserList(pd));
 		return mv;
 	}
 	
@@ -84,6 +95,9 @@ public class DrugAction extends BaseAction {
 		pd.put("company", company.get(0).get("org_name"));
 		List<PageData> farmList = moduleService.service("organServiceImpl", "getFarmListByUserId", new Object[]{pd});
 		mv.addObject("farmList", farmList);
+		pd.put("farmId", farmList.get(0).get("org_id"));
+		List<PageData> houseList = moduleService.service("organServiceImpl", "getHouseType", new Object[]{pd});
+		mv.addObject("house_type", houseList.get(0).get("house_type"));
 		pd.put("good_type", null);
 		mv.addObject("goodsList",drugService.selectGoods(pd));	
 		pd.put("code_desc", "使用方法");
@@ -109,17 +123,17 @@ public class DrugAction extends BaseAction {
         List<PageData> drug;
         String ps = pd.get("paramTypeSelectValue").toString();
         if(ps.equals("plan")){
-	        String tr = (String) pd.get("grow_week_age");        
-	        String[] grow_week_age = tr.split(",");
-	        List<String> gw = java.util.Arrays.asList(grow_week_age);
-	        if(gw.size()==1 && gw.get(0).toString().equals("")){
-	        	pd.put("grow_week_age", null);	
-	        }else{
-	        pd.put("grow_week_age", gw);
-	        }       
+//	        String tr = (String) pd.get("grow_week_age");        
+//	        String[] grow_week_age = tr.split(",");
+//	        List<String> gw = java.util.Arrays.asList(grow_week_age);
+//	        if(gw.size()==1 && gw.get(0).toString().equals("")){
+//	        	pd.put("grow_week_age", null);	
+//	        }else{
+//	        pd.put("grow_week_age", gw);
+//	        }       
         	drug = drugService.selectDrugPlan(pd);
         }else if(ps.equals("fact")){
-        	drug = drugService.selectDrugFact();
+        	drug = drugService.selectDrugFact(pd);
         }else{
         	drug = drugService.selectDrugPlan(pd);
         }
@@ -150,8 +164,8 @@ public class DrugAction extends BaseAction {
         pd.put("grow_week_age", gw);
         }
         drugService.saveDrugPlan(pd);
-        PageData pd2 = new PageData();
-        List<PageData> drug = drugService.selectDrugPlan(pd2);
+//        PageData pd2 = new PageData();
+        List<PageData> drug = drugService.selectDrugPlan(pd);
                 j.setObj(drug);
                 j.setSuccess(true);
         super.writeJson(j, response);
@@ -174,8 +188,8 @@ public class DrugAction extends BaseAction {
         	pd.put("id", tt);
         	drugService.deleteDrugPlan(pd);
         }
-        PageData pd2 = new PageData();
-        List<PageData> drug = drugService.selectDrugPlan(pd2);
+//        PageData pd2 = new PageData();
+        List<PageData> drug = drugService.selectDrugPlan(pd);
                 j.setObj(drug);
                 j.setSuccess(true);
         super.writeJson(j, response);
@@ -195,7 +209,8 @@ public class DrugAction extends BaseAction {
         pd.put("create_person",user.getId());
         pd.put("modify_person", user.getId());
         drugService.saveDrugFact(pd);
-        List<PageData> drug = drugService.selectDrugFact();
+        pd.put("good_type1", pd.get("good_type"));
+        List<PageData> drug = drugService.selectDrugFact(pd);
                 j.setObj(drug);
                 j.setSuccess(true);
         super.writeJson(j, response);
@@ -219,7 +234,7 @@ public class DrugAction extends BaseAction {
         	drugService.deleteDrugFact(pd);
         }
         
-        List<PageData> drug = drugService.selectDrugFact();
+        List<PageData> drug = drugService.selectDrugFact(pd);
                 j.setObj(drug);
                 j.setSuccess(true);
         super.writeJson(j, response);
@@ -274,5 +289,22 @@ public class DrugAction extends BaseAction {
                 j.setSuccess(true);
         super.writeJson(j, response);
     }
+    
+    /**
+     * 获取栋舍类型
+     * yoven 2017-02-23
+     * @return
+     */
+    @RequestMapping(value="/getHouseType")
+    public void getHouseType(HttpServletResponse response)throws Exception{
+        Json j=new Json();
+        PageData pd = new PageData();
+        pd = this.getPageData();
+        List<PageData> houseList = moduleService.service("organServiceImpl", "getHouseType", new Object[]{pd});
+                j.setObj(houseList);
+                j.setSuccess(true);
+        super.writeJson(j, response);
+    }
+ 
 	
 }

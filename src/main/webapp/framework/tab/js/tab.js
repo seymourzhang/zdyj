@@ -1,1 +1,169 @@
-eval(function(p,a,c,k,e,d){e=function(c){return(c<a?'':e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--){d[e(c)]=k[c]||e(c)}k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1};while(c--){if(k[c]){p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c])}}return p}('5 Y=6(){};Y.1a={12:"",1m:"",1n:"",X:1M,1l:6(b,a){}};5 P=6(){};P.1a={2:"1O",u:"",N:"",1t:K};6 1K(f){5 a={s:y,1G:0,B:y};5 g=1r Y();$.1s(g,f);5 b=g.X=="1p"?"1H":"";3.2=g.1n;3.1q=g.1m;3.Q=y;3.D=y;5 c=\'<F 7="1y"  2="{0}" 1i="0" 1j="0" 1k="0"><E><8 7="W"></8><8 7="G U">{1}</8><8 7="G"><r 7="A"></r></8><8 7="O"></8></E></F>\';5 h=\'<r 7="19" 2="{0}"><r 7="1d"></r></r>\';5 i;9($("#1I").t("1R")=="K"){i=\'<L 2="{0}" 20="1W" 1u="K" 15="0" 1v="I%" 1h="I%" S="{1}"></L>\'}H{i=\'<L 2="{0}" 1S="1T-x:21;" 1u="K" 15="0" 1v="I%" 1h="I%" S="{1}"></L>\'}9(g.X=="1p"){c=\'<F 7="1C"  2="{0}" 1i="0" 1j="0" 1k="0"><E><8 7="1B"></8><8 7="1w U">{1}</8><8 7="1w"><r 7="A 1E"></r></8><8 7="1D"></8></E></F>\';h=\'<r 7="19 1A" 2="{0}"><r 7="1d 1z"></r></r>\'}$("#"+g.12).V(h.C("{0}",3.2));6 e(n){5 p=$(n);5 m=$(p).q(".W"+b);5 l=$(p).q(".G"+b);5 k=$(p).q(".O"+b);9(a.s==y||a.s!=3){$(p).17(6(){m.v("13"+b);l.v("1g"+b);k.v("1f"+b)}).11(6(){m.w("13"+b);l.w("1g"+b);k.w("1f"+b)}).z(6(){9(a.s!=y){$(a.s).q(".W"+b).w("18"+b);$(a.s).q(".G"+b).w("1b"+b);$(a.s).q(".O"+b).w("1c"+b);$(a.s).q(".A").v("1e")}m.v("18"+b);l.v("1b"+b);k.v("1c"+b);a.s=3;$(a.s).q(".A").w("1e");d($(3).t("2"),1V)});5 o=$(p).q(".A").17(6(){$(3).v("14")}).11(6(){$(3).w("14")}).z(6(){j(p.t("2"))})}}6 d(l,k){9(k){}9(a.B){a.B.1o()}a.B=$("#M"+l);a.B.1U();g.1l($("#"+l),a.B)}6 j(o){5 n=$("#M"+o);5 k=$("#"+o);9($(a.s).t("2")==k.t("2")){5 l=k.1F();9(l.t("2")){$("#"+l.t("2")).J("z")}H{5 m=k.1X();9(m.t("2")){$("#"+m.t("2")).J("z")}}}H{}n.1x();k.1x()}3.16=6(){3.D=$("#"+3.2);3.Q=3.D.q(".1y"+b);3.Q.1Z(6(){e(3)})};3.1Y=6(n){5 m=1r P();$.1s(m,n);9($("#"+m.2).T>0){3.R(m.2);1Q()}H{9(m.u.T>10){m.u=m.u.1J(0,10)}9(m.u.T<4){m.u="&Z;&Z;"+m.u+"&Z;"}5 k=i.C("{0}","M"+m.2).C("{1}",m.N);$("#"+3.1q).V(k);5 l=c.C("{0}",m.2).C("{1}",m.u);3.D.V(l);e($("#"+m.2));9(!m.1t){$($("#"+m.2)).q(".A").1o()}3.R(m.2)}};3.1L=6(k){5 l=k.2;$("#"+l).q(".U").1P(k.u);$("#"+l).J("z");$("#M"+l).t("S",k.N)};3.R=6(k){$("#"+k).J("z")};3.1N=6(k){j(k)};3.16()};',62,126,'||id|this||var|function|class|td|if|||||||||||||||||find|div|current|attr|title|addClass|removeClass||null|click|tab_close|current_page|replace|tabContainer|tr|table|tab_item2|else|100|trigger|true|iframe|page_|url|tab_item3|TabItemOption|tabs|activate|src|length|tab_title|append|tab_item1|position|TabOption|nbsp||mouseout|containerId|tab_item1_mouseover|tab_close_mouseover|frameborder|init|mouseover|tab_item1_selected|benma_ui_tab|prototype|tab_item2_selected|tab_item3_selected|tab_hr|tab_close_noselected|tab_item3_mouseover|tab_item2_mouseover|height|border|cellpadding|cellspacing|action|pageid|cid|hide|bottom|pid|new|extend|isClosed|allowTransparency|width|tab_item2_bottom|remove|tab_item|tab_hr_bottom|benma_ui_tab_bottom|tab_item1_bottom|tab_item_bottom|tab_item3_bottom|tab_close_bottom|next|current_index|_bottom|scrollContent|substring|TabView|update|top|close|tab_|html|closeProgress|childScrollContent|style|overflow|show|false|no|prev|add|each|scrolling|hidden'.split('|'),0,{}))
+/**
+ * Created by LeLe on 2/21/2017.
+ */
+var TabOption = function() {};
+TabOption.prototype = {
+    containerId: "",
+    pageid: "",
+    cid: "",
+    position: top,
+    action: function(b, a) {}
+};
+var TabItemOption = function() {};
+TabItemOption.prototype = {
+    id: "tab_",
+    title: "",
+    url: "",
+    isClosed: true
+};
+function TabView(f) {
+    var a = {
+        current: null,
+        current_index: 0,
+        current_page: null
+    };
+    var g = new TabOption();
+    $.extend(g, f);
+    var b = g.position == "bottom" ? "_bottom": "";
+    this.id = g.cid;
+    this.pid = g.pageid;
+    this.tabs = null;
+    this.tabContainer = null;
+    var c = '<table class="tab_item"  id="{0}" border="0" cellpadding="0" cellspacing="0"><tr><td class="tab_item1"></td><td class="tab_item2 tab_title">{1}</td><td class="tab_item2"><div class="tab_close"></div></td><td class="tab_item3"></td></tr></table>';
+    var h = '<div class="benma_ui_tab" id="{0}"><div class="tab_hr"></div></div>';
+    var i;
+    if ($("#scrollContent").attr("childScrollContent") == "true") {
+        i = '<iframe id="{0}" scrolling="no" allowTransparency="true" frameborder="0" width="100%" height="100%" src="{1}"></iframe>'
+    } else {
+        i = '<iframe id="{0}" style="overflow-x:hidden;" allowTransparency="true" frameborder="0" width="100%" height="100%" src="{1}"></iframe>'
+    }
+    if (g.position == "bottom") {
+        c = '<table class="tab_item_bottom"  id="{0}" border="0" cellpadding="0" cellspacing="0"><tr><td class="tab_item1_bottom"></td><td class="tab_item2_bottom tab_title">{1}</td><td class="tab_item2_bottom"><div class="tab_close tab_close_bottom"></div></td><td class="tab_item3_bottom"></td></tr></table>';
+        h = '<div class="benma_ui_tab benma_ui_tab_bottom" id="{0}"><div class="tab_hr tab_hr_bottom"></div></div>'
+    }
+    $("#" + g.containerId).append(h.replace("{0}", this.id));
+    function e(n) {
+        var p = $(n);
+        var m = $(p).find(".tab_item1" + b);
+        var l = $(p).find(".tab_item2" + b);
+        var k = $(p).find(".tab_item3" + b);
+        if (a.current == null || a.current != this) {
+            $(p).mouseover(function() {
+                m.addClass("tab_item1_mouseover" + b);
+                l.addClass("tab_item2_mouseover" + b);
+                k.addClass("tab_item3_mouseover" + b)
+            }).mouseout(function() {
+                m.removeClass("tab_item1_mouseover" + b);
+                l.removeClass("tab_item2_mouseover" + b);
+                k.removeClass("tab_item3_mouseover" + b)
+            }).click(function() {
+                if (a.current != null) {
+                    $(a.current).find(".tab_item1" + b).removeClass("tab_item1_selected" + b);
+                    $(a.current).find(".tab_item2" + b).removeClass("tab_item2_selected" + b);
+                    $(a.current).find(".tab_item3" + b).removeClass("tab_item3_selected" + b);
+                    $(a.current).find(".tab_close").addClass("tab_close_noselected")
+                }
+                m.addClass("tab_item1_selected" + b);
+                l.addClass("tab_item2_selected" + b);
+                k.addClass("tab_item3_selected" + b);
+                a.current = this;
+                $(a.current).find(".tab_close").removeClass("tab_close_noselected");
+                d($(this).attr("id"), false)
+            });
+            var o = $(p).find(".tab_close").mouseover(function() {
+                $(this).addClass("tab_close_mouseover")
+            }).mouseout(function() {
+                $(this).removeClass("tab_close_mouseover")
+            }).click(function() {
+                var pid = p.attr("id");
+                var ic = isClose(pid);
+                if(ic==true){
+                    j(pid);
+                };
+                // j(pid);
+            })
+        }
+    }
+    function d(l, k) {
+        if (k) {}
+        if (a.current_page) {
+            a.current_page.hide()
+        }
+        a.current_page = $("#page_" + l);
+        a.current_page.show();
+        g.action($("#" + l), a.current_page)
+    }
+    function j(o) {
+        var n = $("#page_" + o);
+        var k = $("#" + o);
+        if ($(a.current).attr("id") == k.attr("id")) {
+            var l = k.next();
+            if (l.attr("id")) {
+                $("#" + l.attr("id")).trigger("click")
+            } else {
+                var m = k.prev();
+                if (m.attr("id")) {
+                    $("#" + m.attr("id")).trigger("click")
+                }
+            }
+        } else {}
+        n.remove();
+        k.remove()
+    }
+    this.init = function() {
+        this.tabContainer = $("#" + this.id);
+        this.tabs = this.tabContainer.find(".tab_item" + b);
+        this.tabs.each(function() {
+            e(this)
+        })
+    };
+    this.add = function(n) {
+        var m = new TabItemOption();
+        $.extend(m, n);
+        if ($("#" + m.id).length > 0) {
+            this.activate(m.id);
+            closeProgress()
+        } else {
+            if (m.title.length > 10) {
+                m.title = m.title.substring(0, 10)
+            }
+            if (m.title.length < 4) {
+                m.title = "&nbsp;&nbsp;" + m.title + "&nbsp;"
+            }
+            var k = i.replace("{0}", "page_" + m.id).replace("{1}", m.url);
+            $("#" + this.pid).append(k);
+            var l = c.replace("{0}", m.id).replace("{1}", m.title);
+            this.tabContainer.append(l);
+            e($("#" + m.id));
+            if (!m.isClosed) {
+                $($("#" + m.id)).find(".tab_close").hide()
+            }
+            this.activate(m.id)
+        }
+    };
+    this.update = function(k) {
+        var l = k.id;
+        $("#" + l).find(".tab_title").html(k.title);
+        $("#" + l).trigger("click");
+        $("#page_" + l).attr("src", k.url)
+    };
+    this.activate = function(k) {
+        $("#" + k).trigger("click")
+    };
+    this.close = function(k) {
+        j(k)
+    };
+    function isClose(pid){
+        var rt = true;
+        var conf = getGlobalObj(pid);
+        if("undefined" != typeof(conf)){
+            rt = conf.run();
+        }
+        return rt;
+    };
+    function close(pid){
+        j(pid);
+    }
+    this.init()
+};
+

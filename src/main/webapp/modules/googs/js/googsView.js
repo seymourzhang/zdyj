@@ -7,8 +7,10 @@ $(document).ready(function() {
 	$(".date-picker").datepicker({
 		language : 'zh-CN',
 		autoclose : true,
+        // defaultDate : new Date(),
 		todayHighlight : true
 	});
+    $(".date-picker").datepicker('setDate', new Date());//
 
 	$(".date-picker1").datepicker({
 		language : 'zh-CN',
@@ -420,12 +422,7 @@ function inStock() {
 	var test = parseInt(count);
 	if (isNaN(test) || test <= 0)
 	{
-		layer.alert('入库量必须是大于0的数字，请重新输入!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-			// 动画类型
-		});
+		layer.alert('入库量必须是大于0的数字，请重新输入!');
 		return;
 	}
 
@@ -433,22 +430,12 @@ function inStock() {
 	test = parseInt(price);
 	if (isNaN(test) || test <= 0)
 	{
-		layer.alert('单价必须是大于0的数字，请重新输入!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-			// 动画类型
-		});
+		layer.alert('单价必须是大于0的数字，请重新输入!');
 		return;
 	}
 	var good_id = $("#good_id").val();
 	if (good_id == "" || good_id ==null) {
-		layer.alert('品名不能为空且一定要合法!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.alert('品名不能为空!');
 		return;
 	}
 //	var corporation_id = $("#corporation_id").val();
@@ -488,8 +475,8 @@ function inStock() {
 				"price":$("#sssasdPrice").val(),
 				"exp":$("#exp").val(),
 				"operation_date":$("#operation_date").val(),
-				"farmId":$("#farmId").val(),
-				"farm":$("#farm").val()
+				"inStockFarmId":$("#farmId").val(),
+				"inStockFarm":$("#farm").val()
 		};
 		param["approve_status"] = 2;
 		$.ajax({
@@ -499,21 +486,12 @@ function inStock() {
 			dataType : "json",
 			success : function(result) {
 				if (result.msg == '1') {
-					layer.msg("入库成功！", {
-						skin: 'layui-layer-lan'
-						, closeBtn: 0
-						, shift: 4 //动画类型
-					});
+					layer.msg("入库成功！");
 					document.getElementById("sssasd").value = "";
 					document.getElementById("sssasdPrice").value = "";
 					getInstock();
 				}else{
-					layer.alert('操作失败!', {
-						skin : 'layui-layer-lan',
-						closeBtn : 0,
-						shift : 4
-						// 动画类型
-					});
+					layer.alert('操作失败!');
 					return;
 				}
 			}
@@ -569,7 +547,8 @@ function getInstock() {
 	$.ajax({
 		url : path + "/googs/getStockChange",
 		data : {
-			"operation_kind" : 2
+			"operation_kind" : 2,
+			"farm_id": objGoods.farmId
 		},
 		type : "POST",
 		dataType : "json",
@@ -659,29 +638,14 @@ function outStock() {
 			dataType : "json",
 			success : function(result) {
 				if (result.msg == '1') {
-					layer.msg('耗用成功！', {
-						skin : 'layui-layer-lan',
-						closeBtn : 0,
-						shift : 4
-						// 动画类型
-					});
+					layer.msg('耗用成功！');
 					document.getElementById("count_out").value = "";
 					getOutStock();
 				} else if (result.msg == '2') {
-					layer.msg('耗用失败，库存不足！', {
-						skin : 'layui-layer-lan',
-						closeBtn : 0,
-						shift : 4
-						// 动画类型
-					});
+					layer.msg('耗用失败，库存不足！');
 					return;
 				}else{
-					layer.msg('操作失败!', {
-						skin : 'layui-layer-lan',
-						closeBtn : 0,
-						shift : 4
-						// 动画类型
-					});
+					layer.msg('操作失败!');
 					return;
 				}
 			}
@@ -726,7 +690,8 @@ function getOutStock() {
 	$.ajax({
 		url : path + "/googs/getStockChange",
 		data : {
-			"operation_kind" : 1
+			"operation_kind" : 1,
+            "farm_id": objGoods.farmId
 		},
 		type : "POST",
 		dataType : "json",
@@ -791,7 +756,7 @@ function setCorporationStock() {
 				$("#corporation_id_stock").append("<option value=" + list[i].corporation_id + ">" + list[i].corporation + "</option>");
 			}
 		}
-	})
+	});
 }
 
 function setFactoryStock() {
@@ -866,12 +831,7 @@ function getMessages(){
 	}
 	 var getRow = $('#stockTable').bootstrapTable('getSelections');
 	 if(getRow==null||getRow==''){
-		 layer.msg('请先选择需要调整的库存信息!', {
-				skin : 'layui-layer-lan',
-				closeBtn : 0,
-				shift : 4
-			// 动画类型
-			});
+		 layer.msg('请先选择需要调整的库存记录!');
 		 return;
 	 }
 	 /***判断是否存在未审批的调整纪录*************/
@@ -885,7 +845,7 @@ function getMessages(){
 			dataType : "json",
 			success : function(result) {
 				if(result.msg=="1") {
-					layer.alert('此纪录存在未审批的处理，请先审批!', {
+					layer.alert('此记录存在未审批的处理，请先审批!', {
 						skin : 'layui-layer-lan',
 						closeBtn : 0,
 						shift : 4
@@ -903,108 +863,108 @@ function getMessages(){
 function openAdjustWin(getRow){
 var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
-		str += '<div class="span2">';
-			str += '类型:';
+		str += '<div class="span4">';
+			str += '<span_customer2>' + '类型' +'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span2" >';
+			str += '<div class="span8" >';
 				str += getRow[0].type_name ;
 			str += '</div>';
-		str += '<div class="span2">';
-			str += '品名:' ;
+	str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str += '<span_customer2>' + '品名' +'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span2" >';
+			str += '<div class="span8" >';
 				str += getRow[0].good_name ;
 			str += '</div>';
-		str += '<div class="span2">';
-			str += '规格:';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str += '<span_customer2>' + '规格' +'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span2">';
+			str += '<div class="span8">';
 				str += getRow[0].spec_name ;
 			str += '</div>';
-	str += '</div>';
-
-	str += '<div class="row-fluid">';
-		str += '<div class="span2">';
-			str += '生产厂家:';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str += '<span_customer2>' + '生产厂家'+'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span2">';
+			str += '<div class="span8">';
 				if (getRow[0].factory_name == null) {
 					str += '';
 				}else{
 					str += getRow[0].factory_name ;
 				}
 			str += '</div>';
-		str += '<div class="span2">';
-			str+='供应方:';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str+=  '<span_customer2>' + '供应方' +'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span2">';
+			str += '<div class="span8">';
 				if(getRow[0].corporation == null) {
 					str += '';
 				}else{
 					str += getRow[0].corporation;
 				}
 			str += '</div>';
-		str += '<div class="span2">';
-			str += '单位:';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str += '<span_customer2>' + '单位'+'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span2">';
+			str += '<div class="span8">';
 				str += getRow[0].unit_name;
 			str += '</div>';
-	str += '</div>';
-
-	str += '<div class="row-fluid" >';
-		str += '<div class="span2">';
-			str += '调整数量:';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str +=  '<span_customer2>' +  '当前库存量'+'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span2">';
-				str += '<input type="text" style="width: 70px;" name="count" id="adjustValue"/>';
-			str += '</div>';
-		str += '<div class="span2">';
-			str += '调整后库存量:';
-		str += '</div>';
-			str += '<div class="span2">';
-				str += '<span id="adjustNum">' + getRow[0].stockCount+'</span>';
-			str += '</div>';
-		str += '<div class="span2">';
-			str += '当前库存量:';
-		str += '</div>';
-			str += '<div class="span2">';
+			str += '<div class="span8">';
 				str += getRow[0].stockCount;
 			str += '</div>';
-	str += '</div>';
-	str += '<div class="row-fluid">';
-		str += '<div class="span2">';
-			str += '备注:';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str += '<span_customer2>' + '调整数量'+'</span_customer2>';
 		str += '</div>';
-			str += '<div class="span10">';
-				str += '<input type="text" style="width: 380px;" name="adjustRemark" id="adjustRemark"/>';
+			str += '<div class="span8">';
+				str += '<input type="text" style="width: 70px;" name="count" id="adjustValue"/>';
 			str += '</div>';
-	str += '</div>';
-	str += '</div>';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str += '<span_customer2>' + '调整后库存量'+'</span_customer2>';
+		str += '</div>';
+			str += '<div class="span8">';
+				str += '<span id="adjustNum">' + getRow[0].stockCount+'</span>';
+			str += '</div>';
+    str += '</div>';
+    str += '<div class="row-fluid">';
+		str += '<div class="span4">';
+			str += '<span_customer2>' +'备注'+'</span_customer2>';
+		str += '</div>';
+			str += '<div class="span8">';
+				str += '<input type="text" style="width: 320px;" name="adjustRemark" id="adjustRemark"/>';
+			str += '</div>';
+    str += '</div>';
+str += '</div>';
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['570px', '255px'], //宽高
+	  area: ['570px', '440px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
 		  var adjustValue=$("#adjustValue").val();
 		  if(adjustValue==null||adjustValue==''){
-				 layer.msg('请输入调整数量!', {
-						skin : 'layui-layer-lan',
-						closeBtn : 0,
-						shift : 4
-					// 动画类型
-					});
+				 layer.msg('请输入调整数量!');
 				 return;
 			}
 		  if(isNaN(adjustValue)){
-			  layer.msg('请输入数字!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
+			  layer.msg('请输入数字!');
 			 return;
 		  }
 		var param =getRow[0];
@@ -1020,19 +980,9 @@ layer.open({
 			success : function(result) {
 				layer.close(index); 
 				if(result.msg=="1") {
-					layer.msg('操作成功,进入审批流程!', {
-						skin : 'layui-layer-lan',
-						closeBtn : 0,
-						shift : 4
-					// 动画类型
-					});
+					layer.msg('操作成功,进入审批流程!');
 				}else{
-					layer.msg('操作失败!', {
-						skin : 'layui-layer-lan',
-						closeBtn : 0,
-						shift : 4
-					// 动画类型
-					});
+					layer.msg('操作失败!');
 				}
 			}
 		});
@@ -1041,22 +991,12 @@ layer.open({
 $("#adjustValue").blur(function(){
 	  var adjustValue=$("#adjustValue").val();
 	  if(isNaN(adjustValue)){
-		  layer.msg('请输入数字!', {
-				skin : 'layui-layer-lan',
-				closeBtn : 0,
-				shift : 4
-			// 动画类型
-			});
+		  layer.msg('请输入数字!');
 		 return;
 	  }else{
 		  var num=Number(getRow[0].stockCount)+Number($("#adjustValue").val());
 			if(num<0){
-				layer.msg('调整后的数量小于零!', {
-					skin : 'layui-layer-lan',
-					closeBtn : 0,
-					shift : 4
-				// 动画类型
-				});
+				layer.msg('调整后的数量小于零!');
 			}else{
 				$("#adjustNum").text(num);
 			}
@@ -1318,10 +1258,10 @@ function initObjGoods(){
 	objGoods.farmId =  document.getElementById("farmId").value;
 	objGoods.farm =  document.getElementById("farm").value;
 
-	document.getElementById("inStockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
-	document.getElementById("outStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
-	document.getElementById("stockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"</B></font>";
-	document.getElementById("approvalStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"</B></font>";
+	document.getElementById("inStockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"入库记录</B></font>";
+	document.getElementById("outStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"耗用记录</B></font>";
+	document.getElementById("stockFarmTitle").innerHTML = "<font size='4' ><B>" + objGoods.farm +"库存调整记录</B></font>";
+	document.getElementById("approvalStockFarmTitle").innerHTML =  "<font size='4' ><B>" + objGoods.farm +"库存调整审批记录</B></font>";
 }
 
 function rejectStockChange(remark) {
@@ -1346,29 +1286,17 @@ function rejectStockChange(remark) {
 			dataType: "json",
 			success: function (result) {
 				if (result.success) {
-					layer.msg("驳回成功！", {
-						skin: 'layui-layer-lan'
-						, closeBtn: 0
-						, shift: 4 //动画类型
-					});
+					layer.msg("驳回成功！");
 					queryStockApproval();
 					queryStockApprovalChange();
 				} else {
-					layer.msg("驳回出错，请联系管理员！", {
-						skin: 'layui-layer-lan'
-						, closeBtn: 0
-						, shift: 4 //动画类型
-					});
+					layer.msg("驳回出错，请联系管理员！");
 				}
 			}
 		});
 
 	} else {
-		layer.msg("请先选择待审批记录！", {
-			skin: 'layui-layer-lan'
-			, closeBtn: 0
-			, shift: 4 //动画类型
-		});
+		layer.msg("请先选择待审批记录！");
 	}
 };
 
@@ -1394,28 +1322,16 @@ function approvalStockChange(remark){
 			dataType : "json",
 			success : function(result) {
 				if(result.success){
-					layer.msg("通过成功！", {
-						skin: 'layui-layer-lan'
-						, closeBtn: 0
-						, shift: 4 //动画类型
-					});
+					layer.msg("通过成功！");
 					queryStockApproval();
 					queryStockApprovalChange();
 				} else{
-					layer.msg("通过出错，请联系管理员！", {
-						skin: 'layui-layer-lan'
-						, closeBtn: 0
-						, shift: 4 //动画类型
-					});
+					layer.msg("通过出错，请联系管理员！");
 				}
 			}
 		});
 	} else{
-		layer.msg("请先选择待审批记录！", {
-			skin: 'layui-layer-lan'
-			, closeBtn: 0
-			, shift: 4 //动画类型
-		});
+		layer.msg("请先选择待审批记录！");
 	}
 };
 

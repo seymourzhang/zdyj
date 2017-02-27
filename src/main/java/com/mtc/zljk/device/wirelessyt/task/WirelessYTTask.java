@@ -666,6 +666,8 @@ public class WirelessYTTask implements Runnable {
                     allData_PageData.put("CO2_1",rq.CO2.getValue());
                 }else if(rq.PORT_ID.getValue().equals("1110_1")){
                     allData_PageData.put("lux_1",rq.LUX.getValue());
+                }else if(rq.PORT_ID.getValue().equals("1005_1")){
+                    allData_PageData.put("temp_10",rq.OUTSIDE_TEMP.getValue());
                 }
 
                 rq.YT_DATETIME.setValue(String.valueOf(tWirelessYTDevice.getYtDataTime()));

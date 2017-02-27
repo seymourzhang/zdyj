@@ -3,12 +3,13 @@
  */
 function overBatchColumns(dataList){
 	var able = true;
-	if(dataList[0].house_type =="2"){
+	if(dataList.length !=0 &&dataList[0].house_type =="2"){
 		able = false;
 	}
     var dataColumns = [{field: "operation_date",
-        title: "日期",
-        visible: false
+        title: "出栏日",
+        width: '8%'
+        // visible: false
     }, {field: "houseId",
         title: "出栏栋ID",
         visible: false
@@ -19,7 +20,7 @@ function overBatchColumns(dataList){
     }, {
         field: "over_batch_count",
         title: "出栏总数",
-        width: '10%'
+        width: '8%'
     }, {
         field: "batchId",
         title: "批次序号",
@@ -31,7 +32,7 @@ function overBatchColumns(dataList){
     }, {
         field: "female_count",
         title: "母鸡数",
-        width: '10%'
+        width: '8%'
     }, {
         field: "female_weight",
         title: "只均重（g）",
@@ -40,7 +41,7 @@ function overBatchColumns(dataList){
     }, {
         field: "male_count",
         title: "公鸡数",
-        width: '10%'
+        width: '8%'
     }, {
         field: "male_weight",
         title: "只均重（g）",
@@ -49,7 +50,7 @@ function overBatchColumns(dataList){
     }, {
         field: "weed_out_total_weight",
         title: "淘汰鸡总重（kg）",
-        width: '10%'
+        width: '8%'
     }, {
         field: "weed_out_total_count",
         title: "淘汰鸡总数",
@@ -71,18 +72,18 @@ function checkVarOverBatch(objBatch, dataList){
     objBatch.resultFlag = true;
     objBatch.resultMsg = "检测通过";
 
-    test = parseInt(objBatch.female_count);
-    if (isNaN(test))
+    test = objBatch.female_count;
+    if (parseInt(test)!=test)
     {
         objBatch.resultFlag = false;
-        objBatch.resultMsg = "母鸡数必须是数字，请重新输入!";
+        objBatch.resultMsg = "母鸡数必须是整数，请重新输入!";
     }
 
-    test = parseInt(objBatch.male_count);
-    if (isNaN(test))
+    test = objBatch.male_count;
+    if (parseInt(test)!=test)
     {
         objBatch.resultFlag = false;
-        objBatch.resultMsg = "公鸡数必须是数字，请重新输入!";
+        objBatch.resultMsg = "公鸡数必须是整数，请重新输入!";
     }
 
     test = parseInt(objBatch.female_weight);
@@ -91,6 +92,11 @@ function checkVarOverBatch(objBatch, dataList){
         objBatch.resultFlag = false;
         objBatch.resultMsg = ",母鸡均重必须是数字，请重新输入!";
     }
+//    if (test<=0)
+//    {
+//        objBatch.resultFlag = false;
+//        objBatch.resultMsg = "母鸡均重必须大于0，请重新输入!";
+//    }
 
     test = parseInt(objBatch.male_weight);
     if (isNaN(test))
@@ -98,6 +104,11 @@ function checkVarOverBatch(objBatch, dataList){
         objBatch.resultFlag = false;
         objBatch.resultMsg = "公鸡均重必须是数字，请重新输入!";
     }
+//    if (test<=0)
+//    {
+//        objBatch.resultFlag = false;
+//        objBatch.resultMsg = "公鸡均重必须大于0，请重新输入!";
+//    }
 
     if(!getHouseFlag()){
         test = parseInt(objBatch.weed_out_total_weight);
@@ -118,6 +129,11 @@ function checkVarOverBatch(objBatch, dataList){
             objBatch.resultFlag = false;
             objBatch.resultMsg = "淘汰均价价格必须是数字，请重新输入!";
         }
+    }
+
+    if(""== document.getElementById("overBatchQueryTime").value){
+        objBatch.resultFlag = false;
+        objBatch.resultMsg = "出栏日不能为空，请重新选择!";
     }
 
     for(var key in dataList){
@@ -172,6 +188,7 @@ function saveOverBatchData(objBatch){
                 , weed_out_avg_price: objBatch.weed_out_avg_price
                 , bak: objBatch.bak
                 , house_flag: getHouseFlag()
+                , grow_age: $("#overBatchAge").val()
         },
         dataType: "json",
         success: function (result) {
@@ -205,10 +222,26 @@ function getHouseFlag(){
 
 //获取批次号
 function getBatchNo(tabName){
-    var dataList = $('#' + tabName + 'Table').bootstrapTable('getData');
-    for(var key in dataList){
-        if((dataList[key].houseId == objBatch.house_code)){
-            objBatch.batch_no = dataList[key].batchNo;
+//    var dataList = $('#' + tabName + 'Table').bootstrapTable('getData');
+//    for(var key in dataList){
+//        if((dataList[key].houseId == objBatch.house_code)){
+//            objBatch.batch_no = dataList[key].batchNo;
+//        }
+//    }
+	$.ajax({
+        type: "post",
+        url: path + "/batch/getCreateBatchData",
+        data: {
+            house_code: objBatch.house_code
+        },
+        dataType: "json",
+        success: function (result) {
+            dataList = eval(result.obj);
+            for(var key in dataList){
+              if((dataList[key].houseId == objBatch.house_code)){
+                  objBatch.batch_no = dataList[key].batchNo;
+              }
+          }
         }
-    }
+    });
 }

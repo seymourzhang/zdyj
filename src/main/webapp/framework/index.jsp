@@ -14,6 +14,8 @@
 <%@ include file="inc.jsp"%>
 <script src="<%=path %>/framework/jquery/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
 <script src="<%=path %>/framework/jquery/jquery.pulsate.min.js" type="text/javascript"></script>
+<script src="<%=path %>/framework/layer/layer.js" type="text/javascript"></script>
+
 </head>
 <body class="page-header-fixed" style="overflow: hidden;background-image: url(../image/bg.jpg) ">
 	<!-- BEGIN HEADER -->
@@ -55,11 +57,13 @@
 		
 	
 	function cmainFrame(){
+	    var isIE = App.isIE();
+	    var hsheight = (isIE == true)?45:51;
+
 		var hmain = document.getElementById("mainFrame");
 		var bheight = document.documentElement.clientHeight;
-		hmain .style.width = '100%';
-		hmain .style.height = (bheight  - 51) + 'px';
-		
+		hmain.style.width = '100%';
+		hmain.style.height = (bheight  - hsheight) + 'px';
 	}
 	cmainFrame();
 	window.onresize=function(){  

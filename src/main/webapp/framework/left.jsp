@@ -5,7 +5,7 @@
 			<li>
 				<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 
-				<div class="sidebar-toggler hidden-phone"></div>
+				<div class="sidebar-toggler hidden-phone" id="sidebar_toggler"></div>
 
 				<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
 

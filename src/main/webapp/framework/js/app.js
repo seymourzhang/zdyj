@@ -298,7 +298,7 @@ var App = function () {
 
     var handleSidebarToggler = function () {
         // handle sidebar show/hide
-        $('.page-sidebar').on('click', '.sidebar-toggler', function (e) {            
+        $('.page-sidebar').on('click', '.sidebar-toggler', function (e) {
             var body = $('body');
             var sidebar = $('.page-sidebar');
 
@@ -312,13 +312,21 @@ var App = function () {
 
             $(".sidebar-search", sidebar).removeClass("open");
 
+            var sidebar = document.getElementById("sidebar_toggler");
+
             if (body.hasClass("page-sidebar-closed")) {
                 body.removeClass("page-sidebar-closed");
                 if (body.hasClass('page-sidebar-fixed')) {
                     sidebar.css('width', '');
                 }
+
+                sidebar.style.backgroundImage = 'url(../image/sidebar-toggler-closed.png)';
+                // alert("open");
             } else {
                 body.addClass("page-sidebar-closed");
+
+                sidebar.style.backgroundImage = 'url(../image/sidebar-toggler-opened.png)';
+                // alert("close");
             }
             runResponsiveHandlers();
         });
@@ -883,8 +891,63 @@ var App = function () {
             } else {
                 return '';
             }
-        }
+        },
 
+        //判断当前浏览类型
+        getBrowersType: function() {
+            var userAgent=window.navigator.userAgent;
+            var browserMatch = this.uaMatch(userAgent.toLowerCase());
+            return browserMatch;
+        }, //getBrowersType() end
+        uaMatch: function (ua) {
+            var rMsie=/(msie\s|trident.*rv:)([\w.]+)/,
+                    rFirefox=/(firefox)\/([\w.]+)/,
+                    rOpera=/(opera).+version\/([\w.]+)/,
+                    rChrome=/(chrome)\/([\w.]+)/,
+                    rSafari=/version\/([\w.]+).*(safari)/;
+            var match=rMsie.exec(ua);
+            if(match != null)
+            {
+                return {browser:"IE",version:match[2] || "0"};
+            }
+            var match=rFirefox.exec(ua);
+            if(match != null)
+            {
+                return {browser:match[1] || "",version:match[2] || "0"};
+            }
+            var match=rOpera.exec(ua);
+            if(match != null)
+            {
+                return {browser:match[1] || "",version:match[2] || "0"};
+            }
+            var match=rChrome.exec(ua);
+            if(match != null)
+            {
+                return {browser:match[1] || "",version:match[2] || "0"};
+            }
+            var match=rSafari.exec(ua);
+            if(match != null)
+            {
+                return {browser:match[2] || "",version:match[1] || "0"};
+            }
+            if(match != null)
+            {
+                return {browser:"",version:"0"};
+            }
+        },
+    //判断是否是IE浏览器
+        isIE: function() {
+            var browersType = this.getBrowersType();
+            if(browersType.browser == "IE") {
+                return true;
+            }
+            return false;
+        },
+        //判断是否是IE浏览器，包括Edge浏览器
+        browersVersion: function() {
+            var browersType = this.getBrowersType();
+            return browersType.version;
+        },
     };
 
 }();

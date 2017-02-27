@@ -290,7 +290,7 @@ public class TempCurveMobileAction extends BaseAction {
         String aa = pd.toString();
         aa = aa.substring(1, aa.length() - 2);
         try {
-            String ErrorMsg = "";
+            String ErrorMsg = "Null";
             JSONObject jsonObject = new JSONObject(aa);
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -312,100 +312,111 @@ public class TempCurveMobileAction extends BaseAction {
             String data_age = "";
             String data_date = "";
             String SpecialDate = "";
-            PageData temp = new PageData();
-            if (DataRange == null || "".equals(DataRange)) {
-                temp.put("farm_id", pd.get("FarmId"));
-                temp.put("house_code", pd.get("HouseId"));
-                temp = batchManageService.selectBatchDataForMobile(temp);
-                if (temp != null) {
-                    DataRange = sdf.format("1".equals(temp.get("status").toString()) ? new Date() : sdf.parse(temp.get("market_date").toString()));
-                    SpecialDate = DataRange;
+            List<PageData> lcp = new ArrayList<>();
+            if ("0".equals(BreedBatchId)) {
+                ErrorMsg = "暂无批次信息";
+            }
+            if ("02".equals(DataType) && "Y".equals(ReqFlag)) {
+                if (DataRange.length() != 10) {
+                    ErrorMsg = "日期参数错误，请联系管理员！";
                 }
             }
-            List<PageData> lcp = new ArrayList<>();
-            if ("01".equals(DataType)) {
-                pd.put("SpecialDate", SpecialDate);
-                lcp = temProfileService.selectLCForMobileDay(pd);
-            } else if ("02".equals(DataType)) {
-                if (!"N".equals(ReqFlag) && DataRange.length() != 10 && !"0".equals(BreedBatchId)) {
+            if ("03".equals(DataType)) {
+                if ("Y".equals(ReqFlag) && DataRange.length() != 16) {
                     ErrorMsg = "日期参数错误，请联系管理员！";
-                } else if (!"0".equals(BreedBatchId)){
+                }
+                if ("N".equals(ReqFlag) && DataRange.length() != 10) {
+                    ErrorMsg = "日期参数错误，请联系管理员！";
+                }
+            }
+
+            if ("Null".equals(ErrorMsg)) {
+                if ("01".equals(DataType) || ("02".equals(DataType) && "N".equals(ReqFlag))) {
+                    PageData temp = new PageData();
+                    temp.put("farm_id", pd.get("FarmId"));
+                    temp.put("house_code", pd.get("HouseId"));
+                    temp = batchManageService.selectBatchDataForMobile(temp);
+                    if (temp != null) {
+                        DataRange = sdf.format("1".equals(temp.get("status").toString()) ? new Date() : sdf.parse(temp.get("market_date").toString()));
+                        SpecialDate = DataRange;
+                    }
+                }
+                if ("01".equals(DataType)) {
+                    pd.put("SpecialDate", SpecialDate);
+                    lcp = temProfileService.selectLCForMobileDay(pd);
+                } else if ("02".equals(DataType)) {
                     pd.put("DataRange", DataRange);
                     lcp = temProfileService.selectLCForMobileHour(pd);
-                }
-            } else if ("03".equals(DataType)) {
-                if (DataRange.length() != 16 && "Y".equals(ReqFlag) && !"0".equals(BreedBatchId)) {
-                    ErrorMsg = "日期参数错误，请联系管理员！";
-                } else if (DataRange.length() != 10 && "N".equals(ReqFlag) && !"0".equals(BreedBatchId)) {
-                    ErrorMsg = "日期参数错误，请联系管理员！";
-                } else if (!"0".equals(BreedBatchId)){
+                } else if ("03".equals(DataType)) {
                     pd.put("DataRange", DataRange);
                     lcp = temProfileService.selectLCForMobileMinute(pd);
                 }
-            }
-            if (lcp.size() == 0 || "0".equals(BreedBatchId)) {
-                resJson.put("Error", "".equals(ErrorMsg) ? "暂无批次信息！" : ErrorMsg);
+                if (lcp.size() == 0) {
+                    ErrorMsg = "该批次暂无数据！";
+                } else {
+                    JSONArray TempDatas = new JSONArray();
+                    JSONArray co2 = new JSONArray();
+                    JSONArray lux = new JSONArray();
+                    JSONArray xAxis = new JSONArray();
+                    for (PageData hashMap : lcp) {
+                        Object x_axis = hashMap.get("x_axis");
+                        if (x_axis == null) {
+                            x_axis = 0;
+                        }
+
+                        if (x_axis.toString().endsWith("60")) {
+                            int tHor = Integer.parseInt(x_axis.toString().substring(0, 2).replace(":", "")) + 1;
+                            x_axis = PubFun.fillLeftChar(tHor, '0', 2) + ":00";
+                        }
+
+                        Object co2Obj = hashMap.get("co2");
+                        if (co2Obj == null) {
+                            co2Obj = 0;
+                        }
+                        Object luxObj = hashMap.get("lux");
+                        if (luxObj == null) {
+                            luxObj = 0;
+                        }
+                        xAxis.put(x_axis);
+                        if (hashMap.get("dataflag").equals("N")) {
+                            continue;
+                        }
+                        co2.put("-99.0".equals(co2Obj.toString()) ? "0" : co2Obj.toString());
+                        lux.put("-99.0".equals(luxObj.toString()) ? "0" : luxObj.toString());
+                        if (DataType.equals("02")) {
+                            data_date = hashMap.get("data_date") != null ? hashMap.get("data_date").toString() : "Null";
+                        }
+                        if (hashMap.get("data_age") != null) {
+                            data_age = hashMap.get("data_age").toString();
+                        }
+                    }
+
+                    resJson.put("xAxis", xAxis);
+                    JSONObject tJSONObject = new JSONObject();
+                    tJSONObject.put("TempAreaCode", "tempLeft1");
+                    tJSONObject.put("TempAreaName", "二氧化碳");
+                    tJSONObject.put("TempCurve", co2);
+                    TempDatas.put(tJSONObject);
+                    tJSONObject = new JSONObject();
+                    tJSONObject.put("TempAreaCode", "tempLeft2");
+                    tJSONObject.put("TempAreaName", "光照");
+                    tJSONObject.put("TempCurve", lux);
+                    TempDatas.put(tJSONObject);
+                    resJson.put("TempDatas", TempDatas);
+                    resJson.put("HouseId", HouseId);
+                    resJson.put("DataDate", DataType.equals("03") ? sdf.format(sdf.parse(DataRange)) : data_date);
+                    resJson.put("data_age", data_age);
+                    resJson.put("FarmBreedId", BreedBatchId);
+                    resJson.put("Result", "Success");
+                    resJson.put("Error", "");
+                    dealRes = Constants.RESULT_SUCCESS;
+                }
+            } else {
+                resJson.put("Error", ErrorMsg);
                 resJson.put("Result", "Fail");
                 dealRes = Constants.RESULT_SUCCESS;
-            } else {
-                JSONArray TempDatas = new JSONArray();
-                JSONArray co2 = new JSONArray();
-                JSONArray lux = new JSONArray();
-                JSONArray xAxis = new JSONArray();
-                for (PageData hashMap : lcp) {
-                    Object x_axis = hashMap.get("x_axis");
-                    if (x_axis == null) {
-                        x_axis = 0;
-                    }
-
-                    if (x_axis.toString().endsWith("60")) {
-                        int tHor = Integer.parseInt(x_axis.toString().substring(0, 2).replace(":", "")) + 1;
-                        x_axis = PubFun.fillLeftChar(tHor, '0', 2) + ":00";
-                    }
-
-                    Object co2Obj = hashMap.get("co2");
-                    if (co2Obj == null) {
-                        co2Obj = 0;
-                    }
-                    Object luxObj = hashMap.get("lux");
-                    if (luxObj == null) {
-                        luxObj = 0;
-                    }
-                    xAxis.put(x_axis);
-                    if (hashMap.get("dataflag").equals("N")) {
-                        continue;
-                    }
-                    co2.put("-99.0".equals(co2Obj.toString()) ? "0" : co2Obj.toString());
-                    lux.put("-99.0".equals(luxObj.toString()) ? "0" : luxObj.toString());
-                    if (DataType.equals("02")) {
-                        data_date = hashMap.get("data_date") != null ? hashMap.get("data_date").toString() : "Null";
-                    }
-                    if (hashMap.get("data_age") != null) {
-                        data_age = hashMap.get("data_age").toString();
-                    }
-                }
-
-                resJson.put("xAxis", xAxis);
-                JSONObject tJSONObject = new JSONObject();
-                tJSONObject.put("TempAreaCode", "tempLeft1");
-                tJSONObject.put("TempAreaName", "二氧化碳");
-                tJSONObject.put("TempCurve", co2);
-                TempDatas.put(tJSONObject);
-                tJSONObject = new JSONObject();
-                tJSONObject.put("TempAreaCode", "tempLeft2");
-                tJSONObject.put("TempAreaName", "光照");
-                tJSONObject.put("TempCurve", lux);
-                TempDatas.put(tJSONObject);
-                resJson.put("TempDatas", TempDatas);
-                resJson.put("HouseId", HouseId);
-                resJson.put("DataDate", DataType.equals("03") ? sdf.format(sdf.parse(DataRange)) : data_date);
-                resJson.put("data_age", data_age);
-                resJson.put("FarmBreedId", BreedBatchId);
-                resJson.put("Result", "Success");
-                resJson.put("Error", "");
-                dealRes = Constants.RESULT_SUCCESS;
             }
-        } catch (JSONException JSONe){
+        } catch (JSONException JSONe) {
             JSONe.printStackTrace();
             dealRes = Constants.RESULT_FAIL;
         }

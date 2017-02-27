@@ -67,6 +67,13 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public void insertRightsObj(PageData pd) throws Exception {
 		dao.save("SDRoleMapper.insertRightsObj", pd);
+//		Long objId = (Long)pd.get("rights_id");
+		insertRoleRightsByUserId(pd);
 	}
-	
+
+	@Override
+	public void insertRoleRightsByUserId(PageData pd) throws Exception {
+		dao.save("SDRoleMapper.insertRoleRightsByUserId", pd);
+	}
+
 }

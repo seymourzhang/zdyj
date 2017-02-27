@@ -147,8 +147,14 @@ public class GoogsAction extends BaseAction {
 		PageData pd = this.getPageData();
 		pd.put("code_type", "good_type");
 		List<PageData> goodType= moduleService.service("codeServiceImpl", "getCodeList", new Object[]{pd});
+		List<PageData> goodType2 = new ArrayList<PageData>();
+		for(PageData goodType1: goodType){
+			if(!goodType1.get("biz_code").toString().equals("1")){
+				goodType2.add(goodType1);
+			}
+		}
 		j.setSuccess(true);
-		j.setObj(goodType);
+		j.setObj(goodType2);
 		super.writeJson(j, response);
 	}
 	
@@ -260,6 +266,7 @@ public class GoogsAction extends BaseAction {
 		pd.put("modify_person",user.getId());
 		pd.put("modify_date", new Date());	
 		pd.put("modify_time", new Date());
+
 		try {
 			if("".equals(pd.getString("exp"))){
 				pd.put("exp",null);

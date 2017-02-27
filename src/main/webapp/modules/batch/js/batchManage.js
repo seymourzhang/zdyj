@@ -3,6 +3,8 @@
  */
 var tabs = {"进鸡":"createBatch", "调鸡":"editBatch", "出栏":"overBatch"};
 var currTabName = tabs.进鸡;
+var showFunctionBarflag=null;
+var pSize =null;
 
 var objBatch = new Object();
 function initObjBatch(){
@@ -32,6 +34,7 @@ function initObjBatch(){
     objBatch.weed_out_total_weight = "";
     objBatch.weed_out_total_count = "";
     objBatch.weed_out_avg_price = "";
+    objBatch.feed_type = "";
 };
 
 $(document).ready(function(){ 
@@ -61,20 +64,24 @@ $(function(){
 });
 
 //显示界面
-function showTab(tabName, dataList){
+function showTab(tabName, dataList,pd){
     initObjBatch(); //初始化对象
-    showFarm(tabName, getFarm(dataList)); //显示农场名称
-    showHouse(tabName, getHouse()); //显示栋舍下拉框
+    showFarm(tabName, pd.farm_name); //显示农场名称
+    objBatch.farm_id = pd.farm_id;
+    objBatch.farm_name = pd.farm_name;
+    showHouse(tabName, getHouse(pd.farm_id)); //显示栋舍下拉框
     initDatepicker(tabName); //初始化日期控件
+
     if(tabName == tabs.进鸡){
+    	objBatch.feed_type = pd.feed_type;
         showVariety(tabName, getVariety()); //显示品种下拉框
     }
     if(tabName == tabs.调鸡){
-        showHouseTarget(tabName, getHouseTarget()); //显示调入至下拉框
+        showHouseTarget(tabName, getHouseTarget(pd.farm_id)); //显示调入至下拉框
     }
     if(tabName == tabs.出栏){
         getOtherVar(dataList);
-        showWeedOut(tabName, getHouseFlag());
+        // showWeedOut(tabName, getHouseFlag());
     }
     createTable(tabName,dataList); //创建表格
     reflushTable(tabName, dataList); //刷新表格数据
@@ -176,7 +183,13 @@ function saveData(){
 
 //显示农场名称
 function showFarm(tabName, farmName){
-    document.getElementById(tabName + "FarmTitle").innerHTML=farmName;
+    if(currTabName == tabs.进鸡){
+        document.getElementById(tabName + "FarmTitle").innerHTML= "<div class='font s18 bold'>" + farmName + "进鸡记录</div>";
+	}else if(currTabName == tabs.调鸡){
+		document.getElementById(tabName + "FarmTitle").innerHTML= "<div class='font s18 bold'>" + farmName + "调鸡记录</div>";
+	}else if(currTabName == tabs.出栏){
+		document.getElementById(tabName + "FarmTitle").innerHTML= "<div class='font s18 bold'>" + farmName + "出栏记录</div>";
+	}
 };
 
 //获取农场id与名称
@@ -199,23 +212,35 @@ function showHouse(tabName, houseList){
 };
 
 //获取栋舍id与名称
-function getHouse(){
+function getHouse(farm_id){
     var rt = new Array();
     $.ajax({
         type: "post",
         url: path + "/org/getOrgByPid",
         data: {
-            parent_id: objBatch.farm_id
+            parent_id: farm_id
         },
         dataType: "json",
         success: function (result) {
             dataList = eval(result.obj);
             var rt = new Array();
+            var houseType = "0";
             for(var key in dataList){
-                var tmp ={house_code:dataList[key].id, house_name: dataList[key].name_cn};
+                var tmp ={house_code:dataList[key].id, house_name: dataList[key].name_cn, house_type:dataList[key].house_type };
+                houseType = dataList[key].house_type;
                 rt.push(tmp);
             }
             showHouse(currTabName, rt);
+
+            if(currTabName == tabs.出栏 && houseType =="2"){
+                // document.getElementById("overBatchFemaleAvgWeight").disabled=true;
+                // document.getElementById("overBatchMaleAvgWeight").disabled=true;
+                document.getElementById("cl3").style.display = "block";
+                document.getElementById("cl4").style.display = "block";
+                document.getElementById("overBatchBtnSaveY").style.display = "none";
+                showWeedOut(currTabName,false);
+            }
+            // this.objBatch.house_type = houseType;
         }
     });
     return rt;
@@ -258,18 +283,87 @@ function reFlushData(tabName){
         dataType: "json",
         success: function (result) {
             dataList = eval(result.obj);
-            if(dataList[0].house_type =="2"){
-            	document.getElementById("overBatchFemaleAvgWeight").disabled=true;
-            	document.getElementById("overBatchMaleAvgWeight").disabled=true;
-            }
-            showTab(tabName, dataList);
+            pd = eval(result.obj1);
+            hiddenC(dataList.length,$("#house_length").val(),tabName);
+            showTab(tabName, dataList,pd);
         }
     });
 }
 
+function hiddenC(length,house_length, currTabName){
+    if(currTabName == tabs.进鸡){
+        if(length==house_length){
+            document.getElementById("jj1").style.display="none";
+            document.getElementById("jj2").style.display="none";
+            document.getElementById("jj3").style.display="none";
+            document.getElementById("toolbarCreateBatch").style.display="none";
+            document.getElementById("toolbarEditBatch").style.display="block";
+            document.getElementById("toolbarOverBatch").style.display="block";
+            // document.getElementById("jj4").style.display="none";
+            //    	document.getElementById("tj1").style.display="none";
+            //    	document.getElementById("tj2").style.display="none";
+            //    	document.getElementById("tj3").style.display="none";
+            //    	document.getElementById("cl1").style.display="none";
+            //    	document.getElementById("cl2").style.display="none";
+            //    	document.getElementById("cl3").style.display="none";
+            //    	document.getElementById("cl4").style.display="none";
+            //    	document.getElementById("cl5").style.display="none";
+        }else{
+            document.getElementById("jj1").style.display="inline";
+            document.getElementById("jj2").style.display="inline";
+            document.getElementById("jj3").style.display="inline";
+            document.getElementById("toolbarCreateBatch").style.display="block";
+            if(length==0){
+                document.getElementById("toolbarEditBatch").style.display="none";
+                document.getElementById("toolbarOverBatch").style.display="none";
+            } else{
+                document.getElementById("toolbarEditBatch").style.display="block";
+                document.getElementById("toolbarOverBatch").style.display="block";
+            }
+
+            // document.getElementById("jj4").style.display="inline";
+            //    	document.getElementById("tj1").style.display="inline";
+            //    	document.getElementById("tj2").style.display="inline";
+            //    	document.getElementById("tj3").style.display="inline";
+            //    	document.getElementById("cl1").style.display="inline";
+            //    	document.getElementById("cl2").style.display="inline";
+            //    	document.getElementById("cl3").style.display="inline";
+            //    	document.getElementById("cl4").style.display="inline";
+            //    	document.getElementById("cl5").style.display="inline";
+        }
+    }
+
+    var createBatchCount = $("#createBatchTable").bootstrapTable("getData").length;
+
+
+    if(currTabName == tabs.出栏){
+        if(length==house_length || createBatchCount==0){
+            document.getElementById("jj1").style.display="inline";
+            document.getElementById("jj2").style.display="inline";
+            document.getElementById("jj3").style.display="inline";
+            document.getElementById("toolbarCreateBatch").style.display="block";
+            document.getElementById("toolbarEditBatch").style.display="none";
+            document.getElementById("toolbarOverBatch").style.display="none";
+        }else{
+            document.getElementById("jj1").style.display="none";
+            document.getElementById("jj2").style.display="none";
+            document.getElementById("jj3").style.display="none";
+            document.getElementById("toolbarCreateBatch").style.display="none";
+            document.getElementById("toolbarEditBatch").style.display="block";
+            document.getElementById("toolbarOverBatch").style.display="block";
+
+        }
+    }
+
+}
+
 //检查是否确认
 function checkConfirm(objBatch){
-    layer.confirm('是否确认？', {
+	var tishi = '是否确认？';
+	if(currTabName == tabs.出栏){
+		tishi = '出栏后，日报将无法修改，请确认无误后出栏！';
+	}
+    layer.confirm(tishi, {
         skin: 'layui-layer-lan'
         , closeBtn: 0
         , shift: 4 //动画类型
@@ -324,21 +418,41 @@ function getCount(){
 }
 
 //获取指定栋舍的出栏日龄
-function getOverBatchAge(){	
-	$.ajax({
-        type: "post",
-        url: path + "/batch/getOverBatchAge",
-        data: {house_code:document.getElementById(currTabName + "HouseSelect").value,operation_date:document.getElementById(currTabName + "QueryTime").value},
-        dataType: "json",
-        success: function (result) {
-            dataList = eval(result.obj);
-            if(dataList.length==0){
-            document.getElementById("overBatchAge").value = "";
-            }else{
-            	document.getElementById("overBatchAge").value = dataList[0].age;
+function getOverBatchAge(){
+    var houseCode = document.getElementById(currTabName + "HouseSelect").value;
+    var operationDate = document.getElementById(currTabName + "QueryTime").value;
+    if(null != houseCode && "" != houseCode && null != operationDate && "" != operationDate){
+        $.ajax({
+            type: "post",
+            url: path + "/batch/getOverBatchAge",
+            data: {house_code:document.getElementById(currTabName + "HouseSelect").value,operation_date:document.getElementById(currTabName + "QueryTime").value},
+            dataType: "json",
+            success: function (result) {
+                dataList = eval(result.obj);
+                var currDate = getNowFormatDate();
+                if(document.getElementById(currTabName + "QueryTime").value >currDate){
+                    document.getElementById("overBatchQueryTime").value = currDate;
+                	layer.msg("出栏日不可选大于今天的日期！");
+                	return;
+                }
+                if(dataList.length==0 && result.msg !=0){
+                    document.getElementById("overBatchAge").value = "";
+                     document.getElementById("overBatchQueryTime").value = currDate;
+                    // var overBatchFemaleNum = $("#overBatchFemaleNum").val();
+                    // if(parseInt(overBatchFemaleNum)!=0){
+                    // getOverBatchAge();
+                    // document.getElementById("overBatchQueryTime").value = "";
+                        layer.msg("出栏日设置过大，请重新选择出栏日!");
+                        return;
+                    // }
+                }else{
+                    if(dataList.length!=0){
+                        document.getElementById("overBatchAge").value = dataList[0].age;
+                    }
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 //获取总金额
@@ -347,4 +461,23 @@ function getOverBatchAvgPriceSum(){
 	num1 = $("#overBatchSumWeight").val();
 	num2 = $("#overBatchAvgPrice").val();
 	document.getElementById("overBatchAvgPriceSum").value = num1 * num2;
+}
+
+//获取当前日期
+function getNowFormatDate() {
+    var date = new Date();
+    var seperator1 = "-";
+//    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+//            + " " + date.getHours() + seperator2 + date.getMinutes()
+//            + seperator2 + date.getSeconds();
+    return currentdate;
 }

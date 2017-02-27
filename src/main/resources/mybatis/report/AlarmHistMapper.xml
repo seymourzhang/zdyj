@@ -304,8 +304,8 @@
              DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.grow_age as date_age,
             a.alarm_code,
             a.alarm_Name,
-            IFNULL(CONCAT(round(a.set_value,0),a.value_unit),'-') as set_value,
-            IFNULL(CONCAT(round(a.actual_value,0),a.value_unit),'-') as actual_value,
+            IFNULL(CONCAT(round(a.set_value,2),a.value_unit),'-') as set_value,
+            IFNULL(CONCAT(round(a.actual_value,2),a.value_unit),'-') as actual_value,
             a.deal_status,
             a.remove_time,
             round((unix_timestamp(a.remove_time)-unix_timestamp(a.alarm_time))/60,2) as continue_time,
@@ -335,11 +335,11 @@
                      <if test="houseId2 != null and houseId2 !=''"> 
                       and a.house_id = #{houseId2} 
                      </if> 
-                      <if test="batchNo2 != null and batchNo2 !=''"> 
-                      and c.batch_id = #{batchNo2}
+                      <if test="batchNo2 != null and batchNo2 !='' and farmId2 != null and farmId2 !='' and houseId2 != null and houseId2 !=''"> 
+                      and c.batch_id =CONCAT(#{farmId2},'-',#{houseId2},'-',#{batchNo2}) 
                      </if>
                      <if test="dateage != null and dateage !=''"> 
-                      and DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.day_age_curr = #{dateage}
+                      and DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),c.BEGIN_date)+ c.grow_age = #{dateage}
                      </if>
                      <if test="beginTime != null and beginTime !=''"> 
                       and DATEDIFF(DATE_FORMAT(a.alarm_time,'%Y-%m-%d'),str_to_date(#{beginTime},'%Y-%m-%d'))>=0

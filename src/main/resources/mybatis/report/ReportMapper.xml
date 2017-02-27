@@ -129,7 +129,7 @@
 		sc.biz_code             				  AS x_axis,
 		${HouseId}               				  AS house_id,
 		tData3.data_date        				  AS data_date,
-		concat('(日龄：', tData4.age, ')') AS data_age,
+		concat('(日龄：', tData4.data_age, ')') AS data_age,
 		tData2.avgtempLeft1,
 		tData2.avgtempLeft2,
 		tData2.avgtempMiddle1,
@@ -173,8 +173,12 @@
 		ORDER BY tData.timeId
 		) AS tData2 ON tData2.timeId = sc.biz_code
 		LEFT JOIN (SELECT #{DataRange} AS data_date) AS tData3 ON 1 = 1
-		LEFT JOIN s_b_breed_detail tData4 ON date_format(tData4.growth_date, '%Y-%m-%d') = tData3.data_date AND tData4.batch_id = #{BreedBatchId}
-		WHERE sc.code_type = 'HalfHour'
+		LEFT JOIN ( SELECT date_sub(#{DataRange}, INTERVAL biz_code -1 DAY) as dateId,
+                          (select DATEDIFF(date_sub(#{DataRange}, INTERVAL biz_code -1 DAY),sbb.operation_date)+ sbb.grow_age AS date_age
+                            from s_b_batch_curr sbb where sbb.status = 1 and sbb.house_code = ${HouseId}) AS data_age
+                      from s_d_code where code_type in ('PerMinute1','PerMinute2')
+                    ) as tData4 on tData4.dateId = tData3.data_date
+        WHERE sc.code_type = 'HalfHour'
 		ORDER BY x_axis
 	</select>
 
@@ -186,7 +190,7 @@
 		THEN '60'
 		ELSE tData.timeId END) AS x_axis,
 		'Null'                                         AS data_date,
-		concat('(日龄：', tData2.age, ')')            AS data_age,
+		concat('(日龄：', tData2.data_age, ')')            AS data_age,
 		tData.house_id,
 		truncate(AVG(if(tData.inside_temp1=-99, null, tData.inside_temp1)), 1)           AS avgtempLeft1,
 		truncate(AVG(if(tData.inside_temp2=-99, null, tData.inside_temp2)), 1)           AS avgtempLeft2,
@@ -208,8 +212,12 @@
 		AND a.update_datetime &gt;= STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i')
 		AND a.update_datetime &lt; STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i')
 		) tData
-		LEFT JOIN s_b_breed_detail tData2 ON date_format(tData2.growth_date, '%Y-%m-%d') = date_format(tData.update_datetime, '%Y-%m-%d') AND tData2.batch_id = #{BreedBatchId}
-		GROUP BY tData.timeId
+		LEFT JOIN ( SELECT date_sub(#{DataRange}, INTERVAL biz_code -1 DAY) as dateId,
+                     (select DATEDIFF(date_sub(#{DataRange}, INTERVAL biz_code -1 DAY),sbb.operation_date)+ sbb.grow_age AS date_age
+                      from s_b_batch_curr sbb where sbb.status = 1 and sbb.house_code = ${HouseId}) AS data_age
+              from s_d_code where code_type in ('PerMinute1','PerMinute2')
+            ) as tData2 on tData2.dateId = STR_TO_DATE(tData.update_datetime, '%Y-%m-%d')
+        GROUP BY tData.timeId
 		UNION ALL
 		SELECT
 		'N'                              AS dataflag,
@@ -244,39 +252,35 @@
 	<select id="selectLCForMobileDay" parameterType="pd" resultType="pd" useCache="false">
 		/*二氧化碳和光照曲线：在日龄情况下；*/
 		SELECT
-		(CASE WHEN a.growth_date > curdate()
+		(CASE WHEN tData1.dateId > curdate()
 		THEN 'N'
 		ELSE 'Y' END)                                               AS dataflag,
-		a.age                                                        AS data_age,
-		a.growth_date                                                AS data_date,
-		concat(date_format(a.growth_date, '%m-%d'), '(', a.age, ')') AS x_axis,
+		tData1.data_age AS data_age,
+		tData1.dateId                                                AS data_date,
+		concat(date_format(tData1.dateId, '%m-%d'), '(', tData1.data_age, ')') AS x_axis,
 		tData2.co2,
 		tData2.lux
-		FROM s_b_breed_detail a
-		LEFT JOIN s_b_batch_curr sbbc ON sbbc.batch_id = a.batch_id
-		LEFT JOIN (SELECT
+		FROM ( SELECT date_sub(#{SpecialDate},INTERVAL biz_code -1 DAY) as dateId,
+    				  (select DATEDIFF(date_sub(#{SpecialDate},INTERVAL biz_code -1 DAY),sbb.operation_date)+ sbb.grow_age AS date_age
+                       		from s_b_batch_curr sbb where sbb.status = 1 and sbb.house_code = ${HouseId}) AS data_age
+   				from s_d_code where code_type in ('PerMinute1','PerMinute2')
+   			) as tData1
+		LEFT JOIN
+		(SELECT
 		tData.timeId,
-		truncate(avg(if(tData.co2=-99, null, tData.co2)), 1)    AS co2,
-		truncate(avg(if(tData.lux=-99, null, tData.lux)), 1)    AS lux
+		tData.date_age,
+		truncate(avg(if(tData.co2 = -99, NULL, tData.co2)), 1)       AS co2,
+		truncate(avg(if(tData.lux = -99, NULL, tData.lux)), 1)       AS lux
 		FROM (SELECT
 		date_format(update_datetime, '%Y-%m-%d') AS timeId,
 		a.*
 		FROM s_b_monitor_hist a
-		WHERE 1 = 1
-		AND a.house_id = ${HouseId}
-		AND exists(SELECT 1
-		FROM s_b_batch_curr sbb
-		WHERE sbb.batch_id = #{BreedBatchId}
-		AND sbb.house_code = a.house_id
-		)
+		WHERE 1 = 1 AND a.house_id = ${HouseId}
+		AND a.update_datetime BETWEEN date_sub(#{SpecialDate}, INTERVAL 60 DAY) AND date_add(#{SpecialDate}, INTERVAL 1 DAY)
 		) tData
 		GROUP BY tData.timeId
-		ORDER BY tData.timeId
-		) AS tData2 ON tData2.timeId = date_format(a.growth_date, '%Y-%m-%d')
-		WHERE 1 = 1
-		AND a.growth_date BETWEEN date_sub(#{SpecialDate}, INTERVAL 58 DAY) AND #{SpecialDate}
-		AND a.batch_id = #{BreedBatchId}
-		AND a.house_code = ${HouseId};
+		ORDER BY tData.timeId) AS tData2 on tData1.dateId = tData2.timeId
+		WHERE 1=1  ORDER BY data_age
 	</select>
 
 	<select id="selectLCForMobileHour" parameterType="pd" resultType="pd" useCache="false">
@@ -288,7 +292,7 @@
 		sc.biz_code             				  AS x_axis,
 		${HouseId}               				  AS house_id,
 		tData3.data_date        				  AS data_date,
-		concat('(日龄：', tData4.age, ')') AS data_age,
+		concat('(日龄：', tData4.data_age, ')') AS data_age,
 		tData2.co2,
 		tData2.lux
 		FROM s_d_code sc
@@ -314,7 +318,11 @@
 		ORDER BY tData.timeId
 		) AS tData2 ON tData2.timeId = sc.biz_code
 		LEFT JOIN (SELECT #{DataRange} AS data_date) AS tData3 ON 1 = 1
-		LEFT JOIN s_b_breed_detail tData4 ON date_format(tData4.growth_date, '%Y-%m-%d') = tData3.data_date AND tData4.batch_id = #{BreedBatchId}
+		LEFT JOIN ( SELECT date_sub(#{DataRange}, INTERVAL biz_code -1 DAY) as dateId,
+                          (select DATEDIFF(date_sub(#{DataRange}, INTERVAL biz_code -1 DAY),sbb.operation_date)+ sbb.grow_age AS date_age
+                            from s_b_batch_curr sbb where sbb.status = 1 and sbb.house_code = ${HouseId}) AS data_age
+                      from s_d_code where code_type in ('PerMinute1','PerMinute2')
+                    ) as tData4 on tData4.dateId = tData3.data_date
 		WHERE sc.code_type = 'HalfHour'
 		ORDER BY x_axis
 	</select>
@@ -326,7 +334,7 @@
 		THEN '60'
 		ELSE tData.timeId END) AS x_axis,
 		'Null'                                         AS data_date,
-		concat('(日龄：', tData.date_age, ')')            AS data_age,
+		concat('(日龄：', tData2.data_age, ')')            AS data_age,
 		tData.house_id,
 		truncate(AVG(if(tData.co2=-99, null, tData.co2)), 1)           AS co2,
 		truncate(AVG(if(tData.lux=-99, null, tData.lux)), 1)           AS lux
@@ -339,7 +347,12 @@
 		AND a.update_datetime &gt;= STR_TO_DATE(#{DataRangeStart}, '%Y-%m-%d %H:%i')
 		AND a.update_datetime &lt; STR_TO_DATE(#{DataRangeEnd}, '%Y-%m-%d %H:%i')
 		) tData
-		GROUP BY tData.timeId
+		LEFT JOIN ( SELECT date_sub(#{DataRange}, INTERVAL biz_code -1 DAY) as dateId,
+                     (select DATEDIFF(date_sub(#{DataRange}, INTERVAL biz_code -1 DAY),sbb.operation_date)+ sbb.grow_age AS date_age
+                      from s_b_batch_curr sbb where sbb.status = 1 and sbb.house_code = ${HouseId}) AS data_age
+              from s_d_code where code_type in ('PerMinute1','PerMinute2')
+            ) as tData2 on tData2.dateId = STR_TO_DATE(tData.update_datetime, '%Y-%m-%d')
+        GROUP BY tData.timeId
 		UNION ALL
 		SELECT
 		'N'                              AS dataflag,

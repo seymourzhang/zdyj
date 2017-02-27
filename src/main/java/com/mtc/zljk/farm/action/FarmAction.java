@@ -135,8 +135,9 @@ public class FarmAction extends BaseAction{
 	 * @return
 	 */
 	@RequestMapping(value="/addFarmUrl")
-	public ModelAndView addFarmUrl()throws Exception{
+	public ModelAndView addFarmUrl(HttpServletResponse response,HttpServletRequest request,HttpSession session)throws Exception{
 		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		/***查询饲养方式***/
@@ -155,6 +156,10 @@ public class FarmAction extends BaseAction{
 		mv.addObject("feedMethod",feedMethod);
 		mv.addObject("feedType",feedType);
 		mv.addObject("prlist",prlist);
+		pd.put("level_id", 1);
+		pd.put("user_id",user.getId());
+		List<PageData> corporationList= farmService.selectOganizationList(pd);
+		mv.addObject("corporationList",corporationList);
 		mv.setViewName("modules/farm/addFarm");
 		return mv;
 	}
@@ -165,8 +170,9 @@ public class FarmAction extends BaseAction{
 	 * @return
 	 */
 	@RequestMapping(value="/editFarmUrl")
-	public ModelAndView editFarmUrl()throws Exception{
+	public ModelAndView editFarmUrl(HttpServletResponse response,HttpServletRequest request,HttpSession session)throws Exception{
 		ModelAndView mv = this.getModelAndView();
+		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		List<PageData> farmList=farmService.findFarm(pd);
@@ -188,6 +194,10 @@ public class FarmAction extends BaseAction{
 		mv.addObject("feedMethod",feedMethod);
 		mv.addObject("feedType",feedType);
 		mv.addObject("prlist",prlist);
+		pd.put("level_id", 1);
+		pd.put("user_id",user.getId());
+		List<PageData> corporationList= farmService.selectOganizationList(pd);
+		mv.addObject("corporationList",corporationList);
 		mv.setViewName("modules/farm/editFarm");
 		return mv;
 	}
@@ -295,14 +305,24 @@ public class FarmAction extends BaseAction{
 		pd.put("modify_person",user.getId());
 		pd.put("modify_date", new Date());	
 		pd.put("modify_time", new Date());
+
 		try {
-			farmService.saveFarm(pd);
-			pd.put("id",pd.getInteger("id"));
-			pd.put("farm_code",pd.getInteger("id"));
-			farmService.editFarm(pd);
-			j.setMsg("1");
-			j.setSuccess(true);
-			
+			String[] orgStr = pd.getString("organizationId").split(",");
+			if(orgStr.length>1){
+				String orgParentId = orgStr[0];
+				String orgLevelId = orgStr[1];
+				pd.put("parent_id",orgParentId);
+				pd.put("level_id",orgLevelId);
+				farmService.saveFarm(pd);
+				//			pd.put("id",pd.getInteger("id"));
+				//			pd.put("farm_code",pd.getInteger("id"));
+				//			farmService.editFarm(pd);
+				j.setMsg("1");
+				j.setSuccess(true);
+			} else{
+				j.setMsg("2");
+				j.setSuccess(false);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			j.setMsg("2");
@@ -346,19 +366,38 @@ public class FarmAction extends BaseAction{
 		SDUser user = (SDUser)session.getAttribute(Const.SESSION_USER);
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String id = pd.getString("id");
-
 		pd.put("freeze_status",1);
 		pd.put("modify_person",user.getId());
 		pd.put("modify_date", new Date());	
 		pd.put("modify_time", new Date());
+		String farmId = pd.getString("id");
+		PageData farmPd = new PageData();
 		try {
-				farmService.editFarm(pd);
-				j.setMsg("删除成功！");
-				j.setSuccess(true);
+				farmPd.put("farmId",farmId);
+				List<PageData> houseList = farmService.findHouse(farmPd);
+				if(houseList.size()>0){
+					j.setMsg("请先删除该农场下的栋舍");
+					j.setSuccess(false);
+				} else{
+					farmService.editFarm(pd);
+					List<Integer> orgList = new ArrayList<>();
+					orgList.add(Integer.valueOf(farmId));
+					pd.put("orgList",orgList);
+					pd.put("freeze_status",1); //删除标志位
+					int i = organService.deleteOrg(pd);
+					if(i==1){
+						j.setMsg("删除成功！");
+						j.setSuccess(true);
+					} else{
+						j.setMsg("机构关系删除失败");
+						j.setSuccess(false);
+					}
+				}
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			j.setMsg("2");
+			j.setSuccess(false);
+			j.setMsg(e.getMessage());
 		}
 		super.writeJson(j, response);
 	}
@@ -381,7 +420,8 @@ public class FarmAction extends BaseAction{
 		mv.addObject("pd",pd);
 		mv.addObject("houseType",houseType);
 //		mv.addObject("device",device);
-		mv.addObject("farmList",getFarmList(pd));
+//		mv.addObject("farmList",getFarmList(pd));
+		mv.addObject("farmList",farmService.findFarm(pd));
 		mv.setViewName("modules/farm/addHouse");
 		return mv;
 	}
@@ -867,7 +907,5 @@ public class FarmAction extends BaseAction{
 			mcl = moduleService.service("farmServiceImpl", "selectHouseByCondition", new Object[]{pd});//farmService.selectHouseAll();
 		return mcl;
 	}
-	
-	
 
 }

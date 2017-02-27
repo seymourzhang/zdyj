@@ -8,6 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
+  <%@ include file="../../framework/inc.jsp"%>
     <base href="<%=basePath%>">
     <link rel="stylesheet" href="<%=path %>/framework/css/bootstrap.min.css" />
     <link rel="stylesheet" href="<%=path %>/framework/css/style-metro.css" />
@@ -16,27 +17,39 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <link rel="stylesheet" href="<%=path %>/framework/css/uniform.default.css" />
 	<script type="text/javascript" src="<%=path%>/framework/jquery/jquery-1.11.2.min.js"></script>
 	<script type="text/javascript" src="<%=path%>/framework/js/extJquery.js"></script>
-	<script type="text/javascript" src="<%=path%>/modules/alarm/js/alarm.js"></script>
+<!-- 	<script type="text/javascript" src="<%=path%>/modules/alarm/js/alarm.js"></script> -->
   </head>
   <script>
+  var objAlarmUser = new Object();
+  function initObjAlarmUser(){
+	  objAlarmUser.userId4 = $("#userId4").val();
+	  objAlarmUser.userId5 = $("#userId5").val();
+	  objAlarmUser.userId6 = $("#userId6").val();
+	};
+  
   jQuery(document).ready(function() {
 	  document.getElementById("userId4").value = '${alarmUser1}';
 	  document.getElementById("userId5").value = '${alarmUser2}';
 	  document.getElementById("userId6").value = '${alarmUser3}';
-	  document.getElementById("status").value = '${status}';
+// 	  document.getElementById("status").value = '${status}';
+      initObjAlarmUser();
 	});
   
   function submitForm(){
 	  if(document.getElementById("userId4").value == document.getElementById("userId5").value ||
 			  document.getElementById("userId5").value == document.getElementById("userId6").value ||
 			  document.getElementById("userId4").value == document.getElementById("userId6").value){
-		  alert("不允许选择相同的用户！");
+		  layer.msg("不允许选择相同的用户！");
 		  return false;
 	  }
 	  return true;
   }
   
   function  bindingUser(){
+	    if(objAlarmUser.userId4 == $("#userId4").val() && objAlarmUser.userId5 == $("#userId5").val() && objAlarmUser.userId6 == $("#userId6").val()){
+	    	layer.msg("未修改数据，无法保存！");
+	    	return;
+	    }
 		var param =$.serializeObject($('#bindingUser_form'));
 		if(submitForm()){
 			$.ajax({
@@ -46,10 +59,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				dataType: "json",
 				success: function(result) {
 					if(result.msg=='1'){
-						parent.location.reload();   
-						parent.layer.closeAll();
+						layer.msg("保存成功！", function(index) {
+							parent.location.reload();   
+							parent.layer.closeAll();
+						});
 					}else{
-						alert("添加失败！");
+						layer.msg("保存失败！");
 					}
 				}
 			});
@@ -67,10 +82,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<input type="hidden" name="userId2" id="userId2"  value="${alarmUser2}"/>
 		<input type="hidden" name="userId3" id="userId3"  value="${alarmUser3}"/>
 		<input type="hidden" name="alarm_type" id="alarm_type"  value="${alarm_type}"/>
-	<table style="margin-left: 100px;height: 10px;width: 350px;margin-top: 30px;">
+		<input type="hidden" name="status" value="N" id="status">
+	<table style="margin-left: 20px;height: 10px;width: 350px;margin-top: 10px;">
 	<tr style="height: 50px;">
 	<th>
-	   栋舍管理员1:
+	   <span_customer2>通知人员1:</span_customer2>
 	</th>
 	<td>
 	<select id="userId4" class="m-wrap span12" name="user_name1" tabindex="1">
@@ -85,7 +101,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</tr>
 	<tr style="margin-top: 60px;height: 50px;">
 	<th>
-	   栋舍管理员2:
+	   <span_customer2>通知人员2:</span_customer2>
 	</th>
 	<td>
 	<select id="userId5" class="m-wrap span12" name="user_name2" tabindex="1">
@@ -100,7 +116,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</tr>
 	<tr style="height: 50px;">
 	<th>
-	栋舍管理员3:
+	<span_customer2>通知人员3:</span_customer2>
 	</th>
 	<td>
 	<select id="userId6" class="m-wrap span12" name="user_name3" tabindex="1">
@@ -113,23 +129,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	    </select>
 	</td>
 	</tr>
-	<tr style="height: 50px;">
-	<th>
-	报警是否启用:
-	</th>
-	<td>
-	<select id="status" class="m-wrap span12" name="status" tabindex="1">
-       <option value="N">否</option>
-       <option value="Y">是</option>
-	    </select>
-	</td>
-	</tr>
-	<tr style="height: 80px;">
-	<td style="text-align: center;">
+<!-- 	<tr style="height: 50px;"> -->
+<!-- 	<th style="display:none;"> -->
+<!-- 	报警是否启用: -->
+<!-- 	</th> -->
+<!-- 	<td style="display:none;"> -->
+<!-- 	<select id="status" class="m-wrap span12" name="status" tabindex="1"> -->
+<!--        <option value="N">否</option> -->
+<!--        <option value="Y">是</option> -->
+<!-- 	    </select> -->
+<!-- 	</td> -->
+<!-- 	</tr> -->
+<tr style="height: 10px;"></tr>
+	<tr style="height: 20px;">
+	<td style="text-align: right;">
 	<button type="button" class="btn blue" onclick="bindingUser()"><i class="icon-ok"></i>&nbsp;确 定&nbsp;&nbsp;&nbsp;</button>
 	</td>
 	<td style="text-align: center;">
-	<button type="button" class="btn" onclick="closeB()">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
+	<button type="button" class="btn" onclick="closeB()" style="margin-left: 50px;">&nbsp;&nbsp;&nbsp;取 消&nbsp;&nbsp;&nbsp;</button>
 	</td>
 	</tr>
 	</table>
@@ -140,5 +157,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</script>
 		</form>
 		<!-- END FORM-->  
+<script type="text/javascript" src="<%=path%>/framework/table/table.js"></script>		
   </body>
 </html>

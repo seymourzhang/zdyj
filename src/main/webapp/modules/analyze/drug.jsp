@@ -18,7 +18,7 @@
 </head>
 
 <body style="background-color: #ffffff;">
-<div id="page-content" class="clearfix" style="padding-top: 10px;">
+<div id="page-content" class="clearfix" style="padding-top: 0px;background:#e7e5e5;">
     <div class="row-fluid">
         <div class="span12">
 
@@ -34,22 +34,21 @@
 
                 <input id="toolBarFarmParmUserId" type="hidden" value="${pd.user_id}">
                 <input id="toolBarFarmParmPath" type="hidden" value="<%=path%>">
-                <p ></p>
-                <div id = "toolBarFarm" class="row-fluid">
+                <div id = "toolBarFarm" class="row-fluid" style="padding-top: 1px; ">
 
                 </div>
 
 
-                <div class="tab-content" style="border:none">
+                <div class="tab-content" style="border:none;background:#e7e5e5;padding-top: 0px;">
                     <div class="tab-pane active" id="tab_1">
                         <%--<iframe id="inStockForm" name="inStockForm" width="100%" height="700" frameborder="no" allowtransparency="yes" src="<%=urlPre%>/inStockForm.cpt<%=urlParamUserId%>${pd.user_id} ">--%>
-                        <iframe id="iframe_tab_1" name="inStockForm" width="99.8%" height="700" frameborder="no" allowtransparency="yes" src="">
+                        <iframe id="iframe_tab_1" name="inStockForm" width="99.8%" height="720" frameborder="no" allowtransparency="yes" src="">
                         </iframe>
                     </div>
 
 
                     <div class="tab-pane" id="tab_2">
-                        <iframe id="iframe_tab_2" name="inStockForm" width="99.8%" height="700" frameborder="no" allowtransparency="yes" src="">
+                        <iframe id="iframe_tab_2" name="inStockForm" width="99.8%" height="720" frameborder="no" allowtransparency="yes" src="">
                         </iframe>
                     </div>
 

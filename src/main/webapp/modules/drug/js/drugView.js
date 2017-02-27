@@ -2,7 +2,8 @@
  * Created by yoven on 10/31/2016.
  */
 var paramTypeList = new Array("plan","fact");
-
+var goodType5;
+var goodType6;
 $(document).ready(function(){
 	 $('.date-picker').datepicker({
      	language: 'zh-CN',
@@ -19,6 +20,13 @@ $(document).ready(function(){
 		  setDrugId();
 		 });
 	  
+	  $("#drug_id1_select").change(function() {
+			setCorporation();
+			setSpec();
+			setUnit();
+		});
+//	  goodtype5 = $("#good_type").find("option:selected").text();
+//	  goodtype6 = $("#good_type1").find("option:selected").text();
 
 //	  $("#state2").css("display", "block");
 //      $("#detail2").css("display", "none");
@@ -29,9 +37,9 @@ $(document).ready(function(){
 	});
 
 function empty(){
-	if(document.getElementById("drug_id_select").value==""){
-		document.getElementById("drug_id").value = null;
-	}	
+//	if(document.getElementById("drug_id_select").value==""){
+//		document.getElementById("drug_id").value = null;
+//	}	
 	if(document.getElementById("drug_id1_select").value==""){
 		document.getElementById("drug_id1").value = null;
 	}	
@@ -190,99 +198,75 @@ function setDrugId1(){
 			for (var i = 0; i < list.length; i++) {
 				$("#drug_id1").append("<option value=" + list[i].good_id + ">" + list[i].good_name+ "</option>");
 			}
-			setFactory();
+//			setFactory();
+			searchData("fact");
 		}
 	});
 }
 
-function setFactory(){
-	$.ajax({
-		type : "post",
-		url : path + "/drug/getFactory",
-		data : {
-			"good_type" : $("#good_type1").val(),
-			"good_id" : $("#drug_id1").val()
-		},
-		dataType: "json",
-		success : function(result) {
-			var list = result.obj;
-			$("#factory_id option").remove();
-			for (var i = 0; i < list.length; i++) {
-				$("#factory_id").append("<option value=" + list[i].factory_id + ">" + list[i].factory_name+ "</option>");
-			}
-		}
-	});
-}
+//function setFactory(){
+//	$.ajax({
+//		type : "post",
+//		url : path + "/drug/getFactory",
+//		data : {
+//			"good_type" : $("#good_type1").val(),
+//			"good_id" : $("#drug_id1").val()
+//		},
+//		dataType: "json",
+//		success : function(result) {
+//			var list = result.obj;
+//			$("#factory_id option").remove();
+//			for (var i = 0; i < list.length; i++) {
+//				$("#factory_id").append("<option value=" + list[i].factory_id + ">" + list[i].factory_name+ "</option>");
+//			}
+//			
+//		}
+//	});
+//}
 
 function addDrug(){
 	var houseId = $("#houseId").val();
 	if (houseId == "") {
-		layer.alert('栋舍不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('栋舍不能为空!');
 		return;
 	}
 	var use_date = $("#use_date").val();
 	if (use_date == "") {
-		layer.alert('日期不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('日期不能为空!');
 		return;
 	}
 	var drug_id1 = $("#drug_id1").val();
 	if (drug_id1 == "") {
-		layer.alert('药品不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('品名不能为空!');
 		return;
 	}
 	var good_batch_no = $("#good_batch_no").val();
 	if (good_batch_no == "") {
-		layer.alert('批次号不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('批次号不能为空!');
 		return;
 	}
 	var use_unit = $("#use_unit").val();
 	if (use_unit == "") {
-		layer.alert('使用数量不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('使用数量不能为空!');
+		return;
+	}
+	if (parseInt(use_unit)!=use_unit)
+    {
+	 layer.msg('使用数量必须是整数，请重新输入!');
+        return;
+    }
+	if (parseInt(use_unit) <=0 ) {
+		layer.msg('使用数量必须大于0!');
 		return;
 	}
 	var good_type1 = $("#good_type1").val();
 	if (good_type1 == "") {
-		layer.alert('类型不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('类型不能为空!');
 		return;
 	}
 	var use_user_id = $("#use_user_id").val();
 	if (use_user_id == "") {
-		layer.alert('负责人不能为空!', {
-			skin : 'layui-layer-lan',
-			closeBtn : 0,
-			shift : 4
-		// 动画类型
-		});
+		layer.msg('负责人不能为空!');
 		return;
 	}
 	var main_constitute = $("#main_constitute").val();
@@ -328,7 +312,10 @@ function addDrug(){
 			"good_type":good_type1,
 			"use_user_id":use_user_id,
 			"main_constitute": main_constitute,
-			"use_type": use_type
+			"use_type": use_type,
+			"spec":$("#spec").val(),
+			"unit":$("#unit").val(),
+			"corporation_id":$("#corporation_id").val()
 //			"instruction": instruction1
 	    };
 	// document.getElementById("reflushText2").style.display="inline";
@@ -347,21 +334,31 @@ function addDrug(){
             // timeout:50000,
             success: function(result) {     
                     var obj = result.obj;
-                    initTable("fact", getTableDataColumns("fact"), []);
+                    if(goodType6=='疫苗'){
+                    initTable("fact", getFactTableDataColumns(), []);
                     if(null != obj) {
                         var dataJosn = $.parseJSON(JSON.stringify(obj));
                         $("#factTable").bootstrapTable('load',dataJosn);
                     } else{
                         initTableRow("fact", getTableEmptyRow("fact"));
                     }
-               
+                    }else{
+                    	initTable("fact", getFactTableDataColumns2(), []);
+                        if(null != obj) {
+                            var dataJosn = $.parseJSON(JSON.stringify(obj));
+                            $("#fact2Table").bootstrapTable('load',dataJosn);
+                        } else{
+                            initTableRow("fact2", getTableEmptyRow("fact2"));
+                        }
+                    }
+                    document.getElementById("drug_id1_select").value=null;
+                    document.getElementById("use_unit").value=0;
+                    document.getElementById("good_batch_no").value=null;
+                    document.getElementById("main_constitute").value=null;
+                    document.getElementById("use_type").value=null;
             }
         });
-        layer.alert('保存成功!',  {
-            skin: 'layui-layer-lan'
-            , closeBtn: 0
-            , shift: 4 //动画类型
-        });
+        layer.msg('保存成功!');
     });
 	
 	// document.getElementById("reflushText2").style.display="none";
@@ -370,7 +367,11 @@ function addDrug(){
 function deleteDrug(){
 	var deleteRow;
 	var deleteRow2 ="";
+	if(goodType6=='疫苗'){
     deleteRow = $('#factTable').bootstrapTable('getSelections');
+	}else{
+		deleteRow = $('#fact2Table').bootstrapTable('getSelections');
+	}
     if(deleteRow==null||deleteRow==''){
 		 layer.alert('请选择要删除的数据!', {
 				skin : 'layui-layer-lan',
@@ -392,25 +393,31 @@ function deleteDrug(){
     	$.ajax({
             // async: true,
             url: path+"/drug/deleteData",
-            data: {"deleteRow":deleteRow2},
+            data: {"deleteRow":deleteRow2,"houseId": $("#houseId").val(),"good_type1":$("#good_type1").val(),"use_date": $("#use_date").val()},
             type : "POST",
             dataType: "json",
             cache: false,
             // timeout:50000,
             success: function(result) {     
                     var obj = result.obj;
-    				initTableWithToolBar("fact", "factToolbar", getTableDataColumns("fact"), []);
+                    if(goodType6=='疫苗'){
+    				initTableWithToolBar("fact", "factToolbar", getFactTableDataColumns(), []);
                     if(null != obj) {
                         var dataJosn = $.parseJSON(JSON.stringify(obj));
                         $("#factTable").bootstrapTable('load',dataJosn);
                     } else{
                         initTableRow("fact", getTableEmptyRow("fact"));
                     }
-                    layer.alert('删除成功!',  {
-                        skin: 'layui-layer-lan'
-                        , closeBtn: 0
-                        , shift: 4 //动画类型
-                    });
+                    }else{
+                    	initTableWithToolBar("fact2", "factToolbar", getFactTableDataColumns2(), []);
+                        if(null != obj) {
+                            var dataJosn = $.parseJSON(JSON.stringify(obj));
+                            $("#fact2Table").bootstrapTable('load',dataJosn);
+                        } else{
+                            initTableRow("fact2", getTableEmptyRow("fact2"));
+                        }
+                    }
+                    layer.msg('删除成功!');
             }
         });
     });
@@ -420,21 +427,224 @@ function deleteDrug(){
 function searchData(paramTypeSelectValue){
 //    var dataJosn;
     var p;
+    var data;
     if(paramTypeSelectValue=="plan"){
+    	goodType5=$("#good_type").find("option:selected").text();
     	p = {
-    	    	"grow_week_age": $("#grow_week_age").val(),
-    	    	"start_grow_week_age": $("#start_grow_week_age").val(),
-    	    	"end_grow_week_age": $("#end_grow_week_age").val(),
+//    	    	"grow_week_age": $("#grow_week_age").val(),
+//    	    	"start_grow_week_age": $("#start_grow_week_age").val(),
+//    	    	"end_grow_week_age": $("#end_grow_week_age").val(),
     	    	"good_type": $("#good_type").val(),
-    	    	"drug_id": $("#drug_id").val(),
+//    	    	"drug_id": $("#drug_id").val(),
 //    	    	"instruction": $("#instruction").val(),
-    	    	"paramTypeSelectValue" : "plan"
+    	    	"paramTypeSelectValue" : "plan","farmId":$("#farmId").val(),
+    	    	"ord":2
     	    };  
+    	if(goodType5=='疫苗'){
+    		document.getElementById("planFrame").style.display="";
+    		document.getElementById("plan2Frame").style.display="none";
+    		 data = [{
+    		        field: "id",
+    		        title: "ID",
+    		        visible: false
+    		    }, {
+    		        field: "grow_week_age",
+    		        title: "生长周龄",
+    				width: '5%'
+    		    }, {
+    		        field: "drug_name",
+    		        title: "疫苗名称",
+    		        width: '18%'
+    		    }, {
+    		        field: "spec",
+    		        title: "规格",
+    		        width: '10%'
+    		    }, {
+    		    	field: "unit",
+    		        title: "单位",
+    		        width: '5%'
+    		    }, 
+    		    {
+    		        field: "use_unit",
+    		        title: "使用数量",
+    		        width: '3%'
+    		    }, {
+    		    	field: "corporation",
+    		        title: "供应商",
+    		        width: '10%'
+    		    }, 
+    		    {
+    		        field: "use_type",
+    		        title: "用途",
+    		        width: '11%'
+    		    }];
+    	}else{
+    		document.getElementById("planFrame").style.display="none";
+    		document.getElementById("plan2Frame").style.display="";
+    		data = [{
+    	        field: "id",
+    	        title: "ID",
+    	        visible: false
+    	    }, {
+    	        field: "grow_week_age",
+    	        title: "生长周龄",
+    			width: '5%'
+    	    }, {
+    	        field: "drug_name",
+    	        title: "药品名称",
+    	        width: '18%'
+    	    }, 
+    	    {
+    	        field: "spec",
+    	        title: "规格",
+    	        width: '10%'
+    	    }, {
+    	    	field: "unit",
+    	        title: "单位",
+    	        width: '5%'
+    	    }, 
+    	    {
+    	        field: "use_unit",
+    	        title: "使用数量",
+    	        width: '3%'
+    	    }, {
+    	    	field: "corporation",
+    	        title: "供应商",
+    	        width: '10%'
+    	    },
+    	    {
+    	        field: "use_type",
+    	        title: "用途",
+    	        width: '11%'
+    	    }];
+    	}
     	// document.getElementById("reflushText").style.display="inline";
     }else{
-    	p={"paramTypeSelectValue" :"fact"};
-    	// document.getElementById("reflushText2").style.display="inline";
+    	goodType6=$("#good_type1").find("option:selected").text();
+    	p={"paramTypeSelectValue" :"fact","good_type1":$("#good_type1").val(),"use_date":$("#use_date").val(),"houseId":$("#houseId").val()};
+    	if(goodType6=='疫苗'){
+    		document.getElementById("factFrame").style.display="";
+    		document.getElementById("fact2Frame").style.display="none";
+    		data = [{
+    	        checkbox: true,
+    	        width: '5%'
+    	    }, {
+    	        field: "id",
+    	        title: "ID",
+    	        visible: false
+    	    }, {
+    	        field: "use_date",
+    	        title: "日期",
+    	        width: '10%'
+    	    }, {
+    	        field: "house_name",
+    	        title: "栋舍",
+    	        width: '8%'
+    	    }, {
+    	        field: "drug_name",
+    	        title: "疫苗名称",
+    	        width: '18%'
+    	    }
+    	    , {
+    	        field: "spec",
+    	        title: "规格",
+    	        width: '10%'
+    	    }, {
+    	    	field: "unit",
+    	        title: "单位",
+    	        width: '5%'
+    	    }
+    	    , {
+    	        field: "good_batch_no",
+    	        title: "批号",
+    	        width: '10%'
+    	    }
+    	    , {
+    	        field: "use_unit",
+    	        title: "使用数量",
+    	        width: '8%'
+    	    },  
+    	    {
+    	    	field: "corporation",
+    	        title: "供应商",
+    	        width: '10%'
+    	    }, 
+    	    {
+    	        field: "use_type",
+    	        title: "用途",
+    	        width: '8%'
+    	    }, {
+    	        field: "main_constitute",
+    	        title: "主要成分",
+    	        width: '18%'
+    	    }, {
+    	        field: "user_real_name",
+    	        title: "负责人",
+    	        width: '8%'
+    	    }];
+    	}else{
+    		document.getElementById("factFrame").style.display="none";
+    		document.getElementById("fact2Frame").style.display="";
+    		data = [{
+    	        checkbox: true,
+    	        width: '5%'
+    	    }, {
+    	        field: "id",
+    	        title: "ID",
+    	        visible: false
+    	    }, {
+    	        field: "use_date",
+    	        title: "日期",
+    	        width: '10%'
+    	    }, {
+    	        field: "house_name",
+    	        title: "栋舍",
+    	        width: '8%'
+    	    }, {
+    	        field: "drug_name",
+    	        title: "药品名称",
+    	        width: '18%'
+    	    }
+    	    , {
+    	        field: "spec",
+    	        title: "规格",
+    	        width: '10%'
+    	    }, {
+    	    	field: "unit",
+    	        title: "单位",
+    	        width: '5%'
+    	    }
+    	    , {
+    	        field: "good_batch_no",
+    	        title: "批号",
+    	        width: '10%'
+    	    }
+    	    , {
+    	        field: "use_unit",
+    	        title: "使用数量",
+    	        width: '8%'
+    	    },  
+    	    {
+    	    	field: "corporation",
+    	        title: "供应商",
+    	        width: '10%'
+    	    }, 
+    	    {
+    	        field: "use_type",
+    	        title: "用途",
+    	        width: '8%'
+    	    }, {
+    	        field: "main_constitute",
+    	        title: "主要成分",
+    	        width: '18%'
+    	    }, {
+    	        field: "user_real_name",
+    	        title: "负责人",
+    	        width: '8%'
+    	    }];
+    	}
     }
+    
     $.ajax({
         // async: true,
         url: path+"/drug/searchData",
@@ -445,21 +655,47 @@ function searchData(paramTypeSelectValue){
         // timeout:50000,
         success: function(result) {     
                 var obj = result.obj;
-                initTable(paramTypeSelectValue, getTableDataColumns(paramTypeSelectValue), []);
-                if(null != obj) {
-                    var dataJosn = $.parseJSON(JSON.stringify(obj));
-                    $("#" + paramTypeSelectValue + "Table").bootstrapTable('load',dataJosn);
-                } else{
-                    initTableRow(paramTypeSelectValue, getTableEmptyRow(paramTypeSelectValue));
+                if(paramTypeSelectValue=="plan"){
+                	if(goodType5=='疫苗'){
+                	initTable("plan", data, []);
+                	if(null != obj) {
+                        var dataJosn = $.parseJSON(JSON.stringify(obj));
+                        $("#planTable").bootstrapTable('load',dataJosn);
+                    } else{
+                        initTableRow("plan", getTableEmptyRow("plan"));
+                    }
+                	}else{
+                		initTable("plan2", data, []);
+                		if(null != obj) {
+                            var dataJosn = $.parseJSON(JSON.stringify(obj));
+                            $("#plan2Table").bootstrapTable('load',dataJosn);
+                        } else{
+                            initTableRow("plan2", getTableEmptyRow("plan"));
+                        }
+                	}
+                }else{
+                	if(goodType6=='疫苗'){
+                    	initTable("fact", data, []);
+                    	if(null != obj) {
+                            var dataJosn = $.parseJSON(JSON.stringify(obj));
+                            $("#factTable").bootstrapTable('load',dataJosn);
+                        } else{
+                            initTableRow("fact", getTableEmptyRow("fact"));
+                        }
+                    	}else{
+                    		initTable("fact2", data, []);
+                    		if(null != obj) {
+                                var dataJosn = $.parseJSON(JSON.stringify(obj));
+                                $("#fact2Table").bootstrapTable('load',dataJosn);
+                            } else{
+                                initTableRow("fact2", getTableEmptyRow("fact"));
+                            }
+                    	}
                 }
            
         }
     });
-    if(paramTypeSelectValue=="plan"){
-    // document.getElementById("reflushText").style.display="none";
-    }else{
-    	// document.getElementById("reflushText2").style.display="none";
-    }
+    
 };
 
 function getTableEmptyRow(tableName){
@@ -494,12 +730,22 @@ function getTableEmptyRow(tableName){
     return emptyRow;
 }
 
-function getTableDataColumns(paramTypeSelectValue){
+function getTableDataColumns(paramTypeSelectValue,goodType){
     if(paramTypeSelectValue == paramTypeList[0]) {
-        return getPlanTableDataColumns();
+    	if(goodType=='疫苗'){
+    		 return getPlanTableDataColumns();
+    	}else{
+    		 return getPlanTableDataColumns2();
+    	}
+       
     }
     if(paramTypeSelectValue == paramTypeList[1]) {
-        return getFactTableDataColumns();
+    	if(goodType=='疫苗'){
+    		 return getFactTableDataColumns();
+    	}else{
+    		 return getFactTableDataColumns2();
+    	}
+       
     }
 }
 
@@ -516,6 +762,14 @@ function getPlanTableDataColumns(){
         field: "drug_name",
         title: "疫苗名称",
         width: '18%'
+    }, {
+        field: "spec",
+        title: "规格",
+        width: '10%'
+    }, {
+    	field: "unit",
+        title: "单位",
+        width: '5%'
     }, 
 //    {
 //        field: "Instruction",
@@ -524,11 +778,57 @@ function getPlanTableDataColumns(){
     {
         field: "use_unit",
         title: "使用数量",
+        width: '3%'
+    }, {
+    	field: "corporation",
+        title: "供应商",
         width: '10%'
     }, {
         field: "use_type",
         title: "用途",
-        width: '25%'
+        width: '11%'
+    }];
+    return dataColumns;
+}
+
+function getPlanTableDataColumns2(){
+    var dataColumns = [{
+        field: "id",
+        title: "ID",
+        visible: false
+    }, {
+        field: "grow_week_age",
+        title: "生长周龄",
+		width: '5%'
+    }, {
+        field: "drug_name",
+        title: "药品名称",
+        width: '18%'
+    }, {
+        field: "spec",
+        title: "规格",
+        width: '10%'
+    }, {
+    	field: "unit",
+        title: "单位",
+        width: '5%'
+    }, 
+//    {
+//        field: "Instruction",
+//        title: "使用方法"
+//    }, 
+    {
+        field: "use_unit",
+        title: "使用数量",
+        width: '3%'
+    }, {
+    	field: "corporation",
+        title: "供应商",
+        width: '10%'
+    }, {
+        field: "use_type",
+        title: "用途",
+        width: '11%'
     }];
     return dataColumns;
 }
@@ -551,8 +851,17 @@ function getFactTableDataColumns(){
         width: '8%'
     }, {
         field: "drug_name",
-        title: "名称",
+        title: "疫苗名称",
         width: '18%'
+    }
+    , {
+        field: "spec",
+        title: "规格",
+        width: '10%'
+    }, {
+    	field: "unit",
+        title: "单位",
+        width: '5%'
     }
 //    , {
 //        field: "use_unit",
@@ -562,14 +871,21 @@ function getFactTableDataColumns(){
         field: "good_batch_no",
         title: "批号",
         width: '10%'
-    }, {
-        field: "factory_name",
-        title: "厂家",
-        width: '18%'
-    }, {
+    }
+//    , {
+//        field: "factory_name",
+//        title: "厂家",
+//        width: '18%'
+//    }
+    , {
         field: "use_unit",
         title: "使用数量",
         width: '8%'
+    },  
+    {
+    	field: "corporation",
+        title: "供应商",
+        width: '10%'
     }, 
 //    {
 //        field: "Instruction",
@@ -591,19 +907,148 @@ function getFactTableDataColumns(){
     return dataColumns;
 }
 
-function setUser(){
+function getFactTableDataColumns2(){
+    var dataColumns = [{
+        checkbox: true,
+        width: '5%'
+    }, {
+        field: "id",
+        title: "ID",
+        visible: false
+    }, {
+        field: "use_date",
+        title: "日期",
+        width: '10%'
+    }, {
+        field: "house_name",
+        title: "栋舍",
+        width: '8%'
+    }, {
+        field: "drug_name",
+        title: "药品名称",
+        width: '18%'
+    }
+    , {
+        field: "spec",
+        title: "规格",
+        width: '10%'
+    }, {
+    	field: "unit",
+        title: "单位",
+        width: '5%'
+    }
+//    , {
+//        field: "use_unit",
+//        title: "使用数量"
+//    }
+    , {
+        field: "good_batch_no",
+        title: "批号",
+        width: '10%'
+    }
+//    , {
+//        field: "factory_name",
+//        title: "厂家",
+//        width: '18%'
+//    }
+    , {
+        field: "use_unit",
+        title: "使用数量",
+        width: '8%'
+    },  
+    {
+    	field: "corporation",
+        title: "供应商",
+        width: '10%'
+    }, 
+//    {
+//        field: "Instruction",
+//        title: "使用方法"
+//    }, 
+    {
+        field: "use_type",
+        title: "用途",
+        width: '8%'
+    }, {
+        field: "main_constitute",
+        title: "主要成分",
+        width: '18%'
+    }, {
+        field: "user_real_name",
+        title: "负责人",
+        width: '8%'
+    }];
+    return dataColumns;
+}
+
+//function setUser(){
+//	$.ajax({
+//		type : "post",
+//		url : path + "/drug/getUser",
+//		data : {
+//			"houseId" : $("#houseId").val()
+//		},
+//		dataType: "json",
+//		success : function(result) {
+//			var list = result.obj;
+//			$("#use_user_id option").remove();
+//			for (var i = 0; i < list.length; i++) {
+//				$("#use_user_id").append("<option value=" + list[i].id + ">" + list[i].user_real_name+ "</option>");
+//			}
+//			
+//		}
+//	});
+//}
+
+function setCorporation() {
 	$.ajax({
 		type : "post",
-		url : path + "/drug/getUser",
+		url : path + "/googs/getCorporation",
 		data : {
-			"houseId" : $("#houseId").val()
+			"good_id" : $("#drug_id1").val()
 		},
-		dataType: "json",
+		dataType : "json",
 		success : function(result) {
 			var list = result.obj;
-			$("#use_user_id option").remove();
+			$("#corporation_id option").remove();
 			for (var i = 0; i < list.length; i++) {
-				$("#use_user_id").append("<option value=" + list[i].id + ">" + list[i].user_real_name+ "</option>");
+				$("#corporation_id").append("<option value=" + list[i].corporation_id + ">" + list[i].corporation + "</option>");
+			}
+		}
+	});
+}
+
+function setSpec() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getSpec2",
+		data : {
+			"good_id" : $("#drug_id1").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#spec option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#spec").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
+			}
+		}
+	});
+}
+
+function setUnit() {
+	$.ajax({
+		type : "post",
+		url : path + "/googs/getUnit2",
+		data : {
+			"good_id" : $("#drug_id1").val()
+		},
+		dataType : "json",
+		success : function(result) {
+			var list = result.obj;
+			$("#unit option").remove();
+			for (var i = 0; i < list.length; i++) {
+				$("#unit").append("<option value=" + list[i].biz_code + ">" + list[i].code_name + "</option>");
 			}
 		}
 	});
@@ -614,6 +1059,11 @@ function setUser(){
 function forward2(){
 	$("#state2").css("display", "none");
     $("#detail2").css("display", "block");
+    document.getElementById("drug_id1_select").value=null;
+    document.getElementById("use_unit").value=0;
+    document.getElementById("good_batch_no").value=null;
+    document.getElementById("main_constitute").value=null;
+    document.getElementById("use_type").value=null;
     searchData("fact");
 }
 function forward3(){

@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.mtc.zljk.user.service.RoleService;
+import com.mtc.zljk.util.service.OrganService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mtc.zljk.farm.service.FarmService;
@@ -19,6 +22,9 @@ public class FarmServiceImpl implements FarmService {
    
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
+
+	@Autowired
+	private OrganService organService;
 	
 	public List<PageData> selectByCondition(PageData pd) throws Exception{
 		return (List<PageData>) dao.findForList("SDFarmMapper.selectByCondition", pd);
@@ -38,6 +44,10 @@ public class FarmServiceImpl implements FarmService {
 	
 	public List<PageData> selectBatchByCondition(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("SDFarmMapper.selectBatchByCondition", pd);
+	}
+	
+	public List<PageData> selectOganizationList(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("SDFarmMapper.selectOganizationList", pd);
 	}
 
 	public List<PageData> findFarm(PageData pd) throws Exception {
@@ -93,7 +103,16 @@ public class FarmServiceImpl implements FarmService {
 	}
 	
 	public int saveFarm(PageData pd) throws Exception {
-		return (Integer) dao.save("SDFarmMapper.saveFarm", pd);
+		Integer rt = (Integer) dao.save("SDFarmMapper.saveFarm", pd);
+		Integer objId = (Integer) pd.get("id");
+
+		PageData paramPd = new PageData();
+		paramPd.put("parent_id",pd.getString("parent_id"));
+		paramPd.put("level_id",pd.getString("level_id"));
+		paramPd.put("org",objId.toString());
+		paramPd.put("user_id",pd.getInteger("create_person"));
+		organService.saveFarmMapping(paramPd);
+		return rt;
 	}
 
 	public void editFarm(PageData pd) throws Exception {
@@ -121,7 +140,9 @@ public class FarmServiceImpl implements FarmService {
 	
 
 	public int saveHouseAlarm(PageData pd) throws Exception {
-		return (Integer) dao.save("SDFarmMapper.saveHouseAlarm", pd);
+		int rt = (Integer) dao.save("SDFarmMapper.saveHouseAlarm", pd);
+		rt *= (Integer) dao.save("SDFarmMapper.initHouseAlarmBasicHis", pd);
+		return rt;
 	}
 
 	public int saveDeviHouse(PageData pd) throws Exception {

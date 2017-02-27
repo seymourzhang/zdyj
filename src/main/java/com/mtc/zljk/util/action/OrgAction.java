@@ -120,7 +120,9 @@ public class OrgAction extends BaseAction{
 			int flag = -1;
 			int k =0;
 			for(PageData t : rtList){
-				if(t.getInteger("parent_id") == tmpOrg.getInteger("parent_id")){
+				int a = t.getInteger("parent_id").intValue();
+				int b = tmpOrg.getInteger("parent_id").intValue();
+				if(a == b){
 					flag = k;
 				}
 				k += 1;
@@ -262,7 +264,7 @@ public class OrgAction extends BaseAction{
 			paramPd.put("obj_id",objId);
 			paramPd.put("obj_type",2);
 			paramPd.put("create_person",user.getId());
-
+			paramPd.put("user_id",user.getId());
 			moduleService.service("roleServiceImpl","insertRightsObj",new Object[]{paramPd});
 			if(i==1){
 				j.setSuccess(true);
@@ -289,9 +291,14 @@ public class OrgAction extends BaseAction{
 		pd.put("user_id", user.getId());
 		List<PageData> orglist = organService.getOrgList(pd);
 		int count=0;
-		if(orglist!=null&&orglist.size()!=0){
-			count=orglist.get(orglist.size()-1).getInteger("level_id");
+		for(PageData tmpPd : orglist){
+			if(count<=tmpPd.getInteger("level_id")){
+				count = tmpPd.getInteger("level_id");
+			}
 		}
+//		if(orglist!=null && orglist.size()!=0){
+//			count = orglist.get(orglist.size()-1).getInteger("level_id");
+//		}
 		List<PageData> list=new ArrayList<PageData>();
 		for (int i = 1; i <= count; i++) {
 			for (PageData pageData : orglist) {
@@ -361,6 +368,9 @@ public class OrgAction extends BaseAction{
 		super.writeJson(j, response);
 	}
 
+	/**
+	 * 弃用，仅做其他代码参考之用
+	 * */
 	@RequestMapping("/setFarmMapping")
 	public void setFarmMapping(HttpServletResponse response) throws Exception{
 		Json j=new Json();
@@ -370,48 +380,47 @@ public class OrgAction extends BaseAction{
 		PageData pd = this.getPageData();
 		pd.put("user_id", user.getId());
 
-		int orgLevelId = Integer.valueOf(pd.getString("level_id"));
 
-		List<PageData> maxLevelList = organService.getMaxOrgLevelId(null);
-		int maxOrgLevelId = Integer.valueOf(String.valueOf(maxLevelList.get(0).get("max_level_id")))  ;
-
-		if((maxOrgLevelId-1) == orgLevelId){
-			String orgStr = pd.getString("org");
-			List<Integer> orgList = new ArrayList<>();
-
-			if(orgStr.length()>1) {
-				String[] tmpOrgs = orgStr.substring(0, orgStr.length() - 1).split(",");
-				for (String tmp : tmpOrgs) {
-					orgList.add(Integer.valueOf(tmp));
-				}
-				pd.put("orgList",orgList);
-				int i = organService.setFarmMapping(pd);
-
-				if(i > 0){
-					for(int k=0; k<i; k++){
-						PageData paramPd = new PageData();
-//						Long objId = (Long)pd.get("id");
-						paramPd.put("obj_id",orgList.get(k));
-						paramPd.put("obj_type",2);
-						paramPd.put("create_person",user.getId());
-						moduleService.service("roleServiceImpl","insertRightsObj",new Object[]{paramPd});
-					}
-
-					j.setSuccess(true);
-				} else{
-					j.setSuccess(false);
-					j.setMsg("系统内部错误");
-				}
-			} else{
-				j.setSuccess(false);
-				j.setMsg("没有选择需要绑定的农场");
-			}
-		} else{
-			j.setSuccess(false);
-			j.setMsg("该机构下不能直接绑定农场");
-		}
-
-
+//		int orgLevelId = Integer.valueOf(pd.getString("level_id"));
+//
+//		List<PageData> maxLevelList = organService.getMaxOrgLevelId(null);
+//		int maxOrgLevelId = Integer.valueOf(String.valueOf(maxLevelList.get(0).get("max_level_id")))  ;
+//
+//		if((maxOrgLevelId-1) == orgLevelId){
+//			String orgStr = pd.getString("org");
+//			List<Integer> orgList = new ArrayList<>();
+//
+//			if(orgStr.length()>1) {
+//				String[] tmpOrgs = orgStr.substring(0, orgStr.length() - 1).split(",");
+//				for (String tmp : tmpOrgs) {
+//					orgList.add(Integer.valueOf(tmp));
+//				}
+//				pd.put("orgList",orgList);
+//				int i = organService.setFarmMapping(pd);
+//
+//				if(i > 0){
+//					for(int k=0; k<i; k++){
+//						PageData paramPd = new PageData();
+////						Long objId = (Long)pd.get("id");
+//						paramPd.put("obj_id",orgList.get(k));
+//						paramPd.put("obj_type",2);
+//						paramPd.put("create_person",user.getId());
+//						moduleService.service("roleServiceImpl","insertRightsObj",new Object[]{paramPd});
+//					}
+//
+//					j.setSuccess(true);
+//				} else{
+//					j.setSuccess(false);
+//					j.setMsg("系统内部错误");
+//				}
+//			} else{
+//				j.setSuccess(false);
+//				j.setMsg("没有选择需要绑定的农场");
+//			}
+//		} else{
+//			j.setSuccess(false);
+//			j.setMsg("该机构下不能直接绑定农场");
+//		}
 
 		super.writeJson(j, response);
 	}

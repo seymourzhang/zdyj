@@ -10,7 +10,10 @@
             male_count
             ,female_count
         FROM s_b_batch_curr
-        WHERE farm_id = #{farm_id}
+        WHERE 1=1
+        <if test="farm_id != null and farm_id != ''">
+         AND farm_id = #{farm_id}
+        </if>
                 AND house_code = #{house_code}
                 AND status = 1
                 AND is_enable = 1
@@ -44,28 +47,27 @@
         ,sbbc.create_person
         ,sbbc.create_time
         ,devi.device_code
-        ,round((sbbc.female_count/sbbc.male_count),2) as rate
-        FROM (SELECT id
-        , name_cn
-        , parent_id farm_id
-        FROM s_d_organization
-        WHERE parent_id= #{farm_id}
-        <if test="house_code != null and id != ''">
-            and id=#{house_code}
-        </if>
-        ) org
-        LEFT JOIN (SELECT a.*,b.batch_no FROM s_b_batch_change a
+        ,round((sbbc.male_count/sbbc.female_count)*100,2) as rate
+        FROM (SELECT a.*,b.batch_no FROM s_b_batch_change a
         JOIN (SELECT * FROM s_b_batch_curr
         WHERE status = 1 AND is_enable = 1) b
         ON b.batch_id = a.batch_id
         WHERE a.operation_type = 2
-        ) sbbc
-        ON org.farm_id = sbbc.farm_id
-        AND org.id = sbbc.house_code
+        ) sbbc,(SELECT id
+        , name_cn
+        , parent_id farm_id
+        FROM s_d_organization
+        WHERE parent_id= #{farm_id}
+        <if test="house_code != null and house_code != ''">
+            and id=#{house_code}
+        </if>
+        ) org
         LEFT JOIN s_d_house house
         ON org.id = house.id
         LEFT JOIN s_b_devi_house devi
         on devi.house_id = house.id
+        WHERE org.farm_id = sbbc.farm_id
+        AND org.id = sbbc.house_code
     </select>
 
     <select id="selectBatchDataForMobile" parameterType="pd" resultType="pd">
@@ -255,30 +257,30 @@
             ,(a.female_count_target) as female_count_target2
             ,(0-a.male_count_target) as male_count_target1
             ,(a.male_count_target) as male_count_target2
-        FROM (SELECT id
+        FROM (SELECT farm_id
+                                    ,service_id
+                                    ,date_format(operation_date, '%Y-%m-%d') operation_date
+                                    ,MAX(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN '' ELSE house_code END) houseId
+                                    ,MAX(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN '' ELSE house_name END) house
+                                    ,MAX(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN house_code ELSE '' END) houseIdTarget
+                                    ,MAX(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN house_name ELSE '' END) houseTarget
+                                    ,SUM(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN 0 ELSE female_count END) female_count
+                                    ,SUM(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN 0 ELSE male_count END) male_count
+                                    ,SUM(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN female_count ELSE 0 END) female_count_target
+                                    ,SUM(CASE WHEN (COALESCE(female_count,0) > 0 or COALESCE(male_count,0) > 0) THEN male_count ELSE 0 END) male_count_target
+                                    ,MAX(bak) bak
+                                    ,batch_id
+                            FROM s_b_batch_change
+                            WHERE operation_type = 3
+                                    AND EXISTS (SELECT 1 FROM s_b_batch_curr b
+                                                    WHERE b.farm_id = #{farm_id} AND substring_index(b.batch_id,'-',-1)=substring_index(s_b_batch_change.batch_id,'-',-1) AND b.status = 1 AND b.is_enable = 1)
+                            GROUP BY service_id, farm_id, date_format(operation_date, '%Y-%m-%d')
+                ) a,(SELECT id
                         , name_cn
                         , parent_id farm_id
                 FROM s_d_organization
                 WHERE parent_id= #{farm_id}) org
-                LEFT JOIN (SELECT farm_id
-                                    ,service_id
-                                    ,date_format(operation_date, '%Y-%m-%d') operation_date
-                                    ,MAX(CASE WHEN COALESCE(female_count,0) &lt;= 0 THEN house_code ELSE '' END) houseId
-                                    ,MAX(CASE WHEN COALESCE(female_count,0) &lt;= 0 THEN house_name ELSE '' END) house
-                                    ,MAX(CASE WHEN female_count &lt;= 0 THEN '' ELSE house_code END) houseIdTarget
-                                    ,MAX(CASE WHEN female_count &lt;= 0 THEN '' ELSE house_name END) houseTarget
-                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN female_count ELSE 0 END) female_count
-                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN male_count ELSE 0 END) male_count
-                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN 0 ELSE female_count END) female_count_target
-                                    ,SUM(CASE WHEN female_count &lt;= 0 THEN 0 ELSE male_count END) male_count_target
-                                    ,MAX(bak) bak
-                            FROM s_b_batch_change
-                            WHERE operation_type = 3
-                                    AND EXISTS (SELECT 1 FROM s_b_batch_curr b
-                                                    WHERE b.farm_id = #{farm_id} AND b.batch_id=batch_id AND b.status = 1 AND b.is_enable = 1)
-                            GROUP BY service_id, farm_id, date_format(operation_date, '%Y-%m-%d')
-                ) a
-        ON org.farm_id = a.farm_id
+        WHERE org.farm_id = a.farm_id
         AND org.id = a.houseId
         ORDER BY a.operation_date DESC
     </select>
@@ -410,7 +412,10 @@
                 ,sbbc.create_person
                 ,sbbc.create_time
                 ,(sbbc.male_count + sbbc.female_count) as over_batch_count
-        FROM (SELECT id
+        FROM (SELECT * FROM s_b_batch_curr
+                        WHERE farm_id = #{farm_id}
+                            AND status = 0 AND is_enable = 1
+                    ) sbbc,(SELECT id
                     , name_cn
                     , parent_id farm_id
                 FROM s_d_organization
@@ -419,14 +424,11 @@
                         and id=#{house_code}
                     </if>
                 ) org
-        LEFT JOIN (SELECT * FROM s_b_batch_curr
-                        WHERE farm_id = #{farm_id}
-                            AND status = 0 AND is_enable = 1
-                    ) sbbc
-        ON org.farm_id = sbbc.farm_id
+                LEFT JOIN s_d_house house
+                ON org.id = house.id
+        WHERE org.farm_id = sbbc.farm_id
         AND org.id = sbbc.house_code
-        LEFT JOIN s_d_house house
-        ON org.id = house.id
+        
     </select>
     <!-- 保存出栏批次数据到历史表 -->
     <insert id="insertOverBatchDataToHis" parameterType="pd" flushCache="false">
@@ -495,7 +497,10 @@
                 ,sbbc.modify_person = #{user_id}
                 ,sbbc.modify_date = CURDATE()
                 ,sbbc.modify_time = CURTIME()
+                ,sbbc.operation_date = date_add(date_add(date_add(#{operation_date}, interval 23 hour), interval 59 minute),interval 59 second)
+                ,sbbc.grow_age = #{grow_age}
                 ,sbbc.status = 0
+                ,sbbc.bak = #{bak}
         WHERE sbbc.batch_id = #{batch_id}
                 AND sbbc.status = 1
                 AND sbbc.is_enable = 1
@@ -509,10 +514,32 @@
              LEFT JOIN
              s_b_batch_curr c
              on c.batch_id = d.batch_id
-        WHERE c.operation_date = #{operation_date}
+        WHERE 1=1
+        <if test="operation_date != null and operation_date != ''">
+           and d.growth_date = #{operation_date}
+        </if>
               AND c.house_code = #{house_code}
+              AND c.status = 1
+              AND c.is_enable = 1
     </select>
 
-
+    <!-- 保存出栏批次数据到当前表 -->
+    <update id="updateOverBatchDataToDetail" parameterType="pd"  flushCache="false">
+        UPDATE s_b_breed_detail SET
+            modify_date=CURRENT_DATE
+            ,modify_time=CURRENT_TIME
+            <if test="male_weight != null and male_weight != ''">
+              ,male_cur_weight = #{male_weight}
+            </if>
+            <if test="female_weight != null and female_weight != ''">
+              ,female_cur_weight=#{female_weight}
+            </if>
+            <if test="user_id != null and user_id != ''">
+              ,modify_person=#{user_id}
+            </if>
+          WHERE 1=1
+            AND batch_id=#{batch_id}
+            AND growth_date = #{operation_date}
+    </update>
 
 </mapper>

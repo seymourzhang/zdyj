@@ -32,7 +32,7 @@
                          alt="logo"
                          style="padding-left:20px;width:70px;margin-top:5px;">
                 </a>
-                <span class="font s24 white bold" style="vertical-align:middle;">正大鸡场管理系统</span>
+                <span class="font s24 white bold" style="vertical-align:middle;"><%=systemName%></span>
             </div>
 
             <%--用户名称及退出按钮--%>

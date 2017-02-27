@@ -50,6 +50,14 @@ public interface FarmService {
      */
 	List<PageData> selectBatchByCondition(PageData pd) throws Exception;
 	
+	/**
+     * 根据查询公司
+     * @param pd
+     * @return List<SDFarm>
+     * @throws Exception
+     */
+	List<PageData> selectOganizationList(PageData pd) throws Exception;
+	
 	public List<PageData> findFarm(PageData pd) throws Exception;
 	public List<PageData> findHouse(PageData pd) throws Exception;
 	

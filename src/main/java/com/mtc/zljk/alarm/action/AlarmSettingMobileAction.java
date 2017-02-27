@@ -137,6 +137,9 @@ public class AlarmSettingMobileAction extends BaseAction {
             pd.put("modify_date", sdf.format(new Date()));
             pd.put("modify_time", sdf.format(new Date()));
             alarmService.updateSBHouseAlarm(pd);
+
+            pd.put("alarm_type", 1);
+            alarmService.saveSbHouseAlarmHis(pd);
             resJson.put("Result", "Success");
             resJson.put("Error", "");
             dealRes = Constants.RESULT_SUCCESS;

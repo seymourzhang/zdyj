@@ -1,5 +1,7 @@
 var count0rg;
 var num=2;
+//var allSearch = "true";
+var pSize = 100;
 
 jQuery(document).ready(function() {
 
@@ -62,7 +64,7 @@ function searchData(){
 			title: '日龄'
 			}, {
 			field: 'set_values',
-			title: '光照参考值'
+			title: '光照目标值'
 			}, {
 			field: 'high_alarm_values',
 			title: '光照上限值'
@@ -119,11 +121,25 @@ function searchData(){
 			field: 'temp_cordon',
 			title: '警戒温度'
 			}, {
-			field: 'alarm_way',
+			field: 'alarm_probe',
 			title: '报警方式'
 			}, {
-			field: 'alarm_probe',
-			title: '报警探头'
+			field: 'alarm_sensor_no',
+			title: '报警传感器'
+				,
+			formatter: function(value,row,index){
+				var sensor = value +"";
+				if(sensor =='undefined'){
+					return '-';
+				}else{
+				return sensor
+				.replace('inside_temp1', '前区1')
+				.replace('inside_temp2', '前区2')
+				.replace('inside_temp10', '中区1')
+				.replace('inside_temp19', '后区1')
+				.replace('inside_temp20', '后区2');
+				}
+			}
 			}, {
 			field: 'point_alarm',
 			title: '点温差报警'
@@ -189,55 +205,64 @@ InitSubTable = function (index, row, $detail) {
 		url= path+"/alarmHis/selectAlarmHisDetailByCondition";
 		data = [{
 			field: 'modify_time',
-			title: '设置日期'
+			title: '<label style="background-color: #2586C4;color:#fff;">设置日期</label>'
 			},{
+				field: 'alarm_operation',
+				title: '<label style="background-color: #2586C4;color:#fff;">操作类型</label>'
+				},{
 			field: 'set_values',
-			title: '目标温度'
+			title: '<label style="background-color: #2586C4;color:#fff;">目标温度</label>'
 			}, {
 			field: 'high_alarm_values',
-			title: '高报温度'
+			title: '<label style="background-color: #2586C4;color:#fff;">高报温度</label>'
 			}, {
 			field: 'low_alarm_values',
-			title: '低报温度'
+			title: '<label style="background-color: #2586C4;color:#fff;">低报温度</label>'
 			}, {
 			field: 'modify_person',
-			title: '设置人'
+			title: '<label style="background-color: #2586C4;color:#fff;">设置人</label>'
 			}];
 	}else if(alarm_type =="2"){
 		url= path+"/alarmHis/selectAlarmHisDetailByCondition";
 		data = [{
 			field: 'modify_time',
-			title: '设置日期'
+			title: '<label style="background-color: #2586C4;color:#fff;">设置日期</label>'
 			},{
+				field: 'alarm_operation',
+				title: '<label style="background-color: #2586C4;color:#fff;">操作类型</label>'
+				},{
 			field: 'set_values',
-			title: '光照参考值'
+			title: '<label style="background-color: #2586C4;color:#fff;">光照目标值</label>'
 			}, {
 			field: 'high_alarm_values',
-			title: '光照上限值'
+			title: '<label style="background-color: #2586C4;color:#fff;">光照上限值</label>'
 			}, {
 			field: 'low_alarm_values',
-			title: '光照下限值'
+			title: '<label style="background-color: #2586C4;color:#fff;">光照下限值</label>'
 			}, {
 			field: 'start_time',
-			title: '开启时间'
+			title: '<label style="background-color: #2586C4;color:#fff;">开启时间</label>'
 			}, {
 			field: 'end_time',
-			title: '结束时间'
+			title: '<label style="background-color: #2586C4;color:#fff;">结束时间</label>'
 			}, {
 			field: 'modify_person',
-			title: '设置人'
+			title: '<label style="background-color: #2586C4;color:#fff;">设置人</label>'
 			}];
 	}else if(alarm_type =="3"){
 		url= path+"/alarmHis/selectAlarmHisDetailByCondition";
 		data = [{
 			field: 'modify_time',
-			title: '设置日期'
+			title: '<label style="background-color: #2586C4;color:#fff;">设置日期</label>'
 			},{
+				field: 'alarm_operation',
+				title: '<label style="background-color: #2586C4;color:#fff;">操作类型</label>'
+				},{
 			field: 'high_alarm_values',
-			title: 'co2报警值'
+			title: '<label style="background-color: #2586C4;color:#fff;">co2报警值</label>'
 			}, {
 			field: 'modify_person',
-			title: '设置人'
+			title: '<label style="background-color: #2586C4;color:#fff;">设置人</label>'
 			}];
 	}else{
 		url= path+"/alarmHis/selectHouseAlarmHisDetailByCondition";
@@ -254,11 +279,25 @@ InitSubTable = function (index, row, $detail) {
 			field: 'temp_cordon',
 			title: '警戒温度'
 			}, {
-			field: 'alarm_way',
+			field: 'alarm_probe',
 			title: '报警方式'
 			}, {
-			field: 'alarm_probe',
-			title: '报警探头'
+			field: 'alarm_sensor_no',
+			title: '报警传感器'
+				,
+			formatter: function(value,row,index){
+				var sensor = value +"";
+				if(sensor =='undefined'){
+					return '-';
+				}else{
+				return sensor
+				.replace('inside_temp1', '前区1')
+				.replace('inside_temp2', '前区2')
+				.replace('inside_temp10', '中区1')
+				.replace('inside_temp19', '后区1')
+				.replace('inside_temp20', '后区2');
+				}
+			}
 			}, {
 			field: 'point_alarm',
 			title: '点温差报警'
@@ -285,7 +324,6 @@ onExpandRow: function (index, row, $Subdetail) {
 	InitSubTable (index, row, $Subdetail);
 }
 });
-
 $.ajax({
     // async: true,
     url: url,

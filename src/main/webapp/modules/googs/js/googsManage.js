@@ -135,40 +135,41 @@ function openCorporationWin(){
 		});
 		return;
 	}
+	
 var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 		str += '<div class="span2">';
-			str += '供应商:';
+			str += '<span_customer ><label style="margin-left: -3px;">供应商:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation1" id="corporation1"/>' ;
+				str += '<input type="text" style="margin-left: -65px;margin-top:-3px;width: 130px;" name="corporation1" id="corporation1"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '负责人:' ;
+			str += '<span_customer ><label style="margin-left: -3px;margin-top:-3px;width: 130px;">负责人:</label></span_customer >' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_person" id="corporation_person"/>' ;
+				str += '<input type="text" style="margin-left: -64px;margin-top:-3px;width: 130px;" name="corporation_person" id="corporation_person"/>' ;
 			str += '</div>';
 			str += '<div class="span2">';
-			str += '联系电话:';
+			str += '<span_customer ><label style="margin-left: -7px;">联系电话:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone"/>';
+			str += '<input type="text" style="margin-left: -55px;margin-top:-3px;width: 140px;" name="telphone" id="telphone"/>';
 			str += '</div>';	
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '地址:';
+	str += '<span_customer ><label style="margin-left: 11px;">地址:</label></span_customer >';
     str += '</div>';
 	str += '<div class="span2">';
-		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_address" id="corporation_address"/>' ;
+		str += '<input type="text" style="margin-left: -65px;margin-top:-3px;width: 130px;" name="corporation_address" id="corporation_address"/>' ;
 	str += '</div>';
 		str += '<div class="span2">';
-			str+='备注:';
+			str+='<span_customer ><label style="margin-left: 11px;">备注:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak"/>';
+			str += '<input type="text" style="margin-left: -65px;margin-top:-3px;width: 365px;" name="bak" id="bak"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -182,7 +183,7 @@ var str = '<br><div class="container-fluid" >';
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['570px', '255px'], //宽高
+	  area: ['670px', '205px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
@@ -261,37 +262,37 @@ function openFactoryWin(){
 var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 		str += '<div class="span2">';
-			str += '厂家:';
+			str += '<span_customer ><label style="">厂家:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_name1" id="factory_name1"/>' ;
+				str += '<input type="text" style="margin-left: -75px;margin-top:-3px;width: 140px;" name="factory_name1" id="factory_name1"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '负责人:' ;
+			str += '<span_customer ><label style="">负责人:</label></span_customer >' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_person" id="factory_person"/>' ;
+				str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 130px;" name="factory_person" id="factory_person"/>' ;
 			str += '</div>';
 			str += '<div class="span2">';
-			str += '联系电话:';
+			str += '<span_customer ><label style="margin-left: -11px;">联系电话:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone"/>';
+			str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 145px;" name="telphone" id="telphone"/>';
 			str += '</div>';	
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '地址:';
+	str += '<span_customer ><label style="">地址:</label></span_customer >';
     str += '</div>';
 	str += '<div class="span2">';
-		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_address" id="factory_address"/>' ;
+		str += '<input type="text" style="margin-left: -75px;margin-top:-3px;width: 140px;" name="factory_address" id="factory_address"/>' ;
 	str += '</div>';
 		str += '<div class="span2">';
-			str+='备注:';
+			str+='<span_customer ><label style="margin-left: 13px;">备注:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak"/>';
+			str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 360px;" name="bak" id="bak"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -305,7 +306,7 @@ var str = '<br><div class="container-fluid" >';
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['570px', '255px'], //宽高
+	  area: ['670px', '215px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
@@ -384,32 +385,32 @@ function openGoodsWin(){
 var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资类别:';
+	str += '<span_customer ><label style="width:120px;">物资类别:</label></span_customer >';
 str += '</div>';
 	str += '<div class="span4">';
-		str += "<select id='good_type' style='width: 115px;' class='m-wrap span12' tabindex='1' name='good_type'>";
+		str += "<select id='good_type' style='width: 115px;margin-top: -3px;margin-left:-10px;' class='m-wrap span12' tabindex='1' name='good_type'>";
      str+='</select>';
 	str += '</div>';	
 	str += '<div class="span2">';
-	str += '物资名称:' ;
+	str += '<span_customer ><label style="width:120px;">物资名称:</label></span_customer >' ;
 str += '</div>';
 	str += '<div class="span4" >';
-		str += '<input type="text" style="width: 70px;" name="good_name1" id="good_name1"/>' ;
+		str += '<input type="text" style="width: 130px;margin-top: -3px;margin-left:-10px;" name="good_name1" id="good_name1"/>' ;
 	str += '</div>';
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资编号:';
+	str += '<span_customer ><label style="width:120px;">物资编号:</label></span_customer >';
     str += '</div>';
 	str += '<div class="span4" >';
-		str += '<input type="text" style="width: 100px;" name="good_code" id="good_code"/>' ;
+		str += '<input type="text" style="width: 100px;margin-top: -3px;margin-left:-10px;" name="good_code" id="good_code"/>' ;
 	str += '</div>';
 		str += '<div class="span2">';
-			str += '备注:';
+			str += '<span_customer ><label style="margin-left:28px;width:120px;">备注:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span4">';
-			str += '<input type="text" style="width: 70px;" name="bak" id="bak"/>';
+			str += '<input type="text" style="width: 130px;margin-top: -3px;margin-left:-10px;" name="bak" id="bak"/>';
 			str += '</div>';
 //			str += '<div class="span1">';
 //			str += '厂家:' ;
@@ -433,7 +434,7 @@ str += '</div>';
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['470px', '255px'], //宽高
+	  area: ['445px', '205px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
@@ -508,10 +509,10 @@ function opencorporationGoodWin(){
 var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资类别:';
+	str += '<span_customer ><label style="width:70px;margin-left: -1px;">物资类别:</label></span_customer >';
     str += '</div>';
 	str += '<div class="span2">';
-		str += '<select id="good_type" style="width: 115px;margin-left: -45px;" class="m-wrap span12" tabindex="1" name="good_type" onchange="setGoodName()">';
+		str += '<select id="good_type" style="width: 149px;margin-top:-3px;margin-left: -65px;" tabindex="1" name="good_type" onchange="setGoodName()">';
 //		var myobj=goodTypeList.split("=");
 //		for (var j = 0; j < myobj.length; j++) {
 //			if(myobj[j].indexOf("code_name") > 0 ){
@@ -522,10 +523,10 @@ var str = '<br><div class="container-fluid" >';
      str+='</select>';
 	str += '</div>';
 	str += '<div class="span2">';
-	str += '物资名称:' ;
+	str += '<span_customer ><label style="width:70px;margin-left: 25px;">物资名称:</label></span_customer >' ;
 str += '</div>';
 	str += '<div class="span2" >';
-	str += "<select id='goods' style='width: 115px;margin-left: -45px;' class='m-wrap span12' tabindex='1' name='goods'>";
+	str += "<select id='goods' style='width: 149px;margin-top:-3px;margin-left: -38px;' tabindex='1' name='goods'>";
 //	var goods = setGoodName();
 //	var myobj=goods.split("=");
 //	for (var j = 0; j < goods.length; j++) {
@@ -539,19 +540,19 @@ str += '</div>';
  str+='</select>';
 	str += '</div>';
 		str += '<div class="span2">';
-			str += '单价:';
+			str += '<span_customer ><label style="width:120px;margin-left: 57px;">单价:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="width: 70px;margin-left: -45px;" name="price" id="price"/>' ;
+				str += '<input type="text" style="width: 135px;margin-top:-3px;margin-left: -35px;" name="price" id="price"/>' ;
 			str += '</div>';	
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '规格:';
+	str += '<span_customer ><label style="width:40px;margin-left: 27px;">规格:</label></span_customer >';
 	str += '</div>';
-	str += '<div class="span2" style="margin-left: -30px;">';
-	str += "<select id='spec' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='spec'>";
+	str += '<div class="span2">';
+	str += "<select id='spec' style='width: 115px;display:none;' tabindex='1' name='spec'>";
 //	var myobj=spec.split("=");
 //	for (var j = 0; j < myobj.length; j++) {
 //		if(myobj[j].indexOf("code_name") > 0 ){
@@ -560,13 +561,13 @@ str += '</div>';
 //			
 //	}
  str+='</select>';
- str+='<input type="text" id="spec_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入规格" autocomplete="off" onchange="empty()" />';
+ str+='<input type="text" id="spec_select" style="width: 135px;margin-top:-3px;margin-left: -65px;" data-provide="typeahead" placeholder="请输入规格" autocomplete="off" onchange="empty()" />';
 	str += '</div>';
-	str += '<div class="span2" style="margin-left: 60px;">';
-	str += '单位:';
+	str += '<div class="span2">';
+	str += '<span_customer ><label style="width:40px;margin-left: 53px;">单位:</label></span_customer >';
 	str += '</div>';
-	str += '<div class="span2" style="margin-left: -30px;">';
-	str += "<select id='unit' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='unit'>";
+	str += '<div class="span2">';
+	str += "<select id='unit' style='width: 115px;display:none;' tabindex='1' name='unit'>";
 //	var myobj=unit.split("=");
 //	for (var j = 0; j < myobj.length; j++) {
 //		if(myobj[j].indexOf("code_name") > 0 ){
@@ -575,21 +576,21 @@ str += '</div>';
 //			
 //	}
  str+='</select>';
- str+='<input type="text" id="unit_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入单位" autocomplete="off" onchange="empty()" />';
+ str+='<input type="text" id="unit_select" style="width: 135px;margin-top:-3px;margin-left: -38px;" data-provide="typeahead" placeholder="请输入单位" autocomplete="off" onchange="empty()" />';
 	str += '</div>';
-		str += '<div class="span2" style="margin-left: 63px;">';
-			str += '备注:';
+		str += '<div class="span2">';
+			str += '<span_customer ><label style="width:120px;margin-left: 57px;">备注:</label></span_customer>';
 		str += '</div>';
-			str += '<div class="span2" style="margin-top: -30px;margin-left: 143px;">';
-			str += '<input type="text" style="width: 70px;" name="bak" id="bak"/>';
+			str += '<div class="span2">';
+			str += '<input type="text" style="width: 135px;margin-top:-3px;margin-left: -35px;" name="bak" id="bak"/>';
 			str += '</div>';	
 	str += '</div>';
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '供应商:';
+	str += '<span_customer ><label style="width:50px;margin-left: 13px;">供应商:</label></span_customer >';
     str += '</div>';
-    str += '<div class="span2" style="margin-left: -30px;">';
-    str += "<select id='corporation1' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='corporation1'>";
+    str += '<div class="span2">';
+    str += "<select id='corporation1' style='width: 115px;display:none;' tabindex='1' name='corporation1'>";
 //	var myobj=corporation.split("=");
 //	for (var j = 0; j < myobj.length; j++) {
 //		if(myobj[j].indexOf("corporation_id") > 0 ){
@@ -600,13 +601,13 @@ str += '</div>';
 //			
 //	}
  str+='</select>';
- str+='<input type="text" id="corporation1_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入供应商" autocomplete="off" onchange="empty()" />';
+ str+='<input type="text" id="corporation1_select" style="width: 135px;margin-top:-3px;margin-left: -65px;" data-provide="typeahead" placeholder="请输入供应商" autocomplete="off" onchange="empty()" />';
     str += '</div>';
-    str += '<div class="span2" style="margin-left: 61px;">';
-	str += '厂家:' ;
+    str += '<div class="span2">';
+	str += '<span_customer ><label style="width:50px;margin-left: 53px;">厂家:</label></span_customer >' ;
 	str += '</div>';
-		str += '<div class="span2" style="margin-left: -30px;">';
-		str += "<select id='factory' style='width: 115px;display:none;' class='m-wrap span12' tabindex='1' name='factory'>";
+		str += '<div class="span2">';
+		str += "<select id='factory' style='width: 115px;display:none;' tabindex='1' name='factory'>";
 //		var myobj=factory.split("=");
 //		for (var j = 0; j < myobj.length; j++) {
 //			if(myobj[j].indexOf("factory_id") > 0 ){
@@ -617,7 +618,7 @@ str += '</div>';
 //				
 //		}
      str+='</select>';
-     str+='<input type="text" id="factory_select" style="width: 115px;" data-provide="typeahead" placeholder="请输入厂家" autocomplete="off" onchange="empty()" />';
+     str+='<input type="text" id="factory_select" style="width: 135px;margin-top:-3px;margin-left: -38px;" data-provide="typeahead" placeholder="请输入厂家" autocomplete="off" onchange="empty()" />';
 		str += '</div>';
     str += '</div>';
 	str+='<div class="span2"><label style="padding-left: 70px;color: red; width:450px; text-align: center;margin-top: 15px;" id="add_msg"></label></div>';
@@ -625,7 +626,7 @@ str += '</div>';
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['770px', '255px'], //宽高
+	  area: ['770px', '245px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){ 
@@ -910,37 +911,37 @@ function updateCorporation(){
     var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 		str += '<div class="span2">';
-			str += '供应商:';
+			str += '<span_customer ><label style="margin-left: -3px;">供应商:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation1" id="corporation1" value="'+updateRow[0].corporation+'"/>' ;
+				str += '<input type="text" style="margin-left: -65px;margin-top:-3px;width: 130px;" name="corporation1" id="corporation1" value="'+updateRow[0].corporation+'"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '负责人:' ;
+			str += '<span_customer ><label style="margin-left: -3px;">负责人:</label></span_customer >' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_person" id="corporation_person" value="'+updateRow[0].corporation_person+'"/>' ;
+				str += '<input type="text" style="margin-left: -65px;margin-top:-3px;width: 130px;" name="corporation_person" id="corporation_person" value="'+updateRow[0].corporation_person+'"/>' ;
 			str += '</div>';
 			str += '<div class="span2">';
-			str += '联系电话:';
+			str += '<span_customer ><label style="margin-left: -7px;">联系电话:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
+			str += '<input type="text" style="margin-left: -50px;margin-top:-3px;width: 130px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
 			str += '</div>';	
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '地址:';
+	str += '<span_customer ><label style="margin-left: 11px;">地址:</label></span_customer >';
 str += '</div>';
 	str += '<div class="span2">';
-		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="corporation_address" id="corporation_address" value="'+updateRow[0].corporation_address+'"/>' ;
+		str += '<input type="text" style="margin-left: -65px;margin-top:-3px;width: 130px;" name="corporation_address" id="corporation_address" value="'+updateRow[0].corporation_address+'"/>' ;
 	str += '</div>';
 		str += '<div class="span2">';
-			str+='备注:';
+			str+='<span_customer ><label style="margin-left: 11px;">备注:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
+			str += '<input type="text" style="margin-left: -65px;margin-top:-3px;width: 360px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -954,7 +955,7 @@ str += '</div>';
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['570px', '255px'], //宽高
+	  area: ['670px', '205px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
@@ -1028,41 +1029,86 @@ function updateFactory(){
         });
         return;
     }
-
+    
     var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 		str += '<div class="span2">';
-			str += '厂家:';
+			str += '<span_customer ><label style="">厂家:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_name1" id="factory_name1" value="'+updateRow[0].factory_name+'"/>' ;
+				str += '<input type="text" style="margin-left: -75px;margin-top:-3px;width: 140px;" name="factory_name1" id="factory_name1"/>' ;
 			str += '</div>';
 		str += '<div class="span2">';
-			str += '负责人:' ;
+			str += '<span_customer ><label style="">负责人:</label></span_customer >' ;
 		str += '</div>';
 			str += '<div class="span2" >';
-				str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_person" id="factory_person" value="'+updateRow[0].factory_person+'"/>' ;
+				str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 130px;" name="factory_person" id="factory_person"/>' ;
 			str += '</div>';
 			str += '<div class="span2">';
-			str += '联系电话:';
+			str += '<span_customer ><label style="margin-left: -11px;">联系电话:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 100px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
+			str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 145px;" name="telphone" id="telphone"/>';
 			str += '</div>';	
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '地址:';
+	str += '<span_customer ><label style="">地址:</label></span_customer >';
     str += '</div>';
 	str += '<div class="span2">';
-		str += '<input type="text" style="margin-left: -30px;width: 70px;" name="factory_address" id="factory_address" value="'+updateRow[0].factory_address+'"/>' ;
+		str += '<input type="text" style="margin-left: -75px;margin-top:-3px;width: 140px;" name="factory_address" id="factory_address"/>' ;
 	str += '</div>';
 		str += '<div class="span2">';
-			str+='备注:';
+			str+='<span_customer ><label style="margin-left: 13px;">备注:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span2">';
-			str += '<input type="text" style="margin-left: -30px;width: 280px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
+			str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 360px;" name="bak" id="bak"/>';
+			str += '</div>';
+		str += '<div class="span2">';
+			
+		str += '</div>';
+			str += '<div class="span2">';
+			
+			str += '</div>';
+	str += '</div>';
+	str+='<div class="span2"><label style="padding-left: 70px;color: red; width:450px; text-align: center;margin-top: 15px;" id="add_msg"></label></div>';
+	str += '</div>';
+
+    var str = '<br><div class="container-fluid" >';
+	str += '<div class="row-fluid">';
+		str += '<div class="span2">';
+			str += '<span_customer ><label style="">厂家:</label></span_customer >';
+		str += '</div>';
+			str += '<div class="span2" >';
+				str += '<input type="text" style="margin-left: -75px;margin-top:-3px;width: 140px;" name="factory_name1" id="factory_name1" value="'+updateRow[0].factory_name+'"/>' ;
+			str += '</div>';
+		str += '<div class="span2">';
+			str += '<span_customer ><label style="">负责人:</label></span_customer >' ;
+		str += '</div>';
+			str += '<div class="span2" >';
+				str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 130px;" name="factory_person" id="factory_person" value="'+updateRow[0].factory_person+'"/>' ;
+			str += '</div>';
+			str += '<div class="span2">';
+			str += '<span_customer ><label style="margin-left: -11px;">联系电话:</label></span_customer >';
+		str += '</div>';
+			str += '<div class="span2">';
+			str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 145px;" name="telphone" id="telphone" value="'+updateRow[0].telphone+'"/>';
+			str += '</div>';	
+	str += '</div>';
+
+	str += '<div class="row-fluid">';
+	str += '<div class="span2">';
+	str += '<span_customer ><label style="">地址:</label></span_customer >';
+    str += '</div>';
+	str += '<div class="span2">';
+		str += '<input type="text" style="margin-left: -75px;margin-top:-3px;width: 140px;" name="factory_address" id="factory_address" value="'+updateRow[0].factory_address+'"/>' ;
+	str += '</div>';
+		str += '<div class="span2">';
+			str+='<span_customer ><label style="margin-left: 13px;">备注:</label></span_customer >';
+		str += '</div>';
+			str += '<div class="span2">';
+			str += '<input type="text" style="margin-left: -60px;margin-top:-3px;width: 360px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
 			str += '</div>';
 		str += '<div class="span2">';
 			
@@ -1076,7 +1122,7 @@ function updateFactory(){
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['570px', '255px'], //宽高
+	  area: ['670px', '215px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){
@@ -1152,32 +1198,32 @@ function updateGoods(){
     var str = '<br><div class="container-fluid" >';
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资类别:';
+	str += '<span_customer ><label style="width:120px;">物资类别:</label></span_customer >';
 str += '</div>';
 	str += '<div class="span4">';
-		str += '<select id="good_type" style="width: 115px;" class="m-wrap span12" tabindex="1" name="good_type" value="'+updateRow[0].good_type+'">';
+		str += '<select id="good_type" style="width: 115px;margin-top: -3px;margin-left:-9px;" class="m-wrap span12" tabindex="1" name="good_type" value="'+updateRow[0].good_type+'">';
      str+='</select>';
 	str += '</div>';
 	str += '<div class="span2">';
-	str += '物资名称:' ;
+	str += '<span_customer ><label style="width:120px;">物资名称:</label></span_customer >' ;
 str += '</div>';
 	str += '<div class="span4" >';
-		str += '<input type="text" style="width: 70px;" name="good_name1" id="good_name1" value="'+updateRow[0].good_name+'"/>' ;
+		str += '<input type="text" style="width: 130px;margin-top: -3px;margin-left:-9px;" name="good_name1" id="good_name1" value="'+updateRow[0].good_name+'"/>' ;
 	str += '</div>';	
 	str += '</div>';
 
 	str += '<div class="row-fluid">';
 	str += '<div class="span2">';
-	str += '物资编码:';
+	str += '<span_customer ><label style="width:120px;">物资编号:</label></span_customer >';
 str += '</div>';
 	str += '<div class="span4" >';
-		str += '<input type="text" style="width: 101px;" name="good_code" id="good_code" value="'+updateRow[0].good_code+'" disabled="disabled"/>' ;
+		str += '<input type="text" style="width: 101px;margin-top: -3px;margin-left:-9px;" name="good_code" id="good_code" value="'+updateRow[0].good_code+'" disabled="disabled"/>' ;
 	str += '</div>';
 		str += '<div class="span2">';
-			str += '备注:';
+			str += '<span_customer ><label style="margin-left:28px;width:120px;">备注:</label></span_customer >';
 		str += '</div>';
 			str += '<div class="span4">';
-			str += '<input type="text" style="width: 70px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
+			str += '<input type="text" style="width: 130px;margin-top: -3px;margin-left:-10px;" name="bak" id="bak" value="'+updateRow[0].bak+'"/>';
 			str += '</div>';
 	str += '</div>';
 	str+='<div class="span2"><label style="padding-left: 70px;color: red; width:450px; text-align: center;margin-top: 15px;" id="add_msg"></label></div>';
@@ -1185,7 +1231,7 @@ str += '</div>';
 layer.open({
 	  type: 1,
 	  skin: 'layui-layer-lan', //加上边框
-	  area: ['470px', '255px'], //宽高
+	  area: ['445px', '205px'], //宽高
 	  content: str,
 	  btn: ['确定','取消'],
 	  yes: function(index){

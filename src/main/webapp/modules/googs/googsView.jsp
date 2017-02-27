@@ -15,394 +15,342 @@
 </head>
 
 <body style="background-color: #ffffff;">
-<input type="text"  name="farmId"  id="farmId" style="display:none" value="${farmId}" />
-<input type="text"  name="farm"  id="farm" style="display:none" value="${farm}" />
-<!-- <input type="text"  name="good_id"  id="good_id" style="display:none" value="" /> -->
-	<div id="page-content" class="clearfix" style="padding-top: 10px;">
-		<div class="row-fluid">
-			<div class="span12">
+<input type="text"  name="farmId"  id="farmId" style="display:none" value="${farmId}">
+<input type="text"  name="farm"  id="farm" style="display:none" value="${farm}" >
 
-				<div class="tabbable tabbable-custom boxless">
-					<ul class="nav nav-pills" style="margin-bottom: 0px; " id = "uiTab">
-						<li  class="active"  style="text-align: center;width:25%;background-color: #BFBFBF;border-right: 1px solid #E0DFDF;" >
-							<a href="#tab_1" data-toggle="tab">入库</a>
-						</li>
-						<li  style="text-align: center;width:24.5%;background-color: #BFBFBF; border-right: 1px solid #E0DFDF;" >
-							<a href="#tab_2"   data-toggle="tab" >耗用</a>
-						</li>
-						<li  style="text-align: center;width:24.5%;background-color: #BFBFBF; border-right: 1px solid #E0DFDF; " >
-							<a href="#tab_3"  data-toggle="tab">库存调整</a>
-						</li>
-						<li  style="text-align: center;width:25%;background-color: #BFBFBF;" >
-							<a href="#tab_4"  data-toggle="tab">库存调整审批</a>
-						</li>
-					</ul>
+<div id="page-content" class="clearfix">
+	<div class="row-fluid">
+		<div class="span12">
+			<div class="tabbable tabbable-custom boxless">
+				<div class="row-fluid">
+					<%--标签菜单栏--%>
+					<div class="span12" style="margin-left: 0px;height: 10px">
+						<ul class="nav nav-pills row-fluid" style="margin-bottom: 0px; " id = "uiTab">
+							<li  class="active"  style="text-align: center;width:25%;background-color: #BFBFBF;border-right: 1px solid #E0DFDF;" >
+								<a href="#tab_1" data-toggle="tab">入库</a>
+							</li>
+							<li  style="text-align: center;width:24.85%;background-color: #BFBFBF; border-right: 1px solid #E0DFDF;" >
+								<a href="#tab_2"   data-toggle="tab" >耗用</a>
+							</li>
+							<li  style="text-align: center;width:24.85%;background-color: #BFBFBF; border-right: 1px solid #E0DFDF; " >
+								<a href="#tab_3"  data-toggle="tab">库存调整</a>
+							</li>
+							<li  style="text-align: center;width:25%;background-color: #BFBFBF;" >
+								<a href="#tab_4"  data-toggle="tab">库存调整审批</a>
+							</li>
+						</ul>
 
-					<div class="tab-content" style="border:none">
-
-						<%-- 入库 --%>
-						<div class="tab-pane active" id="tab_1">
-							<!-- BEGIN FORM-->
-							<form id="inStockForm">
-								<input type="text"  name="inStockFarmId"  id="inStockFarmId" style="display:none" value="${farmId}" />
-								<input type="text"  name="inStockFarm"  id="inStockFarm" style="display:none" value="${farm}" />
-								<div class="container-fluid">
-									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>类型</span_customer>
-											<select id="good_type"  tabindex="1"  name="good_type"  >
-												<c:if test="${!empty goodType}">
-													<c:forEach var="goodType" items="${goodType}">
-														<c:if test="${goodType.biz_code!=1}">
-															<option value="${goodType.biz_code}">${goodType.code_name}</option>
-														</c:if>
-													</c:forEach>
-												</c:if>
-											</select>
-										</div>
-										<div class="span3" align="left">
-											<span_customer>品名</span_customer>
-											<select id="good_id"  name="good_id" style="display: none;" >
-												<%--style="display: none"--%>
-												<!-- 											<option value="1">cow</option>   -->
-												<!--                                             <option value="2">bull</option>   -->
-												<!--                                             <option value="3">ox</option>   class="form-control selectpicker" data-live-search="true"  class="js-example-basic-single"-->
-											</select>
-											<input type="text" id="goods_id_select" data-provide="typeahead" placeholder="请输入品名或物资编号" autocomplete="off" onchange="empty()" />
-											<!-- 											<input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
-										</div>
-
-										<div class="span3" align="left">
-											<span_customer>规格</span_customer>
-											<select id="spec" tabindex="1"  name="spec" >
-<!-- 												<c:if test="${!empty spec}"> -->
-<!-- 													<c:forEach var="spec" items="${spec}"> -->
-<!-- 														<option value="${spec.biz_code}">${spec.code_name}</option> -->
-<!-- 													</c:forEach> -->
-<!-- 												</c:if> -->
-											</select>
-										</div>
-
-										<div class="span3" align="left">
-											<span_customer>单位</span_customer>
-											<select id="unit"   tabindex="1"  name="unit"  >
-<!-- 												<c:if test="${!empty unit}"> -->
-<!-- 													<c:forEach var="unit" items="${unit}"> -->
-<!-- 														<option value="${unit.biz_code}">${unit.code_name}</option> -->
-<!-- 													</c:forEach> -->
-<!-- 												</c:if> -->
-											</select>
-										</div>
-									</div>
-
-									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>供应方</span_customer>
-											<select id="corporation_id"   tabindex="1"  name="corporation_id" >
-											</select>
-										</div>
-										<div class="span3" align="left">
-											<span_customer>厂家</span_customer>
-											<select id="factory_id" tabindex="1"  name="factory_id">
-											</select>
-										</div>
-										<div class="span3" align="left">
-											<span_customer>入库数量</span_customer>
-											<input type="text"  name="count"  id="sssasd" value="0" />
-										</div>
-										<div class="span3" align="left">
-											<span_customer>单价</span_customer>
-											<input type="text"  name="price" id="sssasdPrice" value="0"/>
-										</div>
-
-									</div>
-				
-									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>保质期</span_customer>
-											<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
-												<input class="m-wrap span11 m-ctrl-medium date-picker " readonly type="text" name="exp" id="exp" />
-												<span class="add-on"><i class="icon-calendar"></i></span>
+						<div class="tab-content row-fluid" style="border:none;padding-top: 0px;">
+							<%-- 入库 --%>
+							<div class="tab-pane active" id="tab_1">
+								<!-- BEGIN FORM-->
+								<form id="inStockForm">
+									<input type="text"  name="inStockFarmId"  id="inStockFarmId" style="display:none" value="${farmId}" >
+									<input type="text"  name="inStockFarm"  id="inStockFarm" style="display:none" value="${farm}" >
+									<%--功能栏--%>
+									<div class="row-fluid" style="background:#e7e5e5;padding-top: 10px;">
+										<div class="span12">
+											<div class="container-fluid">
+												<div class="row-fluid">
+													<div class="span2" align="left">
+														<span_customer2>物资类型</span_customer2>
+															<select id="good_type"  tabindex="1"  name="good_type"  style="width: 90px;">
+																<c:if test="${!empty goodType}">
+																	<c:forEach var="goodType" items="${goodType}">
+																		<c:if test="${goodType.biz_code!=1}">
+																			<option value="${goodType.biz_code}">${goodType.code_name}</option>
+																		</c:if>
+																	</c:forEach>
+																</c:if>
+															</select>
+													</div>
+													<div class="span4" align="left">
+														<span_customer2>品名</span_customer2>
+															<select id="good_id"  name="good_id" style="display: none;">
+															</select>
+															<input type="text" id="goods_id_select" data-provide="typeahead" style="width: 300px;" placeholder="请输入品名或编号" autocomplete="off" onchange="empty()">
+													</div>
+													<div class="span2" align="left">
+														<span_customer2>规格</span_customer2>&nbsp;&nbsp;&nbsp;
+															<select id="spec" tabindex="1"  name="spec" style="width: 100px;">
+															</select>
+													</div>
+													<div class="span2" align="left">
+														<span_customer2>单位</span_customer2>
+														<select id="unit"   tabindex="1"  name="unit" style="width: 130px;" >
+														</select>
+													</div>
+													<div class="span2" align="left">
+														<span_customer2>供应方</span_customer2>
+															<select id="corporation_id"   tabindex="1"  name="corporation_id" style="width: 130px;" >
+															</select>
+													</div>
+												</div>
+												<div class="row-fluid">
+													<div class="span2" align="left">
+														<span_customer2>入库日期</span_customer2>
+														<div class="input-append date date-picker1"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
+															<input readonly type="text" name="operation_date" id="operation_date" style="width: 75px;">
+															<span class="add-on"><i class="icon-calendar"></i></span>
+														</div>
+													</div>
+													<div class="span4" align="left">
+														<%--<div class="row-fluid">--%>
+															<%--<div class="span6" align="left">--%>
+																<span_customer2>数量</span_customer2>
+																<input type="text"  name="count"  id="sssasd" value="0" style="width: 70px;">
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																<span_customer2>单价</span_customer2>
+																<input type="text"  name="price" id="sssasdPrice" value="0" style="width: 70px;">&nbsp;元
+															<%--</div>--%>
+															<%--<div class="span6" align="center">--%>
+																<%--<span_customer2>单价</span_customer2>--%>
+																<%--<input type="text"  name="price" id="sssasdPrice" value="0" style="width: 80px;">&nbsp;元--%>
+															<%--</div>--%>
+														<%--</div>--%>
+													</div>
+													<div class="span2" align="left">
+														<span_customer2>保质期</span_customer2>
+														<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
+															<input readonly type="text" name="exp" id="exp" style="width: 90px">
+															<span class="add-on"><i class="icon-calendar"></i></span>
+														</div>
+													</div>
+													<div class="span2" align="left">
+														<span_customer2>厂家</span_customer2>
+															<select id="factory_id" tabindex="1"  name="factory_id" style="width: 130px">
+															</select>
+													</div>
+													<div class="span2" align="left">
+														<button type="button" class="btn blue" onclick="inStock()">
+															<i class="icon-ok"></i>&nbsp;确认入库
+														</button>
+													</div>
+												</div>
 											</div>
 										</div>
-										<div class="span3" align="left">
-											<span_customer>入库日期</span_customer>
-											<div class="input-append date date-picker1"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
-												<input class="m-wrap span11 m-ctrl-medium  date-picker1 "   readonly type="text" name="operation_date" id="operation_date" />
-												<span class="add-on"><i class="icon-calendar"></i></span>
+									</div>
+									<div class="row-fluid">
+										<div class="span12">
+											<p id = "inStockFarmTitle" align="center">
+												农场
+											</p>
+											<div id="inStockFrame" align="center">
+												<table id="inStockTable"></table>
 											</div>
 										</div>
-										<div class="span3" align="left">
-
-										</div>
-										<div class="span3" align="left">
-											<button type="button" class="btn blue" onclick="inStock()"><i class="icon-ok"></i>确认</button>
-										</div>
 									</div>
-								</div>
-							</form>
-							<!-- END FORM -->
-
-							<div class="row-fluid">
-								<div class="span12">
-									<hr style="height:10px;border:none;border-top:1px solid #555555;" />
-								</div>
-							</div>
-							<div class="row-fluid">
-								<div class="span12">
-									<p id = "inStockFarmTitle" align="center">
-										农场
-									</p>
-									<div id="inStockFrame" align="center">
-										<table id="inStockTable"></table>
-									</div>
-								</div>
+								</form>
 							</div>
 
-						</div>
-					
-						<%-- 耗用 --%>
-						<div class="tab-pane" id="tab_2">
-							<form id="outStockForm">
-								<div class="container-fluid">
-									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>耗用日期</span_customer>
-											<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months" style="margin-left: 62px;margin-top: -35px;width: 180px;">
-												<input class="m-wrap  date-picker1 " readonly type="text" name="operation_date" id="operation_date_out" style="width: 180px;"/>
-												<span class="add-on"><i class="icon-calendar"></i></span>
+								<%-- 耗用 --%>
+								<div class="tab-pane" id="tab_2">
+									<form id="outStockForm">
+										<div class="row-fluid" style="background:#e7e5e5;padding-top: 10px;">
+											<div class="span12">
+												<div class="container-fluid">
+													<div class="row-fluid">
+														<div class="span2" align="left">
+															<span_customer2>物资类型</span_customer2>
+															<select id="good_type_out" tabindex="1"  name="good_type" style="width: 110px;">
+																<c:if test="${!empty goodType}">
+																	<c:forEach var="goodType" items="${goodType}">
+																		<c:if test="${goodType.biz_code!=1}">
+																			<option value="${goodType.biz_code}">${goodType.code_name}</option>
+																		</c:if>
+																	</c:forEach>
+																</c:if>
+															</select>
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>品名</span_customer2>
+																<select id="good_id_out" name="good_id" style="display: none;">
+																</select>
+																<input type="text" id="goods_id_out_select" data-provide="typeahead" style="width: 120px;" placeholder="请输入品名或编号" autocomplete="off" onblur="empty();">
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>数量</span_customer2>
+															<input type="text" name="count" id="count_out" value="0" style="width: 120px">
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>栋舍</span_customer2>
+															<select id="house_id"  tabindex="1"  name="house_id" style="width: 120px">
+																<c:if test="${!empty houseList}">
+																	<c:forEach var="hl" items="${houseList}">
+																		<option value="${hl.id}">${hl.name_cn}</option>
+																	</c:forEach>
+																</c:if>
+															</select>
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>耗用日期</span_customer2>
+															<div class="input-append date date-picker"  data-date-format="yyyy-mm-dd" data-date-viewmode="years" data-date-minviewmode="months">
+																<input readonly type="text" name="operation_date" id="operation_date_out" style="width: 80px;"/>
+																<span class="add-on"><i class="icon-calendar"></i></span>
+															</div>
+														</div>
+														<div class="span2" align="left">
+															<button type="button" class="btn blue" onclick="outStock()" >
+																<i class="icon-ok"></i>&nbsp;确认耗用
+															</button>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
-
-										<div class="span3" align="left">
-											<span_customer>栋</span_customer>
-											<select id="house_id"  tabindex="1"  name="house_id" >
-												<c:if test="${!empty houseList}">
-													<c:forEach var="hl" items="${houseList}">
-														<option value="${hl.id}">${hl.name_cn}</option>
-													</c:forEach>
-												</c:if>
-											</select>
+										<div class="row-fluid">
+											<div class="span12">
+												<p id = "outStockFarmTitle" align="center">
+													农场
+												</p>
+												<div id="outStockFrame" align="center">
+													<table id="outStockTable"></table>
+												</div>
+											</div>
 										</div>
-										<div class="span3" align="left">
-											<span_customer>类型</span_customer>
-											<select id="good_type_out" tabindex="1"  name="good_type" >
-												<c:if test="${!empty goodType}">
-													<c:forEach var="goodType" items="${goodType}">
-														<c:if test="${goodType.biz_code!=1}">
-															<option value="${goodType.biz_code}">${goodType.code_name}</option>
-														</c:if>
-													</c:forEach>
-												</c:if>
-											</select>
-										</div>
-										<div class="span3" align="left">
-											<span_customer>品名</span_customer>
-											<select id="good_id_out" name="good_id" style="display: none;">
-											</select>
-											<input type="text" id="goods_id_out_select" data-provide="typeahead" placeholder="请输入品名或物资编号" autocomplete="off" onblur="empty();" />
-<!--                                                 <input type="text"  name="good_name" id="good_name" placeholder="Search drug..." autocomplete="off"/> -->
-										</div>
+									</form>
+								</div>
 
-									</div>
+								<%-- 库存调整 --%>
+								<div class="tab-pane " id="tab_3">
+									<form id="stockForm">
+										<div class="row-fluid" style="background:#e7e5e5;padding-top: 10px;">
+											<div class="span12">
+												<div class="container-fluid">
+													<div class="row-fluid">
+														<div class="span2" align="left">
+															<span_customer2>物资类型</span_customer2>
+															<select id="good_type_stock" tabindex="1"  name="good_type" style="width: 110px;">
+																<c:if test="${!empty goodType}">
+																	<c:forEach var="goodType" items="${goodType}">
+																		<c:if test="${goodType.biz_code!=1}">
+																			<option value="${goodType.biz_code}">${goodType.code_name}</option>
+																		</c:if>
+																	</c:forEach>
+																</c:if>
+															</select>
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>品名</span_customer2>
+																<select id="good_id_stock" tabindex="1"  name="good_id" style="display: none;">
+																</select>
+																<input type="text" id="good_id_stock_select" data-provide="typeahead" style="width: 120px;" placeholder="请输入品名或编号" autocomplete="off" onblur="empty();" />
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>规格</span_customer2>
+																<select id="spec_stock" tabindex="1"  name="spec" style="width: 120px">
+																</select>
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>单位</span_customer2>
+																<select id="unit_stock"  tabindex="1"  name="unit" style="width: 120px">
+																</select>
+														</div>
+														<div class="span2" align="left">
+															<span_customer2>供应方</span_customer2>
+															<select id="corporation_id_stock" tabindex="1"  name="corporation_id" style="width: 120px">
+															</select>
+														</div>
+														<div class="span2" align="left">
+															<button type="button" class="btn blue" onclick="queryStock()" >
+																<i class="icon-search"></i>&nbsp;查询库存</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row-fluid">
+											<div class="span4" align="left">
+												<div id="stockToolbar" class="btn-group">
+													<button id='stockToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:getMessages();">
+														<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>调整
+													</button>
 
+												</div>
+											</div>
+											<div class="span4" align="center">
+												<p id = "stockFarmTitle" align="center">
+													农场
+												</p>
+											</div>
+											<div class="span4" align="center">
+
+											</div>
+										</div>
+										<div class="row-fluid">
+											<div class="span12">
+												<div id="stockFrame" align="left">
+													<div>
+														<table id="stockTable"></table>
+													</div>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+
+								<%-- 库存调整审批 --%>
+								<div class="tab-pane " id="tab_4">
 									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>耗用数量</span_customer>
-											<input type="text" name="count" id="count_out" value="0"/>
+										<div class="span4" align="left">
+											<div id="approvalStockFrame" align="left">
+												<div id="approvalStockToolbar" class="btn-group">
+													<button id='approvalStockToolbar_btn_reject' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(0);">
+														<i class="icon-remove"></i><span class='glyphicon glyphicon-plus' ></span>&nbsp;驳回
+													</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+													<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(1);">
+														<i class="icon-ok"></i><span class='glyphicon glyphicon-plus'></span>&nbsp;通过
+													</button>
+												</div>
+											</div>
 										</div>
-										<div class="span3" align="left">
-
+										<div class="span4" align="center">
+											<p id = "approvalStockFarmTitle" align="center">
+												农场
+											</p>
 										</div>
-										<div class="span3" align="left">
-
-										</div>
-										<div class="span3" align="left">
-											<button type="button" class="btn blue" onclick="outStock()" ><i class="icon-ok"></i>确认</button>
+										<div class="span4" align="left">
 										</div>
 									</div>
-								</div>
-							</form>
-							<!-- END FORM -->
-
-							<div class="row-fluid">
-								<div class="span12">
-									<hr style="height:10px;border:none;border-top:1px solid #555555;" />
-								</div>
-							</div>
-							<div class="row-fluid">
-								<div class="span12">
-									<p id = "outStockFarmTitle" align="center">
-										农场
-									</p>
-									<div id="outStockFrame" align="center">
-										<table id="outStockTable"></table>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<%-- 库存调整 --%>
-						<div class="tab-pane " id="tab_3">
-							<form id="stockForm">
-								<div class="container-fluid">
 									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>类型</span_customer>
-											<select id="good_type_stock" tabindex="1"  name="good_type" >
-												<c:if test="${!empty goodType}">
-													<c:forEach var="goodType" items="${goodType}">
-														<c:if test="${goodType.biz_code!=1}">
-															<option value="${goodType.biz_code}">${goodType.code_name}</option>
-														</c:if>
-													</c:forEach>
-												</c:if>
-											</select>
-										</div>
-										<div class="span3" align="left">
-											<span_customer>品名</span_customer>
-												<select id="good_id_stock" tabindex="1"  name="good_id" style="display: none;">
-												</select>
-												<input type="text" id="good_id_stock_select" data-provide="typeahead" placeholder="请输入品名或物资号" autocomplete="off" onblur="empty();" />
-										</div>
-										<div class="span3" align="left">
-											<span_customer>规格</span_customer>
-											<select id="spec_stock" tabindex="1"  name="spec">
-<!-- 												<option value="">全部</option> -->
-<!-- 												<c:if test="${!empty spec}"> -->
-<!-- 													<c:forEach var="spec" items="${spec}"> -->
-<!-- 														<option value="${spec.biz_code}">${spec.code_name}</option> -->
-<!-- 													</c:forEach> -->
-<!-- 												</c:if> -->
-											</select>
-										</div>
-										<div class="span3" align="left">
-											<span_customer>单位</span_customer>
-											<select id="unit_stock"  tabindex="1"  name="unit">
-<!-- 												<option value="">全部</option> -->
-<!-- 												<c:if test="${!empty unit}"> -->
-<!-- 													<c:forEach var="unit" items="${unit}"> -->
-<!-- 														<option value="${unit.biz_code}">${unit.code_name}</option> -->
-<!-- 													</c:forEach> -->
-<!-- 												</c:if> -->
-											</select>
+										<div class="span12" align="left">
+											<div>
+												<table id="approvalStockTable"></table>
+											</div>
 										</div>
 									</div>
-
 									<div class="row-fluid">
-										<div class="span3" align="left">
-											<span_customer>生产厂家</span_customer>
-											<select id="factory_id_stock" tabindex="1"  name="factory_id">
-											</select>
+										<div class="span12">
+											<hr style="height:10px;border:none;border-top:1px solid #555555;" />
 										</div>
-										<div class="span3" align="left">
-											<span_customer>供应方</span_customer>
-											<select id="corporation_id_stock" tabindex="1"  name="corporation_id" >
-											</select>
-										</div>
-										<div class="span3" align="left">
-
-										</div>
-										<div class="span3" align="left">
-											<button type="button" class="btn blue" onclick="queryStock()" ><i class="icon-search"></i>查 询</button>
+									</div>
+									<div class="row-fluid">
+										<div class="span12">
+											<p id = "approvalStockChangeLog" align="center">
+												<font size='3' ><B>变更记录</B></font>
+											</p>
+											<div id="approvalStockChangeLogFrame" align="left">
+												<table id="approvalStockChangeTable"></table>
+											</div>
 										</div>
 									</div>
 								</div>
-							</form>
-							<!-- END FORM -->
-
-							<div class="row-fluid">
-								<div class="span12">
-									<hr style="height:10px;border:none;border-top:1px solid #555555;" />
-								</div>
-							</div>
-							<div class="row-fluid">
-								<div class="span4" align="left">
-									<div id="stockToolbar" class="btn-group">
-										<button id='stockToolbar_btn_edit' type='button' class='btn blue' style="display: block;" onclick="javascript:getMessages();">
-											<span class='glyphicon glyphicon-plus' aria-hidden='true'></span>调整
-										</button>
-
-									</div>
-								</div>
-								<div class="span4" align="center">
-									<p id = "stockFarmTitle" align="center">
-										农场
-									</p>
-								</div>
-								<div class="span4" align="center">
-
-								</div>
-							</div>
-							<div class="row-fluid">
-								<div class="span12">
-									<div id="stockFrame" align="left">
-										<div>
-											<table id="stockTable"></table>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<%-- 库存调整审批 --%>
-						<div class="tab-pane " id="tab_4">
-							<div class="row-fluid">
-								<div class="span4" align="left">
-									<div id="approvalStockFrame" align="left">
-										<div id="approvalStockToolbar" class="btn-group">
-											<button id='approvalStockToolbar_btn_reject' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(0);">
-												<i class="icon-remove"></i><span class='glyphicon glyphicon-plus' ></span>驳回
-											</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-											<button id='approvalStockToolbar_btn_pass' type='button' class='btn blue' style="display: inline;" onclick="javascript:openApprovalWin(1);">
-												<i class="icon-ok"></i><span class='glyphicon glyphicon-plus'></span>通过
-											</button>
-										</div>
-									</div>
-								</div>
-								<div class="span4" align="center">
-									<p id = "approvalStockFarmTitle" align="center">
-										农场
-									</p>
-								</div>
-								<div class="span4" align="left">
-
-								</div>
-
-							</div>
-							<div class="row-fluid">
-								<div class="span12" align="left">
-									<div>
-										<table id="approvalStockTable"></table>
-									</div>
-								</div>
-							</div>
-
-
-							<div class="row-fluid">
-								<div class="span12">
-									<hr style="height:10px;border:none;border-top:1px solid #555555;" />
-								</div>
-							</div>
-
-							<div class="row-fluid">
-								<div class="span12">
-									<p id = "approvalStockChangeLog" align="center">
-										<font size='3' ><B>变更记录</B></font>
-									</p>
-									<div id="approvalStockChangeLogFrame" align="left">
-										<table id="approvalStockChangeTable"></table>
-									</div>
-								</div>
-							</div>
-
 
 						</div>
 					</div>
 				</div>
+
+
+
+
 			</div>
 		</div>
 	</div>
+</div>
+
 	<script type="text/javascript">
 		var isRead="${pd.write_read}";//菜单是否只读
         var tabId = "${pd.tabId}";

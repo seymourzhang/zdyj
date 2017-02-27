@@ -20,7 +20,7 @@ public interface DrugService {
     * @return List<Drug>
     * @throws Exception
     */
-	List<PageData> selectDrugFact() throws Exception ;
+	List<PageData> selectDrugFact(PageData pd) throws Exception ;
 	
 	/**
 	 * 新增药品疫苗计划

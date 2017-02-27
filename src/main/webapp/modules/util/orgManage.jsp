@@ -54,7 +54,7 @@
                     <div class="span3" align="center">
                         <div class="zTreeDemoBackground left" style="border:1px solid #20124d;overflow:auto;">
                             <div align="center">
-                                <a id="addOrg" href="javascript:;" class="btn blue" onclick="addOrg();"><i class="icon-plus"></i>新增</a>
+                                <a id="addOrg" href="javascript:;" class="btn blue" onclick="addOrg();"><i class="icon-plus"></i>&nbsp;&nbsp;&nbsp;新增</a>
                                 <a id="editOrg" href="javascript:;" class="btn blue" onclick="editOrg();"><i class="icon-edit">&nbsp;&nbsp;&nbsp;</i>修改</a>
                                 <a id="deleteOrg" href="javascript:;" class="btn blue" onclick="deleteOrg();"><i class="icon-trash">&nbsp;&nbsp;&nbsp;</i>删除</a>
                             </div>
@@ -68,7 +68,7 @@
                                 机构名称
                             </div>
                             <div class="span4" align="right">
-                                <a id="mappingFarmHouse" href="javascript:;" class="btn blue" onclick="mappingFarmHouse();"><i class="icon-link">&nbsp;</i>绑定农场</a>
+                                <a id="mappingFarmHouse" href="javascript:;" class="btn blue" style="display: none;" onclick="mappingFarmHouse();"><i class="icon-link">&nbsp;</i>绑定农场</a>
                                 <%--<a id="unMappingFarmHouse" href="javascript:;" class="btn blue" onclick="unMappingFarmHouse();"></i>解绑农场</a>--%>
                             </div>
 

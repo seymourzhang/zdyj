@@ -1,5 +1,6 @@
 package com.mtc.zljk.report.action;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,18 +38,26 @@ public class AlarmHistAction extends BaseAction {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		pd.put("farmId", getFarmList().get(0).get("id"));
-		pd.put("houseId", getHouseList(pd).get(0).get("id"));
-		if(getBatchList(pd).size()!=0){
-		pd.put("batchNo", getBatchList(pd).get(0).get("batch_no"));
-		}
-		List<PageData> alarm = alarmHistService.getAlarmHist(pd);
+//		pd.put("farmId", getFarmList().get(0).get("id"));
+//		pd.put("houseId", getHouseList(pd).get(0).get("id"));
+//		if(getBatchList(pd).size()!=0){
+//		pd.put("batchNo", getBatchList(pd).get(0).get("batch_no"));
+//		}
+//		List<PageData> alarm = alarmHistService.getAlarmHist(pd);
 		mv.setViewName("/modules/report/alarmHist");
-		mv.addObject("AlarmHist",alarm);
-		mv.addObject("farmList",getFarmList());
-		mv.addObject("houseList",getHouseList(pd));
+//		mv.addObject("AlarmHist",alarm);
+//		mv.addObject("farmList",getFarmList());
+//		mv.addObject("houseList",getHouseList(pd));
 		mv.addObject("alarmNameList",getAlarmNameList());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String s = sdf.format(new Date());
+			pd.put("beginTime", s);	
+			pd.put("endTime", s);
 		mv.addObject("pd",pd);
+		mv.addObject("farm_id",pd.get("farm_id"));
+		mv.addObject("house_id",pd.get("house_id"));
+		mv.addObject("corporation_id",pd.get("corporation_id"));
+		mv.addObject("batch_no",pd.get("batch_no"));
 		return mv;
 	}
 	

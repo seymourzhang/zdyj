@@ -40,6 +40,12 @@ public class BatchManageAction extends BaseAction {
     @RequestMapping(value="/batchManage")
     public ModelAndView batchManage()throws Exception{
         PageData pd = this.getPageData();
+        pd.put("user_id", getUserId());
+        //获取机构
+        List<PageData> orgList = moduleService.service("organServiceImpl","getFarmByUserId",new Object[]{pd});
+        pd.put("parent_id",orgList.get(0).get("org_id").toString());
+        List<PageData> orgList2 = moduleService.service("organServiceImpl","getOrgListById",new Object[]{pd});
+        pd.put("length", orgList2.size());
         ModelAndView mv = this.getModelAndView();
         mv.setViewName("modules/batch/batchManage");
         mv.addObject("pd",pd);
@@ -62,13 +68,14 @@ public class BatchManageAction extends BaseAction {
         pd.put("farm_id",orgList.get(0).get("org_id").toString());
         pd.put("farm_code",orgList.get(0).get("org_code").toString());
         pd.put("farm_name",orgList.get(0).getString("org_name"));
-
+        pd.put("feed_type", orgList.get(0).get("feed_type"));
         //获取数据
         List<PageData> list = batchManageService.getCreateBatchData(pd);
 
         //返回前端数据
         j.setSuccess(true);
         j.setObj(list);
+        j.setObj1(pd);
         super.writeJson(j, response);
     }
 
@@ -128,6 +135,7 @@ public class BatchManageAction extends BaseAction {
         //返回前端数据
         j.setSuccess(true);
         j.setObj(list);
+        j.setObj1(pd);
         super.writeJson(j, response);
     }
 
@@ -174,6 +182,7 @@ public class BatchManageAction extends BaseAction {
         //返回前端数据
         j.setSuccess(true);
         j.setObj(list);
+        j.setObj1(pd);
         super.writeJson(j, response);
     }
 
@@ -224,6 +233,13 @@ public class BatchManageAction extends BaseAction {
     	Json j=new Json();
     	PageData pd = this.getPageData();
         List<PageData> outList = batchManageService.getOverBatchAge(pd);
+        pd.put("operation_date", "");
+        List<PageData> outList2 = batchManageService.getOverBatchAge(pd);
+        if(outList2.size()==0){
+            j.setMsg("0");
+        } else {
+            j.setMsg("1");
+        }
         j.setObj(outList);
         j.setSuccess(true);
         super.writeJson(j, response);

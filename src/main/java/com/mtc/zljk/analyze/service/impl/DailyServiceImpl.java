@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.xml.crypto.Data;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -38,7 +39,8 @@ public class DailyServiceImpl implements DailyService {
 
             Date date = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date specialDate = sdf.parse(temp.get("growth_date").toString());
+            String growthDate = temp.get("growth_date").toString();
+            Date specialDate = sdf.parse(growthDate);
             Date curDate = sdf.parse(sdf.format(date));
 
             int maleCountDiff = checkFemale - cullingFemale - deathFemale;
@@ -53,28 +55,39 @@ public class DailyServiceImpl implements DailyService {
                 pd.put("modify_time", new Date());
                 int maleOld = temp.getInteger("male_culling_am") + temp.getInteger("male_death_am") + temp.getInteger("male_culling_pm") + temp.getInteger("male_death_pm");
                 int femaleOld = temp.getInteger("female_culling_am") + temp.getInteger("female_death_am") + temp.getInteger("female_culling_pm") + temp.getInteger("female_death_pm");
+                int maleCullingOld = temp.getInteger("male_culling_am") + temp.getInteger("male_culling_pm");
+                int femaleCullingOld = temp.getInteger("female_culling_am") + temp.getInteger("female_culling_pm");
+                int maleDeathOld = temp.getInteger("male_death_am") + temp.getInteger("male_death_pm");
+                int femaleDeathOld = temp.getInteger("female_death_am") + temp.getInteger("female_death_pm");
+                int genderErrorMaleDiff = temp.getInteger("male_mistake") - genderErrorMale;
+                int genderErrorFemaleDiff = temp.getInteger("female_mistake") - genderErrorFemale;
                 int diffMale = maleOld - deathMale - cullingMale;
                 int diffFemale = femaleOld - deathFemale - cullingFemale;
+                pd.put("maleCurCd", deathMale + cullingMale);
+                pd.put("femaleCurCd", deathFemale + cullingFemale);
                 pd.put("femaleDiff", diffFemale);
                 pd.put("maleDiff", diffMale);
                 if (cullingFemale + cullingMale != 0) {
+                    pd.put("operation_date", growthDate);
                     pd.put("operation_type", "6");
-                    pd.put("male_count", -cullingMale);
-                    pd.put("female_count", -cullingFemale);
+                    pd.put("male_count", maleCullingOld - cullingMale);
+                    pd.put("female_count", femaleCullingOld - cullingFemale);
                     pd.put("bak", "损耗数量");
                     dao.save("DailyMapper.insertDaily", pd);
                 }
                 if (deathFemale + deathMale != 0) {
+                    pd.put("operation_date", growthDate);
                     pd.put("operation_type", "5");
-                    pd.put("male_count", -deathMale);
-                    pd.put("female_count", -deathFemale);
+                    pd.put("male_count", maleDeathOld - deathMale);
+                    pd.put("female_count", femaleDeathOld - deathFemale);
                     pd.put("bak", "淘汰数量");
                     dao.save("DailyMapper.insertDaily", pd);
                 }
                 if (genderErrorMale + genderErrorFemale != 0) {
+                    pd.put("operation_date", growthDate);
                     pd.put("operation_type", "8");
-                    pd.put("male_count", -genderErrorMale);
-                    pd.put("female_count", -genderErrorFemale);
+                    pd.put("male_count", genderErrorMaleDiff);
+                    pd.put("female_count", genderErrorFemaleDiff);
                     pd.put("bak", "鉴别错误");
                     dao.save("DailyMapper.insertDaily", pd);
                 }

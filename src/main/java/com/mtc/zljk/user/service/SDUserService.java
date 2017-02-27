@@ -44,11 +44,18 @@ public interface SDUserService {
 	 * @return
 	 * @throws Exception
 	 */
-	public PageData findUserInfo(PageData pd)throws Exception;
+	PageData findUserInfo(PageData pd)throws Exception;
 	
 	/**
 	 * 根据用户id查询用户栋舍 
 	 */
-	public List<PageData> findUserHouseCode(PageData pd) throws Exception;
+	List<PageData> findUserHouseCode(PageData pd) throws Exception;
+
+	/**
+	 * 根据用户id查询用户权限
+	 */
+	List<PageData> getUserRights(PageData pd) throws Exception;
+
+	List<PageData> getUserList(PageData pd)  throws Exception ;
 
 }

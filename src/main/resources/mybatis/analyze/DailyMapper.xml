@@ -10,6 +10,8 @@
             , female_death_pm     = ${death_num_female}
             , male_culling_pm     = ${culling_num_male}
             , female_culling_pm   = ${culling_num_female}
+            , male_cur_cd         = ${maleCurCd}
+            , female_cur_cd       = ${femaleCurCd}
             , male_cur_weight     = ${body_weight_male}
             , female_cur_weight   = ${body_weight_female}
             , male_mistake        = ${gender_error_male}
@@ -25,6 +27,8 @@
             , female_cur_amount   = (SELECT female_count
                                      FROM s_b_batch_curr
                                      WHERE batch_id = #{BreedBatchId} AND house_code = ${HouseId}) + ${femaleDiff}
+            , modify_date         = curdate()
+            , modify_time         = now()
         where age = ${DayAge} and house_code = ${HouseId} and batch_id = #{BreedBatchId}
     </update>
 
@@ -35,6 +39,8 @@
         , female_death_pm     = ${death_num_female}
         , male_culling_pm     = ${culling_num_male}
         , female_culling_pm   = ${culling_num_female}
+        , male_cur_cd         = ${maleCurCd}
+        , female_cur_cd       = ${femaleCurCd}
         , male_cur_weight     = ${body_weight_male}
         , female_cur_weight   = ${body_weight_female}
         , male_mistake        = ${gender_error_male}
@@ -46,6 +52,8 @@
         , female_cur_evenness = ${uniformity}
         , male_cur_amount     = male_cur_amount + ${maleDiff}
         , female_cur_amount   = female_cur_amount + ${femaleDiff}
+        , modify_date         = curdate()
+        , modify_time         = now()
         where age = ${DayAge} and house_code = ${HouseId} and batch_id = #{BreedBatchId}
     </update>
 
@@ -107,7 +115,7 @@
                 ${HouseId},
                 #{HouseName},
                 ${FarmId},
-                #{create_date},
+                #{operation_date},
                 ${DayAge},
                 null,
                 ${male_count},
@@ -129,7 +137,7 @@
         update s_b_batch_curr set male_count = male_count + ${maleDiff},
                                     female_count = female_count + ${femaleDiff},
                                     modify_date = curdate(),
-                                    modify_date = curdate(),
+                                    modify_time = now(),
                                     modify_person = ${user_id}
         where house_code = ${HouseId} and batch_id = #{BreedBatchId}
     </update>

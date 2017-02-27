@@ -1,10 +1,70 @@
 var count0rg;
 var num=2;
+var allSearch = "true";
+var orgLevel = 2;
+var asyncFlag = false;
 
-function OrgSearch(count0rg,num){
-		reflushAlarmCurr();	
+$(document).ready(function() {
+    setTimeout("javascript:reflushAlarmCurr();",60000); //60s刷新一次
+    initHelp();
+});
+
+function initHelp(){
+    help.size = ['600px', '365px'];
+    help.context = document.getElementById("helpContext").innerHTML;
 }
 
+function OrgSearch(count0rg,num){
+	if("" != corporation_id){
+		var select = document.getElementById("orgId"+(count0rg-2));
+		if(null != select && "undefined" != select){
+                for(var i=0; i<select.options.length; i++){
+                    var corporation = select.options[i].value;
+                    var strs= new Array();
+                    strs = corporation.split(",");
+                    if(strs[0] == corporation_id){
+                        corporation_id="";
+                        select.options[i].selected = true;
+                        select.onchange();
+                        break;
+                    }
+			}
+		}
+        corporation_id="";
+	} else{
+        if("" != farm_id){
+            var select2 = document.getElementById("orgId"+(count0rg-1));
+            if(null != select2 && "undefined" != select2) {
+                for(var i=0; i<select2.options.length; i++) {
+                    var farm = select2.options[i].value;
+                    var strs2 = new Array();
+                    strs2 = farm.split(",");
+                    if (strs2[0] == farm_id) {
+                        farm_id="";
+                        select2.options[i].selected = true;
+                        select2.onchange();
+                        break;
+                    }
+                }
+            }
+            farm_id="";
+        } else{
+            if("" == corporation_id && "" == farm_id){
+                reflushAlarmCurr();
+            }
+        }
+
+    }
+
+}
+
+function formatUnit(unit){
+    var rt = unit;
+    if(unit.indexOf("/m3") >= 0){
+        rt = unit.replace("/m3","/m<sup>" + 3 + "</sup>");
+    }
+    return rt;
+}
 
 function reflushAlarmCurr(){
 
@@ -16,10 +76,11 @@ function reflushAlarmCurr(){
 //	}else if($("#farmId").val()!="" && $("#houseId").val()==""){
 //		param = {"farmId":$("#farmId").val()};
 //	}else{
-		 param = {
-				 "farmId":$("#orgId"+(count0rg-1)).val().split(",")[1],
-				 "houseId":$("#orgId"+count0rg).val().split(",")[1]
-				 };
+    param = {
+        "farmId":$("#orgId"+(count0rg-1)).val().split(",")[1],
+        // "houseId":$("#orgId"+count0rg).val().split(",")[1]
+    };
+
 //	}
 
  $.ajax({
@@ -29,6 +90,7 @@ function reflushAlarmCurr(){
      type : "POST",
      dataType: "json",
      cache: false,
+     async: false,
      // timeout:50000,
      success: function(result) {
          var list = eval(result.obj);
@@ -45,8 +107,8 @@ function reflushAlarmCurr(){
 //         	 }
         
               str+="<td style='height:30px;text-align: center;'>"+ list[i]["alarm_name"]+"</td>";
-              str+="<td style='height:30px;text-align: center;'>"+ list[i]["set_value"].replace(".00","")+" "+list[i]["value_unit"]+"</td>";
-              str+="<td style='height:30px;text-align: center;'>"+ list[i]["actual_value"].replace(".00","")+" "+list[i]["value_unit"]+"</td>";
+              str+="<td style='height:30px;text-align: center;'>"+ (list[i]["set_value"]+"").replace(".00","")+" "+formatUnit(list[i]["value_unit"])+"</td>";
+              str+="<td style='height:30px;text-align: center;'>"+ (list[i]["actual_value"]+"").replace(".00","")+" "+formatUnit(list[i]["value_unit"])+"</td>";
 //              if(list[i]["deal_status_name"]=='处理中'){
 //            	  str+="<td style='color:#FF6600;height:30px;text-align: center;'>" + list[i]["deal_status_name"]+"</td>";
 //              }else if(list[i]["deal_status_name"]=='已处理'){
@@ -59,11 +121,11 @@ function reflushAlarmCurr(){
               if(list[i]["deal_time"] != null){
             	  str+="<td style='height:30px;text-align: center;'>"+list[i]["deal_time"] +"</td>";
               }else{
-            	  str+="<td style='height:30px;text-align: center;color: #E83828;'>"+'未响应' +"</td>";
+            	  str+="<td style='height:30px;text-align: center;color: #E83828;'>"+'未处理' +"</td>";
               }
-              
-              str+="<td style='height:30px;text-align: center;'>"+(list[i]["user_name"] != null ? list[i]["user_name"]:'' )+"</td>";
+
               str+="<td style='height:30px;text-align: center;'>"+list[i]["continue_time"] +"</td>";
+              str+="<td style='height:30px;text-align: center;'>"+(list[i]["user_name"] != null ? list[i]["user_name"]:'' )+"</td>";
 //            str+="<td style='height:30px;text-align: center;'>"+ list[i]["deal_time"]+"</td>";
 //            str+="<td style='height:30px;text-align: center;'>"+ list[i]["user_name"]+"</td>";
               $("#tbodyAlarmCurrList").append(str);    
@@ -72,7 +134,6 @@ function reflushAlarmCurr(){
 
      }
  });
- setTimeout("javascript:reflushAlarmCurr();",10000); //10s刷新一次
 }
 
 function reflushAlarmCurr2(){
@@ -83,23 +144,23 @@ function reflushAlarmCurr2(){
 		param = {"farmId":$("#farmId").val()};
 	}
 
- $.ajax({
-     // async: true,
-     url: path+"/alarmCurr/reflushAlarmCurr2",
-     data: param,
-     type : "POST",
-     dataType: "json",
-     cache: false,
-     // timeout:50000,
-     success: function(result) {
-    	 var list = result.obj;
-			$("#houseId option:gt(0)").remove();
-			for (var i = 0; i < list.length; i++) {
-				$("#houseId").append("<option value=" + list[i].id + ">" + list[i].house_name+ "</option>");
-			}
-			reflushAlarmCurr();
-     }
- });
+	 $.ajax({
+		 // async: true,
+		 url: path+"/alarmCurr/reflushAlarmCurr2",
+		 data: param,
+		 type : "POST",
+		 dataType: "json",
+		 cache: false,
+		 // timeout:50000,
+		 success: function(result) {
+			 var list = result.obj;
+				$("#houseId option:gt(0)").remove();
+				for (var i = 0; i < list.length; i++) {
+					$("#houseId").append("<option value=" + list[i].id + ">" + list[i].house_name+ "</option>");
+				}
+				reflushAlarmCurr();
+		 }
+	 });
 
 }
 

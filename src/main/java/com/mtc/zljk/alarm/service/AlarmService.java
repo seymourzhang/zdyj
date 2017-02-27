@@ -183,7 +183,7 @@ public interface AlarmService {
 	 */
 	void saveSBRemindSetting(PageData pd) throws Exception;
 	
-	public List<PageData> findUserAll()throws Exception;
+	public List<PageData> findUserAll(PageData pd)throws Exception;
 	
 	public List<PageData> selectSBCode(PageData pd)throws Exception;
 	
